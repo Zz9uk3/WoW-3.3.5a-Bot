@@ -123,8 +123,8 @@ namespace AmeisenBotGUI
         {
             Me me = AmeisenManager.GetInstance().GetMe();
             
-
-            AmeisenCore.AmeisenCore.MovePlayerToXYZ(me.target.posX, me.target.posY, me.target.posZ);
+            if(me.target.distance > 6)
+                AmeisenCore.AmeisenCore.MovePlayerToXYZ(me.target.posX, me.target.posY, me.target.posZ);
         }
     }
 }
