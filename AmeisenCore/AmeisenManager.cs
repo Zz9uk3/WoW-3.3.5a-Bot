@@ -2,6 +2,7 @@
 using Binarysharp.MemoryManagement;
 using System;
 using System.Diagnostics;
+using System.Threading;
 
 namespace AmeisenCore
 {
@@ -10,14 +11,13 @@ namespace AmeisenCore
         private static AmeisenManager i;
 
         private bool isAttached;
-        private bool isInGame;
 
         private Process wowProcess;
         private MemorySharp memorySharp;
 
         private Me me;
 
-        private AmeisenManager() { isAttached = false; isInGame = false; }
+        private AmeisenManager() { isAttached = false; }
 
         public static AmeisenManager GetInstance()
         {
@@ -53,15 +53,19 @@ namespace AmeisenCore
                 throw new Exception("Manager is not attached to any WoW...");
         }
 
-        public Me RefreshMe()
+        public void RefreshMe()
         {
             if (isAttached)
             {
-                me = AmeisenCore.GetMe();
-                return me;
+                new Thread(new ThreadStart(RefreshMeAsync)).Start();
             }
             else
                 throw new Exception("Manager is not attached to any WoW...");
+        }
+
+        private void RefreshMeAsync()
+        {
+            me = AmeisenCore.GetMe();
         }
     }
 }

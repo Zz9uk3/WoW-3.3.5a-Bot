@@ -43,20 +43,21 @@ namespace AmeisenBotGUI
             uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 1000);
             uiUpdateTimer.Start();
 
-            AmeisenAIManager.GetInstance().StartAI();
+            AmeisenAIManager.GetInstance().StartAI(4);
         }
 
         private void uiUpdateTimer_Tick(object sender, EventArgs e)
         {
             UpdateUI();
 
-            if(checkBoxFollowGroupLeader.IsChecked == true)
+            if (checkBoxFollowGroupLeader.IsChecked == true)
                 AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.FOLLOW_GROUPLEADER, 8.0));
         }
 
         private void UpdateUI()
         {
-            Me me = AmeisenManager.GetInstance().RefreshMe();
+            AmeisenManager.GetInstance().RefreshMe();
+            Me me = AmeisenManager.GetInstance().GetMe();
 
             try
             {
@@ -120,6 +121,20 @@ namespace AmeisenBotGUI
                 labelDebugInfoTarget.Content =
                     "- DebugInfo -\nTargetGUID:" + me.target.targetGUID +
                     "\nFactionTemplate:" + me.target.factionTemplate;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            try
+            {
+                labelThreadsActive.Content = "Active AI Threads: " + AmeisenAIManager.GetInstance().GetBusyThreadCount() + "/" + AmeisenAIManager.GetInstance().GetActiveThreadCount();
+                progressBarBusyAIThreads.Maximum = AmeisenAIManager.GetInstance().GetActiveThreadCount();
+                progressBarBusyAIThreads.Value = AmeisenAIManager.GetInstance().GetBusyThreadCount();
+                listboxCurrentQueue.Items.Clear();
+                foreach (AmeisenAction a in AmeisenAIManager.GetInstance().GetQueueItems())
+                    listboxCurrentQueue.Items.Add(a.GetActionType() + " [" + a.GetActionParams() + "]");
             }
             catch (Exception e)
             {

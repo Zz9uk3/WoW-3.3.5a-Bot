@@ -1,6 +1,7 @@
 ﻿using AmeisenCore;
 using AmeisenCore.Objects;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,10 @@ namespace AmeisenAI
     {
         FOLLOW_TARGET,
         FOLLOW_GROUPLEADER,
+
+        TARGET_ENTITY,
+        ATTACK_TARGET,
+        USE_SPELL,
     }
 
     public class AmeisenAction
@@ -31,15 +36,16 @@ namespace AmeisenAI
 
     public class AmeisenAIManager
     {
-        private Thread aiWorker;
+        private List<Thread> aiWorkers;
         private bool aiActive;
+        private bool[] busyThreads;
         private static AmeisenAIManager i;
-        private Queue<AmeisenAction> actionQueue;
-
+        private ConcurrentQueue<AmeisenAction> actionQueue;
+        
         private AmeisenAIManager()
         {
-            aiWorker = new Thread(new ThreadStart(WorkActions));
-            actionQueue = new Queue<AmeisenAction>();
+            actionQueue = new ConcurrentQueue<AmeisenAction>();
+            aiWorkers = new List<Thread>();
         }
 
         public static AmeisenAIManager GetInstance()
@@ -49,37 +55,50 @@ namespace AmeisenAI
             return i;
         }
 
-        private void WorkActions()
+        private void WorkActions(int threadID)
         {
             while (aiActive)
             {
-                if (actionQueue.Count > 0)
+                if (!actionQueue.IsEmpty)
                 {
-                    AmeisenAction currentAction = actionQueue.Dequeue();
-                    switch (currentAction.GetActionType())
+                    busyThreads[threadID-1] = true;
+                    if (actionQueue.TryDequeue(out AmeisenAction currentAction))
                     {
-                        case AmeisenActionType.FOLLOW_TARGET:
-                            FollowTarget((double)currentAction.GetActionParams());
-                            break;
+                        switch (currentAction.GetActionType())
+                        {
+                            case AmeisenActionType.FOLLOW_TARGET:
+                                FollowTarget((double)currentAction.GetActionParams());
+                                break;
 
-                        case AmeisenActionType.FOLLOW_GROUPLEADER:
-                            FollowGroupLeader((double)currentAction.GetActionParams());
-                            break;
+                            case AmeisenActionType.FOLLOW_GROUPLEADER:
+                                FollowGroupLeader((double)currentAction.GetActionParams());
+                                break;
 
-                        default:
-                            break;
+                            default:
+                                break;
+                        }
                     }
                 }
                 else
-                    Thread.Sleep(50);
+                {
+                    Thread.Sleep(2000);
+                    busyThreads[threadID-1] = false;
+                }
             }
         }
 
-        public void StartAI()
+        public void StartAI(int threadCount)
         {
             if (!aiActive)
             {
-                aiWorker.Start();
+                busyThreads = new bool[threadCount];
+
+                for (int i = 0; i < threadCount; i++)
+                    aiWorkers.Add(new Thread(() => WorkActions(i)));
+
+                foreach (Thread t in aiWorkers)
+                    t.Start();
+
                 aiActive = true;
             }
         }
@@ -89,13 +108,37 @@ namespace AmeisenAI
             if (aiActive)
             {
                 aiActive = false;
-                aiWorker = new Thread(new ThreadStart(WorkActions));
+                aiWorkers.Clear();
             }
         }
 
         public void AddActionToQueue(AmeisenAction action)
         {
             actionQueue.Enqueue(action);
+        }
+
+        public List<AmeisenAction> GetQueueItems()
+        {
+            List<AmeisenAction> actions = new List<AmeisenAction>();
+            foreach (AmeisenAction a in actionQueue)
+                actions.Add(a);
+            return actions;
+        }
+
+        public int GetActiveThreadCount()
+        {
+            return aiWorkers.Count;
+        }
+
+        public int GetBusyThreadCount()
+        {
+            int bThreads = 0;
+
+            foreach (bool b in busyThreads)
+                if (b)
+                    bThreads++;
+
+            return bThreads;
         }
 
         private double lastDistance;
