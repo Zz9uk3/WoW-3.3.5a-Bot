@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AmeisenBotGUI"
         mc:Ignorable="d"
-        Title="AmeisenBot - Select WoW" Height="54" Width="525" ResizeMode="NoResize" Loaded="loadingForm_Loaded" WindowStyle="None" Background="#FF323232" Topmost="True" MouseDown="loadingForm_MouseDown">
+        Title="AmeisenBot - Select WoW" Height="54" Width="525" ResizeMode="NoResize" Loaded="loadingForm_Loaded" WindowStyle="None" Background="#FF323232" Topmost="True" MouseDown="loadingForm_MouseDown" Icon="Icon.ico">
     <Grid>
         <ComboBox x:Name="comboBoxWoWs" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="24" BorderBrush="#FFFFA200" Background="{x:Null}" Foreground="Black" BorderThickness="2" FontFamily="Consolas" Width="362"/>
         <Button x:Name="buttonRefresh" Content="↻" HorizontalAlignment="Left" Margin="377,10,0,0" VerticalAlignment="Top" Width="50" Height="33" FontSize="20" Click="buttonRefresh_Click" Background="{x:Null}" BorderBrush="#FFFFA200" BorderThickness="2" Foreground="White" FontWeight="Bold" FontFamily="Arial" IsManipulationEnabled="True"/>
