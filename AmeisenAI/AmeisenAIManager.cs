@@ -117,6 +117,10 @@ namespace AmeisenAI
                         AmeisenCore.AmeisenCore.CharacterJump();
 
                     AmeisenCore.AmeisenCore.MovePlayerToXYZ(me.target.posX + factorX, me.target.posY + factorY, me.target.posZ);
+
+                    lastPosition[0] = me.posX;
+                    lastPosition[1] = me.posY;
+                    lastPosition[2] = me.posZ;
                     lastDistance = me.target.distance;
                 }
             }
@@ -146,6 +150,10 @@ namespace AmeisenAI
                             AmeisenCore.AmeisenCore.CharacterJump();
 
                         AmeisenCore.AmeisenCore.MovePlayerToXYZ(groupleader.posX + factorX, groupleader.posY + factorY, groupleader.posZ);
+
+                        lastPosition[0] = me.posX;
+                        lastPosition[1] = me.posY;
+                        lastPosition[2] = me.posZ;
                         lastDistance = groupleader.distance;
                     }
                 }
