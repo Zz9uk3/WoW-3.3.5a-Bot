@@ -10,12 +10,14 @@ namespace AmeisenCore
         private static AmeisenManager i;
 
         private bool isAttached;
+        private bool isInGame;
+
         private Process wowProcess;
         private MemorySharp memorySharp;
 
         private Me me;
 
-        private AmeisenManager() { isAttached = false; }
+        private AmeisenManager() { isAttached = false; isInGame = false; }
 
         public static AmeisenManager GetInstance()
         {

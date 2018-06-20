@@ -35,12 +35,12 @@ namespace AmeisenBotGUI
         private void mainscreen_Loaded(object sender, RoutedEventArgs e)
         {
             Title = "AmeisenBot - " + wowExe.characterName + " [" + wowExe.process.Id + "]";
-            UpdateUI();
+            //UpdateUI();
 
             uiUpdateTimer = new DispatcherTimer();
             uiUpdateTimer.Tick += new EventHandler(uiUpdateTimer_Tick);
             uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 1000);
-            uiUpdateTimer.Start();
+            //uiUpdateTimer.Start();
         }
 
         private void uiUpdateTimer_Tick(object sender, EventArgs e)
@@ -103,6 +103,8 @@ namespace AmeisenBotGUI
                 progressBarEnergyTarget.Maximum = me.target.maxEnergy;
                 progressBarEnergyTarget.Value = me.target.energy;
 
+                labelDistance.Content = "Distance: " + me.target.distance + "m";
+
                 labelPositionTarget.Content =
                     "X: " + me.target.posX +
                     "\nY: " + me.target.posY +
@@ -125,6 +127,16 @@ namespace AmeisenBotGUI
             
             if(me.target.distance > 6)
                 AmeisenCore.AmeisenCore.MovePlayerToXYZ(me.target.posX, me.target.posY, me.target.posZ);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void mainscreen_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            DragMove();
         }
     }
 }

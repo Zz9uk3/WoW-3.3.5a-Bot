@@ -45,7 +45,7 @@ namespace AmeisenBotGUI
 
         private void buttonGo_Click(object sender, RoutedEventArgs e)
         {
-            AmeisenManager.GetInstance().AttachManager(((WoWExe)comboBoxWoWs.SelectedItem).process);
+            //AmeisenManager.GetInstance().AttachManager(((WoWExe)comboBoxWoWs.SelectedItem).process);
 
             new mainscreenForm((WoWExe)comboBoxWoWs.SelectedItem).Show();
             Close();
@@ -59,6 +59,11 @@ namespace AmeisenBotGUI
         private void loadingForm_Loaded(object sender, RoutedEventArgs e)
         {
             SearchForWoW();
+        }
+
+        private void loadingForm_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            DragMove();
         }
     }
 }
