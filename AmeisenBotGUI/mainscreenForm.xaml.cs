@@ -40,7 +40,7 @@ namespace AmeisenBotGUI
 
             uiUpdateTimer = new DispatcherTimer();
             uiUpdateTimer.Tick += new EventHandler(uiUpdateTimer_Tick);
-            uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 1000);
+            uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
             uiUpdateTimer.Start();
 
             AmeisenAIManager.GetInstance().StartAI(4);
@@ -144,7 +144,7 @@ namespace AmeisenBotGUI
 
         private void buttonMoveToTarget_Click(object sender, RoutedEventArgs e)
         {
-            AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.FOLLOW_TARGET, 0.0));
+            AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.FOLLOW_TARGET, 2.0));
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

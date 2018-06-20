@@ -81,7 +81,7 @@ namespace AmeisenAI
                 }
                 else
                 {
-                    Thread.Sleep(2000);
+                    Thread.Sleep(50);
                     busyThreads[threadID-1] = false;
                 }
             }
