@@ -23,5 +23,6 @@
         <Label x:Name="labelPositionTarget" Content="" HorizontalAlignment="Left" Margin="200,134,0,0" VerticalAlignment="Top" FontFamily="Consolas" Foreground="White"/>
         <Label x:Name="labelDebugInfo" Content="" HorizontalAlignment="Left" Margin="10,235,0,0" VerticalAlignment="Top" FontFamily="Consolas" Foreground="White"/>
         <Label x:Name="labelDebugInfoTarget" Content="" HorizontalAlignment="Left" Margin="200,235,0,0" VerticalAlignment="Top" FontFamily="Consolas" Foreground="White"/>
+        <Button x:Name="buttonMoveToTarget" Content="Move to Target" HorizontalAlignment="Left" Margin="382,289,0,0" VerticalAlignment="Top" Width="100" Click="buttonMoveToTarget_Click"/>
     </Grid>
 </Window>

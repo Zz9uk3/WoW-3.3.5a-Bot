@@ -118,5 +118,13 @@ namespace AmeisenBotGUI
                 Console.WriteLine(e);
             }
         }
+
+        private void buttonMoveToTarget_Click(object sender, RoutedEventArgs e)
+        {
+            Me me = AmeisenManager.GetInstance().GetMe();
+            
+
+            AmeisenCore.AmeisenCore.MovePlayerToXYZ(me.target.posX, me.target.posY, me.target.posZ);
+        }
     }
 }

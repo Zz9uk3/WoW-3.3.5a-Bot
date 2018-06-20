@@ -32,6 +32,7 @@ namespace AmeisenCore.Objects
         public float posY;
         public float posZ;
         public float rotation;
+        public double distance;
 
         public int mapID;
         public int zoneID;
@@ -58,6 +59,7 @@ namespace AmeisenCore.Objects
             sb.Append("\nPosY: " + posY);
             sb.Append("\nPosZ: " + posZ);
             sb.Append("\nRotation: " + rotation);
+            sb.Append("\nDistance: " + distance);
             sb.Append("\nMapID: " + mapID);
             sb.Append("\nZoneID: " + zoneID);
 
@@ -81,6 +83,7 @@ namespace AmeisenCore.Objects
             sb.Append("\nPosY: " + posY);
             sb.Append("\nPosZ: " + posZ);
             sb.Append("\nRotation: " + rotation);
+            sb.Append("\nDistance: " + distance);
             sb.Append("\nMapID: " + mapID);
             sb.Append("\nZoneID: " + zoneID);
 
