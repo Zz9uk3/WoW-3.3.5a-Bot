@@ -35,5 +35,10 @@ namespace AmeisenOffsets
         public static int partyplayer3 = partyplayer2 + 0x8;
         public static int partyplayer4 = partyplayer3 + 0x8;
 
+        public static int ctmBase = 0x8A11D8;
+        public static int ctmX = ctmBase + 0x8C;
+        public static int ctmY = ctmBase + 0x90;
+        public static int ctmZ = ctmBase + 0x94;
+        public static int ctmAction = ctmBase + 0x1C;
     }
 }
