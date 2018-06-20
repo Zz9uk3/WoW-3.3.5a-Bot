@@ -1,0 +1,15 @@
+﻿<Window x:Name="loadingForm" x:Class="AmeisenBotGUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AmeisenBotGUI"
+        mc:Ignorable="d"
+        Title="AmeisenBot - Select WoW" Height="120" Width="525" ResizeMode="NoResize" Loaded="loadingForm_Loaded">
+    <Grid>
+        <ComboBox x:Name="comboBoxWoWs" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="362" FontSize="20"/>
+        <Button x:Name="buttonRefresh" Content="↻" HorizontalAlignment="Left" Margin="377,10,0,0" VerticalAlignment="Top" Width="50" Height="33" FontSize="20" Click="buttonRefresh_Click"/>
+        <Button x:Name="buttonGo" Content="➤" HorizontalAlignment="Left" Margin="432,10,0,0" VerticalAlignment="Top" Width="75" Height="33" FontSize="20" Click="buttonGo_Click"/>
+
+    </Grid>
+</Window>
