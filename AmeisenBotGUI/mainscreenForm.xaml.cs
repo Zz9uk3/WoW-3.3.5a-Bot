@@ -1,4 +1,5 @@
-﻿using AmeisenCore;
+﻿using AmeisenAI;
+using AmeisenCore;
 using AmeisenCore.Objects;
 using System;
 using System.Collections.Generic;
@@ -35,17 +36,22 @@ namespace AmeisenBotGUI
         private void mainscreen_Loaded(object sender, RoutedEventArgs e)
         {
             Title = "AmeisenBot - " + wowExe.characterName + " [" + wowExe.process.Id + "]";
-            //UpdateUI();
+            UpdateUI();
 
             uiUpdateTimer = new DispatcherTimer();
             uiUpdateTimer.Tick += new EventHandler(uiUpdateTimer_Tick);
             uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 1000);
-            //uiUpdateTimer.Start();
+            uiUpdateTimer.Start();
+
+            AmeisenAIManager.GetInstance().StartAI();
         }
 
         private void uiUpdateTimer_Tick(object sender, EventArgs e)
         {
             UpdateUI();
+
+            if(checkBoxFollowGroupLeader.IsChecked == true)
+                AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.FOLLOW_GROUPLEADER, 8.0));
         }
 
         private void UpdateUI()
@@ -123,15 +129,13 @@ namespace AmeisenBotGUI
 
         private void buttonMoveToTarget_Click(object sender, RoutedEventArgs e)
         {
-            Me me = AmeisenManager.GetInstance().GetMe();
-            
-            if(me.target.distance > 6)
-                AmeisenCore.AmeisenCore.MovePlayerToXYZ(me.target.posX, me.target.posY, me.target.posZ);
+            AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.FOLLOW_TARGET, 0.0));
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Close();
+            AmeisenAIManager.GetInstance().StopAI();
         }
 
         private void mainscreen_MouseDown(object sender, MouseButtonEventArgs e)

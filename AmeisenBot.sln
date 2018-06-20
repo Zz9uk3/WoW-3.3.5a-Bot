@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenOffsets", "AmeisenOf
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBotGUI", "AmeisenBotGUI\AmeisenBotGUI.csproj", "{54601391-C520-4EB3-A13E-7FD9B036389A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenAI", "AmeisenAI\AmeisenAI.csproj", "{3C281530-7A81-4803-BC85-DE46ED2D6E74}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{54601391-C520-4EB3-A13E-7FD9B036389A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54601391-C520-4EB3-A13E-7FD9B036389A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54601391-C520-4EB3-A13E-7FD9B036389A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C281530-7A81-4803-BC85-DE46ED2D6E74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C281530-7A81-4803-BC85-DE46ED2D6E74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C281530-7A81-4803-BC85-DE46ED2D6E74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C281530-7A81-4803-BC85-DE46ED2D6E74}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

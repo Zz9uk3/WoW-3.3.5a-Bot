@@ -45,7 +45,7 @@ namespace AmeisenBotGUI
 
         private void buttonGo_Click(object sender, RoutedEventArgs e)
         {
-            //AmeisenManager.GetInstance().AttachManager(((WoWExe)comboBoxWoWs.SelectedItem).process);
+            AmeisenManager.GetInstance().AttachManager(((WoWExe)comboBoxWoWs.SelectedItem).process);
 
             new mainscreenForm((WoWExe)comboBoxWoWs.SelectedItem).Show();
             Close();

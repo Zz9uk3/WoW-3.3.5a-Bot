@@ -5,7 +5,9 @@ using System.Diagnostics;
 using System.Text;
 
 using AmeisenCore.Objects;
-
+using Binarysharp.MemoryManagement.Native;
+using System.Threading;
+using Binarysharp.MemoryManagement.Windows;
 
 namespace AmeisenCore
 {
@@ -33,7 +35,7 @@ namespace AmeisenCore
 
         public static void MovePlayerToXYZ(float x, float y, float z)
         {
-            if (GetMe().posX != x && GetMe().posY != y && GetMe().posZ != z)
+            if (AmeisenManager.GetInstance().GetMe().posX != x && AmeisenManager.GetInstance().GetMe().posY != y && AmeisenManager.GetInstance().GetMe().posZ != z)
             {
                 AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write<float>(AmeisenOffsets.WoWOffsets.ctmX, x);
                 AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write<float>(AmeisenOffsets.WoWOffsets.ctmY, y);
@@ -110,11 +112,13 @@ namespace AmeisenCore
 
             int targetGUID = GetTargetGUID();
             if (targetGUID != 0)
+            {
                 me.target = (Target)ReadWoWObjectFromGUID(false, targetGUID);
 
-            me.target.distance = Math.Sqrt((me.posX - me.target.posX) * (me.posX - me.target.posX) +
-                                           (me.posY - me.target.posY) * (me.posY - me.target.posY) +
-                                           (me.posZ - me.target.posZ) * (me.posZ - me.target.posZ));
+                me.target.distance = Math.Sqrt((me.posX - me.target.posX) * (me.posX - me.target.posX) +
+                                               (me.posY - me.target.posY) * (me.posY - me.target.posY) +
+                                               (me.posZ - me.target.posZ) * (me.posZ - me.target.posZ));
+            }
 
             return me;
         }
@@ -205,13 +209,17 @@ namespace AmeisenCore
             try
             {
                 Target t = (Target)ReadWoWObjectFromGUID(false, AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>((offset) - 0x400000));
+                Me me = AmeisenManager.GetInstance().GetMe();
 
-                t.distance = Math.Sqrt((GetMe().posX - t.posX) * (GetMe().posX - t.posX) +
-                                       (GetMe().posY - t.posY) * (GetMe().posY - t.posY) +
-                                       (GetMe().posZ - t.posZ) * (GetMe().posZ - t.posZ));
+                if (t.posX != 0 && t.posY != 0 && t.posZ != 0)
+                    t.distance = Math.Sqrt((me.posX - t.posX) * (me.posX - t.posX) +
+                                           (me.posY - t.posY) * (me.posY - t.posY) +
+                                           (me.posZ - t.posZ) * (me.posZ - t.posZ));
 
                 if (t.guid == leaderGUID)
+                {
                     t.isPartyLeader = true;
+                }
                 return t;
             }
             catch (Exception e)
@@ -229,6 +237,20 @@ namespace AmeisenCore
         public static int GetTargetGUID()
         {
             return AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>(AmeisenOffsets.WoWOffsets.localTargetGUID);
+        }
+
+        public static void CharacterJump()
+        {
+            Thread keyExecutorThread = new Thread(new ThreadStart(CharacterJumpAsync));
+            keyExecutorThread.Start();
+        }
+
+        private static void CharacterJumpAsync()
+        {
+            RemoteWindow window = AmeisenManager.GetInstance().GetMemorySharp().Windows.MainWindow;
+            window.Keyboard.Press(Keys.Space, TimeSpan.FromMilliseconds(20));
+            Thread.Sleep(100);
+            window.Keyboard.Release(Keys.Space);
         }
     }
 }
