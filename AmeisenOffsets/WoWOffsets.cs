@@ -43,6 +43,12 @@ namespace AmeisenOffsets
         public static int ctmGUID = ctmBase + 0x20;
         public static int ctmDistance = ctmBase + 0xC;
 
-        public static int GetActivePlayerObject = 0x4038F0;
+        public static int FrameScriptExecute = 0x819210;
+
+        public static int pDevicePtr1 = 0xC5DF88;
+        public static int pDevicePtr2 = 0x397C;
+        public static int endScene = 0xA8;
+        public static int LuaDoString = 0x819210;
+        public static int LuaGetLocalizedText = 0x7225E0;
     }
 }

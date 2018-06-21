@@ -9,6 +9,8 @@ using Binarysharp.MemoryManagement.Native;
 using System.Threading;
 using Binarysharp.MemoryManagement.Windows;
 using Binarysharp.MemoryManagement.Memory;
+using Binarysharp.MemoryManagement.Assembly;
+using Binarysharp.MemoryManagement.Assembly.CallingConvention;
 
 namespace AmeisenCore
 {
@@ -38,23 +40,51 @@ namespace AmeisenCore
         {
             if (AmeisenManager.GetInstance().GetMe().posX != x && AmeisenManager.GetInstance().GetMe().posY != y && AmeisenManager.GetInstance().GetMe().posZ != z)
             {
-                WriteXYZToMemory(x, y, z, 4);
+                WriteXYZToMemory(x, y, z, 0x4);
             }
         }
 
-        public static void UInt64eractWithGUID(float x, float y, float z, UInt64 guid)
+        public static void InteractWithGUID(float x, float y, float z, UInt64 guid)
         {
-            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write<UInt64>(AmeisenOffsets.WoWOffsets.ctmGUID, guid);
-            WriteXYZToMemory(x, y, z, 5);
+            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmGUID, guid);
+            WriteXYZToMemory(x, y, z, 0x5);
+        }
+
+        public static void AttackGUID(float x, float y, float z, UInt64 guid)
+        {
+            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmGUID, guid);
+            WriteXYZToMemory(x, y, z, 0xB);
+        }
+
+        public static void LUADoString(string command)
+        {
+            /*RemoteAllocation remoteAllocation = AmeisenManager.GetInstance().GetMemorySharp().Memory.Allocate(Encoding.UTF8.GetBytes(command).Length + 1);
+            remoteAllocation.WriteString(command);
+
+            int wowBase = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.BaseAddress.ToInt32();
+            IntPtr argCodecave = remoteAllocation.BaseAddress;
+
+            string[] asm = new string[]{
+                "mov eax, " + (argCodecave + wowBase),
+                "push 0",
+                "push eax",
+                "push eax",
+                "mov eax, " + ((uint)AmeisenOffsets.WoWOffsets.LuaDoString),
+                "call eax",
+                "add esp, 0xC",
+                "retn"
+            };
+
+            AmeisenManager.GetInstance().GetMemorySharp().Assembly.InjectAndExecute(asm);*/
         }
 
         private static void WriteXYZToMemory(float x, float y, float z, int action)
         {
-            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write<float>(AmeisenOffsets.WoWOffsets.ctmX, x);
-            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write<float>(AmeisenOffsets.WoWOffsets.ctmY, y);
-            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write<float>(AmeisenOffsets.WoWOffsets.ctmZ, z);
-            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write<int>(AmeisenOffsets.WoWOffsets.ctmAction, action);
-            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write<float>(AmeisenOffsets.WoWOffsets.ctmDistance, 1.5f);
+            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmX, x);
+            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmY, y);
+            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmZ, z);
+            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmAction, action);
+            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmDistance, 1.5f);
         }
 
         private static int GetMemLocByGUID(UInt64 guid)
