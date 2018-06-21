@@ -53,7 +53,13 @@ namespace AmeisenCore
         public static void AttackGUID(float x, float y, float z, UInt64 guid)
         {
             AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmGUID, guid);
-            WriteXYZToMemory(x, y, z, 0xB);
+            WriteXYZToMemory(x, y, z, 0xA);
+        }
+
+        public static void LootGUID(float x, float y, float z, UInt64 guid)
+        {
+            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmGUID, guid);
+            WriteXYZToMemory(x, y, z, 0x6);
         }
 
         public static void LUADoString(string command)

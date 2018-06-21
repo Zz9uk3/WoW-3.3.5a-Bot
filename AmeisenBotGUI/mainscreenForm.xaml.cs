@@ -144,7 +144,7 @@ namespace AmeisenBotGUI
 
         private void buttonMoveToTarget_Click(object sender, RoutedEventArgs e)
         {
-            AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.TARGET_MYSELF, null));
+            AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.LOOT_TARGET, null));
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

@@ -13,7 +13,7 @@ namespace AmeisenAI
     {
         FOLLOW_TARGET,
         FOLLOW_GROUPLEADER,
-
+        LOOT_TARGET,
         TARGET_ENTITY,
         TARGET_MYSELF,
         ATTACK_TARGET,
@@ -82,6 +82,10 @@ namespace AmeisenAI
 
                             case AmeisenActionType.ATTACK_TARGET:
                                 AttackTarget();
+                                break;
+
+                            case AmeisenActionType.LOOT_TARGET:
+                                LootTarget();
                                 break;
 
                             case AmeisenActionType.TARGET_MYSELF:
@@ -272,6 +276,33 @@ namespace AmeisenAI
                 float factorY = rnd.Next((int)dist / 4, (int)dist / 2);
 
                 AmeisenCore.AmeisenCore.AttackGUID(me.target.posX + factorX, me.target.posY + factorY, me.target.posZ, me.target.guid);
+            }
+        }
+
+        private void LootTarget()
+        {
+            Me me = AmeisenManager.GetInstance().GetMe();
+
+            int dist = 8;
+
+            if (me.target != null)
+            {
+                Random rnd = new Random();
+
+                if (me.target.distance < 3)
+                {
+                    float xOffset = rnd.Next(8, 12);
+                    float yOffset = rnd.Next(8, 12);
+
+                    AmeisenCore.AmeisenCore.MovePlayerToXYZ(me.target.posX + xOffset, me.target.posY + yOffset, me.target.posZ);
+                }
+
+                Thread.Sleep(3000);
+
+                float factorX = rnd.Next((int)dist / 4, (int)dist / 2);
+                float factorY = rnd.Next((int)dist / 4, (int)dist / 2);
+
+                AmeisenCore.AmeisenCore.LootGUID(me.target.posX + factorX, me.target.posY + factorY, me.target.posZ, me.target.guid);
             }
         }
     }
