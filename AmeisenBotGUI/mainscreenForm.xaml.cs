@@ -20,7 +20,7 @@ using System.Windows.Threading;
 namespace AmeisenBotGUI
 {
     /// <summary>
-    /// Interaktionslogik für mainscreenForm.xaml
+    /// UInt64eraktionslogik für mainscreenForm.xaml
     /// </summary>
     public partial class mainscreenForm : Window
     {
@@ -144,7 +144,7 @@ namespace AmeisenBotGUI
 
         private void buttonMoveToTarget_Click(object sender, RoutedEventArgs e)
         {
-            AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.FOLLOW_TARGET, 2.0));
+            AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.UInt64ERACT, AmeisenManager.GetInstance().GetMe().target.guid));
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

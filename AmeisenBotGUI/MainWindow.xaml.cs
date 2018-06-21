@@ -18,7 +18,7 @@ using System.Windows.Shapes;
 namespace AmeisenBotGUI
 {
     /// <summary>
-    /// Interaktionslogik für MainWindow.xaml
+    /// UInt646464eraktionslogik für MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {

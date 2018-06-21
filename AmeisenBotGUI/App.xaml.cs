@@ -8,7 +8,7 @@ using System.Windows;
 namespace AmeisenBotGUI
 {
     /// <summary>
-    /// Interaktionslogik für "App.xaml"
+    /// UInt64eraktionslogik für "App.xaml"
     /// </summary>
     public partial class App : Application
     {

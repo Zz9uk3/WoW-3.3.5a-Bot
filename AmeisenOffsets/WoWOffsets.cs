@@ -40,5 +40,9 @@ namespace AmeisenOffsets
         public static int ctmY = ctmBase + 0x90;
         public static int ctmZ = ctmBase + 0x94;
         public static int ctmAction = ctmBase + 0x1C;
+        public static int ctmGUID = ctmBase + 0x20;
+        public static int ctmDistance = ctmBase + 0xC;
+
+        public static int GetActivePlayerObject = 0x4038F0;
     }
 }

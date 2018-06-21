@@ -11,8 +11,8 @@ namespace AmeisenCore.Objects
     {
         public string name;
 
-        public int guid;
-        public int targetGUID;
+        public UInt64 guid;
+        public UInt64 targetGUID;
         public bool isPartyLeader;
 
         public int combatReach;

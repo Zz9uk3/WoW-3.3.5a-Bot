@@ -17,6 +17,7 @@ namespace AmeisenAI
         TARGET_ENTITY,
         ATTACK_TARGET,
         USE_SPELL,
+        UInt64ERACT
     }
 
     public class AmeisenAction
@@ -41,7 +42,7 @@ namespace AmeisenAI
         private bool[] busyThreads;
         private static AmeisenAIManager i;
         private ConcurrentQueue<AmeisenAction> actionQueue;
-        
+
         private AmeisenAIManager()
         {
             actionQueue = new ConcurrentQueue<AmeisenAction>();
@@ -55,13 +56,13 @@ namespace AmeisenAI
             return i;
         }
 
-        private void WorkActions(int threadID)
+        private void WorkActions(UInt64 threadID)
         {
             while (aiActive)
             {
                 if (!actionQueue.IsEmpty)
                 {
-                    busyThreads[threadID-1] = true;
+                    busyThreads[threadID - 1] = true;
                     if (actionQueue.TryDequeue(out AmeisenAction currentAction))
                     {
                         switch (currentAction.GetActionType())
@@ -74,6 +75,10 @@ namespace AmeisenAI
                                 FollowGroupLeader((double)currentAction.GetActionParams());
                                 break;
 
+                            case AmeisenActionType.UInt64ERACT:
+                                UInt64eractWithTarget();
+                                break;
+
                             default:
                                 break;
                         }
@@ -82,18 +87,18 @@ namespace AmeisenAI
                 else
                 {
                     Thread.Sleep(50);
-                    busyThreads[threadID-1] = false;
+                    busyThreads[threadID - 1] = false;
                 }
             }
         }
 
-        public void StartAI(int threadCount)
+        public void StartAI(UInt64 threadCount)
         {
             if (!aiActive)
             {
                 busyThreads = new bool[threadCount];
 
-                for (int i = 0; i < threadCount; i++)
+                for (UInt64 i = 0; i < threadCount; i++)
                     aiWorkers.Add(new Thread(() => WorkActions(i)));
 
                 foreach (Thread t in aiWorkers)
@@ -200,6 +205,33 @@ namespace AmeisenAI
                         lastDistance = groupleader.distance;
                     }
                 }
+            }
+        }
+
+        private void UInt64eractWithTarget()
+        {
+            Me me = AmeisenManager.GetInstance().GetMe();
+
+            int dist = 8;
+
+            if (me.target != null)
+            {
+                Random rnd = new Random();
+
+                if (me.target.distance < 3)
+                {
+                    float xOffset = rnd.Next(8, 12);
+                    float yOffset = rnd.Next(8, 12);
+
+                    AmeisenCore.AmeisenCore.MovePlayerToXYZ(me.target.posX + xOffset, me.target.posY + yOffset, me.target.posZ);
+                }
+
+                Thread.Sleep(3000);
+
+                float factorX = rnd.Next((int)dist / 4, (int)dist / 2);
+                float factorY = rnd.Next((int)dist / 4, (int)dist / 2);
+
+                AmeisenCore.AmeisenCore.UInt64eractWithGUID(me.target.posX + factorX, me.target.posY + factorY, me.target.posZ, me.target.guid);
             }
         }
     }

@@ -8,6 +8,7 @@ using AmeisenCore.Objects;
 using Binarysharp.MemoryManagement.Native;
 using System.Threading;
 using Binarysharp.MemoryManagement.Windows;
+using Binarysharp.MemoryManagement.Memory;
 
 namespace AmeisenCore
 {
@@ -37,27 +38,39 @@ namespace AmeisenCore
         {
             if (AmeisenManager.GetInstance().GetMe().posX != x && AmeisenManager.GetInstance().GetMe().posY != y && AmeisenManager.GetInstance().GetMe().posZ != z)
             {
-                AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write<float>(AmeisenOffsets.WoWOffsets.ctmX, x);
-                AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write<float>(AmeisenOffsets.WoWOffsets.ctmY, y);
-                AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write<float>(AmeisenOffsets.WoWOffsets.ctmZ, z);
-                AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write<int>(AmeisenOffsets.WoWOffsets.ctmAction, 4);
+                WriteXYZToMemory(x, y, z, 4);
             }
         }
 
-        private static int GetMemLocByGUID(int guid)
+        public static void UInt64eractWithGUID(float x, float y, float z, UInt64 guid)
+        {
+            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write<UInt64>(AmeisenOffsets.WoWOffsets.ctmGUID, guid);
+            WriteXYZToMemory(x, y, z, 5);
+        }
+
+        private static void WriteXYZToMemory(float x, float y, float z, int action)
+        {
+            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write<float>(AmeisenOffsets.WoWOffsets.ctmX, x);
+            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write<float>(AmeisenOffsets.WoWOffsets.ctmY, y);
+            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write<float>(AmeisenOffsets.WoWOffsets.ctmZ, z);
+            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write<int>(AmeisenOffsets.WoWOffsets.ctmAction, action);
+            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write<float>(AmeisenOffsets.WoWOffsets.ctmDistance, 1.5f);
+        }
+
+        private static int GetMemLocByGUID(UInt64 guid)
         {
             int currentObjectManager = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>(AmeisenOffsets.WoWOffsets.currentClientConnection);
             currentObjectManager = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>((currentObjectManager + AmeisenOffsets.WoWOffsets.currentManagerOffset) - 0x400000);
 
             int activeObj = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>((currentObjectManager + AmeisenOffsets.WoWOffsets.firstObjectOffset) - 0x400000);
             int objType = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>((activeObj + AmeisenOffsets.WoWOffsets.gameobjectTypeOffset) - 0x400000);
-            int objGUID = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>((activeObj + AmeisenOffsets.WoWOffsets.gameobjectGUIDOffset) - 0x400000);
+            UInt64 objGUID = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<UInt64>((activeObj + AmeisenOffsets.WoWOffsets.gameobjectGUIDOffset) - 0x400000);
 
             int count = 1;
 
             while (objType <= 7 && objType > 0)
             {
-                objGUID = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>((activeObj + AmeisenOffsets.WoWOffsets.gameobjectGUIDOffset) - 0x400000);
+                objGUID = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<UInt64>((activeObj + AmeisenOffsets.WoWOffsets.gameobjectGUIDOffset) - 0x400000);
 
                 if (objGUID == guid)
                     return activeObj;
@@ -78,14 +91,14 @@ namespace AmeisenCore
             return AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.ReadString((objName) - 0x400000, Encoding.ASCII);
         }
 
-        private static string GetPlayerNameFromGuid(int guid)
+        private static string GetPlayerNameFromGuid(UInt64 guid)
         {
             int mask, base_, shortGUID, testGUID, offset, current;
 
             mask = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>((AmeisenOffsets.WoWOffsets.nameStore + AmeisenOffsets.WoWOffsets.nameMask) - 0x400000);
             base_ = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>((AmeisenOffsets.WoWOffsets.nameStore + AmeisenOffsets.WoWOffsets.nameBase) - 0x400000);
 
-            shortGUID = guid & 0xfffffff;
+            shortGUID = (int)guid & 0xfffffff;
             offset = 12 * (mask & shortGUID);
 
             current = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>((base_ + offset + 8) - 0x400000);
@@ -110,7 +123,7 @@ namespace AmeisenCore
         {
             Me me = (Me)ReadWoWObjectFromGUID(true, GetPlayerGUID());
 
-            int targetGUID = GetTargetGUID();
+            UInt64 targetGUID = GetTargetGUID();
             if (targetGUID != 0)
             {
                 me.target = (Target)ReadWoWObjectFromGUID(false, targetGUID);
@@ -123,7 +136,7 @@ namespace AmeisenCore
             return me;
         }
 
-        private static WoWObject ReadWoWObjectFromGUID(bool isMyself, int guid)
+        private static WoWObject ReadWoWObjectFromGUID(bool isMyself, UInt64 guid)
         {
             WoWObject wowObject;
 
@@ -161,11 +174,11 @@ namespace AmeisenCore
 
                 ((Me)wowObject).partymembers = new List<Target>();
 
-                int leaderGUID = 0;
+                UInt64 leaderGUID = 0;
 
                 try
                 {
-                    leaderGUID = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>((AmeisenOffsets.WoWOffsets.partyLeader) - 0x400000);
+                    leaderGUID = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<UInt64>((AmeisenOffsets.WoWOffsets.partyLeader) - 0x400000);
                 }
                 catch (Exception e)
                 {
@@ -188,7 +201,7 @@ namespace AmeisenCore
             wowObject.maxEnergy = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>((targetBaseUnitFields + (0x21 * 4)) - 0x400000);
             wowObject.summonedBy = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>((targetBaseUnitFields + (0xE * 4)) - 0x400000);
 
-            wowObject.targetGUID = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>((targetBaseUnitFields + (0x12 * 4)) - 0x400000);
+            wowObject.targetGUID = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<UInt64>((targetBaseUnitFields + (0x12 * 4)) - 0x400000);
             wowObject.combatReach = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>((targetBaseUnitFields + (0x42 * 4)) - 0x400000);
             wowObject.factionTemplate = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>((targetBaseUnitFields + (0x37 * 4)) - 0x400000);
             wowObject.channelSpell = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>((targetBaseUnitFields + (0x16 * 4)) - 0x400000);
@@ -204,11 +217,11 @@ namespace AmeisenCore
             return wowObject;
         }
 
-        private static Target TryReadPartymember(int leaderGUID, int offset)
+        private static Target TryReadPartymember(UInt64 leaderGUID, int offset)
         {
             try
             {
-                Target t = (Target)ReadWoWObjectFromGUID(false, AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>((offset) - 0x400000));
+                Target t = (Target)ReadWoWObjectFromGUID(false, AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<UInt64>((offset) - 0x400000));
                 Me me = AmeisenManager.GetInstance().GetMe();
 
                 if (t.posX != 0 && t.posY != 0 && t.posZ != 0)
@@ -229,14 +242,14 @@ namespace AmeisenCore
             return new Target();
         }
 
-        public static int GetPlayerGUID()
+        public static UInt64 GetPlayerGUID()
         {
-            return AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>(AmeisenOffsets.WoWOffsets.localPlayerGUID);
+            return AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<UInt64>(AmeisenOffsets.WoWOffsets.localPlayerGUID);
         }
 
-        public static int GetTargetGUID()
+        public static UInt64 GetTargetGUID()
         {
-            return AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>(AmeisenOffsets.WoWOffsets.localTargetGUID);
+            return AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<UInt64>(AmeisenOffsets.WoWOffsets.localTargetGUID);
         }
 
         public static void CharacterJump()
