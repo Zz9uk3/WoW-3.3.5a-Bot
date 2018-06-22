@@ -3,19 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-
 using AmeisenCore.Objects;
 using Binarysharp.MemoryManagement.Native;
 using System.Threading;
 using Binarysharp.MemoryManagement.Windows;
-using Binarysharp.MemoryManagement.Memory;
-using Binarysharp.MemoryManagement.Assembly;
-using Binarysharp.MemoryManagement.Assembly.CallingConvention;
 
 namespace AmeisenCore
 {
     public class AmeisenCore
     {
+        /// <summary>
+        /// Returns the running WoW's in a WoWExe List
+        /// containing the logged in playername and Process object.
+        /// </summary>
+        /// <returns>A list containing all the runnign WoW processes</returns>
         public static List<WoWExe> GetRunningWoWs()
         {
             List<WoWExe> wows = new List<WoWExe>();
@@ -36,6 +37,12 @@ namespace AmeisenCore
             return wows;
         }
 
+        /// <summary>
+        /// Move the Player to the given x, y and z coordinates.
+        /// </summary>
+        /// <param name="x">x coordinate</param>
+        /// <param name="y">y coordinate</param>
+        /// <param name="z">z coordinate</param>
         public static void MovePlayerToXYZ(float x, float y, float z)
         {
             if (AmeisenManager.GetInstance().GetMe().posX != x && AmeisenManager.GetInstance().GetMe().posY != y && AmeisenManager.GetInstance().GetMe().posZ != z)
@@ -44,24 +51,71 @@ namespace AmeisenCore
             }
         }
 
+        /// <summary>
+        /// Move the player to the given guid npc, object or whatever and iteract with it.
+        /// </summary>
+        /// <param name="x">x coordinate</param>
+        /// <param name="y">y coordinate</param>
+        /// <param name="z">z coordinate</param>
+        /// <param name="guid">guid of the entity</param>
         public static void InteractWithGUID(float x, float y, float z, UInt64 guid)
         {
             AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmGUID, guid);
             WriteXYZToMemory(x, y, z, 0x5);
         }
 
+        /// <summary>
+        /// Move the player to this npc or player and attack it.
+        /// </summary>
+        /// <param name="x">x coordinate</param>
+        /// <param name="y">y coordinate</param>
+        /// <param name="z">z coordinate</param>
+        /// <param name="guid">guid of the entitiy to attack</param>
         public static void AttackGUID(float x, float y, float z, UInt64 guid)
         {
             AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmGUID, guid);
             WriteXYZToMemory(x, y, z, 0xA);
         }
 
+        /// <summary>
+        /// Move the player to an object and loot it.
+        /// </summary>
+        /// <param name="x">x coordinate</param>
+        /// <param name="y">y coordinate</param>
+        /// <param name="z">z coordinate</param>
+        /// <param name="guid">guid of the entity to loot</param>
         public static void LootGUID(float x, float y, float z, UInt64 guid)
         {
             AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmGUID, guid);
             WriteXYZToMemory(x, y, z, 0x6);
         }
 
+        /// <summary>
+        /// Write the coordinates and action to the memory.
+        /// </summary>
+        /// <param name="x">x coordinate</param>
+        /// <param name="y">y coordinate</param>
+        /// <param name="z">z coordinate</param>
+        /// <param name="action">0x4 = move
+        /// 0x5 = interact
+        /// 0x6 = loot
+        /// 0xA = attack</param>
+        private static void WriteXYZToMemory(float x, float y, float z, int action)
+        {
+            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmX, x);
+            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmY, y);
+            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmZ, z);
+            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmAction, action);
+            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmDistance, 1.5f);
+        }
+
+        /// <summary>
+        /// Execute the given LUA command inside WoW to
+        /// for example switch targets.
+        /// 
+        /// !!! W.I.P !!!
+        /// </summary>
+        /// <param name="command">lua command to run</param>
         public static void LUADoString(string command)
         {
             /*RemoteAllocation remoteAllocation = AmeisenManager.GetInstance().GetMemorySharp().Memory.Allocate(Encoding.UTF8.GetBytes(command).Length + 1);
@@ -84,15 +138,12 @@ namespace AmeisenCore
             AmeisenManager.GetInstance().GetMemorySharp().Assembly.InjectAndExecute(asm);*/
         }
 
-        private static void WriteXYZToMemory(float x, float y, float z, int action)
-        {
-            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmX, x);
-            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmY, y);
-            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmZ, z);
-            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmAction, action);
-            AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmDistance, 1.5f);
-        }
-
+        /// <summary>
+        /// Run through the WoWObjectManager and find the BaseAdress
+        /// corresponding to the given GUID
+        /// </summary>
+        /// <param name="guid">guid to search for</param>
+        /// <returns>BaseAdress of the WoWObject</returns>
         private static int GetMemLocByGUID(UInt64 guid)
         {
             int currentObjectManager = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>(AmeisenOffsets.WoWOffsets.currentClientConnection);
@@ -119,6 +170,11 @@ namespace AmeisenCore
             return 0;
         }
 
+        /// <summary>
+        /// Get any NPC's name by its BaseAdress
+        /// </summary>
+        /// <param name="objBase">BaseAdress of the npc to search the name for</param>
+        /// <returns>name of the npc</returns>
         private static string GetMobNameFromBase(int objBase)
         {
             int objName = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<int>((objBase + 0x964) - 0x400000);
@@ -127,6 +183,11 @@ namespace AmeisenCore
             return AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.ReadString((objName) - 0x400000, Encoding.ASCII);
         }
 
+        /// <summary>
+        /// Get a player's name from its GUID
+        /// </summary>
+        /// <param name="guid">player's GUID</param>
+        /// <returns>name of the player</returns>
         private static string GetPlayerNameFromGuid(UInt64 guid)
         {
             int mask, base_, shortGUID, testGUID, offset, current;
@@ -155,6 +216,10 @@ namespace AmeisenCore
             return AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.ReadString((current + AmeisenOffsets.WoWOffsets.nameString) - 0x400000, Encoding.ASCII);
         }
 
+        /// <summary>
+        /// Get the current state of the bots character including its target
+        /// </summary>
+        /// <returns>the bots character information</returns>
         public static Me GetMe()
         {
             Me me = (Me)ReadWoWObjectFromGUID(true, GetPlayerGUID());
@@ -172,6 +237,12 @@ namespace AmeisenCore
             return me;
         }
 
+        /// <summary>
+        /// Read WoWObject from WoW's memory by its GUID
+        /// </summary>
+        /// <param name="isMyself">only set to true if you want to read the bots char's target</param>
+        /// <param name="guid">guid of the object</param>
+        /// <returns>the WoWObject</returns>
         private static WoWObject ReadWoWObjectFromGUID(bool isMyself, UInt64 guid)
         {
             WoWObject wowObject;
@@ -253,6 +324,12 @@ namespace AmeisenCore
             return wowObject;
         }
 
+        /// <summary>
+        /// Try to get a partymember
+        /// </summary>
+        /// <param name="leaderGUID">guid of the party leader</param>
+        /// <param name="offset">offset to read the party member from</param>
+        /// <returns>a Target object containing the party member's deatils</returns>
         private static Target TryReadPartymember(UInt64 leaderGUID, int offset)
         {
             try
@@ -278,22 +355,38 @@ namespace AmeisenCore
             return new Target();
         }
 
+        /// <summary>
+        /// Get the bot#s char's GUID
+        /// </summary>
+        /// <returns>the GUID</returns>
         public static UInt64 GetPlayerGUID()
         {
             return AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<UInt64>(AmeisenOffsets.WoWOffsets.localPlayerGUID);
         }
 
+        /// <summary>
+        /// Get the bot's char's target's GUID
+        /// </summary>
+        /// <returns></returns>
         public static UInt64 GetTargetGUID()
         {
             return AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Read<UInt64>(AmeisenOffsets.WoWOffsets.localTargetGUID);
         }
 
+        /// <summary>
+        /// Let the bot jump.
+        /// 
+        /// This runs Async.
+        /// </summary>
         public static void CharacterJump()
         {
             Thread keyExecutorThread = new Thread(new ThreadStart(CharacterJumpAsync));
             keyExecutorThread.Start();
         }
 
+        /// <summary>
+        /// Press the spacebar once for 100ms
+        /// </summary>
         private static void CharacterJumpAsync()
         {
             RemoteWindow window = AmeisenManager.GetInstance().GetMemorySharp().Windows.MainWindow;

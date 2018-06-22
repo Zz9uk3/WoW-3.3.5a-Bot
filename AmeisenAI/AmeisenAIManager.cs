@@ -20,12 +20,17 @@ namespace AmeisenAI
         USE_SPELL,
         INTERACT,
     }
-
+    
     public class AmeisenAction
     {
         private AmeisenActionType actionType;
         private object actionParams;
 
+        /// <summary>
+        /// Class to describe an action for the Barin-Threads to process
+        /// </summary>
+        /// <param name="actionType">what the bot should do</param>
+        /// <param name="actionParams">parameters for the action</param>
         public AmeisenAction(AmeisenActionType actionType, object actionParams)
         {
             this.actionType = actionType;
@@ -57,6 +62,11 @@ namespace AmeisenAI
             return i;
         }
 
+        /// <summary>
+        /// This runs on the Brain-Threads which are constantly processing
+        /// the queue of actions that the bot has to do.
+        /// </summary>
+        /// <param name="threadID">id to identify the thread</param>
         private void WorkActions(UInt64 threadID)
         {
             while (aiActive)
@@ -109,6 +119,10 @@ namespace AmeisenAI
             }
         }
 
+        /// <summary>
+        /// Call this to start our bots "brain" and get things up and running inside the bot.
+        /// </summary>
+        /// <param name="threadCount">how many "Brain-Thread's" should our bot get</param>
         public void StartAI(UInt64 threadCount)
         {
             if (!aiActive)
@@ -125,6 +139,9 @@ namespace AmeisenAI
             }
         }
 
+        /// <summary>
+        /// Stop the bots "brain" it won't process actions if its stopped.
+        /// </summary>
         public void StopAI()
         {
             if (aiActive)
@@ -134,11 +151,19 @@ namespace AmeisenAI
             }
         }
 
+        /// <summary>
+        /// Add an action for the bot to do.
+        /// </summary>
+        /// <param name="action">Action you want the bot to do</param>
         public void AddActionToQueue(AmeisenAction action)
         {
             actionQueue.Enqueue(action);
         }
 
+        /// <summary>
+        /// Get all the actions currently waiting to get processed.
+        /// </summary>
+        /// <returns>list of actions in the queue</returns>
         public List<AmeisenAction> GetQueueItems()
         {
             List<AmeisenAction> actions = new List<AmeisenAction>();
@@ -147,11 +172,19 @@ namespace AmeisenAI
             return actions;
         }
 
+        /// <summary>
+        /// Get the active running threads
+        /// </summary>
+        /// <returns>active threads</returns>
         public int GetActiveThreadCount()
         {
             return aiWorkers.Count;
         }
 
+        /// <summary>
+        /// Get the busy threads currently working on an action
+        /// </summary>
+        /// <returns>busy threads</returns>
         public int GetBusyThreadCount()
         {
             int bThreads = 0;

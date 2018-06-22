@@ -26,17 +26,23 @@ namespace AmeisenCore
             return i;
         }
 
+        /// <summary>
+        /// Attach the manager to the given WoW Process to be able to read and write memory etc.
+        /// </summary>
+        /// <param name="p">wow process object</param>
         public void AttachManager(Process p)
         {
             wowProcess = p;
             memorySharp = new MemorySharp(p);
             isAttached = true;
-
-
-            Console.WriteLine("Attached to WoW...");
+            
             me = AmeisenCore.GetMe();
         }
 
+        /// <summary>
+        /// Get current MemorySharp
+        /// </summary>
+        /// <returns>memorysharp</returns>
         public MemorySharp GetMemorySharp()
         {
             if (isAttached)
@@ -45,6 +51,10 @@ namespace AmeisenCore
                 throw new Exception("Manager is not attached to any WoW...");
         }
 
+        /// <summary>
+        /// Get our char's stats
+        /// </summary>
+        /// <returns>char's stats</returns>
         public Me GetMe()
         {
             if (isAttached)
@@ -53,6 +63,11 @@ namespace AmeisenCore
                 throw new Exception("Manager is not attached to any WoW...");
         }
 
+        /// <summary>
+        /// Refresh our bot's stats, you can get the stats by calling GetMe().
+        /// 
+        /// This runs Async.
+        /// </summary>
         public void RefreshMe()
         {
             if (isAttached)
