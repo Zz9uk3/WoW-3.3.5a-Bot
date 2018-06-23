@@ -20,7 +20,7 @@ using System.Windows.Threading;
 namespace AmeisenBotGUI
 {
     /// <summary>
-    /// UInt64eraktionslogik für mainscreenForm.xaml
+    /// Interaktionslogik für mainscreenForm.xaml
     /// </summary>
     public partial class mainscreenForm : Window
     {
