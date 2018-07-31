@@ -136,5 +136,18 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>
         </Button>
+        <Button x:Name="buttonTest" Content="GetFreeBagCount" HorizontalAlignment="Left" Margin="359,281,0,0" VerticalAlignment="Top" Width="127" Background="{x:Null}" BorderThickness="2" Click="buttonTest_Click">
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+        </Button>
+        <Label x:Name="labelFreeBagSlots" Content="Label" HorizontalAlignment="Left" Margin="359,259,0,0" VerticalAlignment="Top">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Label.Foreground>
+        </Label>
     </Grid>
 </Window>

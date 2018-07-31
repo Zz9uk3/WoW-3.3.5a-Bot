@@ -165,5 +165,10 @@ namespace AmeisenBotGUI
         {
             WindowState = WindowState.Minimized;
         }
+
+        private void buttonTest_Click(object sender, RoutedEventArgs e)
+        {
+            labelFreeBagSlots.Content = "Free Slots:" + AmeisenCore.AmeisenCore.GetContainerNumFreeSlots();
+        }
     }
 }

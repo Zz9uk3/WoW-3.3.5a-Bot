@@ -45,9 +45,13 @@ namespace AmeisenOffsets
 
         public static int FrameScriptExecute = 0x819210;
 
-        public static int pDevicePtr1 = 0xC5DF88;
-        public static int pDevicePtr2 = 0x397C;
+        public static int devicePtr1 = 0xC5DF88;
+        public static int devicePtr2 = 0x397C;
         public static int endScene = 0xA8;
+
+        public static int clientObjectManagerGetActivePlayerObject = 0x4038F0;
+        public static int frameScriptGetLocalizedText = 0x7225E0;
+
         public static int LuaDoString = 0x819210;
         public static int LuaGetLocalizedText = 0x7225E0;
     }

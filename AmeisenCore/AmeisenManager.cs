@@ -10,10 +10,11 @@ namespace AmeisenCore
     {
         private static AmeisenManager i;
 
-        private bool isAttached;
+        private bool isAttached, isHooked;
 
         private Process wowProcess;
         private MemorySharp memorySharp;
+        private AmeisenHook ameisenHook;
 
         private Me me;
 
@@ -35,7 +36,10 @@ namespace AmeisenCore
             wowProcess = p;
             memorySharp = new MemorySharp(p);
             isAttached = true;
-            
+
+            ameisenHook = new AmeisenHook();
+            isHooked = ameisenHook.isHooked;
+
             me = AmeisenCore.GetMe();
         }
 
@@ -49,6 +53,18 @@ namespace AmeisenCore
                 return memorySharp;
             else
                 throw new Exception("Manager is not attached to any WoW...");
+        }
+
+        /// <summary>
+        /// Get current AmeisenHook
+        /// </summary>
+        /// <returns>memorysharp</returns>
+        public AmeisenHook GetAmeisenHook()
+        {
+            if (isHooked)
+                return ameisenHook;
+            else
+                throw new Exception("Manager is not hooked to any WoW...");
         }
 
         /// <summary>

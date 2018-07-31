@@ -7,6 +7,7 @@ using AmeisenCore.Objects;
 using Binarysharp.MemoryManagement.Native;
 using System.Threading;
 using Binarysharp.MemoryManagement.Windows;
+using Binarysharp.MemoryManagement.Memory;
 
 namespace AmeisenCore
 {
@@ -109,6 +110,12 @@ namespace AmeisenCore
             AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.Write(AmeisenOffsets.WoWOffsets.ctmDistance, 1.5f);
         }
 
+        public static int GetContainerNumFreeSlots()
+        {
+            LUADoString("freeslots = GetContainerNumFreeSlots(0) + GetContainerNumFreeSlots(1) + GetContainerNumFreeSlots(2) + GetContainerNumFreeSlots(3) + GetContainerNumFreeSlots(4)");
+            return Convert.ToInt32(GetLocalizedText("freeslots"));
+        }
+
         /// <summary>
         /// Execute the given LUA command inside WoW to
         /// for example switch targets.
@@ -118,24 +125,49 @@ namespace AmeisenCore
         /// <param name="command">lua command to run</param>
         public static void LUADoString(string command)
         {
-            /*RemoteAllocation remoteAllocation = AmeisenManager.GetInstance().GetMemorySharp().Memory.Allocate(Encoding.UTF8.GetBytes(command).Length + 1);
-            remoteAllocation.WriteString(command);
+            RemoteAllocation argCC = AmeisenManager.GetInstance().GetMemorySharp().Memory.Allocate(Encoding.UTF8.GetBytes(command).Length + 1);
+            AmeisenManager.GetInstance().GetMemorySharp().Write<byte>(argCC.BaseAddress, Encoding.UTF8.GetBytes(command));
 
-            int wowBase = AmeisenManager.GetInstance().GetMemorySharp().Modules.MainModule.BaseAddress.ToInt32();
-            IntPtr argCodecave = remoteAllocation.BaseAddress;
-
-            string[] asm = new string[]{
-                "mov eax, " + (argCodecave + wowBase),
+            string[] asm = new string[]
+            {
+                "mov eax, " + argCC.BaseAddress,
                 "push 0",
                 "push eax",
                 "push eax",
-                "mov eax, " + ((uint)AmeisenOffsets.WoWOffsets.LuaDoString),
+                "mov eax, " + AmeisenOffsets.WoWOffsets.LuaDoString,
                 "call eax",
                 "add esp, 0xC",
-                "retn"
+                "retn",
             };
 
-            AmeisenManager.GetInstance().GetMemorySharp().Assembly.InjectAndExecute(asm);*/
+            AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm);
+
+            argCC.Release();
+        }
+
+        /// <summary>
+        /// Get Localized Text for command
+        /// 
+        /// !!! W.I.P !!!
+        /// </summary>
+        /// <param name="command">lua command to run</param>
+        public static string GetLocalizedText(string command)
+        {
+            RemoteAllocation argCC = AmeisenManager.GetInstance().GetMemorySharp().Memory.Allocate(Encoding.UTF8.GetBytes(command).Length + 1);            
+            AmeisenManager.GetInstance().GetMemorySharp().Write<byte>(argCC.BaseAddress, Encoding.UTF8.GetBytes(command));
+
+            string[] asm = new string[]
+            {
+            "call " + AmeisenOffsets.WoWOffsets.clientObjectManagerGetActivePlayerObject,
+            "mov ecx, eax",
+            "push -1",
+            "mov edx, " + argCC.BaseAddress + "",
+            "push edx",
+            "call " + AmeisenOffsets.WoWOffsets.frameScriptGetLocalizedText,
+            "retn",
+            };
+            
+            return Encoding.ASCII.GetString(AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm)); ;
         }
 
         /// <summary>
