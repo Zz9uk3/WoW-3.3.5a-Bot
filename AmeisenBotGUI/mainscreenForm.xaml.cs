@@ -40,10 +40,8 @@ namespace AmeisenBotGUI
 
             uiUpdateTimer = new DispatcherTimer();
             uiUpdateTimer.Tick += new EventHandler(uiUpdateTimer_Tick);
-            uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
+            uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, AmeisenSettings.GetInstance().settings.dataRefreshRate);
             uiUpdateTimer.Start();
-
-            AmeisenAIManager.GetInstance().StartAI(4);
         }
 
         private void uiUpdateTimer_Tick(object sender, EventArgs e)
@@ -156,6 +154,16 @@ namespace AmeisenBotGUI
         private void mainscreen_MouseDown(object sender, MouseButtonEventArgs e)
         {
             DragMove();
+        }
+
+        private void buttonSettings_Click(object sender, RoutedEventArgs e)
+        {
+            new SettingsWindow().ShowDialog();
+        }
+
+        private void buttonMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
         }
     }
 }

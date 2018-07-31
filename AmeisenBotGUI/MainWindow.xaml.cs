@@ -47,6 +47,8 @@ namespace AmeisenBotGUI
         {
             AmeisenManager.GetInstance().AttachManager(((WoWExe)comboBoxWoWs.SelectedItem).process);
 
+            AmeisenSettings.GetInstance().LoadFromFile(((WoWExe)comboBoxWoWs.SelectedItem).characterName);
+
             new mainscreenForm((WoWExe)comboBoxWoWs.SelectedItem).Show();
             Close();
         }

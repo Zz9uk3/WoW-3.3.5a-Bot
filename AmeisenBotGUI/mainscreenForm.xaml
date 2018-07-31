@@ -5,9 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AmeisenBotGUI"
         mc:Ignorable="d"
-        Title="AmeisenBot - " Height="400" Width="500" Loaded="mainscreen_Loaded" Background="#FF303030" WindowStyle="None" ResizeMode="NoResize" MouseDown="mainscreen_MouseDown" Icon="Icon.ico">
+        Title="AmeisenBot - " Height="400" Width="500" Loaded="mainscreen_Loaded" Background="#FF303030" WindowStyle="None" ResizeMode="NoResize" MouseDown="mainscreen_MouseDown" Icon="Icon.ico" BorderBrush="#FFFFA200" BorderThickness="2">
     <Grid>
-        <Rectangle Stroke="#FFFFA200" StrokeThickness="2" Margin="-2,0"/>
         <ProgressBar x:Name="progressBarHPTarget" HorizontalAlignment="Left" Height="26" Margin="200,41,0,0" VerticalAlignment="Top" Width="164" Foreground="#FFB7FF60" FontFamily="Consolas" BorderBrush="#FFFFA200" Background="{x:Null}" BorderThickness="2"/>
         <ProgressBar x:Name="progressBarEnergyTarget" HorizontalAlignment="Left" Height="26" Margin="200,72,0,0" VerticalAlignment="Top" Width="164" Foreground="#FFFF6060" Background="{x:Null}" FontFamily="Consolas" BorderBrush="#FFFFA200" BorderThickness="2"/>
         <ProgressBar x:Name="progressBarHP" HorizontalAlignment="Left" Height="26" Margin="10,41,0,0" VerticalAlignment="Top" Width="164" Foreground="#FFB7FF60" FontFamily="Consolas" Background="{x:Null}" BorderBrush="#FFFFA200" BorderThickness="2"/>
@@ -25,12 +24,14 @@
         <Label x:Name="labelDebugInfo" Content="- DebugInfo -" HorizontalAlignment="Left" Margin="10,235,0,0" VerticalAlignment="Top" FontFamily="Consolas" Foreground="White" Visibility="Hidden"/>
         <Label x:Name="labelDebugInfoTarget" Content="- DebugInfo -" HorizontalAlignment="Left" Margin="200,235,0,0" VerticalAlignment="Top" FontFamily="Consolas" Foreground="White" Visibility="Hidden"/>
         <Button x:Name="buttonMoveToTarget" Content="Interact with Target" Margin="0,0,10,10" Click="buttonMoveToTarget_Click" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="127" BorderThickness="2" BorderBrush="#FFFFA200" Background="{x:Null}" Foreground="White"/>
-        <Button x:Name="buttonExit" Content="X" Margin="0,0,-2,0" VerticalAlignment="Top" FontFamily="Consolas" Click="Button_Click" FontWeight="Bold" Background="{x:Null}" BorderBrush="#FFFFA200" Foreground="White" BorderThickness="2" HorizontalAlignment="Right" Width="20"/>
+        <Button x:Name="buttonExit" Content="X" Margin="0,-2,-2,0" VerticalAlignment="Top" FontFamily="Consolas" Click="Button_Click" FontWeight="Bold" Background="{x:Null}" BorderBrush="#FFFFA200" Foreground="White" BorderThickness="2" HorizontalAlignment="Right" Width="20"/>
         <Label x:Name="labelDistance" Content="Distance:" HorizontalAlignment="Left" Margin="194,103,0,0" VerticalAlignment="Top" Foreground="White" Background="{x:Null}"/>
-        <CheckBox x:Name="checkBoxFollowGroupLeader" Content="Follow Groupleader" Margin="0,0,10,45" Background="{x:Null}" BorderBrush="#FFFFA200" Foreground="White" HorizontalAlignment="Right" Width="127" Height="15" VerticalAlignment="Bottom"/>
-        <CheckBox x:Name="checkBoxAssistParty" Content="Assist Party" Margin="0,0,10,65" BorderBrush="#FFFFA200" Background="{x:Null}" Foreground="White" Height="15" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="127"/>
-        <ListBox x:Name="listboxCurrentQueue" Margin="10,0,0,10" Background="{x:Null}" BorderBrush="#FFFFA200" Foreground="White" BorderThickness="2" HorizontalAlignment="Left" Width="348" Height="105" VerticalAlignment="Bottom"/>
+        <CheckBox x:Name="checkBoxFollowGroupLeader" Content="Follow Groupleader" Margin="0,0,10,45" Background="{x:Null}" BorderBrush="#FFFFA200" Foreground="White" HorizontalAlignment="Right" Width="127" Height="15" VerticalAlignment="Bottom" BorderThickness="2"/>
+        <CheckBox x:Name="checkBoxAssistParty" Content="Assist Party" Margin="0,0,10,65" BorderBrush="#FFFFA200" Background="{x:Null}" Foreground="White" Height="15" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="127" BorderThickness="2"/>
+        <ListBox x:Name="listboxCurrentQueue" Margin="10,0,0,10" Background="{x:Null}" BorderBrush="#FFFFA200" Foreground="White" BorderThickness="2" HorizontalAlignment="Left" Width="269" Height="105" VerticalAlignment="Bottom"/>
         <Label x:Name="labelThreadsActive" Content="Threads: 0/0" HorizontalAlignment="Left" Margin="10,244,0,0" VerticalAlignment="Top" Foreground="White" Background="{x:Null}"/>
-        <ProgressBar x:Name="progressBarBusyAIThreads" HorizontalAlignment="Left" Height="10" Margin="10,270,0,0" VerticalAlignment="Top" Width="117" BorderBrush="#FFFFA200" Background="{x:Null}" Foreground="#FFFF3A3A"/>
+        <ProgressBar x:Name="progressBarBusyAIThreads" HorizontalAlignment="Left" Height="10" Margin="10,270,0,0" VerticalAlignment="Top" Width="117" BorderBrush="#FFFFA200" Background="{x:Null}" Foreground="#FFFF3A3A" BorderThickness="2"/>
+        <Button x:Name="buttonSettings" Content="🛠" HorizontalAlignment="Left" Margin="438,41,-2,0" VerticalAlignment="Top" Width="60" Height="55" Click="buttonSettings_Click" BorderBrush="#FFFFA200" Background="{x:Null}" Foreground="White" FontSize="32" BorderThickness="2"/>
+        <Button x:Name="buttonMinimize" Content="_" Margin="0,-2,16,0" VerticalAlignment="Top" FontFamily="Consolas" FontWeight="Bold" Background="{x:Null}" BorderBrush="#FFFFA200" Foreground="White" BorderThickness="2" HorizontalAlignment="Right" Width="20"/>
     </Grid>
 </Window>

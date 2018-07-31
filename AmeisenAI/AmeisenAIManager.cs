@@ -53,6 +53,8 @@ namespace AmeisenAI
         {
             actionQueue = new ConcurrentQueue<AmeisenAction>();
             aiWorkers = new List<Thread>();
+
+            StartAI(AmeisenSettings.GetInstance().settings.botMaxThreads);
         }
 
         public static AmeisenAIManager GetInstance()
@@ -67,7 +69,7 @@ namespace AmeisenAI
         /// the queue of actions that the bot has to do.
         /// </summary>
         /// <param name="threadID">id to identify the thread</param>
-        private void WorkActions(UInt64 threadID)
+        private void WorkActions(int threadID)
         {
             while (aiActive)
             {
@@ -123,13 +125,13 @@ namespace AmeisenAI
         /// Call this to start our bots "brain" and get things up and running inside the bot.
         /// </summary>
         /// <param name="threadCount">how many "Brain-Thread's" should our bot get</param>
-        public void StartAI(UInt64 threadCount)
+        public void StartAI(int threadCount)
         {
             if (!aiActive)
             {
                 busyThreads = new bool[threadCount];
 
-                for (UInt64 i = 0; i < threadCount; i++)
+                for (int i = 0; i < threadCount; i++)
                     aiWorkers.Add(new Thread(() => WorkActions(i)));
 
                 foreach (Thread t in aiWorkers)
