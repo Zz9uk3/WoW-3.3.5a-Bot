@@ -38,8 +38,7 @@ namespace AmeisenCore
             else
             {
                 settings = new Settings();
-                settings.botMaxThreads = 2;
-                settings.dataRefreshRate = 250;
+
                 SaveToFile(filename);
             }
 
@@ -48,7 +47,11 @@ namespace AmeisenCore
     }
 
     public class Settings{
-        public int dataRefreshRate;
-        public int botMaxThreads;
+        public int dataRefreshRate = 250;
+        public int botMaxThreads = 2;
+
+        public string accentColor = "#FFFFA200";
+        public string fontColor = "#FFFFFFFF";
+        public string backgroundColor = "#FF303030";
     }
 }
