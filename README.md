@@ -15,3 +15,9 @@ A bot written in (at this time) C# only for World of Warcraft WotLK (3.3.5a 1234
 **AmeisenServer**: This thing is planned to be a server for the bots to communicate to each other.
 
 **AmeisenAI**: The bots "Brain" to work on its Queue and make decisions etc.
+
+## Screenshots
+
+![alt text](https://github.com/Jnnshschl/WoW-3.3.5a-Bot/blob/master/images/charselect.PNG?raw=true "Character selection")
+
+![alt text](https://github.com/Jnnshschl/WoW-3.3.5a-Bot/blob/master/images/mainscreen.PNG?raw=true "Mainscreen")
