@@ -30,7 +30,7 @@
         <CheckBox x:Name="checkBoxFollowGroupLeader" Content="Follow Groupleader" Margin="0,0,10,45" Background="{x:Null}" BorderBrush="#FFFFA200" Foreground="White" HorizontalAlignment="Right" Width="127" Height="15" VerticalAlignment="Bottom"/>
         <CheckBox x:Name="checkBoxAssistParty" Content="Assist Party" Margin="0,0,10,65" BorderBrush="#FFFFA200" Background="{x:Null}" Foreground="White" Height="15" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="127"/>
         <ListBox x:Name="listboxCurrentQueue" Margin="10,0,0,10" Background="{x:Null}" BorderBrush="#FFFFA200" Foreground="White" BorderThickness="2" HorizontalAlignment="Left" Width="348" Height="105" VerticalAlignment="Bottom"/>
-        <Label x:Name="labelThreadsActive" Content="Busy AI Threads: 0/0" HorizontalAlignment="Left" Margin="10,244,0,0" VerticalAlignment="Top" Foreground="White" Background="{x:Null}"/>
+        <Label x:Name="labelThreadsActive" Content="Threads: 0/0" HorizontalAlignment="Left" Margin="10,244,0,0" VerticalAlignment="Top" Foreground="White" Background="{x:Null}"/>
         <ProgressBar x:Name="progressBarBusyAIThreads" HorizontalAlignment="Left" Height="10" Margin="10,270,0,0" VerticalAlignment="Top" Width="117" BorderBrush="#FFFFA200" Background="{x:Null}" Foreground="#FFFF3A3A"/>
     </Grid>
 </Window>

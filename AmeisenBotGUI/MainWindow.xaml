@@ -11,7 +11,7 @@
         <Button x:Name="buttonRefresh" Content="↻" HorizontalAlignment="Left" Margin="377,10,0,0" VerticalAlignment="Top" Width="50" Height="33" FontSize="20" Click="buttonRefresh_Click" Background="{x:Null}" BorderBrush="#FFFFA200" BorderThickness="2" Foreground="White" FontWeight="Bold" FontFamily="Arial" IsManipulationEnabled="True"/>
         <Button x:Name="buttonGo" Content="➤" HorizontalAlignment="Left" Margin="432,10,0,0" VerticalAlignment="Top" Width="75" Height="33" FontSize="20" Click="buttonGo_Click" Background="{x:Null}" BorderBrush="#FFFFA200" Foreground="White" BorderThickness="2"/>
         <Rectangle Fill="#FFFFA200" HorizontalAlignment="Left" Height="2" VerticalAlignment="Top" Width="525"/>
-        <Rectangle Fill="#FFFFA200" HorizontalAlignment="Left" Height="2" VerticalAlignment="Top" Width="525" Margin="0,51,0,0"/>
+        <Rectangle Fill="#FFFFA200" HorizontalAlignment="Left" Height="2" VerticalAlignment="Top" Width="525" Margin="0,52,0,0"/>
 
     </Grid>
 </Window>
