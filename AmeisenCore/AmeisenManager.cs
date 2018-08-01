@@ -54,6 +54,7 @@ namespace AmeisenCore
 
             // Hook EndScene LMAO
             ameisenHook = new AmeisenHook();
+            ameisenHook.Hook();
             isHooked = ameisenHook.isHooked;
 
             RefreshMeAsync();

@@ -19,7 +19,7 @@ namespace AmeisenAI
         TARGET_MYSELF,
         ATTACK_TARGET,
         USE_SPELL,
-        INTERACT,
+        INTERACT_TARGET,
     }
     
     /// <summary>
@@ -110,7 +110,7 @@ namespace AmeisenAI
                                 FollowGroupLeader((double)currentAction.GetActionParams());
                                 break;
 
-                            case AmeisenActionType.INTERACT:
+                            case AmeisenActionType.INTERACT_TARGET:
                                 InteractWithTarget();
                                 break;
 

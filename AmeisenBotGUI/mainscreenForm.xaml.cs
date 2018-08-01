@@ -39,7 +39,7 @@ namespace AmeisenBotGUI
             if (!uiMode)
             {
                 // Fire up the AI
-                AmeisenAIManager.GetInstance().StartAI(AmeisenSettings.GetInstance().settings.dataRefreshRate);
+                AmeisenAIManager.GetInstance().StartAI(AmeisenSettings.GetInstance().settings.botMaxThreads);
 
                 Title = "AmeisenBot - " + wowExe.characterName + " [" + wowExe.process.Id + "]";
                 UpdateUI();
@@ -54,6 +54,16 @@ namespace AmeisenBotGUI
         private void ButtonMoveToTarget_Click(object sender, RoutedEventArgs e)
         {
             AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.LOOT_TARGET, null));
+        }
+
+        private void buttonAttackTarget_Click(object sender, RoutedEventArgs e)
+        {
+            AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.ATTACK_TARGET, null));
+        }
+
+        private void buttonMoveInteractTarget_Click(object sender, RoutedEventArgs e)
+        {
+            AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.INTERACT_TARGET, null));
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

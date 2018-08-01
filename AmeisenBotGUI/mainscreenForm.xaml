@@ -65,7 +65,7 @@
         </Label>
         <Label x:Name="labelDebugInfo" Content="- DebugInfo -" HorizontalAlignment="Left" Margin="10,235,0,0" VerticalAlignment="Top" FontFamily="Consolas" Foreground="White" Visibility="Hidden"/>
         <Label x:Name="labelDebugInfoTarget" Content="- DebugInfo -" HorizontalAlignment="Left" Margin="200,235,0,0" VerticalAlignment="Top" FontFamily="Consolas" Foreground="White" Visibility="Hidden"/>
-        <Button x:Name="buttonMoveToTarget" Content="Interact with Target" Margin="0,0,10,10" Click="ButtonMoveToTarget_Click" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="127" BorderThickness="2" Background="{x:Null}">
+        <Button x:Name="buttonMoveToTarget" Content="Move to Target" Margin="0,0,10,85" Click="ButtonMoveToTarget_Click" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="127" BorderThickness="2" Background="{x:Null}">
             <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>
@@ -86,7 +86,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
         </Label>
-        <CheckBox x:Name="checkBoxFollowGroupLeader" Content="Follow Groupleader" Margin="0,0,10,45" Background="White" HorizontalAlignment="Right" Width="127" Height="20" VerticalAlignment="Bottom" BorderThickness="2">
+        <CheckBox x:Name="checkBoxFollowGroupLeader" Content="Follow Groupleader" Margin="0,0,10,242" Background="White" HorizontalAlignment="Right" Width="127" Height="20" VerticalAlignment="Bottom" BorderThickness="2">
             <CheckBox.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </CheckBox.Foreground>
@@ -128,7 +128,7 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>
         </Button>
-        <Button x:Name="buttonTest" Content="GetFreeBagCount" HorizontalAlignment="Left" Margin="359,281,0,0" VerticalAlignment="Top" Width="127" Background="{x:Null}" BorderThickness="2" Click="ButtonTest_Click">
+        <Button x:Name="buttonTest" Content="GetFreeBagCount" HorizontalAlignment="Left" Margin="359,190,0,0" VerticalAlignment="Top" Width="127" Background="{x:Null}" BorderThickness="2" Click="ButtonTest_Click">
             <Button.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Button.Foreground>
@@ -136,10 +136,26 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>
         </Button>
-        <Label x:Name="labelFreeBagSlots" Content="Label" HorizontalAlignment="Left" Margin="359,259,0,0" VerticalAlignment="Top">
+        <Label x:Name="labelFreeBagSlots" Content="Label" HorizontalAlignment="Left" Margin="359,159,0,0" VerticalAlignment="Top">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
         </Label>
+        <Button x:Name="buttonAttackTarget" Content="Attack Target" Margin="0,0,10,50" Click="buttonAttackTarget_Click" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="127" BorderThickness="2" Background="{x:Null}">
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+        </Button>
+        <Button x:Name="buttonMoveInteractTarget" Content="Interact with Target" Margin="0,0,10,15" Click="buttonMoveInteractTarget_Click" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="127" BorderThickness="2" Background="{x:Null}">
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+        </Button>
     </Grid>
 </Window>

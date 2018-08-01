@@ -31,16 +31,21 @@ namespace AmeisenCore
             lmao = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(ayy);
             endScene = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(lmao + AmeisenOffsets.WoWOffsets.endScene);
 
+            if (AmeisenManager.GetInstance().GetBlackMagic().ReadByte(endScene) == 0xE9)
+            {
+                UnHook();
+            }
+
             if (AmeisenManager.GetInstance().GetBlackMagic().ReadByte(endScene) != 0xE9)
             {
                 isHooked = false;
 
                 injectedCodeAdress = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(2048);
-                injectionAdress = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(4);
-                returnInjectionAdress = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(4);
+                injectionAdress = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(0x4);
+                returnInjectionAdress = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(0x4);
 
                 // Clear dem memories
-                AmeisenManager.GetInstance().GetBlackMagic().WriteInt(injectedCodeAdress, 0);
+                AmeisenManager.GetInstance().GetBlackMagic().WriteInt(injectionAdress, 0);
                 AmeisenManager.GetInstance().GetBlackMagic().WriteInt(returnInjectionAdress, 0);
 
                 // EndScene -----------------------------------------------------------------------
@@ -48,10 +53,10 @@ namespace AmeisenCore
                 string[] asm = new string[]{
                     "pushad",
                     "pushfd",
-                    "mov eax, " + injectionAdress,
+                    "mov eax, [" + injectionAdress + "]",
                     "test eax, eax", // Check if there is code
                     "je @out", // If there is no code jump to @out
-                    "mov eax, " + injectionAdress,
+                    "mov eax, [" + injectionAdress + "]",
                     "call eax",
                     "mov [" + returnInjectionAdress + "], eax",
                     "mov edx, " + injectionAdress,
@@ -74,7 +79,7 @@ namespace AmeisenCore
                 // Injected end -------------------------------------------------------------------
 
                 AddASM(new string[]{
-                    "jmp " + endScene + 0x5
+                    "jmp " + (endScene + 5)
                 });
                 ClearAndInject(injectedCodeAdress + (uint)asmLenght + 0x5);
 
@@ -157,8 +162,8 @@ namespace AmeisenCore
 
         private void ClearAndInject(uint address)
         {
-            AmeisenManager.GetInstance().GetBlackMagic().Asm.Inject(address);
             AmeisenManager.GetInstance().GetBlackMagic().Asm.Clear();
+            AmeisenManager.GetInstance().GetBlackMagic().Asm.Inject(address);
         }
 
         private void AddASM(string[] asm)
