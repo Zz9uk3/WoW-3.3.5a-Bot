@@ -84,7 +84,7 @@ namespace AmeisenBotGUI
 
         private void ButtonTest_Click(object sender, RoutedEventArgs e)
         {
-            labelFreeBagSlots.Content = "Free Slots:" + AmeisenCore.AmeisenCore.GetContainerNumFreeSlots();
+            AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.TARGET_MYSELF, null));
         }
 
         private void UIUpdateTimer_Tick(object sender, EventArgs e)

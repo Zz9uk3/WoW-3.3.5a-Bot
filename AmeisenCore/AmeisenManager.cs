@@ -53,6 +53,7 @@ namespace AmeisenCore
             isAttached = true;
 
             // Hook EndScene LMAO
+            // TODO: Fix this piece of garbage
             // ameisenHook = new AmeisenHook();
             // isHooked = true;
 

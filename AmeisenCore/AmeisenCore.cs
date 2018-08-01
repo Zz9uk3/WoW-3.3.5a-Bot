@@ -245,7 +245,7 @@ namespace AmeisenCore
 
             current = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(playerBase + offset + 8);
             offset = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(playerBase + offset);
-            
+
             // Check for empty name
             if ((current & 0x1) == 0x1) { return ""; }
 
@@ -425,6 +425,26 @@ namespace AmeisenCore
         public static UInt64 GetTargetGUID()
         {
             return AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(AmeisenOffsets.WoWOffsets.localTargetGUID);
+        }
+
+        /// <summary>
+        /// Set the target by its GUID
+        /// </summary>
+        /// <returns></returns>
+        public static void TargetGUID(UInt64 guid)
+        {
+            Me me = AmeisenManager.GetInstance().GetMe();
+            InteractWithGUID(me.posX, me.posY, me.posZ, guid);
+        }
+
+        /// <summary>
+        /// Set the target by its GUID
+        /// </summary>
+        /// <returns></returns>
+        public static void TargetMyself()
+        {
+            Me me = AmeisenManager.GetInstance().GetMe();
+            InteractWithGUID(me.posX, me.posY, me.posZ, GetPlayerGUID());
         }
 
         /// <summary>

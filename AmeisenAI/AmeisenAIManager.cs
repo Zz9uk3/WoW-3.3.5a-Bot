@@ -123,11 +123,11 @@ namespace AmeisenAI
                                 break;
 
                             case AmeisenActionType.TARGET_MYSELF:
-                                AmeisenCore.AmeisenCore.LUADoString("/target player");
+                                AmeisenCore.AmeisenCore.TargetMyself();
                                 break;
 
                             case AmeisenActionType.TARGET_ENTITY:
-                                AmeisenCore.AmeisenCore.LUADoString("/target " + (string)currentAction.GetActionParams());
+                                AmeisenCore.AmeisenCore.TargetGUID((UInt64)currentAction.GetActionParams());
                                 break;
 
                             case AmeisenActionType.USE_SPELL:

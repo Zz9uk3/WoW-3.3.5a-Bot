@@ -107,7 +107,10 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
         </Label>
-        <ProgressBar x:Name="progressBarBusyAIThreads" HorizontalAlignment="Left" Height="10" Margin="10,270,0,0" VerticalAlignment="Top" Width="117" Background="{x:Null}" Foreground="#FFFF3A3A" BorderThickness="2">
+        <ProgressBar x:Name="progressBarBusyAIThreads" HorizontalAlignment="Left" Height="10" Margin="10,270,0,0" VerticalAlignment="Top" Width="117" Background="{x:Null}" BorderThickness="2">
+            <ProgressBar.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </ProgressBar.Foreground>
             <ProgressBar.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </ProgressBar.BorderBrush>
@@ -128,7 +131,8 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>
         </Button>
-        <Button x:Name="buttonTest" Content="GetFreeBagCount" HorizontalAlignment="Left" Margin="359,190,0,0" VerticalAlignment="Top" Width="127" Background="{x:Null}" BorderThickness="2" Click="ButtonTest_Click">
+        <Button x:Name="buttonTest" Content="DEBUG BUTTON
+                " HorizontalAlignment="Left" Margin="359,190,0,0" VerticalAlignment="Top" Width="127" Background="{x:Null}" BorderThickness="2" Click="ButtonTest_Click">
             <Button.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Button.Foreground>
@@ -136,7 +140,8 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>
         </Button>
-        <Label x:Name="labelFreeBagSlots" Content="Label" HorizontalAlignment="Left" Margin="359,159,0,0" VerticalAlignment="Top">
+        <Label x:Name="labelFreeBagSlots" Content="DEBUG OUTPUT
+               " HorizontalAlignment="Left" Margin="359,159,0,0" VerticalAlignment="Top">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
