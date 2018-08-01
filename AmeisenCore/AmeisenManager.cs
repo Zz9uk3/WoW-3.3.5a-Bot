@@ -53,9 +53,8 @@ namespace AmeisenCore
             isAttached = true;
 
             // Hook EndScene LMAO
-            ameisenHook = new AmeisenHook();
-            ameisenHook.Hook();
-            isHooked = ameisenHook.isHooked;
+            // ameisenHook = new AmeisenHook();
+            // isHooked = true;
 
             RefreshMeAsync();
         }

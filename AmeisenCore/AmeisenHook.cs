@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace AmeisenCore
 {
@@ -10,175 +11,141 @@ namespace AmeisenCore
     /// </summary>
     public class AmeisenHook
     {
-        uint injectedCodeAdress;
-        uint injectionAdress;
-        uint returnInjectionAdress;
+        uint injectedCodeAddress = 0;
+        uint injectionAddress = 0;
+        uint returnInjectionASM = 0;
+        byte[] originalEndSceneBytes;
 
-        uint device;
-        uint ayy;
-        uint lmao;
-        uint endScene;
+        bool threadHooked = false;
 
-        public bool isHooked;
+        public AmeisenHook()
+        {
+            Hook();
+        }
 
-        /// <summary>
-        /// Hook WoW's EndScene
-        /// </summary>
         public void Hook()
         {
-            device = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(AmeisenOffsets.WoWOffsets.devicePtr1);
-            ayy = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(device + AmeisenOffsets.WoWOffsets.devicePtr2);
-            lmao = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(ayy);
-            endScene = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(lmao + AmeisenOffsets.WoWOffsets.endScene);
-
-            if (AmeisenManager.GetInstance().GetBlackMagic().ReadByte(endScene) == 0xE9)
+            if (AmeisenManager.GetInstance().GetBlackMagic().IsProcessOpen)
             {
-                UnHook();
+                uint pDevice = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(AmeisenOffsets.WoWOffsets.devicePtr1);
+                uint pEnd = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(pDevice + AmeisenOffsets.WoWOffsets.devicePtr2);
+                uint pScene = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(pEnd);
+                uint pEndScene = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(pScene + AmeisenOffsets.WoWOffsets.endScene);
+
+                if (AmeisenManager.GetInstance().GetBlackMagic().ReadByte(pEndScene) == 0xE9 && (injectedCodeAddress == 0 || injectionAddress == 0))
+                {
+                    DisposeHooking();
+                }
+
+                if (AmeisenManager.GetInstance().GetBlackMagic().ReadByte(pEndScene) != 0xE9)
+                {
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("pushad");
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("pushfd");
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("mov eax, [" + injectionAddress + "]");
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("test eax, eax");
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("je @out");
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("mov eax, [" + injectionAddress + "]");
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("call eax");
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("mov [" + returnInjectionASM + "], eax");
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("mov edx, " + returnInjectionASM);
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("mov ecx, 0");
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("mov [edx], ecx");
+
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("@out:");
+
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("popfd");
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("popad");
+
+                    var sizeAsm = (uint)AmeisenManager.GetInstance().GetBlackMagic().Asm.Assemble().Length;
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.Inject(injectedCodeAddress);
+
+                    const int sizeJumpBack = 2;
+
+                    originalEndSceneBytes = AmeisenManager.GetInstance().GetBlackMagic().ReadBytes(pEndScene - 5, 7);
+
+                    AmeisenManager.GetInstance().GetBlackMagic().WriteBytes((uint)IntPtr.Add(new IntPtr(injectedCodeAddress), (int)sizeAsm), new[] { originalEndSceneBytes[5], originalEndSceneBytes[6] });
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.Clear();
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("jmp " + (pEndScene + sizeJumpBack));
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.Inject(injectedCodeAddress + sizeAsm + sizeJumpBack);
+
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.Clear();
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("@top:");
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("jmp " + injectedCodeAddress);
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("jmp @top");
+
+                    AmeisenManager.GetInstance().GetBlackMagic().Asm.Inject(pEndScene - 5);
+                }
+                threadHooked = true;
             }
 
-            if (AmeisenManager.GetInstance().GetBlackMagic().ReadByte(endScene) != 0xE9)
+        }
+
+        public void DisposeHooking()
+        {
+            uint pDevice = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(AmeisenOffsets.WoWOffsets.devicePtr1);
+            uint pEnd = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(pDevice + AmeisenOffsets.WoWOffsets.devicePtr2);
+            uint pScene = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(pEnd);
+            uint pEndScene = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(pScene + AmeisenOffsets.WoWOffsets.endScene);
+
+            if (AmeisenManager.GetInstance().GetBlackMagic().ReadByte(pEndScene) == 0xEB) // check if wow is already hooked and dispose Hook
             {
-                isHooked = false;
-
-                injectedCodeAdress = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(2048);
-                injectionAdress = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(0x4);
-                returnInjectionAdress = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(0x4);
-
-                // Clear dem memories
-                AmeisenManager.GetInstance().GetBlackMagic().WriteInt(injectionAdress, 0);
-                AmeisenManager.GetInstance().GetBlackMagic().WriteInt(returnInjectionAdress, 0);
-
-                // EndScene -----------------------------------------------------------------------
-
-                string[] asm = new string[]{
-                    "pushad",
-                    "pushfd",
-                    "mov eax, [" + injectionAdress + "]",
-                    "test eax, eax", // Check if there is code
-                    "je @out", // If there is no code jump to @out
-                    "mov eax, [" + injectionAdress + "]",
-                    "call eax",
-                    "mov [" + returnInjectionAdress + "], eax",
-                    "mov edx, " + injectionAdress,
-                    "mov ecx, 0",
-                    "mov [edx], ecx",
-                    "@out:",
-                    "popfd", // Cleanup
-                    "popad"
-                };
-
-                AddASM(asm);
-                int asmLenght = AmeisenManager.GetInstance().GetBlackMagic().Asm.Assemble().Length;
-                ClearAndInject(injectedCodeAdress);
-
-                // Original EndScene --------------------------------------------------------------
-
-                InsertOriginalEndScene();
-                ClearAndInject(injectedCodeAdress + (uint)asmLenght);
-
-                // Injected end -------------------------------------------------------------------
-
-                AddASM(new string[]{
-                    "jmp " + (endScene + 5)
-                });
-                ClearAndInject(injectedCodeAdress + (uint)asmLenght + 0x5);
-
-                // EndScene detour ----------------------------------------------------------------
-
-                AddASM(new string[]{
-                    "jmp " + injectedCodeAdress
-                });
-                ClearAndInject(endScene);
-
-                // Final clear --------------------------------------------------------------------
-
-                AmeisenManager.GetInstance().GetBlackMagic().Asm.Clear();
-                isHooked = true;
+                if (originalEndSceneBytes != null)
+                {
+                    // Restore original endscene:
+                    AmeisenManager.GetInstance().GetBlackMagic().WriteBytes(pEndScene - 5, originalEndSceneBytes);
+                }
             }
         }
 
-        /// <summary>
-        /// Restore Original EndScene state
-        /// </summary>
-        public void UnHook()
+        public byte[] InjectAndExecute(string[] asm, int returnLength = 0)
         {
-            if (!isHooked)
-            {
-                device = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(AmeisenOffsets.WoWOffsets.devicePtr1);
-                ayy = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(device + AmeisenOffsets.WoWOffsets.devicePtr2);
-                lmao = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(ayy);
-                endScene = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(lmao + AmeisenOffsets.WoWOffsets.endScene);
-            }
+            byte[] tempsByte = new byte[0];
+            AmeisenManager.GetInstance().GetBlackMagic().WriteInt(returnInjectionASM, 0);
 
-            if (AmeisenManager.GetInstance().GetBlackMagic().ReadByte(endScene) == 0xE9)
-            {
-                AmeisenManager.GetInstance().GetBlackMagic().Asm.Clear();
-                InsertOriginalEndScene();
-                AmeisenManager.GetInstance().GetBlackMagic().Asm.Inject(endScene);
-            }
-
-            AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(injectedCodeAdress);
-            AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(injectionAdress);
-            AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(returnInjectionAdress);
-        }
-
-        /// <summary>
-        /// Inject ASM to WoW and run this shit after EndScene function.
-        /// </summary>
-        /// <param name="asm">ASM to inject</param>
-        /// <returns>Bytes that were returned</returns>
-        public byte[] InjectAndExecute(string[] asm)
-        {
-            byte[] result;
-            byte buffer = new Byte();
-            List<byte> returnBytes = new List<byte>();
+            if (!AmeisenManager.GetInstance().GetBlackMagic().IsProcessOpen || !threadHooked) return tempsByte;
 
             AmeisenManager.GetInstance().GetBlackMagic().Asm.Clear();
-
-            foreach (string s in asm)
-                AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine(s);
-
-            int asmLenght = AmeisenManager.GetInstance().GetBlackMagic().Asm.Assemble().Length;
-            uint injectionAsmCC = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(asmLenght);
-
-            AmeisenManager.GetInstance().GetBlackMagic().Asm.Inject(injectionAsmCC);
-            AmeisenManager.GetInstance().GetBlackMagic().WriteUInt(injectionAdress, injectionAsmCC);
-
-            uint dwAddress = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(returnInjectionAdress);
-            buffer = AmeisenManager.GetInstance().GetBlackMagic().ReadByte(dwAddress);
-
-            while (buffer != 0)
+            foreach (var tempLineAsm in asm)
             {
-                returnBytes.Add(buffer);
-                dwAddress++;
-                buffer = AmeisenManager.GetInstance().GetBlackMagic().ReadByte(dwAddress);
+                AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine(tempLineAsm);
             }
-            result = returnBytes.ToArray();
 
-            AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(injectionAsmCC);
+            uint injectionAsmCodecave = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(AmeisenManager.GetInstance().GetBlackMagic().Asm.Assemble().Length);
 
-            return result;
-        }
+            try
+            {
+                AmeisenManager.GetInstance().GetBlackMagic().Asm.Inject(injectionAsmCodecave);
+                AmeisenManager.GetInstance().GetBlackMagic().WriteUInt(injectionAddress, injectionAsmCodecave);
 
-        private void ClearAndInject(uint address)
-        {
-            AmeisenManager.GetInstance().GetBlackMagic().Asm.Clear();
-            AmeisenManager.GetInstance().GetBlackMagic().Asm.Inject(address);
-        }
+                while (AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(injectionAddress) > 0)
+                {
+                    Thread.Sleep(5);
+                }
 
-        private void AddASM(string[] asm)
-        {
-            foreach (string s in asm)
-                AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine(s);
-        }
-
-        private void InsertOriginalEndScene()
-        {
-            AddASM(new string[]{
-                    "mov edi, edi",
-                    "push ebp",
-                    "mov ebp, esp"
-                });
+                if (returnLength > 0)
+                {
+                    tempsByte = AmeisenManager.GetInstance().GetBlackMagic().ReadBytes(AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(returnInjectionASM), returnLength);
+                }
+                else
+                {
+                    List<byte> retnByte = new List<byte>();
+                    uint dwAddress = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(returnInjectionASM);
+                    if (dwAddress != 0)
+                    {
+                        byte buf = AmeisenManager.GetInstance().GetBlackMagic().ReadByte(dwAddress);
+                        while (buf != 0)
+                        {
+                            retnByte.Add(buf);
+                            dwAddress = dwAddress + 1;
+                            buf = AmeisenManager.GetInstance().GetBlackMagic().ReadByte(dwAddress);
+                        }
+                    }
+                    tempsByte = retnByte.ToArray();
+                }
+            }
+            catch (Exception e) { }
+            finally { new Timer(state => AmeisenManager.GetInstance().GetBlackMagic().FreeMemory((uint)state), injectionAsmCodecave, 100, 0); }
+            return tempsByte;
         }
     }
 }

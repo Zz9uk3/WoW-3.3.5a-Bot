@@ -113,8 +113,8 @@ namespace AmeisenCore
 
         public static int GetContainerNumFreeSlots()
         {
-            LUADoString("freeslots = GetContainerNumFreeSlots(0) + GetContainerNumFreeSlots(1) + GetContainerNumFreeSlots(2) + GetContainerNumFreeSlots(3) + GetContainerNumFreeSlots(4)");
-            return Convert.ToInt32(GetLocalizedText("freeslots"));
+            LUADoString("print(\"Hello World\");");
+            return 0;
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace AmeisenCore
                 "push 0",
                 "push eax",
                 "push eax",
-                "mov eax, " + AmeisenOffsets.WoWOffsets.LuaDoString,
+                "mov eax, " + ((uint)AmeisenOffsets.WoWOffsets.LuaDoString),
                 "call eax",
                 "add esp, 0xC",
                 "retn",
@@ -167,7 +167,7 @@ namespace AmeisenCore
             "retn",
             };
 
-            string result = Encoding.ASCII.GetString(AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm));
+            string result = Encoding.UTF8.GetString(AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm));
             AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(argCC);
 
             return result;
