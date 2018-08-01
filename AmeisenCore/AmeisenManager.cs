@@ -1,11 +1,20 @@
-﻿using AmeisenCore.Objects;
-using Binarysharp.MemoryManagement;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using AmeisenCore.Objects;
+using Magic;
 
 namespace AmeisenCore
 {
+    /// <summary>
+    /// Singleton class to hold important things like
+    /// - Proccess: WoW.exe we're attached to
+    /// - BlackMagic: instance that is attached to WoW.exe
+    ///   - get the state by isAttached boolean
+    /// - AmeisenHook: instance that is hookes to WoW.exe's EndScene
+    ///   - get the state by isHooked boolean
+    /// - Me: all character information
+    /// </summary>
     public class AmeisenManager
     {
         private static AmeisenManager i;
@@ -13,12 +22,16 @@ namespace AmeisenCore
         private bool isAttached, isHooked;
 
         private Process wowProcess;
-        private MemorySharp memorySharp;
+        private BlackMagic blackmagic;
         private AmeisenHook ameisenHook;
 
         private Me me;
 
-        private AmeisenManager() { isAttached = false; }
+        private AmeisenManager()
+        {
+            isAttached = false;
+            isHooked = false;
+        }
 
         public static AmeisenManager GetInstance()
         {
@@ -34,29 +47,32 @@ namespace AmeisenCore
         public void AttachManager(Process p)
         {
             wowProcess = p;
-            memorySharp = new MemorySharp(p);
+
+            // Attach to Proccess
+            blackmagic = new BlackMagic(p.Id);
             isAttached = true;
 
+            // Hook EndScene LMAO
             ameisenHook = new AmeisenHook();
             isHooked = ameisenHook.isHooked;
 
-            me = AmeisenCore.GetMe();
+            RefreshMeAsync();
         }
 
         /// <summary>
-        /// Get current MemorySharp
+        /// Get current MemorySharp instance
         /// </summary>
         /// <returns>memorysharp</returns>
-        public MemorySharp GetMemorySharp()
+        public BlackMagic GetBlackMagic()
         {
             if (isAttached)
-                return memorySharp;
+                return blackmagic;
             else
                 throw new Exception("Manager is not attached to any WoW...");
         }
 
         /// <summary>
-        /// Get current AmeisenHook
+        /// Get current AmeisenHook instance
         /// </summary>
         /// <returns>memorysharp</returns>
         public AmeisenHook GetAmeisenHook()
@@ -64,13 +80,13 @@ namespace AmeisenCore
             if (isHooked)
                 return ameisenHook;
             else
-                throw new Exception("Manager is not hooked to any WoW...");
+                throw new Exception("Manager is not hooked to any WoW's EndScene...");
         }
 
         /// <summary>
-        /// Get our char's stats
+        /// Get our char's stats, group members, target...
         /// </summary>
-        /// <returns>char's stats</returns>
+        /// <returns>char's stats, group members, target</returns>
         public Me GetMe()
         {
             if (isAttached)
@@ -96,7 +112,7 @@ namespace AmeisenCore
 
         private void RefreshMeAsync()
         {
-            me = AmeisenCore.GetMe();
+            me = AmeisenCore.ReadMe();
         }
     }
 }

@@ -2,19 +2,9 @@
 using AmeisenCore;
 using AmeisenCore.Objects;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace AmeisenBotGUI
@@ -27,24 +17,67 @@ namespace AmeisenBotGUI
         private WoWExe wowExe;
         private DispatcherTimer uiUpdateTimer;
 
+        private bool uiMode;
+
         public mainscreenForm(WoWExe wowExe)
         {
             InitializeComponent();
-            this.wowExe = wowExe;
+
+            if (wowExe.characterName == "DEBUG")
+                uiMode = true;
+            else
+                this.wowExe = wowExe;
         }
 
-        private void mainscreen_Loaded(object sender, RoutedEventArgs e)
+        private void Mainscreen_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            Title = "AmeisenBot - " + wowExe.characterName + " [" + wowExe.process.Id + "]";
-            UpdateUI();
-
-            uiUpdateTimer = new DispatcherTimer();
-            uiUpdateTimer.Tick += new EventHandler(uiUpdateTimer_Tick);
-            uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, AmeisenSettings.GetInstance().settings.dataRefreshRate);
-            uiUpdateTimer.Start();
+            DragMove();
         }
 
-        private void uiUpdateTimer_Tick(object sender, EventArgs e)
+        private void Mainscreen_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!uiMode)
+            {
+                // Fire up the AI
+                AmeisenAIManager.GetInstance().StartAI(AmeisenSettings.GetInstance().settings.dataRefreshRate);
+
+                Title = "AmeisenBot - " + wowExe.characterName + " [" + wowExe.process.Id + "]";
+                UpdateUI();
+
+                uiUpdateTimer = new DispatcherTimer();
+                uiUpdateTimer.Tick += new EventHandler(UIUpdateTimer_Tick);
+                uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, AmeisenSettings.GetInstance().settings.dataRefreshRate);
+                uiUpdateTimer.Start();
+            }
+        }
+
+        private void ButtonMoveToTarget_Click(object sender, RoutedEventArgs e)
+        {
+            AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.LOOT_TARGET, null));
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+            AmeisenAIManager.GetInstance().StopAI();
+        }
+
+        private void ButtonSettings_Click(object sender, RoutedEventArgs e)
+        {
+            new SettingsWindow(uiMode).ShowDialog();
+        }
+
+        private void ButtonMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void ButtonTest_Click(object sender, RoutedEventArgs e)
+        {
+            labelFreeBagSlots.Content = "Free Slots:" + AmeisenCore.AmeisenCore.GetContainerNumFreeSlots();
+        }
+
+        private void UIUpdateTimer_Tick(object sender, EventArgs e)
         {
             UpdateUI();
 
@@ -52,6 +85,10 @@ namespace AmeisenBotGUI
                 AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.FOLLOW_GROUPLEADER, 8.0));
         }
 
+        /// <summary>
+        /// This thing updates the UI...
+        /// Note to myself: "may need to improve this thing in the future..."
+        /// </summary>
         private void UpdateUI()
         {
             AmeisenManager.GetInstance().RefreshMe();
@@ -138,37 +175,6 @@ namespace AmeisenBotGUI
             {
                 Console.WriteLine(e);
             }
-        }
-
-        private void buttonMoveToTarget_Click(object sender, RoutedEventArgs e)
-        {
-            AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.LOOT_TARGET, null));
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-            AmeisenAIManager.GetInstance().StopAI();
-        }
-
-        private void mainscreen_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            DragMove();
-        }
-
-        private void buttonSettings_Click(object sender, RoutedEventArgs e)
-        {
-            new SettingsWindow().ShowDialog();
-        }
-
-        private void buttonMinimize_Click(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
-
-        private void buttonTest_Click(object sender, RoutedEventArgs e)
-        {
-            labelFreeBagSlots.Content = "Free Slots:" + AmeisenCore.AmeisenCore.GetContainerNumFreeSlots();
         }
     }
 }

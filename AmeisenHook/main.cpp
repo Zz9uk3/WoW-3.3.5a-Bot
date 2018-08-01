@@ -1,5 +1,7 @@
 #include <Windows.h>
 
+// !!! THIS THING ISNT ACTIVE AT THE MOMENT !!!
+// it may be used in the future but who knows..
 
 typedef void(__stdcall * XAmeisenHook)(char * string);
 XAmeisenHook AmeisenHookDoString;

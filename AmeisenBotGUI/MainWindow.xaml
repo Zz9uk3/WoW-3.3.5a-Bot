@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AmeisenBotGUI"
         mc:Ignorable="d"
-        Title="AmeisenBot - Select WoW" Height="54" Width="525" ResizeMode="NoResize" Loaded="loadingForm_Loaded" WindowStyle="None" Topmost="True" MouseDown="loadingForm_MouseDown" Icon="Icon.ico" BorderThickness="0,2">
+        Title="AmeisenBot - Select WoW" Height="58" Width="525" ResizeMode="NoResize" Loaded="LoadingForm_Loaded" WindowStyle="None" Topmost="True" MouseDown="LoadingForm_MouseDown" Icon="Icon.ico" BorderThickness="2">
     <Window.BorderBrush>
         <SolidColorBrush Color="{DynamicResource AccentColor}"/>
     </Window.BorderBrush>
@@ -18,7 +18,7 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </ComboBox.BorderBrush>
         </ComboBox>
-        <Button x:Name="buttonRefresh" Content="↻" HorizontalAlignment="Left" Margin="377,10,0,0" VerticalAlignment="Top" Width="50" Height="33" FontSize="20" Click="buttonRefresh_Click" Background="{x:Null}" BorderThickness="2" FontWeight="Bold" FontFamily="Arial" IsManipulationEnabled="True">
+        <Button x:Name="buttonRefresh" Content="↻" HorizontalAlignment="Left" Margin="377,10,0,0" VerticalAlignment="Top" Width="50" Height="34" FontSize="20" Click="ButtonRefresh_Click" Background="{x:Null}" BorderThickness="2" FontWeight="Bold" FontFamily="Arial" IsManipulationEnabled="True">
             <Button.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Button.Foreground>
@@ -26,7 +26,15 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>
         </Button>
-        <Button x:Name="buttonGo" Content="➤" HorizontalAlignment="Left" Margin="432,10,0,0" VerticalAlignment="Top" Width="75" Height="33" FontSize="20" Click="buttonGo_Click" Background="{x:Null}" BorderThickness="2">
+        <Button x:Name="buttonGo" Content="➤" HorizontalAlignment="Left" Margin="432,10,0,0" VerticalAlignment="Top" Width="50" Height="34" FontSize="20" Click="ButtonGo_Click" Background="{x:Null}" BorderThickness="2">
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+        </Button>
+        <Button x:Name="buttonExit" Content="X" HorizontalAlignment="Left" Margin="487,10,0,0" VerticalAlignment="Top" Width="28" Height="34" FontSize="20" Click="ButtonExit_Click" Background="{x:Null}" BorderThickness="2">
             <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>

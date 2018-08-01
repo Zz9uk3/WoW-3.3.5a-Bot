@@ -3,12 +3,13 @@ using AmeisenCore.Objects;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace AmeisenAI
 {
+    /// <summary>
+    /// Action types
+    /// </summary>
     public enum AmeisenActionType
     {
         FOLLOW_TARGET,
@@ -21,6 +22,9 @@ namespace AmeisenAI
         INTERACT,
     }
     
+    /// <summary>
+    /// Class that stores an action for the bot to perform as soon as possible
+    /// </summary>
     public class AmeisenAction
     {
         private AmeisenActionType actionType;
@@ -41,6 +45,26 @@ namespace AmeisenAI
         public object GetActionParams() { return actionParams; }
     }
 
+    /// <summary>
+    /// Singleton to manage the bots AI.
+    /// 
+    /// It contains a Queue that can be filled up with AmeisenAction objects.
+    /// This Queue will be processed by the threads powering this AI.
+    /// 
+    /// To Start / Stop the AI call:
+    /// - StartAI(THREADCOUNT);
+    /// - StopAI();
+    /// 
+    /// You can Add Actions like this:
+    /// - AddActionToQueue(AMEISENACTIONOBJECT);
+    /// 
+    /// If you wannt to get all remaining actions in the Queue call:
+    /// - GetQueueItems();
+    /// 
+    /// Or get Informations about the Threads:
+    /// - GetActiveThreadCount();
+    /// - GetBusyThreadCount();
+    /// </summary>
     public class AmeisenAIManager
     {
         private List<Thread> aiWorkers;
@@ -53,8 +77,6 @@ namespace AmeisenAI
         {
             actionQueue = new ConcurrentQueue<AmeisenAction>();
             aiWorkers = new List<Thread>();
-
-            StartAI(AmeisenSettings.GetInstance().settings.botMaxThreads);
         }
 
         public static AmeisenAIManager GetInstance()
@@ -106,6 +128,10 @@ namespace AmeisenAI
 
                             case AmeisenActionType.TARGET_ENTITY:
                                 AmeisenCore.AmeisenCore.LUADoString("/target " + (string)currentAction.GetActionParams());
+                                break;
+
+                            case AmeisenActionType.USE_SPELL:
+                                AmeisenCore.AmeisenCore.LUADoString("/cast " + (string)currentAction.GetActionParams());
                                 break;
 
                             default:
