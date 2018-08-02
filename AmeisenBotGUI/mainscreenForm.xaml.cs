@@ -1,6 +1,7 @@
 ﻿using AmeisenAI;
 using AmeisenCore;
 using AmeisenCore.Objects;
+using AmeisenLogging;
 using System;
 using System.Text;
 using System.Windows;
@@ -12,14 +13,14 @@ namespace AmeisenBotGUI
     /// <summary>
     /// Interaktionslogik für mainscreenForm.xaml
     /// </summary>
-    public partial class mainscreenForm : Window
+    public partial class MainscreenForm : Window
     {
         private WoWExe wowExe;
         private DispatcherTimer uiUpdateTimer;
 
         private bool uiMode;
 
-        public mainscreenForm(WoWExe wowExe)
+        public MainscreenForm(WoWExe wowExe)
         {
             InitializeComponent();
 
@@ -36,6 +37,11 @@ namespace AmeisenBotGUI
 
         private void Mainscreen_Loaded(object sender, RoutedEventArgs e)
         {
+            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Loaded MainScreen", this);
+
+            if(uiMode)
+                AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "UI-MODE active", this);
+
             if (!uiMode)
             {
                 // Fire up the AI
@@ -48,20 +54,21 @@ namespace AmeisenBotGUI
                 uiUpdateTimer.Tick += new EventHandler(UIUpdateTimer_Tick);
                 uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, AmeisenSettings.GetInstance().settings.dataRefreshRate);
                 uiUpdateTimer.Start();
+                AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Started UI-Update-Timer", this);
             }
         }
 
         private void ButtonMoveToTarget_Click(object sender, RoutedEventArgs e)
         {
-            AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.LOOT_TARGET, null));
+            AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.MOVE_TO_TARGET, null));
         }
 
-        private void buttonAttackTarget_Click(object sender, RoutedEventArgs e)
+        private void ButtonAttackTarget_Click(object sender, RoutedEventArgs e)
         {
             AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.ATTACK_TARGET, null));
         }
 
-        private void buttonMoveInteractTarget_Click(object sender, RoutedEventArgs e)
+        private void ButtonMoveInteractTarget_Click(object sender, RoutedEventArgs e)
         {
             AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.INTERACT_TARGET, null));
         }
@@ -70,6 +77,7 @@ namespace AmeisenBotGUI
         {
             Close();
             AmeisenAIManager.GetInstance().StopAI();
+            AmeisenLogger.GetInstance().StopLogging();
         }
 
         private void ButtonSettings_Click(object sender, RoutedEventArgs e)
@@ -84,7 +92,8 @@ namespace AmeisenBotGUI
 
         private void ButtonTest_Click(object sender, RoutedEventArgs e)
         {
-            AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.TARGET_MYSELF, null));
+            //AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.TARGET_MYSELF, null));
+            AmeisenCore.AmeisenCore.CharacterJumpAsync();
         }
 
         private void UIUpdateTimer_Tick(object sender, EventArgs e)
@@ -92,7 +101,7 @@ namespace AmeisenBotGUI
             UpdateUI();
 
             if (checkBoxFollowGroupLeader.IsChecked == true)
-                AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.FOLLOW_GROUPLEADER, 8.0));
+                AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.MOVE_TO_GROUPLEADER, 8.0));
         }
 
         /// <summary>
@@ -121,9 +130,9 @@ namespace AmeisenBotGUI
                 progressBarXP.Value = me.exp;
 
                 labelPosition.Content =
-                    "X: " + me.posX +
-                    "\nY: " + me.posY +
-                    "\nZ: " + me.posZ +
+                    "X: " + me.pos.x +
+                    "\nY: " + me.pos.y +
+                    "\nZ: " + me.pos.z +
                     "\nR: " + me.rotation;
 
                 StringBuilder sb = new StringBuilder();
@@ -158,9 +167,9 @@ namespace AmeisenBotGUI
                 labelDistance.Content = "Distance: " + me.target.distance + "m";
 
                 labelPositionTarget.Content =
-                    "X: " + me.target.posX +
-                    "\nY: " + me.target.posY +
-                    "\nZ: " + me.target.posZ +
+                    "X: " + me.target.pos.x +
+                    "\nY: " + me.target.pos.y +
+                    "\nZ: " + me.target.pos.z +
                     "\nR: " + me.target.rotation;
 
                 labelDebugInfoTarget.Content =

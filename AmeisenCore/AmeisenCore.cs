@@ -5,6 +5,10 @@ using System.Text;
 using AmeisenCore.Objects;
 using System.Threading;
 using Magic;
+using AmeisenLogging;
+using System.Runtime.InteropServices;
+using System.Windows.Input;
+using AmeisenUtilities;
 
 namespace AmeisenCore
 {
@@ -14,6 +18,13 @@ namespace AmeisenCore
     /// </summary>
     public abstract class AmeisenCore
     {
+        [DllImport("user32.dll")]
+        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+        [DllImport("user32.dll")]
+        public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        [DllImport("user32.dll")]
+        public static extern IntPtr PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
         /// <summary>
         /// Returns the running WoW's in a WoWExe List
         /// containing the logged in playername and Process object.
@@ -26,12 +37,12 @@ namespace AmeisenCore
 
             foreach (Process p in processList)
             {
-                Console.WriteLine("Found WoW Process! PID: " + p.Id);
+                AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Found WoW Process! PID: " + p.Id, "AmeisenCore.AmeisenCore");
 
                 WoWExe wow = new WoWExe();
                 BlackMagic blackmagic = new BlackMagic(p.Id);
 
-                wow.characterName = blackmagic.ReadASCIIString(AmeisenOffsets.WoWOffsets.playerName, 12);
+                wow.characterName = blackmagic.ReadASCIIString(WoWOffsets.playerName, 12);
                 wow.process = p;
                 wows.Add(wow);
             }
@@ -45,11 +56,12 @@ namespace AmeisenCore
         /// <param name="x">x coordinate</param>
         /// <param name="y">y coordinate</param>
         /// <param name="z">z coordinate</param>
-        public static void MovePlayerToXYZ(float x, float y, float z)
+        public static void MovePlayerToXYZ(Vector3 pos, Interaction action)
         {
-            if (AmeisenManager.GetInstance().GetMe().posX != x && AmeisenManager.GetInstance().GetMe().posY != y && AmeisenManager.GetInstance().GetMe().posZ != z)
+            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Moving to: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "]", "AmeisenCore.AmeisenCore");
+            if (AmeisenManager.GetInstance().GetMe().pos.x != pos.x && AmeisenManager.GetInstance().GetMe().pos.y != pos.y && AmeisenManager.GetInstance().GetMe().pos.z != pos.z)
             {
-                WriteXYZToMemory(x, y, z, 0x4);
+                WriteXYZToMemory(pos, action);
             }
         }
 
@@ -60,36 +72,11 @@ namespace AmeisenCore
         /// <param name="y">y coordinate</param>
         /// <param name="z">z coordinate</param>
         /// <param name="guid">guid of the entity</param>
-        public static void InteractWithGUID(float x, float y, float z, UInt64 guid)
+        public static void InteractWithGUID(Vector3 pos, UInt64 guid, Interaction action)
         {
-            AmeisenManager.GetInstance().GetBlackMagic().WriteUInt64(AmeisenOffsets.WoWOffsets.ctmGUID, guid);
-            WriteXYZToMemory(x, y, z, 0x5);
-        }
-
-        /// <summary>
-        /// Move the player to this npc or player and attack it.
-        /// </summary>
-        /// <param name="x">x coordinate</param>
-        /// <param name="y">y coordinate</param>
-        /// <param name="z">z coordinate</param>
-        /// <param name="guid">guid of the entitiy to attack</param>
-        public static void AttackGUID(float x, float y, float z, UInt64 guid)
-        {
-            AmeisenManager.GetInstance().GetBlackMagic().WriteUInt64(AmeisenOffsets.WoWOffsets.ctmGUID, guid);
-            WriteXYZToMemory(x, y, z, 0xA);
-        }
-
-        /// <summary>
-        /// Move the player to an object and loot it.
-        /// </summary>
-        /// <param name="x">x coordinate</param>
-        /// <param name="y">y coordinate</param>
-        /// <param name="z">z coordinate</param>
-        /// <param name="guid">guid of the entity to loot</param>
-        public static void LootGUID(float x, float y, float z, UInt64 guid)
-        {
-            AmeisenManager.GetInstance().GetBlackMagic().WriteUInt64(AmeisenOffsets.WoWOffsets.ctmGUID, guid);
-            WriteXYZToMemory(x, y, z, 0x6);
+            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Interacting: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "] GUID [" + guid + "]", "AmeisenCore.AmeisenCore");
+            AmeisenManager.GetInstance().GetBlackMagic().WriteUInt64(WoWOffsets.ctmGUID, guid);
+            MovePlayerToXYZ(pos, action);
         }
 
         /// <summary>
@@ -102,13 +89,16 @@ namespace AmeisenCore
         /// 0x5 = interact
         /// 0x6 = loot
         /// 0xA = attack</param>
-        private static void WriteXYZToMemory(float x, float y, float z, int action)
+        private static void WriteXYZToMemory(Vector3 pos, Interaction action)
         {
-            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(AmeisenOffsets.WoWOffsets.ctmX, x);
-            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(AmeisenOffsets.WoWOffsets.ctmY, y);
-            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(AmeisenOffsets.WoWOffsets.ctmZ, z);
-            AmeisenManager.GetInstance().GetBlackMagic().WriteInt(AmeisenOffsets.WoWOffsets.ctmAction, action);
-            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(AmeisenOffsets.WoWOffsets.ctmDistance, 1.5f);
+            const float distance = 1.5f;
+
+            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Writing: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "] Action [" + action + "] Distance [" + distance + "]", "AmeisenCore.AmeisenCore");
+            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmX, pos.x);
+            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmY, pos.y);
+            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmZ, pos.z);
+            AmeisenManager.GetInstance().GetBlackMagic().WriteInt(WoWOffsets.ctmAction, (int)action);
+            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmDistance, distance);
         }
 
         public static int GetContainerNumFreeSlots()
@@ -126,6 +116,7 @@ namespace AmeisenCore
         /// <param name="command">lua command to run</param>
         public static void LUADoString(string command)
         {
+            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Doing string: Command [" + command + "]", "AmeisenCore.AmeisenCore");
             uint argCC = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(Encoding.UTF8.GetBytes(command).Length + 1);
             AmeisenManager.GetInstance().GetBlackMagic().WriteBytes(argCC, Encoding.UTF8.GetBytes(command));
 
@@ -135,7 +126,7 @@ namespace AmeisenCore
                 "push 0",
                 "push eax",
                 "push eax",
-                "mov eax, " + ((uint)AmeisenOffsets.WoWOffsets.LuaDoString),
+                "mov eax, " + ((uint)AmeisenUtilities.WoWOffsets.LuaDoString),
                 "call eax",
                 "add esp, 0xC",
                 "retn",
@@ -153,17 +144,18 @@ namespace AmeisenCore
         /// <param name="command">lua command to run</param>
         public static string GetLocalizedText(string command)
         {
+            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Getting text: Command [" + command + "]", "AmeisenCore.AmeisenCore");
             uint argCC = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(Encoding.UTF8.GetBytes(command).Length + 1);
             AmeisenManager.GetInstance().GetBlackMagic().WriteBytes(argCC, Encoding.UTF8.GetBytes(command));
 
             string[] asm = new string[]
             {
-            "call " + AmeisenOffsets.WoWOffsets.clientObjectManagerGetActivePlayerObject,
+            "call " + AmeisenUtilities.WoWOffsets.clientObjectManagerGetActivePlayerObject,
             "mov ecx, eax",
             "push -1",
             "mov edx, " + argCC + "",
             "push edx",
-            "call " + AmeisenOffsets.WoWOffsets.frameScriptGetLocalizedText,
+            "call " + AmeisenUtilities.WoWOffsets.frameScriptGetLocalizedText,
             "retn",
             };
 
@@ -181,12 +173,13 @@ namespace AmeisenCore
         /// <returns>BaseAdress of the WoWObject</returns>
         private static uint GetMemLocByGUID(UInt64 guid)
         {
-            uint currentObjectManager = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(AmeisenOffsets.WoWOffsets.currentClientConnection);
-            currentObjectManager = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(currentObjectManager + AmeisenOffsets.WoWOffsets.currentManagerOffset);
+            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Reading: GUID [" + guid + "]", "AmeisenCore.AmeisenCore");
+            uint currentObjectManager = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(AmeisenUtilities.WoWOffsets.currentClientConnection);
+            currentObjectManager = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(currentObjectManager + AmeisenUtilities.WoWOffsets.currentManagerOffset);
 
-            uint activeObj = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(currentObjectManager + AmeisenOffsets.WoWOffsets.firstObjectOffset);
-            uint objType = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(activeObj + AmeisenOffsets.WoWOffsets.gameobjectTypeOffset);
-            UInt64 objGUID = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(activeObj + AmeisenOffsets.WoWOffsets.gameobjectGUIDOffset);
+            uint activeObj = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(currentObjectManager + AmeisenUtilities.WoWOffsets.firstObjectOffset);
+            uint objType = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(activeObj + AmeisenUtilities.WoWOffsets.gameobjectTypeOffset);
+            UInt64 objGUID = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(activeObj + AmeisenUtilities.WoWOffsets.gameobjectGUIDOffset);
 
             int count = 1;
 
@@ -201,13 +194,13 @@ namespace AmeisenCore
             // CORPSE    = 7
             while (objType <= 7 && objType > 0)
             {
-                objGUID = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64((uint)(activeObj + AmeisenOffsets.WoWOffsets.gameobjectGUIDOffset));
+                objGUID = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64((uint)(activeObj + AmeisenUtilities.WoWOffsets.gameobjectGUIDOffset));
 
                 if (objGUID == guid)
                     return activeObj;
 
-                activeObj = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(activeObj + AmeisenOffsets.WoWOffsets.nextObjectOffset);
-                objType = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(activeObj + AmeisenOffsets.WoWOffsets.gameobjectTypeOffset);
+                activeObj = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(activeObj + AmeisenUtilities.WoWOffsets.nextObjectOffset);
+                objType = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(activeObj + AmeisenUtilities.WoWOffsets.gameobjectTypeOffset);
                 count++;
             }
 
@@ -221,6 +214,7 @@ namespace AmeisenCore
         /// <returns>name of the npc</returns>
         private static string GetMobNameFromBase(uint objBase)
         {
+            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Reading: ObjectBase [" + objBase + "]", "AmeisenCore.AmeisenCore");
             uint objName = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(objBase + 0x964);
             objName = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(objName + 0x05C);
 
@@ -234,10 +228,11 @@ namespace AmeisenCore
         /// <returns>name of the player</returns>
         private static string GetPlayerNameFromGuid(UInt64 guid)
         {
+            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Reading: GUID [" + guid + "]", "AmeisenCore.AmeisenCore");
             uint playerMask, playerBase, shortGUID, testGUID, offset, current;
 
-            playerMask = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt((AmeisenOffsets.WoWOffsets.nameStore + AmeisenOffsets.WoWOffsets.nameMask));
-            playerBase = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt((AmeisenOffsets.WoWOffsets.nameStore + AmeisenOffsets.WoWOffsets.nameBase));
+            playerMask = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt((AmeisenUtilities.WoWOffsets.nameStore + AmeisenUtilities.WoWOffsets.nameMask));
+            playerBase = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt((AmeisenUtilities.WoWOffsets.nameStore + AmeisenUtilities.WoWOffsets.nameBase));
 
             // Shorten the GUID
             shortGUID = (uint)guid & 0xfffffff;
@@ -260,7 +255,7 @@ namespace AmeisenCore
                 testGUID = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(current);
             }
 
-            return AmeisenManager.GetInstance().GetBlackMagic().ReadASCIIString(current + AmeisenOffsets.WoWOffsets.nameString, 12);
+            return AmeisenManager.GetInstance().GetBlackMagic().ReadASCIIString(current + AmeisenUtilities.WoWOffsets.nameString, 12);
         }
 
         /// <summary>
@@ -280,9 +275,9 @@ namespace AmeisenCore
                 me.target = (Target)ReadWoWObjectFromGUID(false, targetGUID);
 
                 // Calculate the distance
-                me.target.distance = Math.Sqrt((me.posX - me.target.posX) * (me.posX - me.target.posX) +
-                                               (me.posY - me.target.posY) * (me.posY - me.target.posY) +
-                                               (me.posZ - me.target.posZ) * (me.posZ - me.target.posZ));
+                me.target.distance = Math.Sqrt((me.pos.x - me.target.pos.x) * (me.pos.x - me.target.pos.x) +
+                                               (me.pos.y - me.target.pos.y) * (me.pos.y - me.target.pos.y) +
+                                               (me.pos.z - me.target.pos.z) * (me.pos.z - me.target.pos.z));
             }
 
             return me;
@@ -296,6 +291,7 @@ namespace AmeisenCore
         /// <returns>the WoWObject</returns>
         private static WoWObject ReadWoWObjectFromGUID(bool isMyself, UInt64 guid)
         {
+            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Reading: isMyself [" + isMyself + "] GUID [" + guid + "]", "AmeisenCore.AmeisenCore");
             WoWObject wowObject;
 
             if (isMyself)
@@ -312,7 +308,7 @@ namespace AmeisenCore
 
             // If it is me get my name the easy way, else get the targets name
             if (isMyself)
-                wowObject.name = AmeisenManager.GetInstance().GetBlackMagic().ReadASCIIString(AmeisenOffsets.WoWOffsets.playerName, 12);
+                wowObject.name = AmeisenManager.GetInstance().GetBlackMagic().ReadASCIIString(AmeisenUtilities.WoWOffsets.playerName, 12);
             else
             {
                 if (wowObject.objectType == 3)
@@ -326,7 +322,7 @@ namespace AmeisenCore
             // If it is me, try to get the target and groupmembers
             if (isMyself)
             {
-                uint playerbasex = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(AmeisenOffsets.WoWOffsets.playerBase);
+                uint playerbasex = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(AmeisenUtilities.WoWOffsets.playerBase);
                 playerbasex = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(playerbasex + 0x34);
                 playerbasex = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(playerbasex + 0x24);
 
@@ -339,7 +335,7 @@ namespace AmeisenCore
 
                 try
                 {
-                    leaderGUID = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64((AmeisenOffsets.WoWOffsets.partyLeader));
+                    leaderGUID = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64((AmeisenUtilities.WoWOffsets.partyLeader));
                 }
                 catch (Exception e)
                 {
@@ -348,10 +344,10 @@ namespace AmeisenCore
 
                 if (leaderGUID != 0)
                 {
-                    ((Me)wowObject).partymembers.Add(TryReadPartymember(leaderGUID, AmeisenOffsets.WoWOffsets.partyplayer1));
-                    ((Me)wowObject).partymembers.Add(TryReadPartymember(leaderGUID, AmeisenOffsets.WoWOffsets.partyplayer2));
-                    ((Me)wowObject).partymembers.Add(TryReadPartymember(leaderGUID, AmeisenOffsets.WoWOffsets.partyplayer3));
-                    ((Me)wowObject).partymembers.Add(TryReadPartymember(leaderGUID, AmeisenOffsets.WoWOffsets.partyplayer4));
+                    ((Me)wowObject).partymembers.Add(TryReadPartymember(leaderGUID, AmeisenUtilities.WoWOffsets.partyplayer1));
+                    ((Me)wowObject).partymembers.Add(TryReadPartymember(leaderGUID, AmeisenUtilities.WoWOffsets.partyplayer2));
+                    ((Me)wowObject).partymembers.Add(TryReadPartymember(leaderGUID, AmeisenUtilities.WoWOffsets.partyplayer3));
+                    ((Me)wowObject).partymembers.Add(TryReadPartymember(leaderGUID, AmeisenUtilities.WoWOffsets.partyplayer4));
                 }
             }
 
@@ -367,13 +363,13 @@ namespace AmeisenCore
             wowObject.factionTemplate = AmeisenManager.GetInstance().GetBlackMagic().ReadInt((uint)targetBaseUnitFields + (0x37 * 4));
             wowObject.channelSpell = AmeisenManager.GetInstance().GetBlackMagic().ReadInt((uint)targetBaseUnitFields + (0x16 * 4));
 
-            wowObject.posX = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat((uint)targetBase + 0x798);
-            wowObject.posY = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat((uint)targetBase + 0x79C);
-            wowObject.posZ = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat((uint)targetBase + 0x7A0);
+            wowObject.pos.x = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat((uint)targetBase + 0x798);
+            wowObject.pos.y = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat((uint)targetBase + 0x79C);
+            wowObject.pos.z = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat((uint)targetBase + 0x7A0);
             wowObject.rotation = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat((uint)targetBase + 0x7A8);
 
-            wowObject.mapID = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(AmeisenOffsets.WoWOffsets.mapID);
-            wowObject.zoneID = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(AmeisenOffsets.WoWOffsets.zoneID);
+            wowObject.mapID = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(AmeisenUtilities.WoWOffsets.mapID);
+            wowObject.zoneID = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(AmeisenUtilities.WoWOffsets.zoneID);
 
             return wowObject;
         }
@@ -386,15 +382,16 @@ namespace AmeisenCore
         /// <returns>a Target object containing the party member's deatils</returns>
         private static Target TryReadPartymember(UInt64 leaderGUID, uint offset)
         {
+            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Reading: GUID [" + leaderGUID + "] Offset [" + offset + "]", "AmeisenCore.AmeisenCore");
             try
             {
                 Target t = (Target)ReadWoWObjectFromGUID(false, AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(offset));
                 Me me = AmeisenManager.GetInstance().GetMe();
 
-                if (t.posX != 0 && t.posY != 0 && t.posZ != 0)
-                    t.distance = Math.Sqrt((me.posX - t.posX) * (me.posX - t.posX) +
-                                           (me.posY - t.posY) * (me.posY - t.posY) +
-                                           (me.posZ - t.posZ) * (me.posZ - t.posZ));
+                if (t.pos.x != 0 && t.pos.y != 0 && t.pos.z != 0)
+                    t.distance = Math.Sqrt((me.pos.x - t.pos.x) * (me.pos.x - t.pos.x) +
+                                           (me.pos.y - t.pos.y) * (me.pos.y - t.pos.y) +
+                                           (me.pos.z - t.pos.z) * (me.pos.z - t.pos.z));
 
                 if (t.guid == leaderGUID)
                 {
@@ -415,7 +412,7 @@ namespace AmeisenCore
         /// <returns>the GUID</returns>
         public static UInt64 GetPlayerGUID()
         {
-            return AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(AmeisenOffsets.WoWOffsets.localPlayerGUID);
+            return AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(AmeisenUtilities.WoWOffsets.localPlayerGUID);
         }
 
         /// <summary>
@@ -424,7 +421,7 @@ namespace AmeisenCore
         /// <returns></returns>
         public static UInt64 GetTargetGUID()
         {
-            return AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(AmeisenOffsets.WoWOffsets.localTargetGUID);
+            return AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(AmeisenUtilities.WoWOffsets.localTargetGUID);
         }
 
         /// <summary>
@@ -433,8 +430,7 @@ namespace AmeisenCore
         /// <returns></returns>
         public static void TargetGUID(UInt64 guid)
         {
-            Me me = AmeisenManager.GetInstance().GetMe();
-            InteractWithGUID(me.posX, me.posY, me.posZ, guid);
+            //target it...
         }
 
         /// <summary>
@@ -444,31 +440,31 @@ namespace AmeisenCore
         public static void TargetMyself()
         {
             Me me = AmeisenManager.GetInstance().GetMe();
-            InteractWithGUID(me.posX, me.posY, me.posZ, GetPlayerGUID());
+            TargetGUID(GetPlayerGUID());
         }
 
         /// <summary>
-        /// Let the bot jump.
+        /// Let the bot jump by pressing the spacebar once for 20-40ms
         /// 
         /// This runs Async.
         /// </summary>
-        public static void CharacterJump()
+        public static void CharacterJumpAsync()
         {
-            Thread keyExecutorThread = new Thread(new ThreadStart(CharacterJumpAsync));
-            keyExecutorThread.Start();
+            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Jumping", "AmeisenCore.AmeisenCore");
+            new Thread(CharacterJump).Start();
         }
 
-        /// <summary>
-        /// Press the spacebar once for 100ms
-        /// </summary>
-        private static void CharacterJumpAsync()
+        private static void CharacterJump()
         {
-            /*RemoteWindow window = AmeisenManager.GetInstance().GetMemorySharp().Windows.MainWindow;
-            window.Keyboard.Press(Keys.Space, TimeSpan.FromMilliseconds(20));
-            Thread.Sleep(100);
-            window.Keyboard.Release(Keys.Space);*/
+            const uint KEYDOWN = 0x100;
+            const uint KEYUP = 0x101;
 
-            //TODO: Replace this old crap
+            IntPtr windowHandle = AmeisenManager.GetInstance().GetProcess().MainWindowHandle;
+
+            // 0x20 = Spacebar (VK_SPACE)
+            SendMessage(windowHandle, KEYDOWN, new IntPtr(0x20), new IntPtr(0));
+            Thread.Sleep(new Random().Next(20, 40)); // make it look more human-like :^)
+            SendMessage(windowHandle, KEYUP, new IntPtr(0x20), new IntPtr(0));
         }
     }
 }

@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataStructs.cs" />
     <Compile Include="WoWOffsets.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

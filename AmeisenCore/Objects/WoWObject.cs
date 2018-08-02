@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AmeisenUtilities;
+using System;
 using System.Text;
 
 namespace AmeisenCore.Objects
@@ -24,9 +25,7 @@ namespace AmeisenCore.Objects
         public int energy;
         public int maxEnergy;
 
-        public float posX;
-        public float posY;
-        public float posZ;
+        public Vector3 pos;
         public float rotation;
         public double distance;
 
@@ -51,9 +50,9 @@ namespace AmeisenCore.Objects
             sb.Append("\nMaxHealth: " + maxHealth);
             sb.Append("\nEnergy: " + energy);
             sb.Append("\nMaxEnergy: " + maxEnergy);
-            sb.Append("\nPosX: " + posX);
-            sb.Append("\nPosY: " + posY);
-            sb.Append("\nPosZ: " + posZ);
+            sb.Append("\nPosX: " + pos.x);
+            sb.Append("\nPosY: " + pos.y);
+            sb.Append("\nPosZ: " + pos.z);
             sb.Append("\nRotation: " + rotation);
             sb.Append("\nDistance: " + distance);
             sb.Append("\nMapID: " + mapID);
@@ -75,9 +74,9 @@ namespace AmeisenCore.Objects
             sb.Append("\nMaxHealth: " + maxHealth);
             sb.Append("\nEnergy: " + energy);
             sb.Append("\nMaxEnergy: " + maxEnergy);
-            sb.Append("\nPosX: " + posX);
-            sb.Append("\nPosY: " + posY);
-            sb.Append("\nPosZ: " + posZ);
+            sb.Append("\nPosX: " + pos.x);
+            sb.Append("\nPosY: " + pos.y);
+            sb.Append("\nPosZ: " + pos.z);
             sb.Append("\nRotation: " + rotation);
             sb.Append("\nDistance: " + distance);
             sb.Append("\nMapID: " + mapID);

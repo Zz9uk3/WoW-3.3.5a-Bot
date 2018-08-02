@@ -140,6 +140,14 @@
       <Project>{567f9df2-e2d0-4bc8-a295-b7913cc1303e}</Project>
       <Name>AmeisenCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AmeisenLogger\AmeisenLogger.csproj">
+      <Project>{017a67a9-f7bd-46e3-b716-e1d601afca4b}</Project>
+      <Name>AmeisenLogger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmeisenOffsets\AmeisenUtilities.csproj">
+      <Project>{5369e077-2dc4-4de5-9020-2c7ddb41686f}</Project>
+      <Name>AmeisenUtilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">

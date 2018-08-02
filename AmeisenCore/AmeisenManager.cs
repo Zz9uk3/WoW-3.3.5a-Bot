@@ -111,6 +111,14 @@ namespace AmeisenCore
                 throw new Exception("Manager is not attached to any WoW...");
         }
 
+        /// <summary>
+        /// Get our WoW-Process
+        /// </summary>
+        public Process GetProcess()
+        {
+            return wowProcess;
+        }
+
         private void RefreshMeAsync()
         {
             me = AmeisenCore.ReadMe();

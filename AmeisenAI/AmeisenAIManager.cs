@@ -4,6 +4,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
+using AmeisenLogging;
+using AmeisenUtilities;
 
 namespace AmeisenAI
 {
@@ -12,23 +14,24 @@ namespace AmeisenAI
     /// </summary>
     public enum AmeisenActionType
     {
-        FOLLOW_TARGET,
-        FOLLOW_GROUPLEADER,
+        MOVE_TO_GROUPLEADER,
         LOOT_TARGET,
         TARGET_ENTITY,
         TARGET_MYSELF,
         ATTACK_TARGET,
         USE_SPELL,
         INTERACT_TARGET,
+        MOVE_TO_TARGET,
     }
-    
+
     /// <summary>
     /// Class that stores an action for the bot to perform as soon as possible
     /// </summary>
     public class AmeisenAction
     {
-        private AmeisenActionType actionType;
-        private object actionParams;
+        private readonly AmeisenActionType actionType;
+        private readonly object actionParams;
+        private bool isDone;
 
         /// <summary>
         /// Class to describe an action for the Barin-Threads to process
@@ -39,10 +42,13 @@ namespace AmeisenAI
         {
             this.actionType = actionType;
             this.actionParams = actionParams;
+            isDone = false;
         }
 
         public AmeisenActionType GetActionType() { return actionType; }
         public object GetActionParams() { return actionParams; }
+        public void ActionIsDone() { isDone = true; }
+        public bool IsActionDone() { return isDone; }
     }
 
     /// <summary>
@@ -93,6 +99,7 @@ namespace AmeisenAI
         /// <param name="threadID">id to identify the thread</param>
         private void WorkActions(int threadID)
         {
+            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "AI-Thread up: " + threadID, this);
             while (aiActive)
             {
                 if (!actionQueue.IsEmpty)
@@ -100,26 +107,27 @@ namespace AmeisenAI
                     busyThreads[threadID - 1] = true;
                     if (actionQueue.TryDequeue(out AmeisenAction currentAction))
                     {
+                        AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Processing Action: " + currentAction.ToString(), this);
                         switch (currentAction.GetActionType())
                         {
-                            case AmeisenActionType.FOLLOW_TARGET:
-                                FollowTarget((double)currentAction.GetActionParams());
+                            case AmeisenActionType.MOVE_TO_TARGET:
+                                MoveToTarget(currentAction.GetActionParams() == null ? 3.0 : (double)currentAction.GetActionParams(), ref currentAction);
                                 break;
 
-                            case AmeisenActionType.FOLLOW_GROUPLEADER:
-                                FollowGroupLeader((double)currentAction.GetActionParams());
+                            case AmeisenActionType.MOVE_TO_GROUPLEADER:
+                                FollowGroupLeader(currentAction.GetActionParams() == null ? 3.0 : (double)currentAction.GetActionParams(), ref currentAction);
                                 break;
 
                             case AmeisenActionType.INTERACT_TARGET:
-                                InteractWithTarget();
+                                InteractWithTarget(currentAction.GetActionParams() == null ? 3.0 : (double)currentAction.GetActionParams(), Interaction.INTERACT, ref currentAction);
                                 break;
 
                             case AmeisenActionType.ATTACK_TARGET:
-                                AttackTarget();
+                                InteractWithTarget(currentAction.GetActionParams() == null ? 3.0 : (double)currentAction.GetActionParams(), Interaction.ATTACK, ref currentAction);
                                 break;
 
                             case AmeisenActionType.LOOT_TARGET:
-                                LootTarget();
+                                InteractWithTarget(currentAction.GetActionParams() == null ? 3.0 : (double)currentAction.GetActionParams(), Interaction.LOOT, ref currentAction);
                                 break;
 
                             case AmeisenActionType.TARGET_MYSELF:
@@ -137,6 +145,8 @@ namespace AmeisenAI
                             default:
                                 break;
                         }
+                        if (!currentAction.IsActionDone())
+                            actionQueue.Enqueue(currentAction);
                     }
                 }
                 else
@@ -153,6 +163,7 @@ namespace AmeisenAI
         /// <param name="threadCount">how many "Brain-Thread's" should our bot get</param>
         public void StartAI(int threadCount)
         {
+            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Starting AI", this);
             if (!aiActive)
             {
                 busyThreads = new bool[threadCount];
@@ -164,6 +175,7 @@ namespace AmeisenAI
                     t.Start();
 
                 aiActive = true;
+                AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "AI running", this);
             }
         }
 
@@ -172,10 +184,12 @@ namespace AmeisenAI
         /// </summary>
         public void StopAI()
         {
+            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Stopping AI", this);
             if (aiActive)
             {
                 aiActive = false;
                 aiWorkers.Clear();
+                AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "AI stopped", this);
             }
         }
 
@@ -185,6 +199,7 @@ namespace AmeisenAI
         /// <param name="action">Action you want the bot to do</param>
         public void AddActionToQueue(AmeisenAction action)
         {
+            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Added action to AI-Queue: " + action.ToString(), this);
             actionQueue.Enqueue(action);
         }
 
@@ -194,6 +209,7 @@ namespace AmeisenAI
         /// <returns>list of actions in the queue</returns>
         public List<AmeisenAction> GetQueueItems()
         {
+            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Getting AI-Queue", this);
             List<AmeisenAction> actions = new List<AmeisenAction>();
             foreach (AmeisenAction a in actionQueue)
                 actions.Add(a);
@@ -206,6 +222,7 @@ namespace AmeisenAI
         /// <returns>active threads</returns>
         public int GetActiveThreadCount()
         {
+            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Getting active Thread count", this);
             return aiWorkers.Count;
         }
 
@@ -215,6 +232,7 @@ namespace AmeisenAI
         /// <returns>busy threads</returns>
         public int GetBusyThreadCount()
         {
+            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Getting busy threads", this);
             int bThreads = 0;
 
             foreach (bool b in busyThreads)
@@ -225,34 +243,43 @@ namespace AmeisenAI
         }
 
         private double lastDistance;
-        private float[] lastPosition = new float[3];
+        private Vector3 lastPosition;
 
-        private void FollowTarget(double dist)
+        private Vector3 CalculatePosToGoTo(Vector3 targetPos, int distanceToTarget)
+        {
+            Random rnd = new Random();
+            float factorX = rnd.Next((distanceToTarget / 4) * -1, distanceToTarget / 2);
+            float factorY = rnd.Next((distanceToTarget / 4) * -1, distanceToTarget / 2);
+            return new Vector3 { x = targetPos.x + factorX, y = targetPos.y + factorY, z = targetPos.z };
+        }
+
+        private void CheckIfWeAreStuckIfYesJump(double activeDistance)
+        {
+            if (activeDistance >= lastDistance)
+                AmeisenCore.AmeisenCore.CharacterJumpAsync();
+        }
+
+        private void MoveToTarget(double dist, ref AmeisenAction ameisenAction)
         {
             Me me = AmeisenManager.GetInstance().GetMe();
 
-            if (me.target != null)
+            if (me.target == null)
+                ameisenAction.ActionIsDone();
+            else if (me.target.distance > dist)
             {
-                Random rnd = new Random();
-                float factorX = rnd.Next((int)dist / 4, (int)dist / 2);
-                float factorY = rnd.Next((int)dist / 4, (int)dist / 2);
+                CheckIfWeAreStuckIfYesJump(me.target.distance);
 
-                if (me.target.distance > dist)
-                {
-                    if (me.target.distance >= lastDistance)
-                        AmeisenCore.AmeisenCore.CharacterJump();
+                Vector3 posToGoTo = CalculatePosToGoTo(me.target.pos, (int)dist);
+                AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoTo, Interaction.MOVE);
 
-                    AmeisenCore.AmeisenCore.MovePlayerToXYZ(me.target.posX + factorX, me.target.posY + factorY, me.target.posZ);
-
-                    lastPosition[0] = me.posX;
-                    lastPosition[1] = me.posY;
-                    lastPosition[2] = me.posZ;
-                    lastDistance = me.target.distance;
-                }
+                lastPosition = me.pos;
+                lastDistance = me.target.distance;
             }
+            else
+                ameisenAction.ActionIsDone();
         }
 
-        private void FollowGroupLeader(double dist)
+        private void FollowGroupLeader(double dist, ref AmeisenAction ameisenAction)
         {
             Me me = AmeisenManager.GetInstance().GetMe();
 
@@ -264,107 +291,53 @@ namespace AmeisenAI
                     if (t.isPartyLeader)
                         groupleader = t;
 
-                if (groupleader != null)
+                if (groupleader == null)
+                    ameisenAction.ActionIsDone();
+                else if (groupleader.distance > dist)
                 {
-                    Random rnd = new Random();
-                    float factorX = rnd.Next((int)dist / 4, (int)dist / 2);
-                    float factorY = rnd.Next((int)dist / 4, (int)dist / 2);
+                    CheckIfWeAreStuckIfYesJump(groupleader.distance);
 
-                    if (groupleader.distance > dist)
-                    {
-                        if (groupleader.distance >= lastDistance)
-                            AmeisenCore.AmeisenCore.CharacterJump();
+                    Vector3 posToGoTo = CalculatePosToGoTo(groupleader.pos, (int)dist);
+                    AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoTo, Interaction.MOVE);
 
-                        AmeisenCore.AmeisenCore.MovePlayerToXYZ(groupleader.posX + factorX, groupleader.posY + factorY, groupleader.posZ);
-
-                        lastPosition[0] = me.posX;
-                        lastPosition[1] = me.posY;
-                        lastPosition[2] = me.posZ;
-                        lastDistance = groupleader.distance;
-                    }
+                    lastPosition = me.pos;
+                    lastDistance = groupleader.distance;
                 }
+                else
+                    ameisenAction.ActionIsDone();
             }
+            else
+                ameisenAction.ActionIsDone();
         }
 
-        private void InteractWithTarget()
+        private void InteractWithTarget(double dist, Interaction action, ref AmeisenAction ameisenAction)
         {
             Me me = AmeisenManager.GetInstance().GetMe();
 
-            int dist = 8;
-
-            if (me.target != null)
+            if (me.target == null)
+                ameisenAction.ActionIsDone();
+            else if (me.target.distance > dist)
             {
-                Random rnd = new Random();
+                Vector3 posToGoTo = CalculatePosToGoTo(me.target.pos, (int)dist);
+                AmeisenCore.AmeisenCore.InteractWithGUID(posToGoTo, me.targetGUID, action);
 
-                if (me.target.distance < 3)
-                {
-                    float xOffset = rnd.Next(8, 12);
-                    float yOffset = rnd.Next(8, 12);
-
-                    AmeisenCore.AmeisenCore.MovePlayerToXYZ(me.target.posX + xOffset, me.target.posY + yOffset, me.target.posZ);
-                }
-
-                Thread.Sleep(3000);
-
-                float factorX = rnd.Next((int)dist / 4, (int)dist / 2);
-                float factorY = rnd.Next((int)dist / 4, (int)dist / 2);
-
-                AmeisenCore.AmeisenCore.InteractWithGUID(me.target.posX + factorX, me.target.posY + factorY, me.target.posZ, me.target.guid);
+                ameisenAction.ActionIsDone();
             }
-        }
-
-        private void AttackTarget()
-        {
-            Me me = AmeisenManager.GetInstance().GetMe();
-
-            int dist = 8;
-
-            if (me.target != null)
+            else if (me.target.distance < 3)
             {
-                Random rnd = new Random();
+                CheckIfWeAreStuckIfYesJump(me.target.distance);
 
-                if (me.target.distance < 3)
-                {
-                    float xOffset = rnd.Next(8, 12);
-                    float yOffset = rnd.Next(8, 12);
+                Vector3 posToGoToToMakeSureTheInteractionGetsFired = CalculatePosToGoTo(me.target.pos, 16);
+                AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoToToMakeSureTheInteractionGetsFired, Interaction.MOVE);
 
-                    AmeisenCore.AmeisenCore.MovePlayerToXYZ(me.target.posX + xOffset, me.target.posY + yOffset, me.target.posZ);
-                }
+                // Let the character run
+                Thread.Sleep(2000);
 
-                Thread.Sleep(3000);
-
-                float factorX = rnd.Next((int)dist / 4, (int)dist / 2);
-                float factorY = rnd.Next((int)dist / 4, (int)dist / 2);
-
-                AmeisenCore.AmeisenCore.AttackGUID(me.target.posX + factorX, me.target.posY + factorY, me.target.posZ, me.target.guid);
+                lastPosition = me.pos;
+                lastDistance = me.target.distance;
             }
-        }
-
-        private void LootTarget()
-        {
-            Me me = AmeisenManager.GetInstance().GetMe();
-
-            int dist = 8;
-
-            if (me.target != null)
-            {
-                Random rnd = new Random();
-
-                if (me.target.distance < 3)
-                {
-                    float xOffset = rnd.Next(8, 12);
-                    float yOffset = rnd.Next(8, 12);
-
-                    AmeisenCore.AmeisenCore.MovePlayerToXYZ(me.target.posX + xOffset, me.target.posY + yOffset, me.target.posZ);
-                }
-
-                Thread.Sleep(3000);
-
-                float factorX = rnd.Next((int)dist / 4, (int)dist / 2);
-                float factorY = rnd.Next((int)dist / 4, (int)dist / 2);
-
-                AmeisenCore.AmeisenCore.LootGUID(me.target.posX + factorX, me.target.posY + factorY, me.target.posZ, me.target.guid);
-            }
+            else
+                ameisenAction.ActionIsDone();
         }
     }
 }

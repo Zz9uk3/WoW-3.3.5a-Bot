@@ -7,13 +7,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenCore", "AmeisenCore\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenServer", "AmeisenServer\AmeisenServer.csproj", "{0F5350C6-755B-4D32-8DFD-4057C925EF0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenOffsets", "AmeisenOffsets\AmeisenOffsets.csproj", "{5369E077-2DC4-4DE5-9020-2C7DDB41686F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenUtilities", "AmeisenOffsets\AmeisenUtilities.csproj", "{5369E077-2DC4-4DE5-9020-2C7DDB41686F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBotGUI", "AmeisenBotGUI\AmeisenBotGUI.csproj", "{54601391-C520-4EB3-A13E-7FD9B036389A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenAI", "AmeisenAI\AmeisenAI.csproj", "{3C281530-7A81-4803-BC85-DE46ED2D6E74}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AmeisenHook", "AmeisenHook\AmeisenHook.vcxproj", "{27AD55E1-09AB-4E3A-9743-10F7F36EB84F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenLogger", "AmeisenLogger\AmeisenLogger.csproj", "{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -95,6 +97,18 @@ Global
 		{27AD55E1-09AB-4E3A-9743-10F7F36EB84F}.Release|x64.Build.0 = Release|x64
 		{27AD55E1-09AB-4E3A-9743-10F7F36EB84F}.Release|x86.ActiveCfg = Release|Win32
 		{27AD55E1-09AB-4E3A-9743-10F7F36EB84F}.Release|x86.Build.0 = Release|Win32
+		{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}.Debug|x64.Build.0 = Debug|Any CPU
+		{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}.Debug|x86.Build.0 = Debug|Any CPU
+		{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}.Release|x64.ActiveCfg = Release|Any CPU
+		{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}.Release|x64.Build.0 = Release|Any CPU
+		{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}.Release|x86.ActiveCfg = Release|Any CPU
+		{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

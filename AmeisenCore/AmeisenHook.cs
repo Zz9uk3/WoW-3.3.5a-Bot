@@ -28,10 +28,10 @@ namespace AmeisenCore
             if (AmeisenManager.GetInstance().GetBlackMagic().IsProcessOpen)
             {
                 // Get D3D9 Pointer
-                uint pDevice = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(AmeisenOffsets.WoWOffsets.devicePtr1);
-                uint pEnd = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(pDevice + AmeisenOffsets.WoWOffsets.devicePtr2);
+                uint pDevice = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(AmeisenUtilities.WoWOffsets.devicePtr1);
+                uint pEnd = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(pDevice + AmeisenUtilities.WoWOffsets.devicePtr2);
                 uint pScene = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(pEnd);
-                uint pEndScene = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(pScene + AmeisenOffsets.WoWOffsets.endScene);
+                uint pEndScene = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(pScene + AmeisenUtilities.WoWOffsets.endScene);
 
                 // If WoW is already hooked, unhook it
                 if (AmeisenManager.GetInstance().GetBlackMagic().ReadByte(pEndScene) == 0xE9 && (injectedCodeAddress == 0 || injectionAddress == 0))
@@ -84,10 +84,10 @@ namespace AmeisenCore
         public void DisposeHooking()
         {
             // Get D3D9 Pointer
-            uint pDevice = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(AmeisenOffsets.WoWOffsets.devicePtr1);
-            uint pEnd = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(pDevice + AmeisenOffsets.WoWOffsets.devicePtr2);
+            uint pDevice = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(AmeisenUtilities.WoWOffsets.devicePtr1);
+            uint pEnd = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(pDevice + AmeisenUtilities.WoWOffsets.devicePtr2);
             uint pScene = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(pEnd);
-            uint pEndScene = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(pScene + AmeisenOffsets.WoWOffsets.endScene);
+            uint pEndScene = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(pScene + AmeisenUtilities.WoWOffsets.endScene);
 
             // Check if wow is hookes
             if (AmeisenManager.GetInstance().GetBlackMagic().ReadByte(pEndScene) == 0xEB)
@@ -147,7 +147,7 @@ namespace AmeisenCore
                     tempsByte = retnByte.ToArray();
                 }
             }
-            catch (Exception e) { }
+            catch { }
             finally { new Timer(state => AmeisenManager.GetInstance().GetBlackMagic().FreeMemory((uint)state), injectionAsmCodecave, 100, 0); }
             return tempsByte;
         }

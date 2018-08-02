@@ -1,4 +1,4 @@
-﻿namespace AmeisenOffsets
+﻿namespace AmeisenUtilities
 {
     /// <summary>
     /// Abstract class that contains all the offsets
@@ -54,5 +54,7 @@
 
         public static uint LuaDoString = 0x819210;
         public static uint LuaGetLocalizedText = 0x7225E0;
+
+        public static uint CGameUITarget = 0x524BF0;
     }
 }
