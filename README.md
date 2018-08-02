@@ -10,11 +10,13 @@ A bot written in (at this time) C# only for World of Warcraft WotLK (3.3.5a 1234
 
 **AmeisenCore**: This is where the memory magic happens, data gets stored, etc.
 
-**AmeisenOffsets**: Memory offsets can be foud here.
+**AmeisenUtilities**: Memory offsets and data structs can be foud here.
 
 **AmeisenServer**: This thing is planned to be a server for the bots to communicate to each other.
 
-**AmeisenAI**: The bots "Brain" to work on its Queue and make decisions etc.
+**AmeisenAI**: The bots "Brain" to work on its queue and make decisions etc.
+
+**AmeisenLogging**: Basic logging class
 
 ## Screenshots
 
