@@ -243,7 +243,7 @@ namespace AmeisenAI
         }
 
         private double lastDistance;
-        private Vector3 lastPosition;
+        private Vector3 lastPosition = new Vector3 { x = float.MaxValue, y = float.MaxValue, z = float.MaxValue };
 
         private Vector3 CalculatePosToGoTo(Vector3 targetPos, int distanceToTarget)
         {
@@ -271,6 +271,9 @@ namespace AmeisenAI
 
                 Vector3 posToGoTo = CalculatePosToGoTo(me.target.pos, (int)dist);
                 AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoTo, Interaction.MOVE);
+
+                // Let the character run to prevent random jumping
+                Thread.Sleep(500);
 
                 lastPosition = me.pos;
                 lastDistance = me.target.distance;
@@ -300,6 +303,9 @@ namespace AmeisenAI
                     Vector3 posToGoTo = CalculatePosToGoTo(groupleader.pos, (int)dist);
                     AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoTo, Interaction.MOVE);
 
+                    // Let the character run to prevent random jumping
+                    Thread.Sleep(500);
+
                     lastPosition = me.pos;
                     lastDistance = groupleader.distance;
                 }
@@ -320,7 +326,7 @@ namespace AmeisenAI
             {
                 Vector3 posToGoTo = CalculatePosToGoTo(me.target.pos, (int)dist);
                 AmeisenCore.AmeisenCore.InteractWithGUID(posToGoTo, me.targetGUID, action);
-
+                
                 ameisenAction.ActionIsDone();
             }
             else if (me.target.distance < 3)
