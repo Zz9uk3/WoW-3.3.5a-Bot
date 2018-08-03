@@ -10,7 +10,8 @@ using AmeisenUtilities;
 namespace AmeisenAI
 {
     /// <summary>
-    /// Action types
+    /// Action types, most of them should be pretty
+    /// self-explaining
     /// </summary>
     public enum AmeisenActionType
     {
@@ -45,9 +46,27 @@ namespace AmeisenAI
             isDone = false;
         }
 
+        /// <summary>
+        /// Return the AmeisenActionType of AmeisenAction
+        /// </summary>
+        /// <returns></returns>
         public AmeisenActionType GetActionType() { return actionType; }
+
+        /// <summary>
+        /// Get the parameters for our AmeisenAction
+        /// </summary>
+        /// <returns>parameters as object, need to cast that after</returns>
         public object GetActionParams() { return actionParams; }
+
+        /// <summary>
+        /// Flag the AmeisenAction as done, this allows it to be removed from the queue
+        /// </summary>
         public void ActionIsDone() { isDone = true; }
+
+        /// <summary>
+        /// Is the AmeisenAction done
+        /// </summary>
+        /// <returns>true when its done, false when there is still stuff to do</returns>
         public bool IsActionDone() { return isDone; }
     }
 
@@ -85,6 +104,10 @@ namespace AmeisenAI
             aiWorkers = new List<Thread>();
         }
 
+        /// <summary>
+        /// Initialize/Get the instance of our singleton
+        /// </summary>
+        /// <returns>AmeisenAIManager instance</returns>
         public static AmeisenAIManager GetInstance()
         {
             if (i == null)
@@ -145,6 +168,8 @@ namespace AmeisenAI
                             default:
                                 break;
                         }
+
+                        // Reque the unfinished AmeisenAction
                         if (!currentAction.IsActionDone())
                             actionQueue.Enqueue(currentAction);
                     }
@@ -257,6 +282,7 @@ namespace AmeisenAI
         {
             if (activeDistance >= lastDistance)
                 AmeisenCore.AmeisenCore.CharacterJumpAsync();
+            // Here comes the Obstacle-Avoid-System in the future
         }
 
         private void MoveToTarget(double dist, ref AmeisenAction ameisenAction)
@@ -264,10 +290,10 @@ namespace AmeisenAI
             Me me = AmeisenManager.GetInstance().GetMe();
 
             if (me.target == null)
-                ameisenAction.ActionIsDone();
+                ameisenAction.ActionIsDone(); // If there is no target, we can't follow anyone...
             else if (me.target.distance > dist)
             {
-                CheckIfWeAreStuckIfYesJump(me.target.distance);
+                CheckIfWeAreStuckIfYesJump(me.target.distance); // Stuck check, if we haven't moved since the last iteration jump
 
                 Vector3 posToGoTo = CalculatePosToGoTo(me.target.pos, (int)dist);
                 AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoTo, Interaction.MOVE);
@@ -295,10 +321,10 @@ namespace AmeisenAI
                         groupleader = t;
 
                 if (groupleader == null)
-                    ameisenAction.ActionIsDone();
+                    ameisenAction.ActionIsDone(); // If there is no groupleader, we can't follow anyone...
                 else if (groupleader.distance > dist)
                 {
-                    CheckIfWeAreStuckIfYesJump(groupleader.distance);
+                    CheckIfWeAreStuckIfYesJump(groupleader.distance); // Stuck check, if we haven't moved since the last iteration jump
 
                     Vector3 posToGoTo = CalculatePosToGoTo(groupleader.pos, (int)dist);
                     AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoTo, Interaction.MOVE);
@@ -321,15 +347,15 @@ namespace AmeisenAI
             Me me = AmeisenManager.GetInstance().GetMe();
 
             if (me.target == null)
-                ameisenAction.ActionIsDone();
-            else if (me.target.distance > dist)
+                ameisenAction.ActionIsDone();  // If there is no target, we can't interact with anyone...
+            else if (me.target.distance > 3 && me.target.distance > dist)
             {
                 Vector3 posToGoTo = CalculatePosToGoTo(me.target.pos, (int)dist);
                 AmeisenCore.AmeisenCore.InteractWithGUID(posToGoTo, me.targetGUID, action);
-                
+
                 ameisenAction.ActionIsDone();
             }
-            else if (me.target.distance < 3)
+            else if (me.target.distance < 3) // Check If we are standing to near to the current target to trigger the CTM-Action
             {
                 CheckIfWeAreStuckIfYesJump(me.target.distance);
 
