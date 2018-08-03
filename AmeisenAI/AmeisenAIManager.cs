@@ -126,15 +126,7 @@ namespace AmeisenAI
                                 break;
 
                             case AmeisenActionType.INTERACT_TARGET:
-                                InteractWithTarget(currentAction.GetActionParams() == null ? 3.0 : (double)currentAction.GetActionParams(), Interaction.INTERACT, ref currentAction);
-                                break;
-
-                            case AmeisenActionType.ATTACK_TARGET:
-                                InteractWithTarget(currentAction.GetActionParams() == null ? 3.0 : (double)currentAction.GetActionParams(), Interaction.ATTACK, ref currentAction);
-                                break;
-
-                            case AmeisenActionType.LOOT_TARGET:
-                                InteractWithTarget(currentAction.GetActionParams() == null ? 3.0 : (double)currentAction.GetActionParams(), Interaction.LOOT, ref currentAction);
+                                InteractWithTarget(3.0, (Interaction)currentAction.GetActionParams(), ref currentAction);
                                 break;
 
                             case AmeisenActionType.TARGET_MYSELF:
@@ -336,7 +328,7 @@ namespace AmeisenAI
             {
                 Vector3 posToGoTo = CalculatePosToGoTo(me.target.pos, (int)dist);
                 AmeisenCore.AmeisenCore.InteractWithGUID(posToGoTo, me.targetGUID, action);
-
+                
                 ameisenAction.ActionIsDone();
             }
             else if (me.target.distance < 3) // Check If we are standing to near to the current target to trigger the CTM-Action

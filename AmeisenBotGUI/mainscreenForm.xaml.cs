@@ -39,8 +39,23 @@ namespace AmeisenBotGUI
         private void Mainscreen_Loaded(object sender, RoutedEventArgs e)
         {
             AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Loaded MainScreen", this);
+            
+            comboboxInteraction.Items.Add(Interaction.FACETARGET);
+            comboboxInteraction.Items.Add(Interaction.FACEDESTINATION);
+            comboboxInteraction.Items.Add(Interaction.STOP);
+            comboboxInteraction.Items.Add(Interaction.MOVE);
+            comboboxInteraction.Items.Add(Interaction.INTERACT);
+            comboboxInteraction.Items.Add(Interaction.LOOT);
+            comboboxInteraction.Items.Add(Interaction.INTERACTOBJECT);
+            comboboxInteraction.Items.Add(Interaction.FACEOTHER);
+            comboboxInteraction.Items.Add(Interaction.SKIN);
+            comboboxInteraction.Items.Add(Interaction.ATTACK);
+            comboboxInteraction.Items.Add(Interaction.ATTACKPOS);
+            comboboxInteraction.Items.Add(Interaction.ATTACKGUID);
+            comboboxInteraction.Items.Add(Interaction.WALKANDROTATE);
+            comboboxInteraction.SelectedIndex = 0;
 
-            if(uiMode)
+            if (uiMode)
                 AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "UI-MODE active", this);
 
             if (!uiMode)
@@ -64,19 +79,9 @@ namespace AmeisenBotGUI
             AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.MOVE_TO_TARGET, null));
         }
 
-        private void ButtonAttackTarget_Click(object sender, RoutedEventArgs e)
-        {
-            AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.ATTACK_TARGET, null));
-        }
-
         private void ButtonMoveInteractTarget_Click(object sender, RoutedEventArgs e)
         {
-            AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.INTERACT_TARGET, null));
-        }
-
-        private void buttonLootTarget_Click(object sender, RoutedEventArgs e)
-        {
-            AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.LOOT_TARGET, null));
+            AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.INTERACT_TARGET, (AmeisenActionType)comboboxInteraction.SelectedItem));
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
