@@ -1,20 +1,15 @@
-﻿using System;
+﻿using AmeisenUtilities;
+using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace AmeisenLogging
 {
-    public enum LogLevel
-    {
-        VERBOSE,
-        DEBUG,
-        WARNING,
-        ERROR
-    }
-
+    /// <summary>
+    /// Class to store a log entry within
+    /// </summary>
     public class AmeisenLogEntry
     {
         public LogLevel loglevel;
@@ -42,6 +37,7 @@ namespace AmeisenLogging
         private Thread loggingThread;
 
         private static AmeisenLogger i;
+
         private AmeisenLogger()
         {
             activeLogLevel = LogLevel.WARNING; // Default to avoid spam
@@ -52,8 +48,10 @@ namespace AmeisenLogging
             logName = DateTime.Now.ToString("dd-MM-yyyy") + "_" + DateTime.Now.ToString("HH-mm") + ".txt";
         }
 
-        public void StopLogging() { loggingActive = false; }
-
+        /// <summary>
+        /// Initialize/Get the instance of our singleton
+        /// </summary>
+        /// <returns>AmeisenLogger instance</returns>
         public static AmeisenLogger GetInstance()
         {
             if (i == null)
@@ -61,7 +59,44 @@ namespace AmeisenLogging
             return i;
         }
 
+        /// <summary>
+        /// Set the LogLevel that is going to be saved in the logs
+        /// </summary>
+        /// <param name="logLevel">LogLevel to save to the logfile</param>
         public void SetActiveLogLevel(LogLevel logLevel) { activeLogLevel = logLevel; }
+
+        /// <summary>
+        /// Stop the logging thread, dont forget it!
+        /// </summary>
+        public void StopLogging() { loggingActive = false; }
+
+        /// <summary>
+        /// Add an entry to the log
+        /// </summary>
+        /// <param name="loglevel">LogLevel of this Log-Message</param>
+        /// <param name="msg">...</param>
+        /// <param name="self">Class that calls it / string with class name</param>
+        /// <param name="functionName">Function name that this is called by, no need to set this manually</param>
+        /// <returns>The AmeisenLogEntry</returns>
+        public AmeisenLogEntry Log(LogLevel loglevel, string msg, object self, [CallerMemberName]string functionName = "")
+        {
+            AmeisenLogEntry logEntry = new AmeisenLogEntry
+            {
+                loglevel = loglevel,
+                id = logcount,
+                timestamp = DateTime.Now.ToLongTimeString(),
+                msg = msg,
+                originClass = self,
+                functionName = functionName
+            };
+
+            if (loglevel >= activeLogLevel)
+            {
+                logcount++;
+                entries.Enqueue(logEntry);
+            }
+            return logEntry;
+        }
 
         private void WorkOnQueue()
         {
@@ -83,26 +118,6 @@ namespace AmeisenLogging
             if (!Directory.Exists(logPath))
                 Directory.CreateDirectory(logPath);
             File.AppendAllText(logPath + logName, entry.ToString() + Environment.NewLine);
-        }
-
-        public AmeisenLogEntry Log(LogLevel loglevel, string msg, object self, [CallerMemberName]string functionName = "")
-        {
-            AmeisenLogEntry logEntry = new AmeisenLogEntry
-            {
-                loglevel = loglevel,
-                id = logcount,
-                timestamp = DateTime.Now.ToLongTimeString(),
-                msg = msg,
-                originClass = self,
-                functionName = functionName
-            };
-
-            if (loglevel >= activeLogLevel)
-            {
-                logcount++;
-                entries.Enqueue(logEntry);
-            }
-            return logEntry;
         }
     }
 }

@@ -10,13 +10,15 @@ namespace AmeisenCore.Objects
 
         public UInt64 guid;
         public UInt64 targetGUID;
+        public uint memoryLocation;
+
         public bool isPartyLeader;
 
         public int combatReach;
         public int channelSpell;
         public int factionTemplate;
 
-        public int objectType;
+        public WoWObjectType objectType;
         public int summonedBy;
 
         public int level;

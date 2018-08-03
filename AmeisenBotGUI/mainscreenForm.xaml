@@ -65,7 +65,7 @@
         </Label>
         <Label x:Name="labelDebugInfo" Content="- DebugInfo -" HorizontalAlignment="Left" Margin="10,235,0,0" VerticalAlignment="Top" FontFamily="Consolas" Foreground="White" Visibility="Hidden"/>
         <Label x:Name="labelDebugInfoTarget" Content="- DebugInfo -" HorizontalAlignment="Left" Margin="200,235,0,0" VerticalAlignment="Top" FontFamily="Consolas" Foreground="White" Visibility="Hidden"/>
-        <Button x:Name="buttonMoveToTarget" Content="Move to Target" Margin="0,0,10,85" Click="ButtonMoveToTarget_Click" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="127" BorderThickness="2" Background="{x:Null}">
+        <Button x:Name="buttonMoveToTarget" Content="Move to Target" Margin="0,0,10,115" Click="ButtonMoveToTarget_Click" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="127" BorderThickness="2" Background="{x:Null}">
             <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>
@@ -94,7 +94,7 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </CheckBox.BorderBrush>
         </CheckBox>
-        <ListBox x:Name="listboxCurrentQueue" Margin="10,0,0,10" Background="{x:Null}" BorderThickness="2" HorizontalAlignment="Left" Width="269" Height="105" VerticalAlignment="Bottom">
+        <ListBox x:Name="listboxCurrentQueue" Margin="10,0,0,10" Background="{x:Null}" BorderThickness="2" HorizontalAlignment="Left" Width="269" Height="100" VerticalAlignment="Bottom">
             <ListBox.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </ListBox.Foreground>
@@ -102,12 +102,12 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </ListBox.BorderBrush>
         </ListBox>
-        <Label x:Name="labelThreadsActive" Content="Threads: 0/0" HorizontalAlignment="Left" Margin="10,244,0,0" VerticalAlignment="Top" Background="{x:Null}">
+        <Label x:Name="labelThreadsActive" Content="Threads: 0/0" HorizontalAlignment="Left" Margin="6,245,0,0" VerticalAlignment="Top" Background="{x:Null}">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
         </Label>
-        <ProgressBar x:Name="progressBarBusyAIThreads" HorizontalAlignment="Left" Height="10" Margin="10,270,0,0" VerticalAlignment="Top" Width="117" Background="{x:Null}" BorderThickness="2">
+        <ProgressBar x:Name="progressBarBusyAIThreads" HorizontalAlignment="Left" Height="10" Margin="10,271,0,0" VerticalAlignment="Top" Width="117" Background="{x:Null}" BorderThickness="2">
             <ProgressBar.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </ProgressBar.Foreground>
@@ -146,7 +146,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
         </Label>
-        <Button x:Name="buttonAttackTarget" Content="Attack Target" Margin="0,0,10,50" Click="ButtonAttackTarget_Click" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="127" BorderThickness="2" Background="{x:Null}">
+        <Button x:Name="buttonAttackTarget" Content="Attack Target" Margin="0,0,10,80" Click="ButtonAttackTarget_Click" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="127" BorderThickness="2" Background="{x:Null}">
             <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>
@@ -154,7 +154,15 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Button.Foreground>
         </Button>
-        <Button x:Name="buttonMoveInteractTarget" Content="Interact with Target" Margin="0,0,10,15" Click="ButtonMoveInteractTarget_Click" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="127" BorderThickness="2" Background="{x:Null}">
+        <Button x:Name="buttonMoveInteractTarget" Content="Interact with Target" Margin="0,0,10,45" Click="ButtonMoveInteractTarget_Click" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="127" BorderThickness="2" Background="{x:Null}">
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+        </Button>
+        <Button x:Name="buttonLootTarget" Content="Loot Target" Margin="0,0,10,10" Click="buttonLootTarget_Click" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="127" BorderThickness="2" Background="{x:Null}">
             <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>

@@ -10,22 +10,6 @@ using AmeisenUtilities;
 namespace AmeisenAI
 {
     /// <summary>
-    /// Action types, most of them should be pretty
-    /// self-explaining
-    /// </summary>
-    public enum AmeisenActionType
-    {
-        MOVE_TO_GROUPLEADER,
-        LOOT_TARGET,
-        TARGET_ENTITY,
-        TARGET_MYSELF,
-        ATTACK_TARGET,
-        USE_SPELL,
-        INTERACT_TARGET,
-        MOVE_TO_TARGET,
-    }
-
-    /// <summary>
     /// Class that stores an action for the bot to perform as soon as possible
     /// </summary>
     public class AmeisenAction

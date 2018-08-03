@@ -43,8 +43,6 @@
         public static uint ctmGUID = ctmBase + 0x20;
         public static uint ctmDistance = ctmBase + 0xC;
 
-        public static uint FrameScriptExecute = 0x819210;
-
         public static uint devicePtr1 = 0xC5DF88;
         public static uint devicePtr2 = 0x397C;
         public static uint endScene = 0xA8;

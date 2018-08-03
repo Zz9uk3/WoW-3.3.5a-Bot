@@ -2,6 +2,7 @@
 using AmeisenCore;
 using AmeisenCore.Objects;
 using AmeisenLogging;
+using AmeisenUtilities;
 using System;
 using System.Text;
 using System.Windows;
@@ -73,6 +74,11 @@ namespace AmeisenBotGUI
             AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.INTERACT_TARGET, null));
         }
 
+        private void buttonLootTarget_Click(object sender, RoutedEventArgs e)
+        {
+            AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.LOOT_TARGET, null));
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Close();
@@ -110,8 +116,11 @@ namespace AmeisenBotGUI
         /// </summary>
         private void UpdateUI()
         {
-            AmeisenManager.GetInstance().RefreshMe();
+            AmeisenManager.GetInstance().RefreshMeAsync();
             Me me = AmeisenManager.GetInstance().GetMe();
+
+            // TODO: find a better way to update this
+            AmeisenManager.GetInstance().GetObjects();
 
             try
             {

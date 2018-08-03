@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using AmeisenCore.Objects;
+using AmeisenLogging;
+using AmeisenUtilities;
 using Magic;
 
 namespace AmeisenCore
@@ -27,6 +30,10 @@ namespace AmeisenCore
 
         private Me me;
 
+        private List<WoWObject> activeWoWObjects;
+        // To determine if we need to refresh some things
+        private DateTime timestampObjects;
+
         private AmeisenManager()
         {
             isAttached = false;
@@ -50,14 +57,12 @@ namespace AmeisenCore
 
             // Attach to Proccess
             blackmagic = new BlackMagic(p.Id);
-            isAttached = true;
+            isAttached = blackmagic.IsProcessOpen;
 
             // Hook EndScene LMAO
             // TODO: Fix this piece of garbage
             // ameisenHook = new AmeisenHook();
-            // isHooked = true;
-
-            RefreshMeAsync();
+            // isHooked = ameisenHook.isHooked;
         }
 
         /// <summary>
@@ -90,6 +95,7 @@ namespace AmeisenCore
         /// <returns>char's stats, group members, target</returns>
         public Me GetMe()
         {
+            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Getting Me", this);
             if (isAttached)
                 return me;
             else
@@ -101,11 +107,51 @@ namespace AmeisenCore
         /// 
         /// This runs Async.
         /// </summary>
-        public void RefreshMe()
+        public void RefreshMeAsync()
         {
+            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Refresh Me Async", this);
             if (isAttached)
             {
-                new Thread(new ThreadStart(RefreshMeAsync)).Start();
+                new Thread(new ThreadStart(RefreshMe)).Start();
+            }
+            else
+                throw new Exception("Manager is not attached to any WoW...");
+        }
+
+        /// <summary>
+        /// Get our WoWObjects in the memory
+        /// </summary>
+        /// <returns>WoWObjects in the memory</returns>
+        public List<WoWObject> GetObjects()
+        {
+            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Getting Objects", this);
+            if (isAttached)
+            {
+                bool needToRefresh = (DateTime.Now - timestampObjects).TotalSeconds > 5;
+
+                if (activeWoWObjects == null)
+                    RefreshObjects();
+                if (needToRefresh)
+                    RefreshObjectsAsync();
+                return activeWoWObjects;
+            }
+            else
+                throw new Exception("Manager is not attached to any WoW...");
+        }
+
+        /// <summary>
+        /// Refresh our bot's objectlist, you can get the stats by calling GetObjects().
+        /// 
+        /// This runs Async.
+        /// </summary>
+        private void RefreshObjectsAsync()
+        {
+            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Refreshing Objects Async", this);
+            timestampObjects = DateTime.Now;
+
+            if (isAttached)
+            {
+                new Thread(new ThreadStart(RefreshObjects)).Start();
             }
             else
                 throw new Exception("Manager is not attached to any WoW...");
@@ -119,9 +165,11 @@ namespace AmeisenCore
             return wowProcess;
         }
 
-        private void RefreshMeAsync()
+        public void RefreshMe() { me = AmeisenCore.ReadMe(); }
+
+        private void RefreshObjects()
         {
-            me = AmeisenCore.ReadMe();
+            activeWoWObjects = AmeisenCore.RefreshAllWoWObjects();
         }
     }
 }
