@@ -14,7 +14,7 @@ namespace AmeisenCore
     /// - Proccess: WoW.exe we're attached to
     /// - BlackMagic: instance that is attached to WoW.exe
     ///   - get the state by isAttached boolean
-    /// - AmeisenHook: instance that is hookes to WoW.exe's EndScene
+    /// - AmeisenHook: instance that is hooked to WoW.exe's EndScene
     ///   - get the state by isHooked boolean
     /// - Me: all character information
     /// </summary>

@@ -4,28 +4,14 @@ using System.Text;
 
 namespace AmeisenCore.Objects
 {
-    public class WoWObject
+    public abstract class WoWObject
     {
         public string name;
 
         public UInt64 guid;
-        public UInt64 targetGUID;
         public uint memoryLocation;
 
-        public bool isPartyLeader;
-
-        public int combatReach;
-        public int channelSpell;
-        public int factionTemplate;
-
-        public WoWObjectType objectType;
         public int summonedBy;
-
-        public int level;
-        public int health;
-        public int maxHealth;
-        public int energy;
-        public int maxEnergy;
 
         public Vector3 pos;
         public float rotation;
@@ -39,7 +25,7 @@ namespace AmeisenCore.Objects
             StringBuilder sb = new StringBuilder();
 
             sb.Append("\nName: " + name);
-            sb.Append("\nGUID: " + guid);
+            sb.Append("\nGUID: " + guid);/*
             sb.Append("\nTargetGUID: " + targetGUID);
             sb.Append("\nisPartyLeader:" + isPartyLeader);
             sb.Append("\nCombatReach: " + combatReach);
@@ -51,7 +37,7 @@ namespace AmeisenCore.Objects
             sb.Append("\nHealth: " + health);
             sb.Append("\nMaxHealth: " + maxHealth);
             sb.Append("\nEnergy: " + energy);
-            sb.Append("\nMaxEnergy: " + maxEnergy);
+            sb.Append("\nMaxEnergy: " + maxEnergy);*/
             sb.Append("\nPosX: " + pos.x);
             sb.Append("\nPosY: " + pos.y);
             sb.Append("\nPosZ: " + pos.z);
@@ -68,14 +54,14 @@ namespace AmeisenCore.Objects
             StringBuilder sb = new StringBuilder();
 
             sb.Append("\nName: " + name);
-            sb.Append("\nGUID: " + guid);
+            sb.Append("\nGUID: " + guid);/*
             sb.Append("\nTargetGUID: " + targetGUID);
             sb.Append("\nisPartyLeader: " + isPartyLeader);
             sb.Append("\nLevel: " + level);
             sb.Append("\nHealth: " + health);
             sb.Append("\nMaxHealth: " + maxHealth);
             sb.Append("\nEnergy: " + energy);
-            sb.Append("\nMaxEnergy: " + maxEnergy);
+            sb.Append("\nMaxEnergy: " + maxEnergy);*/
             sb.Append("\nPosX: " + pos.x);
             sb.Append("\nPosY: " + pos.y);
             sb.Append("\nPosZ: " + pos.z);

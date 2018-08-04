@@ -71,6 +71,7 @@ namespace AmeisenBotGUI
                         + Application.Current.Resources["BackgroundColor"] + "]["
                         + Application.Current.Resources["TextColor"] + "]"
                         , this);
+
                     // Show the Mainscreen
                     new MainscreenForm((WoWExe)comboBoxWoWs.SelectedItem).Show();
                     Close();

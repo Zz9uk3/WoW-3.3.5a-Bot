@@ -290,10 +290,10 @@ namespace AmeisenAI
 
             if (me.partymembers != null)
             {
-                Target groupleader = null;
+                Player groupleader = null;
 
-                foreach (Target t in me.partymembers)
-                    if (t.isPartyLeader)
+                foreach (Player t in me.partymembers)
+                    if (t.guid == me.partyLeader.guid)
                         groupleader = t;
 
                 if (groupleader == null)
@@ -327,7 +327,7 @@ namespace AmeisenAI
             else if (me.target.distance > 3 && me.target.distance > dist)
             {
                 Vector3 posToGoTo = CalculatePosToGoTo(me.target.pos, (int)dist);
-                AmeisenCore.AmeisenCore.InteractWithGUID(posToGoTo, me.targetGUID, action);
+                AmeisenCore.AmeisenCore.InteractWithGUID(posToGoTo, me.target.guid, action);
                 
                 ameisenAction.ActionIsDone();
             }

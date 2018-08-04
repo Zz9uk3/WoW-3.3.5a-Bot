@@ -151,11 +151,11 @@ namespace AmeisenBotGUI
 
                 StringBuilder sb = new StringBuilder();
 
-                foreach (Target t in me.partymembers)
+                foreach (Player t in me.partymembers)
                     sb.Append(t.ToShortString() + ",\n");
 
                 labelDebugInfo.Content =
-                    "- DebugInfo -\nTargetGUID: " + me.targetGUID +
+                    "- DebugInfo -\nTargetGUID: " + me.target.guid +
                     "\nFactionTemplate: " + me.factionTemplate +
                     "\nMapID: " + me.mapID +
                     "\nZoneID: " + me.zoneID +
@@ -187,7 +187,7 @@ namespace AmeisenBotGUI
                     "\nR: " + me.target.rotation;
 
                 labelDebugInfoTarget.Content =
-                    "- DebugInfo -\nTargetGUID:" + me.target.targetGUID +
+                    "- DebugInfo -\nTargetGUID:" + me.target.target.guid +
                     "\nFactionTemplate:" + me.target.factionTemplate;
             }
             catch (Exception e)

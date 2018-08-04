@@ -56,9 +56,15 @@
     <Compile Include="AmeisenHook.cs" />
     <Compile Include="AmeisenManager.cs" />
     <Compile Include="AmeisenSettings.cs" />
-    <Compile Include="Objects\Me.cs" />
-    <Compile Include="Objects\WoWObject.cs" />
-    <Compile Include="Objects\Target.cs" />
+    <Compile Include="Objects\WoWObjects\Corpse.cs" />
+    <Compile Include="Objects\WoWObjects\DynObj.cs" />
+    <Compile Include="Objects\WoWObjects\GameObj.cs" />
+    <Compile Include="Objects\WoWObjects\Unit.cs" />
+    <Compile Include="Objects\WoWObjects\Container.cs" />
+    <Compile Include="Objects\WoWObjects\Item.cs" />
+    <Compile Include="Objects\WoWObjects\Me.cs" />
+    <Compile Include="Objects\WoWObjects\Player.cs" />
+    <Compile Include="Objects\WoWObjects\WoWObject.cs" />
     <Compile Include="Objects\WoWExe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
