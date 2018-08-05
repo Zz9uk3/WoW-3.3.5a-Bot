@@ -10,6 +10,43 @@
         public float z;
     }
 
+    public enum WoWClass
+    {
+        None = 0,
+        Warrior = 1,
+        Paladin = 2,
+        Hunter = 3,
+        Rogue = 4,
+        Priest = 5,
+        DeathKnight = 6,
+        Shaman = 7,
+        Mage = 8,
+        Warlock = 9,
+        Druid = 11,
+    }
+
+    /// <summary>
+    /// Weird values, need to investigate this crap
+    /// but hey its working... 
+    /// 
+    /// Looks like some sort of flags to be honest...
+    /// </summary>
+    public enum UnitState
+    {
+        STANDING = 0,
+        MOVING = 5,
+        ROTATINGLEFT = 11,
+        ROTATINGRIGHT = 12,
+        AUTOHIT = 18,
+        ATTACKING = 27,
+        JUMPING = 37,
+        LANDED = 39,
+        CASTING = 54,
+        SITTING = 96,
+        LONGSITTING = 97,
+        LOOTING = 188
+    }
+
     /// <summary>
     /// LogLevels
     /// </summary>
@@ -61,13 +98,12 @@
     /// </summary>
     public enum AmeisenActionType
     {
-        MOVE_TO_GROUPLEADER,
         LOOT_TARGET,
         TARGET_ENTITY,
         TARGET_MYSELF,
         ATTACK_TARGET,
         USE_SPELL,
         INTERACT_TARGET,
-        MOVE_TO_TARGET,
+        MOVE_TO_POSITION,
     }
 }

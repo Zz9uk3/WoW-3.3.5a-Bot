@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Structures.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="WoWOffsets.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

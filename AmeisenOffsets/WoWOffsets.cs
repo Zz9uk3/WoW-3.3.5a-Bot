@@ -11,6 +11,11 @@
         public static uint localTargetGUID = 0xBD07B0;
         public static uint localMouseoverGUID = 0xBD07B0;
 
+        public static uint localPlayerCharacterState = 0x6DACA4;
+        public static uint localPlayerCharacterStateOffset1 = 0xC;
+        public static uint localPlayerCharacterStateOffset2 = 0x94;
+        public static uint localPlayerCharacterStateOffset3 = 0x90;
+
         public static uint currentClientConnection = 0xC79CE0;
         public static uint currentManagerOffset = 0x2ED0;
         public static uint firstObjectOffset = 0xAC;
@@ -20,6 +25,8 @@
 
         public static uint playerBase = 0xCD87A8;
         public static uint playerHealth = 0x19B8;
+
+        public static uint staticCastingstate = 0x6F5250;
 
         public static uint nameStore = 0xC5D938 + 0x8;
         public static uint nameMask = 0x24;
