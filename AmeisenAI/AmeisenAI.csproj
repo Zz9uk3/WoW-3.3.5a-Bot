@@ -46,6 +46,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AmeisenAIManager.cs" />
+    <Compile Include="AmeisenCombatManager.cs" />
+    <Compile Include="Combat\CombatEngine.cs" />
+    <Compile Include="Combat\CombatLogicEntry.cs" />
+    <Compile Include="Combat\CombatLogic.cs" />
+    <Compile Include="Combat\CombatStructures.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +69,9 @@
       <Project>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</Project>
       <Name>AmeisenUtilities</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Combat\CombatClasses\Warrior\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -21,6 +21,8 @@
         public static uint playerBase = 0xCD87A8;
         public static uint playerHealth = 0x19B8;
 
+        public static uint staticCastingstate = 0x6F5250;
+
         public static uint nameStore = 0xC5D938 + 0x8;
         public static uint nameMask = 0x24;
         public static uint nameBase = 0x1C;

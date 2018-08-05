@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AmeisenBotGUI"
         mc:Ignorable="d"
-        Title="AmeisenBot - " Height="400" Width="500" Loaded="Mainscreen_Loaded" WindowStyle="None" ResizeMode="NoResize" MouseDown="Mainscreen_MouseDown" Icon="Icon.ico" BorderThickness="2">
+        Title="AmeisenBot - " Height="400" Width="700" Loaded="Mainscreen_Loaded" WindowStyle="None" ResizeMode="NoResize" MouseDown="Mainscreen_MouseDown" Icon="Icon.ico" BorderThickness="2">
     <Window.BorderBrush>
         <SolidColorBrush Color="{DynamicResource AccentColor}"/>
     </Window.BorderBrush>
@@ -13,12 +13,12 @@
         <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
     </Window.Background>
     <Grid>
-        <ProgressBar x:Name="progressBarHPTarget" HorizontalAlignment="Left" Height="26" Margin="200,41,0,0" VerticalAlignment="Top" Width="164" Foreground="#FFB7FF60" FontFamily="Consolas" Background="{x:Null}" BorderThickness="2">
+        <ProgressBar x:Name="progressBarHPTarget" HorizontalAlignment="Left" Height="26" Margin="200,41,0,0" VerticalAlignment="Top" Width="164" Foreground="#FFD2FF9B" FontFamily="Consolas" Background="{x:Null}" BorderThickness="2">
             <ProgressBar.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </ProgressBar.BorderBrush>
         </ProgressBar>
-        <ProgressBar x:Name="progressBarEnergyTarget" HorizontalAlignment="Left" Height="26" Margin="200,72,0,0" VerticalAlignment="Top" Width="164" Foreground="#FFFF6060" Background="{x:Null}" FontFamily="Consolas" BorderThickness="2">
+        <ProgressBar x:Name="progressBarEnergyTarget" HorizontalAlignment="Left" Height="26" Margin="200,72,0,0" VerticalAlignment="Top" Width="164" Foreground="#FFFF9090" Background="{x:Null}" FontFamily="Consolas" BorderThickness="2">
             <ProgressBar.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </ProgressBar.BorderBrush>
@@ -38,12 +38,12 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </ProgressBar.BorderBrush>
         </ProgressBar>
-        <Label x:Name="labelName" Content="..." HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2,10,0,0" FontWeight="Bold" FontFamily="Consolas" FontSize="16">
+        <Label x:Name="labelName" Content="..." HorizontalAlignment="Left" VerticalAlignment="Top" Margin="6,10,0,0" FontWeight="Bold">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
         </Label>
-        <Label x:Name="labelNameTarget" Content="..." HorizontalAlignment="Left" VerticalAlignment="Top" Margin="192,10,0,0" FontWeight="Bold" FontFamily="Consolas" FontSize="16">
+        <Label x:Name="labelNameTarget" Content="..." HorizontalAlignment="Left" VerticalAlignment="Top" Margin="196,10,0,0" FontWeight="Bold">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
@@ -53,12 +53,12 @@
         <Label x:Name="labelEnergy" Content="" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" FontFamily="Consolas"/>
         <Label x:Name="labelEnergyTarget" Content="" HorizontalAlignment="Left" Margin="200,72,0,0" VerticalAlignment="Top" FontFamily="Consolas"/>
         <Label x:Name="labelXP" Content="" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top" FontFamily="Consolas"/>
-        <Label x:Name="labelPosition" Content="X: Y: Z: R:" HorizontalAlignment="Left" Margin="6,134,0,0" VerticalAlignment="Top" FontFamily="Consolas">
+        <Label x:Name="labelPosition" Content="X: Y: Z: R:" HorizontalAlignment="Left" Margin="6,165,0,0" VerticalAlignment="Top" FontFamily="Consolas">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
         </Label>
-        <Label x:Name="labelPositionTarget" Content="X: Y: Z: R:" HorizontalAlignment="Left" Margin="196,134,0,0" VerticalAlignment="Top" FontFamily="Consolas">
+        <Label x:Name="labelPositionTarget" Content="X: Y: Z: R:" HorizontalAlignment="Left" Margin="196,165,0,0" VerticalAlignment="Top" FontFamily="Consolas">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
@@ -81,12 +81,12 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>
         </Button>
-        <Label x:Name="labelDistance" Content="Distance:" HorizontalAlignment="Left" Margin="194,103,0,0" VerticalAlignment="Top" Background="{x:Null}">
+        <Label x:Name="labelDistanceTarget" Content="Distance:" HorizontalAlignment="Left" Margin="196,134,0,0" VerticalAlignment="Top" Background="{x:Null}">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
         </Label>
-        <CheckBox x:Name="checkBoxFollowGroupLeader" Content="Follow Groupleader" Margin="0,0,10,242" Background="White" HorizontalAlignment="Right" Width="127" Height="20" VerticalAlignment="Bottom" BorderThickness="2">
+        <CheckBox x:Name="checkBoxFollowGroupLeader" Content="Follow Groupleader" Margin="0,0,10,115" Background="White" HorizontalAlignment="Right" Width="127" Height="20" VerticalAlignment="Bottom" BorderThickness="2">
             <CheckBox.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </CheckBox.Foreground>
@@ -115,7 +115,7 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </ProgressBar.BorderBrush>
         </ProgressBar>
-        <Button x:Name="buttonSettings" Content="🛠" HorizontalAlignment="Left" Margin="438,41,-2,0" VerticalAlignment="Top" Width="60" Height="55" Click="ButtonSettings_Click" Background="{x:Null}" FontSize="32" BorderThickness="2">
+        <Button x:Name="buttonSettings" Content="🛠" HorizontalAlignment="Left" Margin="638,41,-2,0" VerticalAlignment="Top" Width="60" Height="55" Click="ButtonSettings_Click" Background="{x:Null}" FontSize="32" BorderThickness="2">
             <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>
@@ -132,7 +132,7 @@
             </Button.BorderBrush>
         </Button>
         <Button x:Name="buttonTest" Content="DEBUG BUTTON
-                " HorizontalAlignment="Left" Margin="359,190,0,0" VerticalAlignment="Top" Width="127" Background="{x:Null}" BorderThickness="2" Click="ButtonTest_Click">
+                " HorizontalAlignment="Left" Margin="284,286,0,0" VerticalAlignment="Top" Width="100" Background="{x:Null}" BorderThickness="2" Click="ButtonTest_Click" Height="26">
             <Button.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Button.Foreground>
@@ -141,7 +141,7 @@
             </Button.BorderBrush>
         </Button>
         <Label x:Name="labelFreeBagSlots" Content="DEBUG OUTPUT
-               " HorizontalAlignment="Left" Margin="359,159,0,0" VerticalAlignment="Top">
+               " HorizontalAlignment="Left" Margin="284,317,0,0" VerticalAlignment="Top">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
@@ -154,6 +154,16 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Button.Foreground>
         </Button>
-        <ComboBox x:Name="comboboxInteraction" HorizontalAlignment="Left" Margin="359,286,0,0" VerticalAlignment="Top" Width="127" Height="20"/>
+        <ComboBox x:Name="comboboxInteraction" HorizontalAlignment="Left" Margin="559,286,0,0" VerticalAlignment="Top" Width="127" Height="20"/>
+        <Label x:Name="labelCasting" Content="Casting:" HorizontalAlignment="Left" Margin="6,134,0,0" VerticalAlignment="Top">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Label.Foreground>
+        </Label>
+        <Label x:Name="labelCastingTarget" Content="Casting:" HorizontalAlignment="Left" Margin="196,103,0,0" VerticalAlignment="Top">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Label.Foreground>
+        </Label>
     </Grid>
 </Window>

@@ -19,7 +19,7 @@ namespace AmeisenAI
         private bool isDone;
 
         /// <summary>
-        /// Class to describe an action for the Barin-Threads to process
+        /// Class to describe an action for the Brain-Threads to process
         /// </summary>
         /// <param name="actionType">what the bot should do</param>
         /// <param name="actionParams">parameters for the action</param>
@@ -118,7 +118,8 @@ namespace AmeisenAI
                         switch (currentAction.GetActionType())
                         {
                             case AmeisenActionType.MOVE_TO_TARGET:
-                                MoveToTarget(currentAction.GetActionParams() == null ? 3.0 : (double)currentAction.GetActionParams(), ref currentAction);
+                                if (!AmeisenManager.GetInstance().GetMe().casting)
+                                    MoveToTarget(currentAction.GetActionParams() == null ? 3.0 : (double)currentAction.GetActionParams(), ref currentAction);
                                 break;
 
                             case AmeisenActionType.MOVE_TO_GROUPLEADER:

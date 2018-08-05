@@ -39,7 +39,7 @@ namespace AmeisenBotGUI
         private void Mainscreen_Loaded(object sender, RoutedEventArgs e)
         {
             AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Loaded MainScreen", this);
-            
+
             comboboxInteraction.Items.Add(Interaction.FACETARGET);
             comboboxInteraction.Items.Add(Interaction.FACEDESTINATION);
             comboboxInteraction.Items.Add(Interaction.STOP);
@@ -129,7 +129,8 @@ namespace AmeisenBotGUI
 
             try
             {
-                labelName.Content = me.name + " - lvl." + me.level + " - ";
+                labelName.Content = me.name + " lvl." + me.level;
+                labelCasting.Content = "Casting: " + me.casting;
 
                 labelHP.Content = "HP [" + me.health + "/" + me.maxHealth + "]";
                 progressBarHP.Maximum = me.maxHealth;
@@ -163,12 +164,11 @@ namespace AmeisenBotGUI
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
             }
 
             try
             {
-                labelNameTarget.Content = me.target.name + " - lvl." + me.target.level + " - ";
+                labelNameTarget.Content = me.target.name + " lvl." + me.target.level;
 
                 labelHPTarget.Content = "HP [" + me.target.health + "/" + me.target.maxHealth + "]";
                 progressBarHPTarget.Maximum = me.target.maxHealth;
@@ -178,7 +178,7 @@ namespace AmeisenBotGUI
                 progressBarEnergyTarget.Maximum = me.target.maxEnergy;
                 progressBarEnergyTarget.Value = me.target.energy;
 
-                labelDistance.Content = "Distance: " + me.target.distance + "m";
+                labelDistanceTarget.Content = "Distance: " + me.target.distance + "m";
 
                 labelPositionTarget.Content =
                     "X: " + me.target.pos.x +
@@ -192,7 +192,6 @@ namespace AmeisenBotGUI
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
             }
 
             try

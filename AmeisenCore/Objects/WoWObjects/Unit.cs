@@ -12,6 +12,7 @@ namespace AmeisenCore.Objects
 
         public int combatReach;
         public int channelSpell;
+        public bool casting;
         public int factionTemplate;
 
         public int level;

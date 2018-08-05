@@ -81,5 +81,7 @@ namespace AmeisenCore
         public string accentColor = "#FFAAAAAA";
         public string fontColor = "#FFFFFFFF";
         public string backgroundColor = "#FF303030";
+
+        public string combatClassName = "none";
     }
 }
