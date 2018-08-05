@@ -294,36 +294,46 @@ namespace AmeisenCore
                 case WoWObjectType.CONTAINER:
                     if (tmpResult == null)
                     {
-                        tmpResult = new Container();
-                        tmpResult.name = "Unknown";
+                        tmpResult = new Container
+                        {
+                            name = "Unknown"
+                        };
                     }
                     break;
                 case WoWObjectType.ITEM:
                     if (tmpResult == null)
                     {
-                        tmpResult = new Item();
-                        tmpResult.name = "Unknown";
+                        tmpResult = new Item
+                        {
+                            name = "Unknown"
+                        };
                     }
                     break;
                 case WoWObjectType.GAMEOBJ:
                     if (tmpResult == null)
                     {
-                        tmpResult = new GameObj();
-                        tmpResult.name = "Unknown";
+                        tmpResult = new GameObj
+                        {
+                            name = "Unknown"
+                        };
                     }
                     break;
                 case WoWObjectType.DYNOBJ:
                     if (tmpResult == null)
                     {
-                        tmpResult = new DynObj();
-                        tmpResult.name = "Unknown";
+                        tmpResult = new DynObj
+                        {
+                            name = "Unknown"
+                        };
                     }
                     break;
                 case WoWObjectType.CORPSE:
                     if (tmpResult == null)
                     {
-                        tmpResult = new Corpse();
-                        tmpResult.name = "Unknown";
+                        tmpResult = new Corpse
+                        {
+                            name = "Unknown"
+                        };
                     }
                     break;
                 case WoWObjectType.PLAYER:
@@ -332,8 +342,10 @@ namespace AmeisenCore
                         // Me init
                         if (tmpResult == null)
                         {
-                            tmpResult = new Me();
-                            tmpResult.name = AmeisenManager.GetInstance().GetBlackMagic().ReadASCIIString(WoWOffsets.playerName, 12);
+                            tmpResult = new Me
+                            {
+                                name = AmeisenManager.GetInstance().GetBlackMagic().ReadASCIIString(WoWOffsets.playerName, 12)
+                            };
                         }
                         uint playerbasex = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(WoWOffsets.playerBase);
                         playerbasex = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(playerbasex + 0x34);
@@ -396,16 +408,20 @@ namespace AmeisenCore
                     }
                     else if (tmpResult == null)
                     {
-                        tmpResult = new Player();
-                        tmpResult.name = GetPlayerNameFromGuid(guid);
+                        tmpResult = new Player
+                        {
+                            name = GetPlayerNameFromGuid(guid)
+                        };
                     }
                     // Player init
                     goto case WoWObjectType.UNIT; // don't blame me
                 case WoWObjectType.UNIT:
                     if (tmpResult == null)
                     {
-                        tmpResult = new Unit();
-                        tmpResult.name = GetMobNameFromBase(targetBase);
+                        tmpResult = new Unit
+                        {
+                            name = GetMobNameFromBase(targetBase)
+                        };
                     }
                     //((Unit)tmpResult).targetGUID = 
                     ((Unit)tmpResult).factionTemplate = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(myBaseUnitFields + (0x37 * 4));

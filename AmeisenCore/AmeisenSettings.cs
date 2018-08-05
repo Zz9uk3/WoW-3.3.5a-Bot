@@ -16,8 +16,8 @@ namespace AmeisenCore
     {
         private static AmeisenSettings i;
 
-        private static string configPath = AppDomain.CurrentDomain.BaseDirectory + "/config/";
-        private static string extension = ".json";
+        private static readonly string configPath = AppDomain.CurrentDomain.BaseDirectory + "/config/";
+        private static readonly string extension = ".json";
 
         public Settings settings;
         public string loadedconfName; 

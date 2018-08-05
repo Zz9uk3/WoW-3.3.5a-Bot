@@ -24,51 +24,16 @@ namespace AmeisenCore.Objects
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("\nName: " + name);
-            sb.Append("\nGUID: " + guid);/*
-            sb.Append("\nTargetGUID: " + targetGUID);
-            sb.Append("\nisPartyLeader:" + isPartyLeader);
-            sb.Append("\nCombatReach: " + combatReach);
-            sb.Append("\nChannelSpell: " + channelSpell);
-            sb.Append("\nFactionTemplate: " + factionTemplate);
-            sb.Append("\nObjectType: " + objectType);
-            sb.Append("\nSummonedBy: " + summonedBy);
-            sb.Append("\nLevel: " + level);
-            sb.Append("\nHealth: " + health);
-            sb.Append("\nMaxHealth: " + maxHealth);
-            sb.Append("\nEnergy: " + energy);
-            sb.Append("\nMaxEnergy: " + maxEnergy);*/
-            sb.Append("\nPosX: " + pos.x);
-            sb.Append("\nPosY: " + pos.y);
-            sb.Append("\nPosZ: " + pos.z);
-            sb.Append("\nRotation: " + rotation);
-            sb.Append("\nDistance: " + distance);
-            sb.Append("\nMapID: " + mapID);
-            sb.Append("\nZoneID: " + zoneID);
-
-            return sb.ToString();
-        }
-
-        public string ToShortString()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append("\nName: " + name);
-            sb.Append("\nGUID: " + guid);/*
-            sb.Append("\nTargetGUID: " + targetGUID);
-            sb.Append("\nisPartyLeader: " + isPartyLeader);
-            sb.Append("\nLevel: " + level);
-            sb.Append("\nHealth: " + health);
-            sb.Append("\nMaxHealth: " + maxHealth);
-            sb.Append("\nEnergy: " + energy);
-            sb.Append("\nMaxEnergy: " + maxEnergy);*/
-            sb.Append("\nPosX: " + pos.x);
-            sb.Append("\nPosY: " + pos.y);
-            sb.Append("\nPosZ: " + pos.z);
-            sb.Append("\nRotation: " + rotation);
-            sb.Append("\nDistance: " + distance);
-            sb.Append("\nMapID: " + mapID);
-            sb.Append("\nZoneID: " + zoneID);
+            sb.Append("WOWOBJECT");
+            sb.Append(" >> Name: " + name);
+            sb.Append(" >> GUID: " + guid);
+            sb.Append(" >> PosX: " + pos.x);
+            sb.Append(" >> PosY: " + pos.y);
+            sb.Append(" >> PosZ: " + pos.z);
+            sb.Append(" >> Rotation: " + rotation);
+            sb.Append(" >> Distance: " + distance);
+            sb.Append(" >> MapID: " + mapID);
+            sb.Append(" >> ZoneID: " + zoneID);
 
             return sb.ToString();
         }
