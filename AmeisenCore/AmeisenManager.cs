@@ -22,11 +22,13 @@ namespace AmeisenCore
     {
         private static AmeisenManager i;
 
-        private bool isAttached, isHooked, isMeAllowedToMove;
+        private bool isAttached;
+        private readonly bool isHooked;
+        private readonly bool isMeAllowedToMove;
 
         private Process wowProcess;
         private BlackMagic blackmagic;
-        private AmeisenHook ameisenHook;
+        private readonly AmeisenHook ameisenHook;
 
         private Me me;
 

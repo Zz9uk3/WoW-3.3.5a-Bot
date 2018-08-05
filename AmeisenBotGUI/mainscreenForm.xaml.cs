@@ -101,6 +101,11 @@ namespace AmeisenBotGUI
             WindowState = WindowState.Minimized;
         }
 
+        private void buttonExtendedDebugUI_Click(object sender, RoutedEventArgs e)
+        {
+            new DebugUI().Show();
+        }
+
         private void ButtonTest_Click(object sender, RoutedEventArgs e)
         {
             //AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.TARGET_MYSELF, null));
@@ -164,18 +169,6 @@ namespace AmeisenBotGUI
                     "\nY: " + me.pos.y +
                     "\nZ: " + me.pos.z +
                     "\nR: " + me.rotation;
-
-                StringBuilder sb = new StringBuilder();
-
-                foreach (Player t in me.partymembers)
-                    sb.Append(t.ToShortString() + ",\n");
-
-                labelDebugInfo.Content =
-                    "- DebugInfo -\nTargetGUID: " + me.target.guid +
-                    "\nFactionTemplate: " + me.factionTemplate +
-                    "\nMapID: " + me.mapID +
-                    "\nZoneID: " + me.zoneID +
-                    "\nPartyMembers { " + sb + "\n}";
             }
             catch (Exception e)
             {
@@ -202,10 +195,6 @@ namespace AmeisenBotGUI
                     "\nY: " + me.target.pos.y +
                     "\nZ: " + me.target.pos.z +
                     "\nR: " + me.target.rotation;
-
-                labelDebugInfoTarget.Content =
-                    "- DebugInfo -\nTargetGUID:" + me.target.target.guid +
-                    "\nFactionTemplate:" + me.target.factionTemplate;
             }
             catch (Exception e)
             {

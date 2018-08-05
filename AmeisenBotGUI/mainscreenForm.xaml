@@ -132,7 +132,7 @@
             </Button.BorderBrush>
         </Button>
         <Button x:Name="buttonTest" Content="DEBUG BUTTON
-                " HorizontalAlignment="Left" Margin="284,286,0,0" VerticalAlignment="Top" Width="100" Background="{x:Null}" BorderThickness="2" Click="ButtonTest_Click" Height="26">
+                " HorizontalAlignment="Left" Margin="284,329,0,0" VerticalAlignment="Top" Width="100" Background="{x:Null}" BorderThickness="2" Click="ButtonTest_Click" Height="26">
             <Button.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Button.Foreground>
@@ -141,7 +141,7 @@
             </Button.BorderBrush>
         </Button>
         <Label x:Name="labelFreeBagSlots" Content="DEBUG OUTPUT
-               " HorizontalAlignment="Left" Margin="284,317,0,0" VerticalAlignment="Top">
+               " HorizontalAlignment="Left" Margin="284,360,0,0" VerticalAlignment="Top">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
@@ -165,5 +165,13 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
         </Label>
+        <Button x:Name="buttonExtendedDebugUI" Content="Debug UI" Margin="0,0,312,80" Click="buttonExtendedDebugUI_Click" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="100" BorderThickness="2" Background="{x:Null}">
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+        </Button>
     </Grid>
 </Window>
