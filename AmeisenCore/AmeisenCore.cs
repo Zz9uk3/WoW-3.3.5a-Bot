@@ -160,7 +160,7 @@ namespace AmeisenCore
         /// </summary>
         /// <param name="guid">guid to search for</param>
         /// <returns>BaseAdress of the WoWObject</returns>
-        private static uint GetMemLocByGUID(UInt64 guid)
+        public static uint GetMemLocByGUID(UInt64 guid)
         {
             AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Reading: GUID [" + guid + "]", "AmeisenCore.AmeisenCore");
 

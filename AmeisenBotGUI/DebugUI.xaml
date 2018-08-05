@@ -16,7 +16,7 @@
         <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
     </Window.Background>
     <Grid>
-        <ListBox x:Name="listboxObjects" HorizontalAlignment="Left" Height="528" Margin="10,58,0,0" VerticalAlignment="Top" Width="776">
+        <ListBox x:Name="listboxObjects" HorizontalAlignment="Left" Height="420" Margin="10,90,0,0" VerticalAlignment="Top" Width="776" SelectionChanged="listboxObjects_SelectionChanged">
             <ListBox.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </ListBox.BorderBrush>
@@ -99,6 +99,17 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </CheckBox.Foreground>
         </CheckBox>
+        <TextBox x:Name="textboxSelectedItem" HorizontalAlignment="Left" Height="20" Margin="10,65,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="776"/>
+        <Button x:Name="buttonGetMemLoc" Content="GetMemoryLocationByGUID();" VerticalAlignment="Top" FontFamily="Consolas" FontWeight="Bold" Background="{x:Null}" BorderThickness="2" HorizontalAlignment="Right" Width="180" Margin="0,540,461,0" Height="21" Click="buttonGetMemLoc_Click">
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+        </Button>
+        <TextBox x:Name="textboxInputMemLoc" HorizontalAlignment="Left" Height="21" Margin="10,540,0,0" TextWrapping="Wrap" Text="GUID" VerticalAlignment="Top" Width="140"/>
+        <TextBox x:Name="textboxOutputMemLoc" HorizontalAlignment="Left" Height="20" Margin="10,566,0,0" TextWrapping="Wrap" Text="..." VerticalAlignment="Top" Width="140"/>
 
     </Grid>
 </Window>

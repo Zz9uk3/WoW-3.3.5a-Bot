@@ -2,6 +2,7 @@
 using AmeisenCore.Objects;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -74,6 +75,17 @@ namespace AmeisenBotGUI
                 else if (obj.GetType() == typeof(Me) && checkboxFilterME.IsChecked == true)
                     listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["MeColor"])));
             }
+        }
+
+        private void listboxObjects_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (listboxObjects.SelectedValue != null)
+                textboxSelectedItem.Text = ((DataItem)listboxObjects.SelectedValue).Text;
+        }
+
+        private void buttonGetMemLoc_Click(object sender, RoutedEventArgs e)
+        {
+            textboxOutputMemLoc.Text = String.Format("0x{0:X}", AmeisenCore.AmeisenCore.GetMemLocByGUID(Convert.ToUInt64(textboxInputMemLoc.Text)));
         }
     }
 }
