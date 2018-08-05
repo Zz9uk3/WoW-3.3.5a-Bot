@@ -343,8 +343,11 @@ namespace AmeisenCore
                         ((Me)tmpResult).maxExp = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(playerbasex + 0x3798);
 
                         // Somehow this is really sketchy, need to replace this...
-                        uint castingstate = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt((uint)AmeisenManager.GetInstance().GetBlackMagic().MainModule.BaseAddress + WoWOffsets.staticCastingstate);
-                        ((Me)tmpResult).casting = (castingstate == 11489872) ? false : true;
+                        uint castingstate = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt((uint)AmeisenManager.GetInstance().GetBlackMagic().MainModule.BaseAddress + WoWOffsets.localPlayerCharacterState);
+                        castingstate = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(castingstate + WoWOffsets.localPlayerCharacterStateOffset1);
+                        castingstate = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(castingstate + WoWOffsets.localPlayerCharacterStateOffset2);
+
+                        ((Me)tmpResult).currentState = (UnitState)AmeisenManager.GetInstance().GetBlackMagic().ReadInt(castingstate + WoWOffsets.localPlayerCharacterStateOffset3);
 
                         ((Me)tmpResult).partymembers = new List<Unit>();
 
@@ -356,6 +359,10 @@ namespace AmeisenCore
                             ((Me)tmpResult).partymembers.Add(TryReadPartymember(leaderGUID, WoWOffsets.partyplayer2));
                             ((Me)tmpResult).partymembers.Add(TryReadPartymember(leaderGUID, WoWOffsets.partyplayer3));
                             ((Me)tmpResult).partymembers.Add(TryReadPartymember(leaderGUID, WoWOffsets.partyplayer4));
+
+                            foreach(Unit u in ((Me)tmpResult).partymembers)
+                                if(u.guid == leaderGUID)
+                                    ((Me)tmpResult).partyLeader = u;
                         }
                         UInt64 targetGuid = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(myBaseUnitFields + (0x12 * 4));
                         // If we have a target lets read it
@@ -365,9 +372,10 @@ namespace AmeisenCore
                             ((Me)tmpResult).target = ReadWoWObjectFromGUID<Unit>(targetGuid);
 
                             // Calculate the distance
-                            ((Me)tmpResult).target.distance = Math.Sqrt((((Me)tmpResult).pos.x - ((Me)tmpResult).target.pos.x) * (((Me)tmpResult).pos.x - ((Me)tmpResult).target.pos.x) +
-                                                           (((Me)tmpResult).pos.y - ((Me)tmpResult).target.pos.y) * (((Me)tmpResult).pos.y - ((Me)tmpResult).target.pos.y) +
-                                                           (((Me)tmpResult).pos.z - ((Me)tmpResult).target.pos.z) * (((Me)tmpResult).pos.z - ((Me)tmpResult).target.pos.z));
+                            ((Me)tmpResult).target.distance = Utils.GetDistance(((Me)tmpResult).pos, ((Me)tmpResult).target.pos);
+
+                            //uint targetCastingstate = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt((uint)AmeisenManager.GetInstance().GetBlackMagic().MainModule.BaseAddress + WoWOffsets.staticTargetCastingstate);
+                            //((Me)tmpResult).target.isCasting = (targetCastingstate == 640138312) ? true : false;
 
                             /*try
                             {

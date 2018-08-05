@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AmeisenUtilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace AmeisenCore.Objects
 
         public int combatReach;
         public int channelSpell;
-        public bool casting;
+        public UnitState currentState;
         public int factionTemplate;
 
         public int level;

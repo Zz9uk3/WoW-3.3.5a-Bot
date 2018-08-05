@@ -117,13 +117,8 @@ namespace AmeisenAI
                         AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Processing Action: " + currentAction.ToString(), this);
                         switch (currentAction.GetActionType())
                         {
-                            case AmeisenActionType.MOVE_TO_TARGET:
-                                if (!AmeisenManager.GetInstance().GetMe().casting)
-                                    MoveToTarget(currentAction.GetActionParams() == null ? 3.0 : (double)currentAction.GetActionParams(), ref currentAction);
-                                break;
-
-                            case AmeisenActionType.MOVE_TO_GROUPLEADER:
-                                FollowGroupLeader(currentAction.GetActionParams() == null ? 3.0 : (double)currentAction.GetActionParams(), ref currentAction);
+                            case AmeisenActionType.MOVE_TO_POSITION:
+                                MoveToPosition((Vector3)currentAction.GetActionParams(), 3.0, ref currentAction);
                                 break;
 
                             case AmeisenActionType.INTERACT_TARGET:
@@ -257,63 +252,30 @@ namespace AmeisenAI
 
         private void CheckIfWeAreStuckIfYesJump(double activeDistance)
         {
-            if (activeDistance >= lastDistance)
+            if (activeDistance * 0.9 >= lastDistance)
                 AmeisenCore.AmeisenCore.CharacterJumpAsync();
             // Here comes the Obstacle-Avoid-System in the future
         }
 
-        private void MoveToTarget(double dist, ref AmeisenAction ameisenAction)
+        private void MoveToPosition(Vector3 position, double dist, ref AmeisenAction ameisenAction)
         {
             Me me = AmeisenManager.GetInstance().GetMe();
+            double distanceToPoint = Utils.GetDistance(me.pos, position);
 
-            if (me.target == null)
-                ameisenAction.ActionIsDone(); // If there is no target, we can't follow anyone...
-            else if (me.target.distance > dist)
+            if (distanceToPoint > dist * 2)
             {
-                CheckIfWeAreStuckIfYesJump(me.target.distance); // Stuck check, if we haven't moved since the last iteration jump
+                CheckIfWeAreStuckIfYesJump(distanceToPoint); // Stuck check, if we haven't moved since the last iteration, jump
 
-                Vector3 posToGoTo = CalculatePosToGoTo(me.target.pos, (int)dist);
+                Vector3 posToGoTo = CalculatePosToGoTo(position, (int)dist);
                 AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoTo, Interaction.MOVE);
 
                 // Let the character run to prevent random jumping
                 Thread.Sleep(500);
 
+                // recalculate
+                distanceToPoint = Utils.GetDistance(me.pos, position);
                 lastPosition = me.pos;
-                lastDistance = me.target.distance;
-            }
-            else
-                ameisenAction.ActionIsDone();
-        }
-
-        private void FollowGroupLeader(double dist, ref AmeisenAction ameisenAction)
-        {
-            Me me = AmeisenManager.GetInstance().GetMe();
-
-            if (me.partymembers != null)
-            {
-                Player groupleader = null;
-
-                foreach (Player t in me.partymembers)
-                    if (t.guid == me.partyLeader.guid)
-                        groupleader = t;
-
-                if (groupleader == null)
-                    ameisenAction.ActionIsDone(); // If there is no groupleader, we can't follow anyone...
-                else if (groupleader.distance > dist)
-                {
-                    CheckIfWeAreStuckIfYesJump(groupleader.distance); // Stuck check, if we haven't moved since the last iteration jump
-
-                    Vector3 posToGoTo = CalculatePosToGoTo(groupleader.pos, (int)dist);
-                    AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoTo, Interaction.MOVE);
-
-                    // Let the character run to prevent random jumping
-                    Thread.Sleep(500);
-
-                    lastPosition = me.pos;
-                    lastDistance = groupleader.distance;
-                }
-                else
-                    ameisenAction.ActionIsDone();
+                lastDistance = distanceToPoint;
             }
             else
                 ameisenAction.ActionIsDone();
@@ -329,7 +291,7 @@ namespace AmeisenAI
             {
                 Vector3 posToGoTo = CalculatePosToGoTo(me.target.pos, (int)dist);
                 AmeisenCore.AmeisenCore.InteractWithGUID(posToGoTo, me.target.guid, action);
-                
+
                 ameisenAction.ActionIsDone();
             }
             else if (me.target.distance < 3) // Check If we are standing to near to the current target to trigger the CTM-Action
