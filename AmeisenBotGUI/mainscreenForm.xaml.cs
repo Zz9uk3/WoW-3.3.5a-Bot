@@ -179,6 +179,7 @@ namespace AmeisenBotGUI
             }
             catch (Exception e)
             {
+                AmeisenLogger.GetInstance().Log(LogLevel.ERROR, e.ToString(), this);
             }
 
             try
@@ -208,6 +209,7 @@ namespace AmeisenBotGUI
             }
             catch (Exception e)
             {
+                AmeisenLogger.GetInstance().Log(LogLevel.ERROR, e.ToString(), this);
             }
 
             try
@@ -221,7 +223,7 @@ namespace AmeisenBotGUI
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                AmeisenLogger.GetInstance().Log(LogLevel.ERROR, e.ToString(), this);
             }
         }
     }
