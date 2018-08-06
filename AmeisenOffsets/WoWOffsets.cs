@@ -6,6 +6,21 @@
     public abstract class WoWOffsets
     {
         public static uint playerName = 0xC79D18;
+        public static uint playerIsLoadingscreen = 0xB6AA38;
+        public static uint playerIsIngame = 0xBD0792;
+        public static uint worldLoaded = 0xBEBA40;
+        public static uint gameState = 0xB6A9E0;
+        public static uint realmName = 0xC79B9E;
+        public static uint characterSlotSelected = 0x6C436C;
+
+        public static uint playerCorpseX = 0xBD0A58;
+        public static uint playerCorpseY = playerCorpseX + 0x4;
+        public static uint playerCorpseZ = playerCorpseY + 0x4;
+
+        public static uint PetGUID = 0xC234D0;
+
+        public static uint wowChat = 0xB75A60;
+        public static uint wowChatNextMsg = 0x17C0;
 
         public static uint localPlayerGUID = 0xCA1238;
         public static uint localTargetGUID = 0xBD07B0;
@@ -35,12 +50,21 @@
 
         public static uint mapID = 0xAB63BC;
         public static uint zoneID = 0xBD080C;
+        public static uint continentName = 0xCE06D0;
+        public static uint zoneText = 0xBD0788;
+        public static uint subZoneText = 0xBD0784;
 
         public static uint partyLeader = 0xBD1968;
-        public static uint partyplayer1 = 0xBD1948;
-        public static uint partyplayer2 = partyplayer1 + 0x8;
-        public static uint partyplayer3 = partyplayer2 + 0x8;
-        public static uint partyplayer4 = partyplayer3 + 0x8;
+        public static uint partyPlayer1 = 0xBD1948;
+        public static uint partyPlayer2 = partyPlayer1 + 0x8;
+        public static uint partyPlayer3 = partyPlayer2 + 0x8;
+        public static uint partyPlayer4 = partyPlayer3 + 0x8;
+
+        public static uint arenaPlayer1 = 0xBE9F48;
+        public static uint arenaPlayer2 = arenaPlayer1 + 0x8;
+        public static uint arenaPlayer3 = arenaPlayer2 + 0x8;
+        public static uint arenaPlayer4 = arenaPlayer3 + 0x8;
+        public static uint arenaPlayer5 = arenaPlayer4 + 0x8;
 
         public static uint ctmBase = 0xCA11D8;
         public static uint ctmX = ctmBase + 0x8C;
