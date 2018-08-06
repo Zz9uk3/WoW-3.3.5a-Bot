@@ -10,6 +10,13 @@
         public float z;
     }
 
+    public struct Credentials
+    {
+        public string username;
+        public string password;
+        public int charSlot;
+    }
+
     public enum WoWClass
     {
         None = 0,

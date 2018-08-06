@@ -367,10 +367,10 @@ namespace AmeisenCore
 
                         if (leaderGUID != 0)
                         {
-                            ((Me)tmpResult).partymembers.Add(TryReadPartymember(leaderGUID, WoWOffsets.partyplayer1));
-                            ((Me)tmpResult).partymembers.Add(TryReadPartymember(leaderGUID, WoWOffsets.partyplayer2));
-                            ((Me)tmpResult).partymembers.Add(TryReadPartymember(leaderGUID, WoWOffsets.partyplayer3));
-                            ((Me)tmpResult).partymembers.Add(TryReadPartymember(leaderGUID, WoWOffsets.partyplayer4));
+                            ((Me)tmpResult).partymembers.Add(TryReadPartymember(leaderGUID, WoWOffsets.partyPlayer1));
+                            ((Me)tmpResult).partymembers.Add(TryReadPartymember(leaderGUID, WoWOffsets.partyPlayer2));
+                            ((Me)tmpResult).partymembers.Add(TryReadPartymember(leaderGUID, WoWOffsets.partyPlayer3));
+                            ((Me)tmpResult).partymembers.Add(TryReadPartymember(leaderGUID, WoWOffsets.partyPlayer4));
 
                             foreach(Unit u in ((Me)tmpResult).partymembers)
                                 if(u.guid == leaderGUID)
