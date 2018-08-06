@@ -1,0 +1,3 @@
+[submodule "WoW-LoginAutomator"]
+	path = WoW-LoginAutomator
+	url = https://github.com/Jnnshschl/WoW-LoginAutomator.git
