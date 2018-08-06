@@ -6,7 +6,7 @@ A bot written in (at this time) C# only for World of Warcraft WotLK (3.3.5a 1234
 
 ⚙️**Libaries used:** Blackmagic - https://github.com/acidburn974/Blackmagic
 
-🌵**How to enable AutoLogin**
+🌵 **How to enable AutoLogin**
 Place the "WoW-LoginAutomator.exe" in the same folder as the bot, thats all
 
 ---
