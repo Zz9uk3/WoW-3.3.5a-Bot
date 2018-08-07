@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AmeisenBotGUI"
         mc:Ignorable="d"
-        Title="DebugUI" Height="600" Width="800" BorderThickness="2" WindowStyle="None" MouseDown="DebugUI_MouseDown" Loaded="debugUI_Loaded" ResizeMode="NoResize">
+        Title="DebugUI" Height="600" Width="800" BorderThickness="2" WindowStyle="None" MouseDown="DebugUI_MouseDown" Loaded="DebugUI_Loaded" ResizeMode="NoResize">
     <Window.BorderBrush>
         <SolidColorBrush Color="{DynamicResource AccentColor}"/>
     </Window.BorderBrush>
@@ -16,7 +16,7 @@
         <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
     </Window.Background>
     <Grid>
-        <ListBox x:Name="listboxObjects" HorizontalAlignment="Left" Height="420" Margin="10,90,0,0" VerticalAlignment="Top" Width="776" SelectionChanged="listboxObjects_SelectionChanged">
+        <ListBox x:Name="listboxObjects" HorizontalAlignment="Left" Height="420" Margin="10,90,0,0" VerticalAlignment="Top" Width="776" SelectionChanged="ListboxObjects_SelectionChanged">
             <ListBox.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </ListBox.BorderBrush>
@@ -39,7 +39,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
         </Label>
-        <Button x:Name="buttonExit" Content="X" VerticalAlignment="Top" FontFamily="Consolas" Click="buttonExit_Click" FontWeight="Bold" Background="{x:Null}" BorderThickness="2" HorizontalAlignment="Right" Width="20" Margin="0,-2,-2,0">
+        <Button x:Name="buttonExit" Content="X" VerticalAlignment="Top" FontFamily="Consolas" Click="ButtonExit_Click" FontWeight="Bold" Background="{x:Null}" BorderThickness="2" HorizontalAlignment="Right" Width="20" Margin="0,-2,-2,0">
             <Button.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Button.Foreground>
@@ -47,7 +47,7 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>
         </Button>
-        <Button x:Name="buttonMinimize" Content="_" Margin="0,-2,16,0" VerticalAlignment="Top" FontFamily="Consolas" FontWeight="Bold" Background="{x:Null}" BorderThickness="2" HorizontalAlignment="Right" Width="20" Click="buttonMinimize_Click">
+        <Button x:Name="buttonMinimize" Content="_" Margin="0,-2,16,0" VerticalAlignment="Top" FontFamily="Consolas" FontWeight="Bold" Background="{x:Null}" BorderThickness="2" HorizontalAlignment="Right" Width="20" Click="ButtonMinimize_Click">
             <Button.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Button.Foreground>
@@ -100,7 +100,7 @@
             </CheckBox.Foreground>
         </CheckBox>
         <TextBox x:Name="textboxSelectedItem" HorizontalAlignment="Left" Height="20" Margin="10,65,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="776"/>
-        <Button x:Name="buttonGetMemLoc" Content="GetMemoryLocationByGUID();" VerticalAlignment="Top" FontFamily="Consolas" FontWeight="Bold" Background="{x:Null}" BorderThickness="2" HorizontalAlignment="Right" Width="180" Margin="0,540,461,0" Height="21" Click="buttonGetMemLoc_Click">
+        <Button x:Name="buttonGetMemLoc" Content="GetMemoryLocationByGUID();" VerticalAlignment="Top" FontFamily="Consolas" FontWeight="Bold" Background="{x:Null}" BorderThickness="2" HorizontalAlignment="Right" Width="180" Margin="0,540,461,0" Height="21" Click="ButtonGetMemLoc_Click">
             <Button.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Button.Foreground>

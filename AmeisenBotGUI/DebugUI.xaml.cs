@@ -43,17 +43,17 @@ namespace AmeisenBotGUI
             DragMove();
         }
 
-        private void buttonExit_Click(object sender, RoutedEventArgs e)
+        private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
 
-        private void buttonMinimize_Click(object sender, RoutedEventArgs e)
+        private void ButtonMinimize_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
         }
 
-        private void debugUI_Loaded(object sender, RoutedEventArgs e)
+        private void DebugUI_Loaded(object sender, RoutedEventArgs e)
         {
             DispatcherTimer uiUpdateTimer = new DispatcherTimer();
             uiUpdateTimer.Tick += new EventHandler(UIUpdateTimer_Tick);
@@ -77,13 +77,13 @@ namespace AmeisenBotGUI
             }
         }
 
-        private void listboxObjects_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ListboxObjects_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (listboxObjects.SelectedValue != null)
                 textboxSelectedItem.Text = ((DataItem)listboxObjects.SelectedValue).Text;
         }
 
-        private void buttonGetMemLoc_Click(object sender, RoutedEventArgs e)
+        private void ButtonGetMemLoc_Click(object sender, RoutedEventArgs e)
         {
             textboxOutputMemLoc.Text = String.Format("0x{0:X}", AmeisenCore.AmeisenCore.GetMemLocByGUID(Convert.ToUInt64(textboxInputMemLoc.Text)));
         }
