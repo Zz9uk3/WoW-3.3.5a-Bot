@@ -111,14 +111,14 @@ namespace AmeisenCore
 
             string[] asm = new string[]
             {
-                "mov eax, " + argCC,
-                "push 0",
-                "push eax",
-                "push eax",
-                "mov eax, " + ((uint)AmeisenUtilities.WoWOffsets.LuaDoString),
-                "call eax",
-                "add esp, 0xC",
-                "retn",
+                "MOV EAX, " + (argCC),
+                "PUSH 0",
+                "PUSH EAX",
+                "PUSH EAX",
+                "MOV EAX, " + (WoWOffsets.luaDoString),
+                "CALL EAX",
+                "ADD ESP, 0xC",
+                "RETN",
             };
 
             AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm);
@@ -139,13 +139,13 @@ namespace AmeisenCore
 
             string[] asm = new string[]
             {
-            "call " + WoWOffsets.clientObjectManagerGetActivePlayerObject,
-            "mov ecx, eax",
-            "push -1",
-            "mov edx, " + argCC + "",
-            "push edx",
-            "call " + WoWOffsets.frameScriptGetLocalizedText,
-            "retn",
+            "CALL " + (WoWOffsets.clientObjectManagerGetActivePlayerObject),
+            "MOV ECX, EAX",
+            "PUSH -1",
+            "MOV EDX, " + argCC + "",
+            "push EDX",
+            "CALL " + (WoWOffsets.luaGetLocalizedText),
+            "RETN",
             };
 
             string result = Encoding.UTF8.GetString(AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm));

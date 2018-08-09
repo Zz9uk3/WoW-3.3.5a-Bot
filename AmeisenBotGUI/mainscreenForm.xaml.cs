@@ -89,6 +89,7 @@ namespace AmeisenBotGUI
             Close();
             AmeisenAIManager.GetInstance().StopAI();
             AmeisenLogger.GetInstance().StopLogging();
+            AmeisenManager.GetInstance().GetAmeisenHook().DisposeHooking();
         }
 
         private void ButtonSettings_Click(object sender, RoutedEventArgs e)
@@ -101,22 +102,21 @@ namespace AmeisenBotGUI
             WindowState = WindowState.Minimized;
         }
 
-        private void buttonExtendedDebugUI_Click(object sender, RoutedEventArgs e)
+        private void ButtonExtendedDebugUI_Click(object sender, RoutedEventArgs e)
         {
             new DebugUI().Show();
         }
 
         private void ButtonTest_Click(object sender, RoutedEventArgs e)
         {
-            //AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.TARGET_MYSELF, null));
-            AmeisenCore.AmeisenCore.CharacterJumpAsync();
+            AmeisenCore.AmeisenCore.LUADoString("DoEmote(\"Dance\")");
         }
 
         private void UIUpdateTimer_Tick(object sender, EventArgs e)
         {
             UpdateUI();
 
-            if (checkBoxFollowGroupLeader.IsChecked == true 
+            if (checkBoxFollowGroupLeader.IsChecked == true
                 && AmeisenManager.GetInstance().GetMe().currentState != UnitState.ATTACKING
                 && AmeisenManager.GetInstance().GetMe().currentState != UnitState.AUTOHIT
                 && AmeisenManager.GetInstance().GetMe().currentState != UnitState.CASTING)
@@ -147,58 +147,61 @@ namespace AmeisenBotGUI
             // TODO: find a better way to update this
             AmeisenManager.GetInstance().GetObjects();
 
-            try
+            if (me != null)
             {
-                labelName.Content = me.name + " lvl." + me.level;
-                labelCasting.Content = "Casting: " + me.currentState;
+                try
+                {
+                    labelName.Content = me.name + " lvl." + me.level;
+                    labelCasting.Content = "Casting: " + me.currentState;
 
-                labelHP.Content = "HP [" + me.health + "/" + me.maxHealth + "]";
-                progressBarHP.Maximum = me.maxHealth;
-                progressBarHP.Value = me.health;
+                    labelHP.Content = "HP [" + me.health + "/" + me.maxHealth + "]";
+                    progressBarHP.Maximum = me.maxHealth;
+                    progressBarHP.Value = me.health;
 
-                labelEnergy.Content = "Energy [" + me.energy + "/" + me.maxEnergy + "]";
-                progressBarEnergy.Maximum = me.maxEnergy;
-                progressBarEnergy.Value = me.energy;
+                    labelEnergy.Content = "Energy [" + me.energy + "/" + me.maxEnergy + "]";
+                    progressBarEnergy.Maximum = me.maxEnergy;
+                    progressBarEnergy.Value = me.energy;
 
-                labelXP.Content = "XP [" + me.exp + "/" + me.maxExp + "]";
-                progressBarXP.Maximum = me.maxExp;
-                progressBarXP.Value = me.exp;
+                    labelXP.Content = "XP [" + me.exp + "/" + me.maxExp + "]";
+                    progressBarXP.Maximum = me.maxExp;
+                    progressBarXP.Value = me.exp;
 
-                labelPosition.Content =
-                    "X: " + me.pos.x +
-                    "\nY: " + me.pos.y +
-                    "\nZ: " + me.pos.z +
-                    "\nR: " + me.rotation;
-            }
-            catch (Exception e)
-            {
-                AmeisenLogger.GetInstance().Log(LogLevel.ERROR, e.ToString(), this);
-            }
+                    labelPosition.Content =
+                        "X: " + me.pos.x +
+                        "\nY: " + me.pos.y +
+                        "\nZ: " + me.pos.z +
+                        "\nR: " + me.rotation;
+                }
+                catch (Exception e)
+                {
+                    AmeisenLogger.GetInstance().Log(LogLevel.ERROR, e.ToString(), this);
+                }
+                if (me.target != null)
+                    try
+                    {
+                        labelNameTarget.Content = me.target.name + " lvl." + me.target.level;
+                        labelCastingTarget.Content = "Current state: " + me.target.currentState;
 
-            try
-            {
-                labelNameTarget.Content = me.target.name + " lvl." + me.target.level;
-                labelCastingTarget.Content = "Current state: " + me.target.currentState;
+                        labelHPTarget.Content = "HP [" + me.target.health + "/" + me.target.maxHealth + "]";
+                        progressBarHPTarget.Maximum = me.target.maxHealth;
+                        progressBarHPTarget.Value = me.target.health;
 
-                labelHPTarget.Content = "HP [" + me.target.health + "/" + me.target.maxHealth + "]";
-                progressBarHPTarget.Maximum = me.target.maxHealth;
-                progressBarHPTarget.Value = me.target.health;
+                        labelEnergyTarget.Content = "Energy [" + me.target.energy + "/" + me.target.maxEnergy + "]";
+                        progressBarEnergyTarget.Maximum = me.target.maxEnergy;
+                        progressBarEnergyTarget.Value = me.target.energy;
 
-                labelEnergyTarget.Content = "Energy [" + me.target.energy + "/" + me.target.maxEnergy + "]";
-                progressBarEnergyTarget.Maximum = me.target.maxEnergy;
-                progressBarEnergyTarget.Value = me.target.energy;
+                        labelDistanceTarget.Content = "Distance: " + me.target.distance + "m";
 
-                labelDistanceTarget.Content = "Distance: " + me.target.distance + "m";
-
-                labelPositionTarget.Content =
-                    "X: " + me.target.pos.x +
-                    "\nY: " + me.target.pos.y +
-                    "\nZ: " + me.target.pos.z +
-                    "\nR: " + me.target.rotation;
-            }
-            catch (Exception e)
-            {
-                AmeisenLogger.GetInstance().Log(LogLevel.ERROR, e.ToString(), this);
+                        labelPositionTarget.Content =
+                            "X: " + me.target.pos.x +
+                            "\nY: " + me.target.pos.y +
+                            "\nZ: " + me.target.pos.z +
+                            "\nR: " + me.target.rotation;
+                    }
+                    catch (Exception e)
+                    {
+                        AmeisenLogger.GetInstance().Log(LogLevel.ERROR, e.ToString(), this);
+                    }
             }
 
             try

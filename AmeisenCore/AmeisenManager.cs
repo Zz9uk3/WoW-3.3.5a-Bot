@@ -23,12 +23,11 @@ namespace AmeisenCore
         private static AmeisenManager i;
 
         private bool isAttached;
-        private readonly bool isHooked;
-        private readonly bool isMeAllowedToMove;
+        private bool isHooked;
 
         private Process wowProcess;
         private BlackMagic blackmagic;
-        private readonly AmeisenHook ameisenHook;
+        private AmeisenHook ameisenHook;
 
         private Me me;
 
@@ -63,8 +62,8 @@ namespace AmeisenCore
 
             // Hook EndScene LMAO
             // TODO: Fix this piece of garbage
-            // ameisenHook = new AmeisenHook();
-            // isHooked = ameisenHook.isHooked;
+            ameisenHook = new AmeisenHook();
+            isHooked = ameisenHook.isHooked;
         }
 
         /// <summary>
