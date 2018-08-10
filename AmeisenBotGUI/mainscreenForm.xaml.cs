@@ -109,11 +109,22 @@ namespace AmeisenBotGUI
 
         private void ButtonTest_Click(object sender, RoutedEventArgs e)
         {
-            AmeisenCore.AmeisenCore.LUADoString("DoEmote(\"Dance\")");
+            AmeisenCore.AmeisenCore.LUADoString(debugInput.Text);
+        }
+
+        private void ButtonTargetMyself_Click(object sender, RoutedEventArgs e)
+        {
+            AmeisenCore.AmeisenCore.TargetGUID(AmeisenManager.GetInstance().GetMe().guid);
+        }
+
+        private void ButtonTargetGUID_Click(object sender, RoutedEventArgs e)
+        {
+            AmeisenCore.AmeisenCore.TargetGUID(Convert.ToUInt64(debugInputGUID.Text));
         }
 
         private void UIUpdateTimer_Tick(object sender, EventArgs e)
         {
+            AmeisenCore.AmeisenCore.AntiAFK();
             UpdateUI();
 
             if (checkBoxFollowGroupLeader.IsChecked == true

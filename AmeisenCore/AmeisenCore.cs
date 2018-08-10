@@ -97,10 +97,7 @@ namespace AmeisenCore
         }
 
         /// <summary>
-        /// Execute the given LUA command inside WoW to
-        /// for example switch targets.
-        /// 
-        /// !!! W.I.P !!!
+        /// Execute the given LUA command inside WoW's MainThread
         /// </summary>
         /// <param name="command">lua command to run</param>
         public static void LUADoString(string command)
@@ -126,6 +123,27 @@ namespace AmeisenCore
         }
 
         /// <summary>
+        /// Target a GUID
+        /// </summary>
+        /// <param name="guid">guid to target</param>
+        public static void TargetGUID(UInt64 guid)
+        {
+            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "TargetGUID: " + guid, "AmeisenCore.AmeisenCore");
+
+            byte[] guidBytes = BitConverter.GetBytes(guid);
+
+            string[] asm = new string[]
+            {
+                "PUSH " + BitConverter.ToInt32(guidBytes, 4),
+                "PUSH " + BitConverter.ToInt32(guidBytes, 0),
+                "CALL " + (WoWOffsets.cGameUITarget),
+                "RETN",
+            };
+
+            AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm);
+        }
+
+        /// <summary>
         /// Get Localized Text for command
         /// 
         /// !!! W.I.P !!!
@@ -143,7 +161,7 @@ namespace AmeisenCore
             "MOV ECX, EAX",
             "PUSH -1",
             "MOV EDX, " + argCC + "",
-            "push EDX",
+            "PUSH EDX",
             "CALL " + (WoWOffsets.luaGetLocalizedText),
             "RETN",
             };
@@ -500,23 +518,9 @@ namespace AmeisenCore
             return AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(WoWOffsets.localTargetGUID);
         }
 
-        /// <summary>
-        /// Set the target by its GUID
-        /// </summary>
-        /// <returns></returns>
-        public static void TargetGUID(UInt64 guid)
+        public static void AntiAFK()
         {
-            //target it...
-        }
-
-        /// <summary>
-        /// Set the target by its GUID
-        /// </summary>
-        /// <returns></returns>
-        public static void TargetMyself()
-        {
-            Me me = AmeisenManager.GetInstance().GetMe();
-            TargetGUID(GetPlayerGUID());
+            AmeisenManager.GetInstance().GetBlackMagic().WriteInt(WoWOffsets.tickCount, Environment.TickCount);
         }
 
         /// <summary>

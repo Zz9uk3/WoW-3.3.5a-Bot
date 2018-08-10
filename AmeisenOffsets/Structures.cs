@@ -107,7 +107,6 @@
     {
         LOOT_TARGET,
         TARGET_ENTITY,
-        TARGET_MYSELF,
         ATTACK_TARGET,
         USE_SPELL,
         INTERACT_TARGET,

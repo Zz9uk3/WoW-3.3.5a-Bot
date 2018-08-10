@@ -124,11 +124,7 @@ namespace AmeisenAI
                             case AmeisenActionType.INTERACT_TARGET:
                                 InteractWithTarget(3.0, (Interaction)currentAction.GetActionParams(), ref currentAction);
                                 break;
-
-                            case AmeisenActionType.TARGET_MYSELF:
-                                AmeisenCore.AmeisenCore.TargetMyself();
-                                break;
-
+                                
                             case AmeisenActionType.TARGET_ENTITY:
                                 AmeisenCore.AmeisenCore.TargetGUID((UInt64)currentAction.GetActionParams());
                                 break;

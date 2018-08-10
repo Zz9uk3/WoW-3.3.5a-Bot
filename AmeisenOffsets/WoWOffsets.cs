@@ -83,6 +83,9 @@
         public static uint luaDoString = 0x819210;
         public static uint luaGetLocalizedText = 0x7225E0;
 
-        public static uint CGameUITarget = 0x524BF0;
+        public static uint cGameUITarget = 0x524BF0;
+
+        public static uint tickCount = 0xB499A4;
+        public static uint timestamp = 0xB1D618;
     }
 }
