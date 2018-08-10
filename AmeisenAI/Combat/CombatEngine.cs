@@ -9,8 +9,8 @@ namespace AmeisenAI
 {
     class CombatEngine
     {
-        private static string combatclassesPath = AppDomain.CurrentDomain.BaseDirectory + "/combatclasses/";
-        private static string extension = ".json";
+        private static readonly string combatclassesPath = AppDomain.CurrentDomain.BaseDirectory + "/combatclasses/";
+        private static readonly string extension = ".json";
 
         private int posAt;
         private CombatLogic currentCombatLogic;
@@ -28,12 +28,17 @@ namespace AmeisenAI
 
         public void ExecuteAction(CombatLogicEntry entry)
         {
-            switch (entry.action)
+            switch (entry.Action)
             {
                 case CombatLogicAction.USE_SPELL:
+                    AmeisenCore.AmeisenCore.CastSpellByName((string)entry.Parameters, entry.IsForMyself);
                     break;
 
                 case CombatLogicAction.USE_AOE_SPELL:
+                    break;
+
+                case CombatLogicAction.SHAPESHIFT:
+                    AmeisenCore.AmeisenCore.CastShapeshift((int)entry.Parameters);
                     break;
 
                 case CombatLogicAction.FLEE:
@@ -44,39 +49,41 @@ namespace AmeisenAI
             }
         }
 
-        private bool ExecuteLogic(CombatLogicEntry entry)
+        public bool ExecuteLogic(CombatLogicEntry entry)
         {
-            /* Need Hook/LUADoString for this
-             * 
-             * if (entry.combatOnly && AmeisenCore.AmeisenCore.GetCombatState())
-             *     return false;
-             * 
-             * if(entry.isBuffForParty)
-             *     if(CheckForBuff(AmeisenManager.GetInstance().GetMe().buffs, entry.spellDistance))
-             * else
-             *     if(CheckForBuff(AmeisenManager.GetInstance().GetMe().buffs, entry.spellDistance))
-             *         return false;
-             */
-
-            if (AmeisenManager.GetInstance().GetMe().target.distance > entry.spellDistance)
+            if (AmeisenManager.GetInstance().GetMe().target.distance >= entry.MaxSpellDistance)
                 return false;
 
-            switch (entry.statement)
+            foreach (Condition c in entry.Conditions)
+                if (!CheckCondition(c))
+                    return false;
+            return true;
+        }
+
+        private bool CheckCondition(Condition condition)
+        {
+            switch (condition.statement)
             {
                 case CombatLogicStatement.GREATER:
-                    return CompareGreater(entry.conditionA, entry.conditionB);
+                    return CompareGreater((double)condition.conditionValues[0], (double)condition.conditionValues[1]);
 
                 case CombatLogicStatement.GREATER_OR_EQUAL:
-                    return CompareGreaterOrEqual(entry.conditionA, entry.conditionB);
+                    return CompareGreaterOrEqual((double)condition.conditionValues[0], (double)condition.conditionValues[1]);
 
                 case CombatLogicStatement.EQUAL:
-                    return CompareEqual(entry.conditionA, entry.conditionB);
+                    return CompareEqual((double)condition.conditionValues[0], (double)condition.conditionValues[1]);
 
                 case CombatLogicStatement.LESS_OR_EQUAL:
-                    return CompareLessOrEqual(entry.conditionA, entry.conditionB);
+                    return CompareLessOrEqual((double)condition.conditionValues[0], (double)condition.conditionValues[1]);
 
                 case CombatLogicStatement.LESS:
-                    return CompareLess(entry.conditionA, entry.conditionB);
+                    return CompareLess((double)condition.conditionValues[0], (double)condition.conditionValues[1]);
+
+                case CombatLogicStatement.HAS_BUFF:
+                    return AmeisenCore.AmeisenCore.CheckForAura((string)condition.conditionValues[0], false);
+
+                case CombatLogicStatement.HAS_BUFF_MYSELF:
+                    return AmeisenCore.AmeisenCore.CheckForAura((string)condition.conditionValues[0], true);
 
                 default:
                     return false;
@@ -114,7 +121,7 @@ namespace AmeisenAI
             if (File.Exists(combatclassesPath + filename.ToLower() + extension))
             {
                 currentCombatLogic = Newtonsoft.Json.JsonConvert.DeserializeObject<CombatLogic>(File.ReadAllText(combatclassesPath + filename.ToLower() + extension));
-                currentCombatLogic.combatLogicEntries = currentCombatLogic.combatLogicEntries.OrderBy(p => p.priority).ToList();
+                currentCombatLogic.combatLogicEntries = currentCombatLogic.combatLogicEntries.OrderBy(p => p.Priority).ToList();
             }
         }
     }

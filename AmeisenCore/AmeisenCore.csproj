@@ -56,6 +56,7 @@
     <Compile Include="AmeisenHook.cs" />
     <Compile Include="AmeisenManager.cs" />
     <Compile Include="AmeisenSettings.cs" />
+    <Compile Include="Objects\WoWClass.cs" />
     <Compile Include="Objects\WoWObjects\Corpse.cs" />
     <Compile Include="Objects\WoWObjects\DynObj.cs" />
     <Compile Include="Objects\WoWObjects\GameObj.cs" />

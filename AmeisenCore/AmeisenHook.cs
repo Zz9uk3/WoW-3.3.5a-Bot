@@ -19,7 +19,6 @@ namespace AmeisenCore
         private uint codeCave;
         private uint codeCaveForInjection;
         private uint codeToExecute;
-        private uint returnAdress;
         uint endsceneReturnAddress;
         private byte[] originalEndscene;
 
@@ -68,10 +67,10 @@ namespace AmeisenCore
                     AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("MOV EAX, [" + (codeToExecute) + "]");
                     AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("TEST EAX, 1");
                     AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("JE @out");
-                    
+
                     AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("CALL " + (codeCaveForInjection));
                     //AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("MOV [" + (returnAdress) + "], EAX");
-                    
+
                     AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("MOV EDX, 0");
                     AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("MOV [" + (codeToExecute) + "], EDX");
 
@@ -116,7 +115,7 @@ namespace AmeisenCore
             isHooked = false;
         }
 
-        public byte[] InjectAndExecute(string[] asm)
+        public void InjectAndExecute(string[] asm)
         {
             AmeisenManager.GetInstance().GetBlackMagic().WriteInt(codeToExecute, 1);
 
@@ -135,9 +134,32 @@ namespace AmeisenCore
             AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("JMP " + (endsceneReturnAddress));
             AmeisenManager.GetInstance().GetBlackMagic().Asm.Inject((codeCaveForInjection + (uint)asmLenght));
 
+            // You need this, trust me
             Thread.Sleep(100);
+        }
 
-            return null;
+        public byte[] TryReadReturnValue(uint returnAdress)
+        {
+            try
+            {
+                AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "reading returnValue:" + returnAdress.ToString("X"), this);
+
+                byte buffer = new Byte();
+                List<byte> retnByte = new List<byte>();
+                uint dwAddress = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(returnAdress);
+
+                buffer = AmeisenManager.GetInstance().GetBlackMagic().ReadByte(dwAddress);
+                while (buffer != 0)
+                {
+                    retnByte.Add(buffer);
+                    dwAddress = dwAddress + 1;
+                    buffer = AmeisenManager.GetInstance().GetBlackMagic().ReadByte(dwAddress);
+                }
+
+                return retnByte.ToArray();
+            }
+            catch (Exception e) { AmeisenLogger.GetInstance().Log(LogLevel.ERROR, "Error reading returnValue:" + e.ToString(), this); }
+            return new byte[] { 0 };
         }
 
         private uint GetEndScene()

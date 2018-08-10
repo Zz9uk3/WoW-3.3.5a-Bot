@@ -87,9 +87,6 @@ namespace AmeisenBotGUI
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Close();
-            AmeisenAIManager.GetInstance().StopAI();
-            AmeisenLogger.GetInstance().StopLogging();
-            AmeisenManager.GetInstance().GetAmeisenHook().DisposeHooking();
         }
 
         private void ButtonSettings_Click(object sender, RoutedEventArgs e)

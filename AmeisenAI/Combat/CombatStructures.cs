@@ -8,13 +8,16 @@
             GREATER_OR_EQUAL,
             EQUAL,
             LESS_OR_EQUAL,
-            LESS
+            LESS,
+            HAS_BUFF,
+            HAS_BUFF_MYSELF
         }
 
         public enum CombatLogicAction
         {
             USE_SPELL,
             USE_AOE_SPELL,
+            SHAPESHIFT,
             FLEE
         }
     }

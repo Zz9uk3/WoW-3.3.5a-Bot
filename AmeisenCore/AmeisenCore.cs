@@ -106,6 +106,8 @@ namespace AmeisenCore
             uint argCC = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(Encoding.UTF8.GetBytes(command).Length + 1);
             AmeisenManager.GetInstance().GetBlackMagic().WriteBytes(argCC, Encoding.UTF8.GetBytes(command));
 
+            uint returnAdress = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(4);
+
             string[] asm = new string[]
             {
                 "MOV EAX, " + (argCC),
@@ -114,12 +116,19 @@ namespace AmeisenCore
                 "PUSH EAX",
                 "MOV EAX, " + (WoWOffsets.luaDoString),
                 "CALL EAX",
+                "MOV [" + (returnAdress) + "], EAX",
                 "ADD ESP, 0xC",
                 "RETN",
             };
 
             AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm);
             AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(argCC);
+
+            byte[] returnBytes = AmeisenManager.GetInstance().GetAmeisenHook().TryReadReturnValue(returnAdress);
+            string result = Encoding.UTF8.GetString(returnBytes);
+
+            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Command returned: Command [" + command + "] ReturnValue: " + result + " ReturnBytes: " + returnBytes.ToString(), "AmeisenCore.AmeisenCore");
+            AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(returnAdress);
         }
 
         /// <summary>
@@ -157,19 +166,21 @@ namespace AmeisenCore
 
             string[] asm = new string[]
             {
-            "CALL " + (WoWOffsets.clientObjectManagerGetActivePlayerObject),
-            "MOV ECX, EAX",
-            "PUSH -1",
-            "MOV EDX, " + argCC + "",
-            "PUSH EDX",
-            "CALL " + (WoWOffsets.luaGetLocalizedText),
-            "RETN",
+                "CALL " + (WoWOffsets.clientObjectManagerGetActivePlayerObject),
+                "MOV ECX, EAX",
+                "PUSH -1",
+                "MOV EDX, " + argCC + "",
+                "PUSH EDX",
+                "CALL " + (WoWOffsets.luaGetLocalizedText),
+                "RETN",
             };
 
-            string result = Encoding.UTF8.GetString(AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm));
+            AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm);
             AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(argCC);
 
-            return result;
+            //string result = Encoding.UTF8.GetString(AmeisenManager.GetInstance().GetAmeisenHook().TryReadReturnValue())
+
+            return "";
         }
 
         /// <summary>
@@ -390,8 +401,8 @@ namespace AmeisenCore
                             ((Me)tmpResult).partymembers.Add(TryReadPartymember(leaderGUID, WoWOffsets.partyPlayer3));
                             ((Me)tmpResult).partymembers.Add(TryReadPartymember(leaderGUID, WoWOffsets.partyPlayer4));
 
-                            foreach(Unit u in ((Me)tmpResult).partymembers)
-                                if(u.guid == leaderGUID)
+                            foreach (Unit u in ((Me)tmpResult).partymembers)
+                                if (u.guid == leaderGUID)
                                     ((Me)tmpResult).partyLeader = u;
                         }
                         UInt64 targetGuid = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(myBaseUnitFields + (0x12 * 4));
@@ -512,15 +523,50 @@ namespace AmeisenCore
         /// <summary>
         /// Get the bot's char's target's GUID
         /// </summary>
-        /// <returns></returns>
+        /// <returns>guid</returns>
         public static UInt64 GetTargetGUID()
         {
             return AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(WoWOffsets.localTargetGUID);
         }
 
+        /// <summary>
+        /// AntiAFK
+        /// </summary>
         public static void AntiAFK()
         {
             AmeisenManager.GetInstance().GetBlackMagic().WriteInt(WoWOffsets.tickCount, Environment.TickCount);
+        }
+
+        /// <summary>
+        /// Cast a spell by its name
+        /// </summary>
+        public static void CastSpellByName(string spellname, bool onMyself)
+        {
+            if (onMyself)
+                LUADoString("CastSpellByName(\"" + spellname + "\");");
+            else
+                LUADoString("CastSpellByName(\"" + spellname + "\", true);");
+        }
+
+        /// <summary>
+        /// Check for Auras/Buffs
+        /// </summary>
+        /// <returns>true if target has that aura, false if not</returns>
+        public static bool CheckForAura(string auraname, bool onMyself)
+        {
+            if (onMyself)
+                LUADoString("UnitAura(\"player\",\"" + auraname + "\");");
+            else
+                LUADoString("UnitAura(\"target" + auraname + "\", true);");
+            return false;
+        }
+
+        /// <summary>
+        /// Switch shapeshift forms, use for example "WoWDruid.ShapeshiftForms.Bear"
+        /// </summary>
+        public static void CastShapeshift(int index)
+        {
+            LUADoString("CastShapeshiftForm(\"" + index + "\");");
         }
 
         /// <summary>

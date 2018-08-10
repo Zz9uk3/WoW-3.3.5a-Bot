@@ -17,7 +17,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AmeisenHook", "AmeisenHook\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenLogger", "AmeisenLogger\AmeisenLogger.csproj", "{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WoW-LoginAutomator", "WoW-LoginAutomator\WoW-LoginAutomator\WoW-LoginAutomator.csproj", "{14811D57-C812-4651-85FA-7C65B974724B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WoW-LoginAutomator", "WoW-LoginAutomator\WoW-LoginAutomator.csproj", "{14811D57-C812-4651-85FA-7C65B974724B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,42 +1,49 @@
-﻿using static AmeisenAI.Combat.CombatStructures;
+﻿using System.Collections.Generic;
+using static AmeisenAI.Combat.CombatStructures;
 
 namespace AmeisenAI.Combat
 {
+    public struct Condition
+    {
+        public CombatLogicStatement statement;
+        public object[] conditionValues;
+    }
+
     public class CombatLogicEntry
     {
-        public int priority { get; }
-        public CombatLogicAction action { get; }
-        public CombatLogicStatement statement { get; }
-        public double conditionA { get; }
-        public double conditionB { get; }
-        public bool combatOnly { get; }
-        public bool isBuff { get; }
-        public bool isBuffForParty { get; }
-        public bool canMoveDuringCast { get; }
-        public float spellDistance { get; }
+        public int Priority { get; }
+        public CombatLogicAction Action { get; }
+        public List<Condition> Conditions { get; }
+        public bool CombatOnly { get; }
+        public bool IsBuff { get; }
+        public bool IsBuffForParty { get; }
+        public bool CanMoveDuringCast { get; }
+        public float MaxSpellDistance { get; }
+        public object Parameters { get; }
+        public bool IsForMyself { get; }
 
         public CombatLogicEntry(
             int priority,
             CombatLogicAction action,
-            CombatLogicStatement statement,
-            double conditionA,
-            double conditionB,
+            List<Condition> conditions,
             bool combatOnly,
             bool isBuff,
             bool isBuffForParty,
             bool canMoveDuringCast,
-            float spellDistance)
+            float spellDistance,
+            object parameters,
+            bool isForMyself)
         {
-            this.priority = priority;
-            this.action = action;
-            this.statement = statement;
-            this.conditionA = conditionA;
-            this.conditionB = conditionB;
-            this.combatOnly = combatOnly;
-            this.isBuff = isBuff;
-            this.isBuffForParty = isBuffForParty;
-            this.canMoveDuringCast = canMoveDuringCast;
-            this.spellDistance = spellDistance;
+            Priority = priority;
+            Action = action;
+            Conditions = conditions;
+            CombatOnly = combatOnly;
+            IsBuff = isBuff;
+            IsBuffForParty = isBuffForParty;
+            CanMoveDuringCast = canMoveDuringCast;
+            MaxSpellDistance = spellDistance;
+            Parameters = parameters;
+            IsForMyself = isForMyself;
         }
     }
 }

@@ -88,6 +88,11 @@ namespace AmeisenAI
             aiWorkers = new List<Thread>();
         }
 
+        ~AmeisenAIManager()
+        {
+            GetInstance().StopAI();
+        }
+
         /// <summary>
         /// Initialize/Get the instance of our singleton
         /// </summary>
