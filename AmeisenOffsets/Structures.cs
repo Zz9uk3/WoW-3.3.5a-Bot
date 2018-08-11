@@ -5,13 +5,14 @@
     /// </summary>
     public struct Vector3
     {
-        public float x;
-        public float y;
-        public float z;
+        public double x;
+        public double y;
+        public double z;
     }
 
     public struct Credentials
     {
+        public string charname;
         public string username;
         public string password;
         public int charSlot;

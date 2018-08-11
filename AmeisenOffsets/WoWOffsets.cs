@@ -17,7 +17,7 @@
         public static uint playerCorpseY = playerCorpseX + 0x4;
         public static uint playerCorpseZ = playerCorpseY + 0x4;
 
-        public static uint PetGUID = 0xC234D0;
+        public static uint petGUID = 0xC234D0;
 
         public static uint wowChat = 0xB75A60;
         public static uint wowChatNextMsg = 0x17C0;

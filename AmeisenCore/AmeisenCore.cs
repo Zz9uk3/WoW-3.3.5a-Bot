@@ -89,9 +89,9 @@ namespace AmeisenCore
             const float distance = 1.5f;
 
             AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Writing: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "] Action [" + action + "] Distance [" + distance + "]", "AmeisenCore.AmeisenCore");
-            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmX, pos.x);
-            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmY, pos.y);
-            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmZ, pos.z);
+            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmX, (float) pos.x);
+            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmY, (float) pos.y);
+            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmZ, (float) pos.z);
             AmeisenManager.GetInstance().GetBlackMagic().WriteInt(WoWOffsets.ctmAction, (int)action);
             AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmDistance, distance);
         }
@@ -535,6 +535,24 @@ namespace AmeisenCore
         public static void AntiAFK()
         {
             AmeisenManager.GetInstance().GetBlackMagic().WriteInt(WoWOffsets.tickCount, Environment.TickCount);
+        }
+
+        /// <summary>
+        /// Check if the player's world is loaded
+        /// </summary>
+        /// <returns>true if yes, false if no</returns>
+        public static bool CheckWorldLoaded()
+        {
+            return AmeisenManager.GetInstance().GetBlackMagic().ReadInt(WoWOffsets.worldLoaded) == 1;
+        }
+
+        /// <summary>
+        /// Check if the player's world is in a loadingscreen
+        /// </summary>
+        /// <returns>true if yes, false if no</returns>
+        public static bool CheckLoadingScreen()
+        {
+            return false;
         }
 
         /// <summary>

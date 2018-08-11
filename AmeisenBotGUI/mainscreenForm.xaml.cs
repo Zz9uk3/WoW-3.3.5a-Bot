@@ -87,6 +87,9 @@ namespace AmeisenBotGUI
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Close();
+            AmeisenAIManager.GetInstance().StopAI();
+            AmeisenLogger.GetInstance().StopLogging();
+            AmeisenManager.GetInstance().GetAmeisenHook().DisposeHooking();
         }
 
         private void ButtonSettings_Click(object sender, RoutedEventArgs e)
@@ -121,25 +124,30 @@ namespace AmeisenBotGUI
 
         private void UIUpdateTimer_Tick(object sender, EventArgs e)
         {
-            AmeisenCore.AmeisenCore.AntiAFK();
-            UpdateUI();
-
-            if (checkBoxFollowGroupLeader.IsChecked == true
-                && AmeisenManager.GetInstance().GetMe().currentState != UnitState.ATTACKING
-                && AmeisenManager.GetInstance().GetMe().currentState != UnitState.AUTOHIT
-                && AmeisenManager.GetInstance().GetMe().currentState != UnitState.CASTING)
+            if (AmeisenCore.AmeisenCore.CheckWorldLoaded()
+                && !AmeisenCore.AmeisenCore.CheckLoadingScreen())
             {
-                bool addAction = true;
 
-                foreach (AmeisenAction a in AmeisenAIManager.GetInstance().GetQueueItems())
-                    if (a.GetActionType() == AmeisenActionType.MOVE_TO_POSITION)
-                    {
-                        addAction = false;
-                        break;
-                    }
+                AmeisenCore.AmeisenCore.AntiAFK();
+                UpdateUI();
 
-                if (addAction)
-                    AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.MOVE_TO_POSITION, AmeisenManager.GetInstance().GetMe().partyLeader.pos));
+                if (checkBoxFollowGroupLeader.IsChecked == true
+                    && AmeisenManager.GetInstance().GetMe().currentState != UnitState.ATTACKING
+                    && AmeisenManager.GetInstance().GetMe().currentState != UnitState.AUTOHIT
+                    && AmeisenManager.GetInstance().GetMe().currentState != UnitState.CASTING)
+                {
+                    bool addAction = true;
+
+                    foreach (AmeisenAction a in AmeisenAIManager.GetInstance().GetQueueItems())
+                        if (a.GetActionType() == AmeisenActionType.MOVE_TO_POSITION)
+                        {
+                            addAction = false;
+                            break;
+                        }
+
+                    if (addAction)
+                        AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.MOVE_TO_POSITION, AmeisenManager.GetInstance().GetMe().partyLeader.pos));
+                }
             }
         }
 
