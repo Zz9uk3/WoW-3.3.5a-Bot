@@ -32,6 +32,46 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>
         </Button>
+        <Button x:Name="buttonOpen" Content="📂" HorizontalAlignment="Left" Margin="738,0,-2,298" Width="60" Background="{x:Null}" BorderThickness="2" Height="60" VerticalAlignment="Bottom" FontSize="24">
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+        </Button>
+        <Button x:Name="buttonSave" Content="💾" HorizontalAlignment="Left" Margin="738,0,-2,233" Width="60" Background="{x:Null}" BorderThickness="2" Height="60" VerticalAlignment="Bottom" FontSize="24">
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+        </Button>
+        <Button x:Name="buttonNew" Content="📰" HorizontalAlignment="Left" Margin="738,0,-2,363" Width="60" Background="{x:Null}" BorderThickness="2" Height="60" VerticalAlignment="Bottom" FontSize="24">
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+        </Button>
+        <Label x:Name="labelActiveFile" Content="NONE" HorizontalAlignment="Left" VerticalAlignment="Top" Background="{x:Null}" Margin="5,0,0,0">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Label.Foreground>
+        </Label>
+        <ListBox x:Name="listboxCombatActions" HorizontalAlignment="Left" Height="405" Margin="10,31,0,0" VerticalAlignment="Top" Width="180" BorderThickness="2">
+            <ListBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </ListBox.Foreground>
+            <ListBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </ListBox.BorderBrush>
+            <ListBox.Background>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+            </ListBox.Background>
+        </ListBox>
 
     </Grid>
 </Window>

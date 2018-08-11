@@ -6,12 +6,14 @@
     public abstract class WoWOffsets
     {
         public static uint playerName = 0xC79D18;
+        public static uint realmName = 0xC79B9E;
+
         public static uint playerIsLoadingscreen = 0xB6AA38;
         public static uint playerIsIngame = 0xBD0792;
         public static uint worldLoaded = 0xBEBA40;
         public static uint gameState = 0xB6A9E0;
-        public static uint realmName = 0xC79B9E;
         public static uint characterSlotSelected = 0x6C436C;
+        public static uint isLoading = 0xB6AA30;
 
         public static uint playerCorpseX = 0xBD0A58;
         public static uint playerCorpseY = playerCorpseX + 0x4;
@@ -25,6 +27,9 @@
         public static uint localPlayerGUID = 0xCA1238;
         public static uint localTargetGUID = 0xBD07B0;
         public static uint localMouseoverGUID = 0xBD07B0;
+        public static uint localLastTarget = 0xBD07B0;
+        public static uint localComboPoint = 0xBD0845;
+        public static uint localLootWindowOpen = 0xBFA8D0;
 
         public static uint localPlayerCharacterState = 0x6DACA4;
         public static uint localPlayerCharacterStateOffset1 = 0xC;
@@ -79,13 +84,24 @@
         public static uint endScene = 0xA8;
 
         public static uint clientObjectManagerGetActivePlayerObject = 0x4038F0;
+        public static uint clientGameUITarget = 0x524BF0;
 
         public static uint luaDoString = 0x819210;
         public static uint luaGetLocalizedText = 0x7225E0;
 
-        public static uint cGameUITarget = 0x524BF0;
-
         public static uint tickCount = 0xB499A4;
         public static uint timestamp = 0xB1D618;
+
+        public static uint corpseX = 0xBD0A50;
+        public static uint corpseY = corpseX + 0x4;
+        public static uint corpseZ = corpseY + 0x4;
+
+        public static uint dynamicObjectCaster = 0x6;
+        public static uint dynamicObjectBytes = 0x8;
+        public static uint dynamicObjectSpellID = 0x9;
+        public static uint dynamicObjectRadius = 0xA;
+        public static uint dynamicObjectCastTime = 0xB;
+
+        public static uint isBattlegroundOver = 0xBEA588;
     }
 }

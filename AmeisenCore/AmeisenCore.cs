@@ -154,7 +154,7 @@ namespace AmeisenCore
             {
                 "PUSH " + BitConverter.ToInt32(guidBytes, 4),
                 "PUSH " + BitConverter.ToInt32(guidBytes, 0),
-                "CALL " + (WoWOffsets.cGameUITarget),
+                "CALL " + (WoWOffsets.clientGameUITarget),
                 "RETN",
             };
 

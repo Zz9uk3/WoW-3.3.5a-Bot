@@ -1,8 +1,10 @@
 ﻿using AmeisenAI.Combat;
 using AmeisenCore;
+using AmeisenUtilities;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using static AmeisenAI.Combat.CombatStructures;
 
 namespace AmeisenAI
@@ -31,7 +33,16 @@ namespace AmeisenAI
             switch (entry.Action)
             {
                 case CombatLogicAction.USE_SPELL:
-                    AmeisenCore.AmeisenCore.CastSpellByName((string)entry.Parameters, entry.IsForMyself);
+                    AmeisenAction action;
+                    if (entry.IsForMyself)
+                        action = new AmeisenAction(AmeisenActionType.USE_SPELL_ON_ME, (string)entry.Parameters);
+                    else
+                        action = new AmeisenAction(AmeisenActionType.USE_SPELL, (string)entry.Parameters);
+
+                    AmeisenAIManager.GetInstance().AddActionToQueue(ref action);
+
+                    do Thread.Sleep(10);
+                    while (!action.IsActionDone());
                     break;
 
                 case CombatLogicAction.USE_AOE_SPELL:

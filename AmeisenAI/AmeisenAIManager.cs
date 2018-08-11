@@ -135,7 +135,11 @@ namespace AmeisenAI
                                 break;
 
                             case AmeisenActionType.USE_SPELL:
-                                AmeisenCore.AmeisenCore.LUADoString("/cast " + (string)currentAction.GetActionParams());
+                                AmeisenCore.AmeisenCore.CastSpellByName((string)currentAction.GetActionParams(), false);
+                                break;
+
+                            case AmeisenActionType.USE_SPELL_ON_ME:
+                                AmeisenCore.AmeisenCore.CastSpellByName((string)currentAction.GetActionParams(), true);
                                 break;
 
                             default:
@@ -189,6 +193,16 @@ namespace AmeisenAI
                 aiWorkers.Clear();
                 AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "AI stopped", this);
             }
+        }
+
+        /// <summary>
+        /// Add an action for the bot to do.
+        /// </summary>
+        /// <param name="action">Action you want the bot to do</param>
+        public void AddActionToQueue(ref AmeisenAction action)
+        {
+            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Added action to AI-Queue: " + action.ToString(), this);
+            actionQueue.Enqueue(action);
         }
 
         /// <summary>

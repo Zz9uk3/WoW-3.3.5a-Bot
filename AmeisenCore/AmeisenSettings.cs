@@ -83,5 +83,9 @@ namespace AmeisenCore
         public string backgroundColor = "#FF303030";
 
         public string combatClassName = "none";
+        
+        public bool behaviourAttack = false;
+        public bool behaviourHeal = false;
+        public bool behaviourTank = false;
     }
 }

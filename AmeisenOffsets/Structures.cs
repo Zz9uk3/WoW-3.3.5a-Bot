@@ -95,6 +95,7 @@
         TARGET_ENTITY,
         ATTACK_TARGET,
         USE_SPELL,
+        USE_SPELL_ON_ME,
         INTERACT_TARGET,
         MOVE_TO_POSITION,
     }
