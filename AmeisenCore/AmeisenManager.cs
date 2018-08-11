@@ -41,11 +41,6 @@ namespace AmeisenCore
             isHooked = false;
         }
 
-        ~AmeisenManager()
-        {
-            GetInstance().GetAmeisenHook().DisposeHooking();
-        }
-
         public static AmeisenManager GetInstance()
         {
             if (i == null)

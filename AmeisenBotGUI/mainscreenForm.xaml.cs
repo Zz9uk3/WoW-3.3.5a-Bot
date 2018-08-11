@@ -87,9 +87,9 @@ namespace AmeisenBotGUI
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Close();
+            AmeisenManager.GetInstance().GetAmeisenHook().DisposeHooking();
             AmeisenAIManager.GetInstance().StopAI();
             AmeisenLogger.GetInstance().StopLogging();
-            AmeisenManager.GetInstance().GetAmeisenHook().DisposeHooking();
         }
 
         private void ButtonSettings_Click(object sender, RoutedEventArgs e)
@@ -239,6 +239,12 @@ namespace AmeisenBotGUI
         private void ButtonCobatClassEditor_Click(object sender, RoutedEventArgs e)
         {
             new CombatClassEditor().Show();
+        }
+
+        private void ButtonTest2_Click(object sender, RoutedEventArgs e)
+        {
+            AmeisenCore.AmeisenCore.LUADoString("start, duration, enabled = GetSpellCooldown(\"Every Man for Himself\");");
+            labelDebug.Content = AmeisenCore.AmeisenCore.GetLocalizedText("duration");
         }
     }
 }

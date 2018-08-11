@@ -106,29 +106,49 @@ namespace AmeisenCore
             uint argCC = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(Encoding.UTF8.GetBytes(command).Length + 1);
             AmeisenManager.GetInstance().GetBlackMagic().WriteBytes(argCC, Encoding.UTF8.GetBytes(command));
 
-            uint returnAdress = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(4);
-
             string[] asm = new string[]
             {
                 "MOV EAX, " + (argCC),
                 "PUSH 0",
                 "PUSH EAX",
                 "PUSH EAX",
-                "MOV EAX, " + (WoWOffsets.luaDoString),
-                "CALL EAX",
-                "MOV [" + (returnAdress) + "], EAX",
+                "CALL " + (WoWOffsets.luaDoString),
                 "ADD ESP, 0xC",
                 "RETN",
             };
 
-            AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm);
-            AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(argCC);
-
-            byte[] returnBytes = AmeisenManager.GetInstance().GetAmeisenHook().TryReadReturnValue(returnAdress);
+            byte[] returnBytes = AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm);
             string result = Encoding.UTF8.GetString(returnBytes);
 
             AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Command returned: Command [" + command + "] ReturnValue: " + result + " ReturnBytes: " + returnBytes.ToString(), "AmeisenCore.AmeisenCore");
-            AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(returnAdress);
+            AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(argCC);
+        }
+
+        /// <summary>
+        /// Get Localized Text for command
+        /// </summary>
+        /// <param name="command">lua command to run</param>
+        public static string GetLocalizedText(string variable)
+        {
+            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Getting text: Variable [" + variable + "]", "AmeisenCore.AmeisenCore");
+            uint argCC = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(Encoding.UTF8.GetBytes(variable).Length + 1);
+            AmeisenManager.GetInstance().GetBlackMagic().WriteBytes(argCC, Encoding.UTF8.GetBytes(variable));
+
+            string[] asm = new string[]
+            {
+                "CALL " + (WoWOffsets.clientObjectManagerGetActivePlayerObject),
+                "MOV ECX, EAX",
+                "PUSH -1",
+                "MOV EDX, " + (argCC),
+                "PUSH EDX",
+                "CALL " + (WoWOffsets.luaGetLocalizedText),
+                "RETN",
+            };
+
+            string result = Encoding.UTF8.GetString(AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm));
+            AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(argCC);
+
+            return result;
         }
 
         /// <summary>
@@ -159,37 +179,6 @@ namespace AmeisenCore
             };
 
             AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm);
-        }
-
-        /// <summary>
-        /// Get Localized Text for command
-        /// 
-        /// !!! W.I.P !!!
-        /// </summary>
-        /// <param name="command">lua command to run</param>
-        public static string GetLocalizedText(string command)
-        {
-            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Getting text: Command [" + command + "]", "AmeisenCore.AmeisenCore");
-            uint argCC = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(Encoding.UTF8.GetBytes(command).Length + 1);
-            AmeisenManager.GetInstance().GetBlackMagic().WriteBytes(argCC, Encoding.UTF8.GetBytes(command));
-
-            string[] asm = new string[]
-            {
-                "CALL " + (WoWOffsets.clientObjectManagerGetActivePlayerObject),
-                "MOV ECX, EAX",
-                "PUSH -1",
-                "MOV EDX, " + argCC + "",
-                "PUSH EDX",
-                "CALL " + (WoWOffsets.luaGetLocalizedText),
-                "RETN",
-            };
-
-            AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm);
-            AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(argCC);
-
-            //string result = Encoding.UTF8.GetString(AmeisenManager.GetInstance().GetAmeisenHook().TryReadReturnValue())
-
-            return "";
         }
 
         /// <summary>
@@ -232,7 +221,8 @@ namespace AmeisenCore
                 try
                 {
                     wowObject.distance = Utils.GetDistance(AmeisenManager.GetInstance().GetMe().pos, wowObject.pos);
-                } catch { }
+                }
+                catch { }
 
                 objects.Add(wowObject);
 
@@ -602,6 +592,18 @@ namespace AmeisenCore
         public static void CastShapeshift(int index)
         {
             LUADoString("CastShapeshiftForm(\"" + index + "\");");
+        }
+
+        /// <summary>
+        /// Check if the spell is on cooldown
+        /// </summary>
+        /// <param name="spell">spellname</param>
+        /// <returns>true if it is on cooldown, false if not</returns>
+        public static bool IsOnCooldown(string spell)
+        {
+            LUADoString("start, duration, enabled = GetSpellCooldown(\"" + spell + "\");");
+            Thread.Sleep(100);
+            try { return int.Parse(GetLocalizedText("duration")) > 0; } catch { return true; }
         }
 
         /// <summary>
