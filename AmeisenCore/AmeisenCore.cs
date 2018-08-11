@@ -89,9 +89,9 @@ namespace AmeisenCore
             const float distance = 1.5f;
 
             AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Writing: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "] Action [" + action + "] Distance [" + distance + "]", "AmeisenCore.AmeisenCore");
-            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmX, (float) pos.x);
-            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmY, (float) pos.y);
-            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmZ, (float) pos.z);
+            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmX, (float)pos.x);
+            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmY, (float)pos.y);
+            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmZ, (float)pos.z);
             AmeisenManager.GetInstance().GetBlackMagic().WriteInt(WoWOffsets.ctmAction, (int)action);
             AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmDistance, distance);
         }
@@ -129,6 +129,15 @@ namespace AmeisenCore
 
             AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Command returned: Command [" + command + "] ReturnValue: " + result + " ReturnBytes: " + returnBytes.ToString(), "AmeisenCore.AmeisenCore");
             AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(returnAdress);
+        }
+
+        /// <summary>
+        /// Run the given slash-commando
+        /// </summary>
+        /// <param name="slashCommand">Example: /target player</param>
+        public static void RunSlashCommand(string slashCommand)
+        {
+            LUADoString("DEFAULT_CHAT_FRAME.editBox:SetText(\"" + slashCommand + "\") ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)");
         }
 
         /// <summary>
@@ -219,6 +228,11 @@ namespace AmeisenCore
 
                 WoWObject wowObject = ReadWoWObjectFromGUID<WoWObject>(objGUID, activeObj);
                 wowObject.memoryLocation = activeObj;
+
+                try
+                {
+                    wowObject.distance = Utils.GetDistance(AmeisenManager.GetInstance().GetMe().pos, wowObject.pos);
+                } catch { }
 
                 objects.Add(wowObject);
 
@@ -403,7 +417,10 @@ namespace AmeisenCore
 
                             foreach (Unit u in ((Me)tmpResult).partymembers)
                                 if (u.guid == leaderGUID)
+                                {
                                     ((Me)tmpResult).partyLeader = u;
+                                    ((Me)tmpResult).partyLeader.distance = Utils.GetDistance(((Me)tmpResult).pos, ((Me)tmpResult).partyLeader.pos);
+                                }
                         }
                         UInt64 targetGuid = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(myBaseUnitFields + (0x12 * 4));
                         // If we have a target lets read it
