@@ -1,0 +1,306 @@
+﻿<Window x:Name="guiCombatClassEditor" x:Class="AmeisenBotGUI.CombatClassEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AmeisenBotGUI"
+        mc:Ignorable="d"
+        Title="CombatClassEditor" Height="450" Width="800" WindowStyle="None" ResizeMode="NoResize" Padding="0" BorderThickness="2" MouseDown="GuiCombatClassEditor_MouseDown" Loaded="GuiCombatClassEditor_Loaded">
+    <Window.BorderBrush>
+        <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+    </Window.BorderBrush>
+    <Window.Foreground>
+        <SolidColorBrush Color="{DynamicResource TextColor}"/>
+    </Window.Foreground>
+    <Window.Background>
+        <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+    </Window.Background>
+    <Grid>
+        <Button x:Name="buttonExit" Content="X" VerticalAlignment="Top" FontFamily="Consolas" Click="ButtonExit_Click" FontWeight="Bold" Background="{x:Null}" BorderThickness="2" HorizontalAlignment="Right" Width="20" Margin="0,-2,-2,0">
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+        </Button>
+        <Button x:Name="buttonMinimize" Content="_" Margin="0,-2,16,0" VerticalAlignment="Top" FontFamily="Consolas" FontWeight="Bold" Background="{x:Null}" BorderThickness="2" HorizontalAlignment="Right" Width="20" Click="ButtonMinimize_Click">
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+        </Button>
+        <Button x:Name="buttonOpen" Content="📂" HorizontalAlignment="Left" Margin="738,0,-2,298" Width="60" Background="{x:Null}" BorderThickness="2" Height="60" VerticalAlignment="Bottom" FontSize="24" Click="ButtonOpen_Click">
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+        </Button>
+        <Button x:Name="buttonSave" Content="💾" HorizontalAlignment="Left" Margin="738,0,-2,233" Width="60" Background="{x:Null}" BorderThickness="2" Height="60" VerticalAlignment="Bottom" FontSize="24" Click="ButtonSave_Click">
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+        </Button>
+        <Button x:Name="buttonNew" Content="📰" HorizontalAlignment="Left" Margin="738,0,-2,363" Width="60" Background="{x:Null}" BorderThickness="2" Height="60" VerticalAlignment="Bottom" FontSize="24" Click="ButtonNew_Click">
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+        </Button>
+        <Label x:Name="labelActiveFile" Content="NONE" HorizontalAlignment="Left" VerticalAlignment="Top" Background="{x:Null}" Margin="5,0,0,0">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Label.Foreground>
+        </Label>
+        <ListBox x:Name="listboxCombatActions" HorizontalAlignment="Left" Height="367" Margin="10,23,0,0" VerticalAlignment="Top" Width="180" BorderThickness="2" SelectionChanged="ListboxCombatActions_SelectionChanged">
+            <ListBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </ListBox.Foreground>
+            <ListBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </ListBox.BorderBrush>
+            <ListBox.Background>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+            </ListBox.Background>
+        </ListBox>
+        <Frame Content="" HorizontalAlignment="Left" Height="413" Margin="195,23,0,0" VerticalAlignment="Top" Width="538" BorderThickness="2">
+            <Frame.Background>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+            </Frame.Background>
+            <Frame.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Frame.BorderBrush>
+            <Frame.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Frame.Foreground>
+        </Frame>
+        <TextBox x:Name="textboxPriority" HorizontalAlignment="Left" Height="23" Margin="204,48,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="120" BorderThickness="2" TextChanged="TextboxPriority_TextChanged">
+            <TextBox.Background>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+            </TextBox.Background>
+            <TextBox.CaretBrush>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+            </TextBox.CaretBrush>
+            <TextBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </TextBox.BorderBrush>
+            <TextBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </TextBox.Foreground>
+        </TextBox>
+        <Label Content="Priority:" HorizontalAlignment="Left" Margin="199,23,0,0" VerticalAlignment="Top">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Label.Foreground>
+        </Label>
+        <Label Content="Combat Action:" HorizontalAlignment="Left" Margin="199,76,0,0" VerticalAlignment="Top">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Label.Foreground>
+        </Label>
+        <ComboBox x:Name="comboboxAction" HorizontalAlignment="Left" Margin="204,104,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="ComboboxAction_SelectionChanged"/>
+        <ListBox x:Name="listboxConditions" HorizontalAlignment="Left" Height="160" Margin="204,268,0,0" VerticalAlignment="Top" Width="520" BorderThickness="2" SelectionChanged="ListboxConditions_SelectionChanged">
+            <ListBox.Background>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+            </ListBox.Background>
+            <ListBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </ListBox.BorderBrush>
+            <ListBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </ListBox.Foreground>
+        </ListBox>
+        <Label Content="Conditions:" HorizontalAlignment="Left" Margin="199,242,0,0" VerticalAlignment="Top">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Label.Foreground>
+        </Label>
+        <CheckBox x:Name="checkboxCombatOnly" Content="Use in combat only ?" HorizontalAlignment="Left" Margin="367,29,0,0" VerticalAlignment="Top" Checked="CheckboxCombatOnly_Checked" Unchecked="CheckboxCombatOnly_Unchecked">
+            <CheckBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </CheckBox.Foreground>
+            <CheckBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </CheckBox.BorderBrush>
+            <CheckBox.Background>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </CheckBox.Background>
+        </CheckBox>
+        <CheckBox x:Name="checkboxIsBuff" Content="is Buff ?" HorizontalAlignment="Left" Margin="367,51,0,0" VerticalAlignment="Top" Unchecked="CheckboxIsBuff_Unchecked" Checked="CheckboxIsBuff_Checked">
+            <CheckBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </CheckBox.BorderBrush>
+            <CheckBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </CheckBox.Foreground>
+            <CheckBox.Background>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </CheckBox.Background>
+        </CheckBox>
+        <CheckBox x:Name="checkboxIsForParty" Content="is Buff for party too ?" HorizontalAlignment="Left" Margin="397,71,0,0" VerticalAlignment="Top" IsEnabled="False" Checked="CheckboxIsForParty_Checked" Unchecked="CheckboxIsForParty_Unchecked">
+            <CheckBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </CheckBox.BorderBrush>
+            <CheckBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </CheckBox.Foreground>
+            <CheckBox.Background>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </CheckBox.Background>
+        </CheckBox>
+        <CheckBox x:Name="checkboxCanCastDuringMovement" Content="Can move while casting ?" HorizontalAlignment="Left" Margin="367,91,0,0" VerticalAlignment="Top" Checked="CheckboxCanCastDuringMovement_Checked" Unchecked="CheckboxCanCastDuringMovement_Unchecked">
+            <CheckBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </CheckBox.BorderBrush>
+            <CheckBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </CheckBox.Foreground>
+            <CheckBox.Background>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </CheckBox.Background>
+        </CheckBox>
+        <CheckBox x:Name="checkboxIsForMySelf" Content="Cast spell on myself ?" HorizontalAlignment="Left" Margin="367,111,0,0" VerticalAlignment="Top" Checked="CheckboxIsForMySelf_Checked" Unchecked="CheckboxIsForMySelf_Unchecked">
+            <CheckBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </CheckBox.BorderBrush>
+            <CheckBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </CheckBox.Foreground>
+            <CheckBox.Background>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </CheckBox.Background>
+        </CheckBox>
+        <Label Content="Max Distance:" HorizontalAlignment="Left" Margin="199,131,0,0" VerticalAlignment="Top" Background="{x:Null}">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Label.Foreground>
+        </Label>
+        <TextBox x:Name="textboxMaxDistance" HorizontalAlignment="Left" Height="23" Margin="204,157,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="120" BorderThickness="2" TextChanged="TextboxMaxDistance_TextChanged">
+            <TextBox.Background>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+            </TextBox.Background>
+            <TextBox.CaretBrush>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+            </TextBox.CaretBrush>
+            <TextBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </TextBox.BorderBrush>
+            <TextBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </TextBox.Foreground>
+        </TextBox>
+        <Rectangle HorizontalAlignment="Left" Height="113" Margin="367,157,0,0" VerticalAlignment="Top" Width="357" StrokeThickness="2">
+            <Rectangle.Stroke>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Rectangle.Stroke>
+            <Rectangle.Fill>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+            </Rectangle.Fill>
+        </Rectangle>
+        <ComboBox x:Name="comboboxValueOne" HorizontalAlignment="Left" Margin="375,165,0,0" VerticalAlignment="Top" Width="205" SelectionChanged="ComboboxValueOne_SelectionChanged"/>
+        <ComboBox x:Name="comboboxValueOperator" HorizontalAlignment="Left" Margin="375,192,0,0" VerticalAlignment="Top" Width="205" SelectionChanged="ComboboxValueOperator_SelectionChanged"/>
+        <ComboBox x:Name="comboboxValueTwo" HorizontalAlignment="Left" Margin="375,237,0,0" VerticalAlignment="Top" Width="205" SelectionChanged="ComboboxValueTwo_SelectionChanged"/>
+        <Button x:Name="buttonAddCondition" Content="+" HorizontalAlignment="Left" Margin="585,0,0,287" Width="85" Background="{x:Null}" BorderThickness="2" Height="48" VerticalAlignment="Bottom" FontSize="24" Click="ButtonAddCondition_Click">
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+        </Button>
+        <Button x:Name="buttonRemoveCondition" Content="🗑" HorizontalAlignment="Left" Margin="675,0,0,287" Width="49" Background="{x:Null}" BorderThickness="2" Height="48" VerticalAlignment="Bottom" FontSize="16" Click="ButtonRemoveCondition_Click">
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+        </Button>
+        <Label Content="Condition Editor:" HorizontalAlignment="Left" Margin="367,131,0,0" VerticalAlignment="Top">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Label.Foreground>
+        </Label>
+        <RadioButton x:Name="radiobuttonPreValue" Content="Preset:" HorizontalAlignment="Left" Margin="377,218,0,0" VerticalAlignment="Top" GroupName="custompre" IsChecked="True" Checked="RadiobuttonPreValue_Checked">
+            <RadioButton.Background>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </RadioButton.Background>
+            <RadioButton.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </RadioButton.BorderBrush>
+            <RadioButton.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </RadioButton.Foreground>
+        </RadioButton>
+        <RadioButton x:Name="radiobuttonCustomValue" Content="Custom:" HorizontalAlignment="Left" Margin="585,218,0,0" VerticalAlignment="Top" GroupName="custompre" Checked="RadiobuttonCustomValue_Checked">
+            <RadioButton.Background>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </RadioButton.Background>
+            <RadioButton.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </RadioButton.BorderBrush>
+            <RadioButton.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </RadioButton.Foreground>
+        </RadioButton>
+        <TextBox x:Name="textboxCustomValue" HorizontalAlignment="Left" Height="22" Margin="585,237,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="130" BorderThickness="2" IsEnabled="False" TextChanged="TextboxCustomValue_TextChanged">
+            <TextBox.Background>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+            </TextBox.Background>
+            <TextBox.CaretBrush>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+            </TextBox.CaretBrush>
+            <TextBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </TextBox.BorderBrush>
+            <TextBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </TextBox.Foreground>
+        </TextBox>
+        <TextBox x:Name="textboxSpellName" HorizontalAlignment="Left" Height="23" Margin="204,211,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" BorderThickness="2" TextChanged="TextboxSpellName_TextChanged">
+            <TextBox.Background>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+            </TextBox.Background>
+            <TextBox.CaretBrush>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+            </TextBox.CaretBrush>
+            <TextBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </TextBox.BorderBrush>
+            <TextBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </TextBox.Foreground>
+        </TextBox>
+        <Label Content="Spell Name:" HorizontalAlignment="Left" Margin="199,185,0,0" VerticalAlignment="Top" Background="{x:Null}">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Label.Foreground>
+        </Label>
+        <Button x:Name="buttonAddCombatEntry" Content="+" HorizontalAlignment="Left" Margin="10,0,0,10" Width="110" Background="{x:Null}" BorderThickness="2" Height="48" VerticalAlignment="Bottom" FontSize="24" Click="ButtonAddCombatEntry_Click">
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+        </Button>
+        <Button x:Name="buttonRemoveCombatEntry" Content="🗑" HorizontalAlignment="Left" Margin="125,0,0,10" Width="65" Background="{x:Null}" BorderThickness="2" Height="48" VerticalAlignment="Bottom" FontSize="16" Click="ButtonRemoveCombatEntry_Click">
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+        </Button>
+
+    </Grid>
+</Window>

@@ -89,9 +89,9 @@ namespace AmeisenCore
             const float distance = 1.5f;
 
             AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Writing: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "] Action [" + action + "] Distance [" + distance + "]", "AmeisenCore.AmeisenCore");
-            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmX, pos.x);
-            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmY, pos.y);
-            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmZ, pos.z);
+            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmX, (float)pos.x);
+            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmY, (float)pos.y);
+            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmZ, (float)pos.z);
             AmeisenManager.GetInstance().GetBlackMagic().WriteInt(WoWOffsets.ctmAction, (int)action);
             AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmDistance, distance);
         }
@@ -106,29 +106,58 @@ namespace AmeisenCore
             uint argCC = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(Encoding.UTF8.GetBytes(command).Length + 1);
             AmeisenManager.GetInstance().GetBlackMagic().WriteBytes(argCC, Encoding.UTF8.GetBytes(command));
 
-            uint returnAdress = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(4);
-
             string[] asm = new string[]
             {
                 "MOV EAX, " + (argCC),
                 "PUSH 0",
                 "PUSH EAX",
                 "PUSH EAX",
-                "MOV EAX, " + (WoWOffsets.luaDoString),
-                "CALL EAX",
-                "MOV [" + (returnAdress) + "], EAX",
+                "CALL " + (WoWOffsets.luaDoString),
                 "ADD ESP, 0xC",
                 "RETN",
             };
 
-            AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm);
-            AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(argCC);
-
-            byte[] returnBytes = AmeisenManager.GetInstance().GetAmeisenHook().TryReadReturnValue(returnAdress);
+            byte[] returnBytes = AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm);
             string result = Encoding.UTF8.GetString(returnBytes);
 
             AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Command returned: Command [" + command + "] ReturnValue: " + result + " ReturnBytes: " + returnBytes.ToString(), "AmeisenCore.AmeisenCore");
-            AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(returnAdress);
+            AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(argCC);
+        }
+
+        /// <summary>
+        /// Get Localized Text for command
+        /// </summary>
+        /// <param name="command">lua command to run</param>
+        public static string GetLocalizedText(string variable)
+        {
+            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Getting text: Variable [" + variable + "]", "AmeisenCore.AmeisenCore");
+            uint argCC = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(Encoding.UTF8.GetBytes(variable).Length + 1);
+            AmeisenManager.GetInstance().GetBlackMagic().WriteBytes(argCC, Encoding.UTF8.GetBytes(variable));
+
+            string[] asm = new string[]
+            {
+                "CALL " + (WoWOffsets.clientObjectManagerGetActivePlayerObject),
+                "MOV ECX, EAX",
+                "PUSH -1",
+                "MOV EDX, " + (argCC),
+                "PUSH EDX",
+                "CALL " + (WoWOffsets.luaGetLocalizedText),
+                "RETN",
+            };
+
+            string result = Encoding.UTF8.GetString(AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm));
+            AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(argCC);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Run the given slash-commando
+        /// </summary>
+        /// <param name="slashCommand">Example: /target player</param>
+        public static void RunSlashCommand(string slashCommand)
+        {
+            LUADoString("DEFAULT_CHAT_FRAME.editBox:SetText(\"" + slashCommand + "\") ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)");
         }
 
         /// <summary>
@@ -145,42 +174,11 @@ namespace AmeisenCore
             {
                 "PUSH " + BitConverter.ToInt32(guidBytes, 4),
                 "PUSH " + BitConverter.ToInt32(guidBytes, 0),
-                "CALL " + (WoWOffsets.cGameUITarget),
+                "CALL " + (WoWOffsets.clientGameUITarget),
                 "RETN",
             };
 
             AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm);
-        }
-
-        /// <summary>
-        /// Get Localized Text for command
-        /// 
-        /// !!! W.I.P !!!
-        /// </summary>
-        /// <param name="command">lua command to run</param>
-        public static string GetLocalizedText(string command)
-        {
-            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Getting text: Command [" + command + "]", "AmeisenCore.AmeisenCore");
-            uint argCC = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(Encoding.UTF8.GetBytes(command).Length + 1);
-            AmeisenManager.GetInstance().GetBlackMagic().WriteBytes(argCC, Encoding.UTF8.GetBytes(command));
-
-            string[] asm = new string[]
-            {
-                "CALL " + (WoWOffsets.clientObjectManagerGetActivePlayerObject),
-                "MOV ECX, EAX",
-                "PUSH -1",
-                "MOV EDX, " + argCC + "",
-                "PUSH EDX",
-                "CALL " + (WoWOffsets.luaGetLocalizedText),
-                "RETN",
-            };
-
-            AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm);
-            AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(argCC);
-
-            //string result = Encoding.UTF8.GetString(AmeisenManager.GetInstance().GetAmeisenHook().TryReadReturnValue())
-
-            return "";
         }
 
         /// <summary>
@@ -219,6 +217,12 @@ namespace AmeisenCore
 
                 WoWObject wowObject = ReadWoWObjectFromGUID<WoWObject>(objGUID, activeObj);
                 wowObject.memoryLocation = activeObj;
+
+                try
+                {
+                    wowObject.distance = Utils.GetDistance(AmeisenManager.GetInstance().GetMe().pos, wowObject.pos);
+                }
+                catch { }
 
                 objects.Add(wowObject);
 
@@ -403,7 +407,10 @@ namespace AmeisenCore
 
                             foreach (Unit u in ((Me)tmpResult).partymembers)
                                 if (u.guid == leaderGUID)
+                                {
                                     ((Me)tmpResult).partyLeader = u;
+                                    ((Me)tmpResult).partyLeader.distance = Utils.GetDistance(((Me)tmpResult).pos, ((Me)tmpResult).partyLeader.pos);
+                                }
                         }
                         UInt64 targetGuid = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(myBaseUnitFields + (0x12 * 4));
                         // If we have a target lets read it
@@ -413,7 +420,7 @@ namespace AmeisenCore
                             ((Me)tmpResult).target = ReadWoWObjectFromGUID<Unit>(targetGuid);
 
                             // Calculate the distance
-                            ((Me)tmpResult).target.distance = Utils.GetDistance(((Me)tmpResult).pos, ((Me)tmpResult).target.pos);
+                            ((Me)tmpResult).target.distance = Utils.GetDistance(AmeisenManager.GetInstance().GetMe().pos, ((Unit)tmpResult).target.pos);
 
                             //uint targetCastingstate = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt((uint)AmeisenManager.GetInstance().GetBlackMagic().MainModule.BaseAddress + WoWOffsets.staticTargetCastingstate);
                             //((Me)tmpResult).target.isCasting = (targetCastingstate == 640138312) ? true : false;
@@ -477,7 +484,7 @@ namespace AmeisenCore
 
             result.mapID = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(WoWOffsets.mapID);
             result.zoneID = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(WoWOffsets.zoneID);
-
+            
             result.memoryLocation = baseaddress;
 
             return result;
@@ -538,6 +545,24 @@ namespace AmeisenCore
         }
 
         /// <summary>
+        /// Check if the player's world is loaded
+        /// </summary>
+        /// <returns>true if yes, false if no</returns>
+        public static bool CheckWorldLoaded()
+        {
+            return AmeisenManager.GetInstance().GetBlackMagic().ReadInt(WoWOffsets.worldLoaded) == 1;
+        }
+
+        /// <summary>
+        /// Check if the player's world is in a loadingscreen
+        /// </summary>
+        /// <returns>true if yes, false if no</returns>
+        public static bool CheckLoadingScreen()
+        {
+            return false;
+        }
+
+        /// <summary>
         /// Cast a spell by its name
         /// </summary>
         public static void CastSpellByName(string spellname, bool onMyself)
@@ -567,6 +592,18 @@ namespace AmeisenCore
         public static void CastShapeshift(int index)
         {
             LUADoString("CastShapeshiftForm(\"" + index + "\");");
+        }
+
+        /// <summary>
+        /// Check if the spell is on cooldown
+        /// </summary>
+        /// <param name="spell">spellname</param>
+        /// <returns>true if it is on cooldown, false if not</returns>
+        public static bool IsOnCooldown(string spell)
+        {
+            LUADoString("start, duration, enabled = GetSpellCooldown(\"" + spell + "\");");
+            Thread.Sleep(100);
+            try { return int.Parse(GetLocalizedText("duration")) > 0; } catch { return true; }
         }
 
         /// <summary>

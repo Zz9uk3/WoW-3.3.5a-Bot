@@ -1,26 +1,48 @@
-﻿using System.Collections.Generic;
+﻿using AmeisenUtilities;
+using System.Collections.Generic;
+using System.Text;
 using static AmeisenAI.Combat.CombatStructures;
 
 namespace AmeisenAI.Combat
 {
-    public struct Condition
+    public class Condition
     {
         public CombatLogicStatement statement;
-        public object[] conditionValues;
+        public CombatLogicValues[] conditionValues;
+        public bool customSecondValue;
+        public object customValue;
+
+        public Condition()
+        {
+            statement = CombatLogicStatement.EQUAL;
+            conditionValues = new CombatLogicValues[2] { 0, 0 };
+            customSecondValue = false;
+            customValue = 0.0;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(conditionValues[0].ToString());
+            sb.Append(" - " + statement.ToString() + " - ");
+            sb.Append(conditionValues[1].ToString());
+
+            return sb.ToString(); ;
+        }
     }
 
     public class CombatLogicEntry
     {
-        public int Priority { get; }
-        public CombatLogicAction Action { get; }
-        public List<Condition> Conditions { get; }
-        public bool CombatOnly { get; }
-        public bool IsBuff { get; }
-        public bool IsBuffForParty { get; }
-        public bool CanMoveDuringCast { get; }
-        public float MaxSpellDistance { get; }
-        public object Parameters { get; }
-        public bool IsForMyself { get; }
+        public int Priority { get; set; }
+        public CombatLogicAction Action { get; set; }
+        public List<Condition> Conditions { get; set; }
+        public bool CombatOnly { get; set; }
+        public bool IsBuff { get; set; }
+        public bool IsBuffForParty { get; set; }
+        public bool CanMoveDuringCast { get; set; }
+        public float MaxSpellDistance { get; set; }
+        public object Parameters { get; set; }
+        public bool IsForMyself { get; set; }
 
         public CombatLogicEntry(
             int priority,
@@ -44,6 +66,23 @@ namespace AmeisenAI.Combat
             MaxSpellDistance = spellDistance;
             Parameters = parameters;
             IsForMyself = isForMyself;
+        }
+
+        public CombatLogicEntry()
+        {
+            Action = CombatLogicAction.USE_SPELL;
+            Conditions = new List<Condition>();
+            Parameters = "";
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("[" + Priority);
+            sb.Append("] " + Action.ToString());
+            sb.Append(" - " + Parameters.ToString());
+
+            return sb.ToString();
         }
     }
 }

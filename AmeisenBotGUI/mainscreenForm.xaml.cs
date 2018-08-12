@@ -71,6 +71,11 @@ namespace AmeisenBotGUI
                 uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, AmeisenSettings.GetInstance().settings.dataRefreshRate);
                 uiUpdateTimer.Start();
                 AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Started UI-Update-Timer", this);
+
+                checkBoxAssistPartyAttack.IsChecked = AmeisenSettings.GetInstance().settings.behaviourAttack;
+                checkBoxAssistPartyTank.IsChecked = AmeisenSettings.GetInstance().settings.behaviourTank;
+                checkBoxAssistPartyHeal.IsChecked = AmeisenSettings.GetInstance().settings.behaviourHeal;
+                checkBoxFollowMaster.IsChecked = AmeisenSettings.GetInstance().settings.followMaster;
             }
         }
 
@@ -87,6 +92,10 @@ namespace AmeisenBotGUI
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Close();
+            AmeisenManager.GetInstance().GetAmeisenHook().DisposeHooking();
+            AmeisenAIManager.GetInstance().StopAI();
+            AmeisenCombatManager.GetInstance().Stop();
+            AmeisenLogger.GetInstance().StopLogging();
         }
 
         private void ButtonSettings_Click(object sender, RoutedEventArgs e)
@@ -121,25 +130,31 @@ namespace AmeisenBotGUI
 
         private void UIUpdateTimer_Tick(object sender, EventArgs e)
         {
-            AmeisenCore.AmeisenCore.AntiAFK();
-            UpdateUI();
-
-            if (checkBoxFollowGroupLeader.IsChecked == true
-                && AmeisenManager.GetInstance().GetMe().currentState != UnitState.ATTACKING
-                && AmeisenManager.GetInstance().GetMe().currentState != UnitState.AUTOHIT
-                && AmeisenManager.GetInstance().GetMe().currentState != UnitState.CASTING)
+            if (AmeisenCore.AmeisenCore.CheckWorldLoaded()
+                && !AmeisenCore.AmeisenCore.CheckLoadingScreen())
             {
-                bool addAction = true;
 
-                foreach (AmeisenAction a in AmeisenAIManager.GetInstance().GetQueueItems())
-                    if (a.GetActionType() == AmeisenActionType.MOVE_TO_POSITION)
-                    {
-                        addAction = false;
-                        break;
-                    }
+                AmeisenCore.AmeisenCore.AntiAFK();
+                UpdateUI();
 
-                if (addAction)
-                    AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.MOVE_TO_POSITION, AmeisenManager.GetInstance().GetMe().partyLeader.pos));
+                if (checkBoxFollowMaster.IsChecked == true
+                    && AmeisenManager.GetInstance().GetMe().partyLeader != null
+                    && AmeisenManager.GetInstance().GetMe().currentState != UnitState.ATTACKING
+                    && AmeisenManager.GetInstance().GetMe().currentState != UnitState.AUTOHIT
+                    && AmeisenManager.GetInstance().GetMe().currentState != UnitState.CASTING)
+                {
+                    bool addAction = true;
+
+                    foreach (AmeisenAction a in AmeisenAIManager.GetInstance().GetQueueItems())
+                        if (a.GetActionType() == AmeisenActionType.MOVE_TO_POSITION)
+                        {
+                            addAction = false;
+                            break;
+                        }
+
+                    if (addAction)
+                        AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.MOVE_TO_POSITION, AmeisenManager.GetInstance().GetMe().partyLeader.pos));
+                }
             }
         }
 
@@ -160,25 +175,25 @@ namespace AmeisenBotGUI
                 try
                 {
                     labelName.Content = me.name + " lvl." + me.level;
-                    labelCasting.Content = "Casting: " + me.currentState;
+                    //labelCasting.Content = "Casting: " + me.currentState;
 
-                    labelHP.Content = "HP [" + me.health + "/" + me.maxHealth + "]";
+                    //labelHP.Content = "HP [" + me.health + "/" + me.maxHealth + "]";
                     progressBarHP.Maximum = me.maxHealth;
                     progressBarHP.Value = me.health;
 
-                    labelEnergy.Content = "Energy [" + me.energy + "/" + me.maxEnergy + "]";
+                    //labelEnergy.Content = "Energy [" + me.energy + "/" + me.maxEnergy + "]";
                     progressBarEnergy.Maximum = me.maxEnergy;
                     progressBarEnergy.Value = me.energy;
 
-                    labelXP.Content = "XP [" + me.exp + "/" + me.maxExp + "]";
+                    //labelXP.Content = "XP [" + me.exp + "/" + me.maxExp + "]";
                     progressBarXP.Maximum = me.maxExp;
                     progressBarXP.Value = me.exp;
 
-                    labelPosition.Content =
+                    /*labelPosition.Content =
                         "X: " + me.pos.x +
                         "\nY: " + me.pos.y +
                         "\nZ: " + me.pos.z +
-                        "\nR: " + me.rotation;
+                        "\nR: " + me.rotation;*/
                 }
                 catch (Exception e)
                 {
@@ -188,23 +203,23 @@ namespace AmeisenBotGUI
                     try
                     {
                         labelNameTarget.Content = me.target.name + " lvl." + me.target.level;
-                        labelCastingTarget.Content = "Current state: " + me.target.currentState;
+                        //labelCastingTarget.Content = "Current state: " + me.target.currentState;
 
-                        labelHPTarget.Content = "HP [" + me.target.health + "/" + me.target.maxHealth + "]";
+                        //labelHPTarget.Content = "HP [" + me.target.health + "/" + me.target.maxHealth + "]";
                         progressBarHPTarget.Maximum = me.target.maxHealth;
                         progressBarHPTarget.Value = me.target.health;
 
-                        labelEnergyTarget.Content = "Energy [" + me.target.energy + "/" + me.target.maxEnergy + "]";
+                        //labelEnergyTarget.Content = "Energy [" + me.target.energy + "/" + me.target.maxEnergy + "]";
                         progressBarEnergyTarget.Maximum = me.target.maxEnergy;
                         progressBarEnergyTarget.Value = me.target.energy;
 
-                        labelDistanceTarget.Content = "Distance: " + me.target.distance + "m";
+                        //labelDistanceTarget.Content = "Distance: " + me.target.distance + "m";
 
-                        labelPositionTarget.Content =
+                        /*labelPositionTarget.Content =
                             "X: " + me.target.pos.x +
                             "\nY: " + me.target.pos.y +
                             "\nZ: " + me.target.pos.z +
-                            "\nR: " + me.target.rotation;
+                            "\nR: " + me.target.rotation;*/
                     }
                     catch (Exception e)
                     {
@@ -214,17 +229,42 @@ namespace AmeisenBotGUI
 
             try
             {
-                labelThreadsActive.Content = "Threads: " + AmeisenAIManager.GetInstance().GetBusyThreadCount() + "/" + AmeisenAIManager.GetInstance().GetActiveThreadCount();
+                labelThreadsActive.Content = "⚡ Threads: " + AmeisenAIManager.GetInstance().GetBusyThreadCount() + "/" + AmeisenAIManager.GetInstance().GetActiveThreadCount();
                 progressBarBusyAIThreads.Maximum = AmeisenAIManager.GetInstance().GetActiveThreadCount();
                 progressBarBusyAIThreads.Value = AmeisenAIManager.GetInstance().GetBusyThreadCount();
-                listboxCurrentQueue.Items.Clear();
-                foreach (AmeisenAction a in AmeisenAIManager.GetInstance().GetQueueItems())
-                    listboxCurrentQueue.Items.Add(a.GetActionType() + " [" + a.GetActionParams() + "]");
+                //listboxCurrentQueue.Items.Clear();
+                //foreach (AmeisenAction a in AmeisenAIManager.GetInstance().GetQueueItems())
+                //listboxCurrentQueue.Items.Add(a.GetActionType() + " [" + a.GetActionParams() + "]");
             }
             catch (Exception e)
             {
                 AmeisenLogger.GetInstance().Log(LogLevel.ERROR, e.ToString(), this);
             }
+        }
+
+        private void ButtonCobatClassEditor_Click(object sender, RoutedEventArgs e)
+        {
+            new CombatClassEditor().Show();
+        }
+
+        private void ButtonTest2_Click(object sender, RoutedEventArgs e)
+        {
+            AmeisenCore.AmeisenCore.LUADoString("start, duration, enabled = GetSpellCooldown(\"Every Man for Himself\");");
+            labelDebug.Content = AmeisenCore.AmeisenCore.GetLocalizedText("duration");
+        }
+
+        private void Mainscreen_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            AmeisenSettings.GetInstance().settings.behaviourAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
+            AmeisenSettings.GetInstance().settings.behaviourTank = (bool)checkBoxAssistPartyTank.IsChecked;
+            AmeisenSettings.GetInstance().settings.behaviourHeal = (bool)checkBoxAssistPartyHeal.IsChecked;
+            AmeisenSettings.GetInstance().settings.followMaster = (bool)checkBoxFollowMaster.IsChecked;
+            AmeisenSettings.GetInstance().SaveToFile(AmeisenSettings.GetInstance().loadedconfName);
+        }
+
+        private void ButtonTestX_Click(object sender, RoutedEventArgs e)
+        {
+            AmeisenCombatManager.GetInstance().Start();
         }
     }
 }

@@ -1,11 +1,44 @@
-﻿namespace AmeisenAI
+﻿using AmeisenCore;
+using System.Threading;
+
+namespace AmeisenAI
 {
-    class AmeisenCombatManager
+    public class AmeisenCombatManager
     {
+        private CombatEngine combatEngine;
+        private readonly Thread mainWorker;
+
+        private bool stop = false;
+
         private static AmeisenCombatManager i;
-        
+
         private AmeisenCombatManager()
         {
+            mainWorker = new Thread(new ThreadStart(DoWork));
+            combatEngine = new CombatEngine();
+
+            string defaultCombatClass = AmeisenSettings.GetInstance().settings.combatClassName;
+            if (defaultCombatClass != "none")
+                combatEngine.currentCombatLogic = CombatEngine.LoadCombatLogicFromFileByName(defaultCombatClass);
+        }
+
+        /// <summary>
+        /// Stop the CombatEngine
+        /// </summary>
+        public void Stop() { stop = true; }
+
+        /// <summary>
+        /// Start the CombatEngine
+        /// </summary>
+        public void Start() { if(mainWorker.ThreadState == ThreadState.Unstarted) mainWorker.Start(); }
+
+        private void DoWork()
+        {
+            while (!stop)
+            {
+                combatEngine.ExecuteNextStep();
+                Thread.Sleep(100);
+            }
         }
 
         /// <summary>
