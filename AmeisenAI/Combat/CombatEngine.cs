@@ -42,7 +42,7 @@ namespace AmeisenAI
 
                         AmeisenAIManager.GetInstance().AddActionToQueue(ref action);
 
-                        do Thread.Sleep(10);
+                        do Thread.Sleep(100);
                         while (!action.IsActionDone());
                     }
                     break;
@@ -64,8 +64,17 @@ namespace AmeisenAI
 
         public bool ExecuteLogic(CombatLogicEntry entry)
         {
-            if (AmeisenManager.GetInstance().GetMe().target.distance >= entry.MaxSpellDistance)
+            if (AmeisenManager.GetInstance().GetMe().target == null)
                 return false;
+
+            if (AmeisenManager.GetInstance().GetMe().target.distance > entry.MaxSpellDistance)
+            {
+                AmeisenAction action = new AmeisenAction(AmeisenActionType.INTERACT_TARGET, Interaction.ATTACKPOS);
+                AmeisenAIManager.GetInstance().AddActionToQueue(ref action);
+
+                do Thread.Sleep(100);
+                while (!action.IsActionDone());
+            }
 
             foreach (Condition c in entry.Conditions)
                 if (!CheckCondition(c))
@@ -75,28 +84,68 @@ namespace AmeisenAI
 
         private bool CheckCondition(Condition condition)
         {
+            double value1 = 0.0;
+            double value2 = 0.0;
+
+            switch (condition.conditionValues[0])
+            {
+                case CombatLogicValues.MYSELF_HP:
+                    value1 = AmeisenManager.GetInstance().GetMe().health;
+                    break;
+
+                case CombatLogicValues.MYSELF_ENERGY:
+                    value1 = AmeisenManager.GetInstance().GetMe().energy;
+                    break;
+
+                case CombatLogicValues.TARGET_HP:
+                    value1 = AmeisenManager.GetInstance().GetMe().target.health;
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (!condition.customSecondValue)
+                switch (condition.conditionValues[1])
+                {
+                    case CombatLogicValues.MYSELF_HP:
+                        value2 = AmeisenManager.GetInstance().GetMe().health;
+                        break;
+
+                    case CombatLogicValues.MYSELF_ENERGY:
+                        value2 = AmeisenManager.GetInstance().GetMe().energy;
+                        break;
+
+                    case CombatLogicValues.TARGET_HP:
+                        value2 = AmeisenManager.GetInstance().GetMe().target.health;
+                        break;
+
+                    default:
+                        break;
+                }
+
             switch (condition.statement)
             {
                 case CombatLogicStatement.GREATER:
-                    return CompareGreater((double)condition.conditionValues[0], (double)condition.conditionValues[1]);
+                    return CompareGreater(value1, (double)condition.customValue);
 
                 case CombatLogicStatement.GREATER_OR_EQUAL:
-                    return CompareGreaterOrEqual((double)condition.conditionValues[0], (double)condition.conditionValues[1]);
+                    return CompareGreaterOrEqual(value1, (double)condition.customValue);
 
                 case CombatLogicStatement.EQUAL:
-                    return CompareEqual((double)condition.conditionValues[0], (double)condition.conditionValues[1]);
+                    return CompareEqual(value1, (double)condition.customValue);
 
                 case CombatLogicStatement.LESS_OR_EQUAL:
-                    return CompareLessOrEqual((double)condition.conditionValues[0], (double)condition.conditionValues[1]);
+                    return CompareLessOrEqual(value1, (double)condition.customValue);
 
                 case CombatLogicStatement.LESS:
-                    return CompareLess((double)condition.conditionValues[0], (double)condition.conditionValues[1]);
+                    return CompareLess(value1, (double)condition.customValue);
 
                 case CombatLogicStatement.HAS_BUFF:
-                    return AmeisenCore.AmeisenCore.CheckForAura((string)condition.conditionValues[0], false);
+                    return AmeisenCore.AmeisenCore.CheckForAura((string)condition.customValue, false);
 
                 case CombatLogicStatement.HAS_BUFF_MYSELF:
-                    return AmeisenCore.AmeisenCore.CheckForAura((string)condition.conditionValues[0], true);
+                    return AmeisenCore.AmeisenCore.CheckForAura((string)condition.customValue, true);
 
                 default:
                     return false;

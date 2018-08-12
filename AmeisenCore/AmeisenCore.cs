@@ -420,7 +420,7 @@ namespace AmeisenCore
                             ((Me)tmpResult).target = ReadWoWObjectFromGUID<Unit>(targetGuid);
 
                             // Calculate the distance
-                            ((Me)tmpResult).target.distance = Utils.GetDistance(((Me)tmpResult).pos, ((Me)tmpResult).target.pos);
+                            ((Me)tmpResult).target.distance = Utils.GetDistance(AmeisenManager.GetInstance().GetMe().pos, ((Unit)tmpResult).target.pos);
 
                             //uint targetCastingstate = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt((uint)AmeisenManager.GetInstance().GetBlackMagic().MainModule.BaseAddress + WoWOffsets.staticTargetCastingstate);
                             //((Me)tmpResult).target.isCasting = (targetCastingstate == 640138312) ? true : false;
@@ -484,7 +484,7 @@ namespace AmeisenCore
 
             result.mapID = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(WoWOffsets.mapID);
             result.zoneID = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(WoWOffsets.zoneID);
-
+            
             result.memoryLocation = baseaddress;
 
             return result;

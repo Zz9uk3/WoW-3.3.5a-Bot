@@ -132,17 +132,21 @@ namespace AmeisenAI
                                 
                             case AmeisenActionType.TARGET_ENTITY:
                                 AmeisenCore.AmeisenCore.TargetGUID((UInt64)currentAction.GetActionParams());
+                                currentAction.ActionIsDone();
                                 break;
 
                             case AmeisenActionType.USE_SPELL:
                                 AmeisenCore.AmeisenCore.CastSpellByName((string)currentAction.GetActionParams(), false);
+                                currentAction.ActionIsDone();
                                 break;
 
                             case AmeisenActionType.USE_SPELL_ON_ME:
                                 AmeisenCore.AmeisenCore.CastSpellByName((string)currentAction.GetActionParams(), true);
+                                currentAction.ActionIsDone();
                                 break;
 
                             default:
+                                currentAction.ActionIsDone();
                                 break;
                         }
 

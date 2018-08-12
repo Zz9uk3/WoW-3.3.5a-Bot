@@ -30,7 +30,7 @@ namespace AmeisenAI
         /// <summary>
         /// Start the CombatEngine
         /// </summary>
-        public void Start() { mainWorker.Start(); }
+        public void Start() { if(mainWorker.ThreadState == ThreadState.Unstarted) mainWorker.Start(); }
 
         private void DoWork()
         {

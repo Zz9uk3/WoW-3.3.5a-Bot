@@ -8,14 +8,16 @@ namespace AmeisenAI.Combat
     public class Condition
     {
         public CombatLogicStatement statement;
-        public object[] conditionValues;
+        public CombatLogicValues[] conditionValues;
         public bool customSecondValue;
+        public object customValue;
 
         public Condition()
         {
             statement = CombatLogicStatement.EQUAL;
-            conditionValues = new object[2] { 0, 0 };
+            conditionValues = new CombatLogicValues[2] { 0, 0 };
             customSecondValue = false;
+            customValue = 0.0;
         }
 
         public override string ToString()
@@ -76,9 +78,9 @@ namespace AmeisenAI.Combat
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("[" + Utils.CheckStringForNull(Priority));
-            sb.Append("] " + Utils.CheckStringForNull(Action.ToString()));
-            sb.Append(" - " + Utils.CheckStringForNull(Parameters.ToString()));
+            sb.Append("[" + Priority);
+            sb.Append("] " + Action.ToString());
+            sb.Append(" - " + Parameters.ToString());
 
             return sb.ToString();
         }

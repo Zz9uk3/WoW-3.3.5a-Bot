@@ -91,12 +91,10 @@
     /// </summary>
     public enum AmeisenActionType
     {
-        LOOT_TARGET,
-        TARGET_ENTITY,
-        ATTACK_TARGET,
         USE_SPELL,
         USE_SPELL_ON_ME,
         INTERACT_TARGET,
         MOVE_TO_POSITION,
+        TARGET_ENTITY
     }
 }

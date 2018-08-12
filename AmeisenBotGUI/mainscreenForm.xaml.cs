@@ -94,6 +94,7 @@ namespace AmeisenBotGUI
             Close();
             AmeisenManager.GetInstance().GetAmeisenHook().DisposeHooking();
             AmeisenAIManager.GetInstance().StopAI();
+            AmeisenCombatManager.GetInstance().Stop();
             AmeisenLogger.GetInstance().StopLogging();
         }
 

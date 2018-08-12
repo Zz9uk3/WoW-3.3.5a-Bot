@@ -301,7 +301,7 @@ namespace AmeisenBotGUI
         private void ComboboxValueOne_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (listboxConditions.SelectedItem != null)
-                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionValues[0] = comboboxValueOne.SelectedItem;
+                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionValues[0] = (CombatLogicValues)comboboxValueOne.SelectedItem;
         }
 
         private void ComboboxValueOperator_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -320,13 +320,13 @@ namespace AmeisenBotGUI
         private void ComboboxValueTwo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (listboxConditions.SelectedItem != null)
-                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionValues[1] = comboboxValueTwo.SelectedItem;
+                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionValues[1] = (CombatLogicValues)comboboxValueTwo.SelectedItem;
         }
 
         private void TextboxCustomValue_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (listboxConditions.SelectedItem != null)
-                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionValues[1] = double.Parse(textboxCustomValue.Text);
+            if (listboxConditions.SelectedItem != null && textboxCustomValue.Text.Length > 0)
+                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).customValue = double.Parse(textboxCustomValue.Text);
         }
 
         private void ButtonNew_Click(object sender, RoutedEventArgs e)
