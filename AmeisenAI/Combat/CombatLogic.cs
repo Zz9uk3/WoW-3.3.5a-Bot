@@ -2,8 +2,10 @@
 
 namespace AmeisenAI.Combat
 {
-    class CombatLogic
+    public class CombatLogic
     {
         public List<CombatLogicEntry> combatLogicEntries;
+
+        public CombatLogic() { combatLogicEntries = new List<CombatLogicEntry>(); }
     }
 }

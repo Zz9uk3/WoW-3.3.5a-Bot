@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AmeisenBotGUI"
         mc:Ignorable="d"
-        Title="AmeisenBot - " Height="400" Width="700" Loaded="Mainscreen_Loaded" WindowStyle="None" ResizeMode="NoResize" MouseDown="Mainscreen_MouseDown" Icon="Icon.ico" BorderThickness="2">
+        Title="AmeisenBot - " Height="400" Width="700" Loaded="Mainscreen_Loaded" WindowStyle="None" ResizeMode="NoResize" MouseDown="Mainscreen_MouseDown" Icon="Icon.ico" BorderThickness="2" Closing="Mainscreen_Closing">
     <Window.BorderBrush>
         <SolidColorBrush Color="{DynamicResource AccentColor}"/>
     </Window.BorderBrush>
@@ -78,7 +78,7 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>
         </Button>
-        <CheckBox x:Name="checkBoxFollowGroupLeader" Content="🚀 Follow Master" Margin="0,122,367,0" Background="White" HorizontalAlignment="Right" Width="150" BorderThickness="2" Height="20" VerticalAlignment="Top" Grid.Column="1">
+        <CheckBox x:Name="checkBoxFollowMaster" Content="🚀 Follow Master" Margin="0,122,367,0" Background="White" HorizontalAlignment="Right" Width="150" BorderThickness="2" Height="20" VerticalAlignment="Top" Grid.Column="1">
             <CheckBox.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </CheckBox.Foreground>
@@ -179,7 +179,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Button.Foreground>
         </Button>
-        <CheckBox x:Name="checkBoxAssistPartyCombat" Content="⚔ Attack" Margin="0,76,367,0" Background="White" HorizontalAlignment="Right" Width="150" BorderThickness="2" Height="20" VerticalAlignment="Top" Grid.Column="1">
+        <CheckBox x:Name="checkBoxAssistPartyAttack" Content="⚔ Attack" Margin="0,76,367,0" Background="White" HorizontalAlignment="Right" Width="150" BorderThickness="2" Height="20" VerticalAlignment="Top" Grid.Column="1">
             <CheckBox.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </CheckBox.Foreground>
@@ -213,5 +213,13 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
         </Label>
+        <Button x:Name="buttonTestX" Content="StartCombatEngine();" HorizontalAlignment="Left" Margin="10,0,0,153" Width="225" Background="{x:Null}" BorderThickness="2" Height="26" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Click="ButtonTestX_Click">
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+        </Button>
     </Grid>
 </Window>

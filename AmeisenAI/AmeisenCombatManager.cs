@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace AmeisenAI
 {
-    class AmeisenCombatManager
+    public class AmeisenCombatManager
     {
         private CombatEngine combatEngine;
         private readonly Thread mainWorker;
@@ -19,7 +19,7 @@ namespace AmeisenAI
 
             string defaultCombatClass = AmeisenSettings.GetInstance().settings.combatClassName;
             if (defaultCombatClass != "none")
-                combatEngine.LoadCombatLogicFromFile(defaultCombatClass);
+                combatEngine.currentCombatLogic = CombatEngine.LoadCombatLogicFromFileByName(defaultCombatClass);
         }
 
         /// <summary>
@@ -36,17 +36,9 @@ namespace AmeisenAI
         {
             while (!stop)
             {
-                if (AmIAbleToDoTheNextThing())
-                {
-                    combatEngine.ExecuteNextStep();
-                }
-                Thread.Sleep(10);
+                combatEngine.ExecuteNextStep();
+                Thread.Sleep(100);
             }
-        }
-
-        private bool AmIAbleToDoTheNextThing()
-        {
-            return true;
         }
 
         /// <summary>

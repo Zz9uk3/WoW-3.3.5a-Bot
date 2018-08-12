@@ -10,5 +10,14 @@ namespace AmeisenUtilities
                              (a.y - b.y) * (a.y - b.y) +
                              (a.z - b.z) * (a.z - b.z));
         }
+
+        public static object CheckStringForNull(object obj)
+        {
+            try
+            {
+                return obj ?? "";
+            }
+            catch { return ""; }
+        }
     }
 }

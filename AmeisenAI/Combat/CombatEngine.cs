@@ -9,13 +9,12 @@ using static AmeisenAI.Combat.CombatStructures;
 
 namespace AmeisenAI
 {
-    class CombatEngine
+    public class CombatEngine
     {
         private static readonly string combatclassesPath = AppDomain.CurrentDomain.BaseDirectory + "/combatclasses/";
-        private static readonly string extension = ".json";
 
         private int posAt;
-        private CombatLogic currentCombatLogic;
+        public CombatLogic currentCombatLogic;
 
         public void ExecuteNextStep()
         {
@@ -33,16 +32,19 @@ namespace AmeisenAI
             switch (entry.Action)
             {
                 case CombatLogicAction.USE_SPELL:
-                    AmeisenAction action;
-                    if (entry.IsForMyself)
-                        action = new AmeisenAction(AmeisenActionType.USE_SPELL_ON_ME, (string)entry.Parameters);
-                    else
-                        action = new AmeisenAction(AmeisenActionType.USE_SPELL, (string)entry.Parameters);
+                    if (!AmeisenCore.AmeisenCore.IsOnCooldown((string)entry.Parameters))
+                    {
+                        AmeisenAction action;
+                        if (entry.IsForMyself)
+                            action = new AmeisenAction(AmeisenActionType.USE_SPELL_ON_ME, (string)entry.Parameters);
+                        else
+                            action = new AmeisenAction(AmeisenActionType.USE_SPELL, (string)entry.Parameters);
 
-                    AmeisenAIManager.GetInstance().AddActionToQueue(ref action);
+                        AmeisenAIManager.GetInstance().AddActionToQueue(ref action);
 
-                    do Thread.Sleep(10);
-                    while (!action.IsActionDone());
+                        do Thread.Sleep(10);
+                        while (!action.IsActionDone());
+                    }
                     break;
 
                 case CombatLogicAction.USE_AOE_SPELL:
@@ -111,29 +113,42 @@ namespace AmeisenAI
         /// Save a combatclass file from ./combatclasses/ folder by its name as a JSON.
         /// </summary>
         /// <param name="filename">Filename without extension</param>
-        public void SaveToFile(string filename, CombatLogic combatLogic)
+        public static void SaveToFile(string filename, CombatLogic combatLogic)
         {
             if (!Directory.Exists(combatclassesPath))
                 Directory.CreateDirectory(combatclassesPath);
 
             // Serialize our object with the help of NewtosoftJSON
-            File.WriteAllText(combatclassesPath + filename.ToLower() + extension, Newtonsoft.Json.JsonConvert.SerializeObject(combatLogic));
+            File.WriteAllText(filename, Newtonsoft.Json.JsonConvert.SerializeObject(combatLogic));
+        }
+
+        /// <summary>
+        /// Load a combatclass file.
+        /// </summary>
+        /// <param name="filename">Filename</param>
+        public static CombatLogic LoadCombatLogicFromFile(string filename)
+        {
+            CombatLogic currentCombatLogic;
+
+            if (!Directory.Exists(combatclassesPath))
+                Directory.CreateDirectory(combatclassesPath);
+
+            if (File.Exists(filename))
+            {
+                currentCombatLogic = Newtonsoft.Json.JsonConvert.DeserializeObject<CombatLogic>(File.ReadAllText(filename));
+                currentCombatLogic.combatLogicEntries = currentCombatLogic.combatLogicEntries.OrderBy(p => p.Priority).ToList();
+                return currentCombatLogic;
+            }
+            return null;
         }
 
         /// <summary>
         /// Load a combatclass file from ./combatclasses/ folder by its name. No need to append .json to the end.
         /// </summary>
         /// <param name="filename">Filename without extension</param>
-        public void LoadCombatLogicFromFile(string filename)
+        public static CombatLogic LoadCombatLogicFromFileByName(string filename)
         {
-            if (!Directory.Exists(combatclassesPath))
-                Directory.CreateDirectory(combatclassesPath);
-
-            if (File.Exists(combatclassesPath + filename.ToLower() + extension))
-            {
-                currentCombatLogic = Newtonsoft.Json.JsonConvert.DeserializeObject<CombatLogic>(File.ReadAllText(combatclassesPath + filename.ToLower() + extension));
-                currentCombatLogic.combatLogicEntries = currentCombatLogic.combatLogicEntries.OrderBy(p => p.Priority).ToList();
-            }
+            return LoadCombatLogicFromFile(combatclassesPath + filename + ".json");
         }
     }
 }

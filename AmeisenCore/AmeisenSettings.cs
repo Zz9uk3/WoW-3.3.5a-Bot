@@ -20,11 +20,11 @@ namespace AmeisenCore
         private static readonly string extension = ".json";
 
         public Settings settings;
-        public string loadedconfName; 
+        public string loadedconfName;
 
         private AmeisenSettings()
         {
-            
+
         }
 
         public static AmeisenSettings GetInstance()
@@ -74,7 +74,8 @@ namespace AmeisenCore
     /// <summary>
     /// Class containing the default and loaded settings
     /// </summary>
-    public class Settings{
+    public class Settings
+    {
         public int dataRefreshRate = 250;
         public int botMaxThreads = 2;
 
@@ -83,9 +84,13 @@ namespace AmeisenCore
         public string backgroundColor = "#FF303030";
 
         public string combatClassName = "none";
-        
+
         public bool behaviourAttack = false;
         public bool behaviourHeal = false;
         public bool behaviourTank = false;
+
+        public bool followMaster = false;
+
+        public string masterName = "";
     }
 }

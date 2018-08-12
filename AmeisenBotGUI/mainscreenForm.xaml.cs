@@ -71,6 +71,11 @@ namespace AmeisenBotGUI
                 uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, AmeisenSettings.GetInstance().settings.dataRefreshRate);
                 uiUpdateTimer.Start();
                 AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Started UI-Update-Timer", this);
+
+                checkBoxAssistPartyAttack.IsChecked = AmeisenSettings.GetInstance().settings.behaviourAttack;
+                checkBoxAssistPartyTank.IsChecked = AmeisenSettings.GetInstance().settings.behaviourTank;
+                checkBoxAssistPartyHeal.IsChecked = AmeisenSettings.GetInstance().settings.behaviourHeal;
+                checkBoxFollowMaster.IsChecked = AmeisenSettings.GetInstance().settings.followMaster;
             }
         }
 
@@ -131,7 +136,7 @@ namespace AmeisenBotGUI
                 AmeisenCore.AmeisenCore.AntiAFK();
                 UpdateUI();
 
-                if (checkBoxFollowGroupLeader.IsChecked == true
+                if (checkBoxFollowMaster.IsChecked == true
                     && AmeisenManager.GetInstance().GetMe().partyLeader != null
                     && AmeisenManager.GetInstance().GetMe().currentState != UnitState.ATTACKING
                     && AmeisenManager.GetInstance().GetMe().currentState != UnitState.AUTOHIT
@@ -245,6 +250,20 @@ namespace AmeisenBotGUI
         {
             AmeisenCore.AmeisenCore.LUADoString("start, duration, enabled = GetSpellCooldown(\"Every Man for Himself\");");
             labelDebug.Content = AmeisenCore.AmeisenCore.GetLocalizedText("duration");
+        }
+
+        private void Mainscreen_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            AmeisenSettings.GetInstance().settings.behaviourAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
+            AmeisenSettings.GetInstance().settings.behaviourTank = (bool)checkBoxAssistPartyTank.IsChecked;
+            AmeisenSettings.GetInstance().settings.behaviourHeal = (bool)checkBoxAssistPartyHeal.IsChecked;
+            AmeisenSettings.GetInstance().settings.followMaster = (bool)checkBoxFollowMaster.IsChecked;
+            AmeisenSettings.GetInstance().SaveToFile(AmeisenSettings.GetInstance().loadedconfName);
+        }
+
+        private void ButtonTestX_Click(object sender, RoutedEventArgs e)
+        {
+            AmeisenCombatManager.GetInstance().Start();
         }
     }
 }
