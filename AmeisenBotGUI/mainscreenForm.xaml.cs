@@ -94,10 +94,6 @@ namespace AmeisenBotGUI
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Close();
-            AmeisenManager.GetInstance().GetAmeisenHook().DisposeHooking();
-            AmeisenAIManager.GetInstance().StopAI();
-            AmeisenCombatManager.GetInstance().Stop();
-            AmeisenLogger.GetInstance().StopLogging();
         }
 
         private void ButtonSettings_Click(object sender, RoutedEventArgs e)
@@ -264,6 +260,11 @@ namespace AmeisenBotGUI
             AmeisenSettings.GetInstance().settings.behaviourHeal = (bool)checkBoxAssistPartyHeal.IsChecked;
             AmeisenSettings.GetInstance().settings.followMaster = (bool)checkBoxFollowMaster.IsChecked;
             AmeisenSettings.GetInstance().SaveToFile(AmeisenSettings.GetInstance().loadedconfName);
+            
+            AmeisenManager.GetInstance().GetAmeisenHook().DisposeHooking();
+            AmeisenAIManager.GetInstance().StopAI();
+            AmeisenCombatManager.GetInstance().Stop();
+            AmeisenLogger.GetInstance().StopLogging();
         }
 
         private void ButtonTestX_Click(object sender, RoutedEventArgs e)

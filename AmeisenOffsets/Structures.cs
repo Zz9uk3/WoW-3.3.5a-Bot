@@ -101,6 +101,14 @@
         TARGET_ENTITY
     }
 
+    public struct WoWAuraInfo
+    {
+        public string name;
+        public int stacks;
+        public int duration;
+        public string expirationTime;
+    }
+
     public struct WoWSpellInfo
     {
         public string name;

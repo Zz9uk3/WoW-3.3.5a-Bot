@@ -62,7 +62,7 @@ namespace AmeisenCore
             AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Moving to: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "]", "AmeisenCore.AmeisenCore");
             //if (AmeisenManager.GetInstance().GetMe().pos.x != pos.x && AmeisenManager.GetInstance().GetMe().pos.y != pos.y && AmeisenManager.GetInstance().GetMe().pos.z != pos.z)
             //{
-                WriteXYZToMemory(pos, action);
+            WriteXYZToMemory(pos, action);
             //}
         }
 
@@ -610,13 +610,20 @@ namespace AmeisenCore
         /// Check for Auras/Buffs
         /// </summary>
         /// <returns>true if target has that aura, false if not</returns>
-        public static bool CheckForAura(string auraname, bool onMyself)
+        public static WoWAuraInfo GetAuraInfo(string auraname, bool onMyself)
         {
+            WoWAuraInfo info = new WoWAuraInfo();
+
             if (onMyself)
-                LUADoString("UnitAura(\"player\",\"" + auraname + "\");");
+                LUADoString("name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId = UnitAura(\"player\", \"" + auraname + "\");");
             else
-                LUADoString("UnitAura(\"target" + auraname + "\", true);");
-            return false;
+                LUADoString("name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId = UnitAura(\"target\", \"" + auraname + "\");");
+
+            try { info.name = GetLocalizedText("name"); } catch { info.name = ""; }
+            try { info.stacks = int.Parse(GetLocalizedText("count")); } catch { info.stacks = -1; }
+            try { info.duration = int.Parse(GetLocalizedText("duration")); } catch { info.duration = -1; }
+
+            return info;
         }
 
         /// <summary>

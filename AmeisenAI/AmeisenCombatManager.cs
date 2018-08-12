@@ -23,7 +23,10 @@ namespace AmeisenAI
         /// <summary>
         /// Stop the CombatEngine
         /// </summary>
-        public void Stop() { stop = true; }
+        public void Stop() {
+            stop = true;
+            mainWorker.Abort();
+        }
 
         /// <summary>
         /// Start the CombatEngine
@@ -39,6 +42,9 @@ namespace AmeisenAI
             }
         }
 
+        /// <summary>
+        /// Reload our CombatClass specified in the AmeisenSettings class
+        /// </summary>
         public void ReloadCombatClass()
         {
             string defaultCombatClass = AmeisenSettings.GetInstance().settings.combatClassPath;

@@ -62,6 +62,8 @@ namespace AmeisenBotGUI
             comboboxValueOperator.Items.Add(CombatLogicStatement.LESS);
             comboboxValueOperator.Items.Add(CombatLogicStatement.HAS_BUFF);
             comboboxValueOperator.Items.Add(CombatLogicStatement.HAS_BUFF_MYSELF);
+            comboboxValueOperator.Items.Add(CombatLogicStatement.NOT_HAS_BUFF);
+            comboboxValueOperator.Items.Add(CombatLogicStatement.NOT_HAS_BUFF_MYSELF);
 
             LoadEntries();
         }
@@ -325,8 +327,11 @@ namespace AmeisenBotGUI
 
         private void TextboxCustomValue_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (listboxConditions.SelectedItem != null && textboxCustomValue.Text.Length > 0)
-                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).customValue = double.Parse(textboxCustomValue.Text);
+            try
+            {
+                if (listboxConditions.SelectedItem != null && textboxCustomValue.Text.Length > 0)
+                    ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).customValue = double.Parse(textboxCustomValue.Text);
+            } catch { }
         }
 
         private void ButtonNew_Click(object sender, RoutedEventArgs e)

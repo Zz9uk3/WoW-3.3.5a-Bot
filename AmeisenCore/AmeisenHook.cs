@@ -48,7 +48,7 @@ namespace AmeisenCore
 
                     endsceneReturnAddress = endscene + 0x5;
 
-                    originalEndscene = AmeisenManager.GetInstance().GetBlackMagic().ReadBytes(endscene, 5);
+                    //originalEndscene = AmeisenManager.GetInstance().GetBlackMagic().ReadBytes(endscene, 5);
 
                     codeToExecute = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(4);
                     AmeisenManager.GetInstance().GetBlackMagic().WriteInt(codeToExecute, 0);
