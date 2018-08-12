@@ -60,10 +60,10 @@ namespace AmeisenCore
         public static void MovePlayerToXYZ(Vector3 pos, Interaction action)
         {
             AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Moving to: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "]", "AmeisenCore.AmeisenCore");
-            if (AmeisenManager.GetInstance().GetMe().pos.x != pos.x && AmeisenManager.GetInstance().GetMe().pos.y != pos.y && AmeisenManager.GetInstance().GetMe().pos.z != pos.z)
-            {
+            //if (AmeisenManager.GetInstance().GetMe().pos.x != pos.x && AmeisenManager.GetInstance().GetMe().pos.y != pos.y && AmeisenManager.GetInstance().GetMe().pos.z != pos.z)
+            //{
                 WriteXYZToMemory(pos, action);
-            }
+            //}
         }
 
         /// <summary>
@@ -387,6 +387,8 @@ namespace AmeisenCore
                         ((Me)tmpResult).exp = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(playerbasex + 0x3794);
                         ((Me)tmpResult).maxExp = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(playerbasex + 0x3798);
 
+                        AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "MyBaseUnitFields: " + myBaseUnitFields.ToString("X"), "AmeisenCore.AmeisenCore");
+
                         // Somehow this is really sketchy, need to replace this...
                         uint castingstate = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt((uint)AmeisenManager.GetInstance().GetBlackMagic().MainModule.BaseAddress + WoWOffsets.localPlayerCharacterState);
                         castingstate = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(castingstate + WoWOffsets.localPlayerCharacterStateOffset1);
@@ -419,8 +421,14 @@ namespace AmeisenCore
                             // Read all information from memory
                             ((Me)tmpResult).target = ReadWoWObjectFromGUID<Unit>(targetGuid);
 
-                            // Calculate the distance
-                            ((Me)tmpResult).target.distance = Utils.GetDistance(AmeisenManager.GetInstance().GetMe().pos, ((Unit)tmpResult).target.pos);
+                            try
+                            {
+                                // Calculate the distance
+                                if (((Me)tmpResult).target != null)
+                                    if (((Unit)tmpResult).target.pos.x != 0 && ((Unit)tmpResult).target.pos.y != 0 && ((Unit)tmpResult).target.pos.z != 0)
+                                        ((Me)tmpResult).target.distance = Utils.GetDistance(AmeisenManager.GetInstance().GetMe().pos, ((Unit)tmpResult).target.pos);
+                            }
+                            catch { }
 
                             //uint targetCastingstate = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt((uint)AmeisenManager.GetInstance().GetBlackMagic().MainModule.BaseAddress + WoWOffsets.staticTargetCastingstate);
                             //((Me)tmpResult).target.isCasting = (targetCastingstate == 640138312) ? true : false;
@@ -459,13 +467,34 @@ namespace AmeisenCore
                             name = GetMobNameFromBase(targetBase)
                         };
                     }
+
                     //((Unit)tmpResult).targetGUID = 
                     ((Unit)tmpResult).factionTemplate = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(myBaseUnitFields + (0x37 * 4));
                     ((Unit)tmpResult).level = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(myBaseUnitFields + (0x36 * 4));
                     ((Unit)tmpResult).health = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(myBaseUnitFields + (0x18 * 4));
                     ((Unit)tmpResult).maxHealth = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(myBaseUnitFields + (0x20 * 4));
-                    ((Unit)tmpResult).energy = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(myBaseUnitFields + (0x19 * 4));
-                    ((Unit)tmpResult).maxEnergy = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(myBaseUnitFields + (0x21 * 4));
+
+                    // Check if we have mana
+                    int energy = 0;
+                    int maxEnergy = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(myBaseUnitFields + (0x84));
+
+                    if (maxEnergy == 0)
+                    {
+                        // Rage
+                        maxEnergy = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(myBaseUnitFields + (0x70));
+                        if (maxEnergy == 0)
+                        {
+                            // Energy
+                        }
+                        else
+                            energy = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(myBaseUnitFields + (0x68)) / 10;
+                    }
+                    else
+                        energy = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(myBaseUnitFields + (0x64));
+
+                    ((Unit)tmpResult).energy = energy;
+                    ((Unit)tmpResult).maxEnergy = maxEnergy;
+
                     ((Unit)tmpResult).combatReach = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(myBaseUnitFields + (0x42 * 4));
                     ((Unit)tmpResult).channelSpell = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(myBaseUnitFields + (0x16 * 4));
                     break;
@@ -477,14 +506,18 @@ namespace AmeisenCore
             result.guid = guid;
             result.summonedBy = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(myBaseUnitFields + (0xE * 4));
 
-            result.pos.x = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(targetBase + 0x798);
-            result.pos.y = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(targetBase + 0x79C);
-            result.pos.z = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(targetBase + 0x7A0);
-            result.rotation = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(targetBase + 0x7A8);
+            try
+            {
+                result.pos.x = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(targetBase + 0x798);
+                result.pos.y = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(targetBase + 0x79C);
+                result.pos.z = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(targetBase + 0x7A0);
+                result.rotation = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(targetBase + 0x7A8);
+            }
+            catch { }
 
             result.mapID = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(WoWOffsets.mapID);
             result.zoneID = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(WoWOffsets.zoneID);
-            
+
             result.memoryLocation = baseaddress;
 
             return result;
@@ -604,6 +637,25 @@ namespace AmeisenCore
             LUADoString("start, duration, enabled = GetSpellCooldown(\"" + spell + "\");");
             Thread.Sleep(100);
             try { return int.Parse(GetLocalizedText("duration")) > 0; } catch { return true; }
+        }
+
+        /// <summary>
+        /// Check if the spell is on cooldown
+        /// </summary>
+        /// <param name="spell">spellname</param>
+        /// <returns>true if it is on cooldown, false if not</returns>
+        public static WoWSpellInfo GetSpellInfo(string spell)
+        {
+            WoWSpellInfo info = new WoWSpellInfo();
+
+            LUADoString("name, rank, icon, cost, minRange, maxRange, castTime, powerType = GetSpellInfo(\"" + spell + "\");");
+            Thread.Sleep(100);
+
+            info.name = spell; //try { info.name = GetLocalizedText("name"); } catch { info.castTime = -1; }
+            try { info.castTime = int.Parse(GetLocalizedText("castTime")); } catch { info.castTime = -1; }
+            try { info.cost = int.Parse(GetLocalizedText("cost")); } catch { info.cost = -1; }
+
+            return info;
         }
 
         /// <summary>

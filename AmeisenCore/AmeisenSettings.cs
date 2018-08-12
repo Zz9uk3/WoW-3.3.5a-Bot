@@ -83,7 +83,7 @@ namespace AmeisenCore
         public string fontColor = "#FFFFFFFF";
         public string backgroundColor = "#FF303030";
 
-        public string combatClassName = "none";
+        public string combatClassPath = "none";
 
         public bool behaviourAttack = false;
         public bool behaviourHeal = false;

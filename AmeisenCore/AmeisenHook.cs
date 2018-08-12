@@ -2,7 +2,6 @@
 using AmeisenUtilities;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 
 namespace AmeisenCore
@@ -23,7 +22,7 @@ namespace AmeisenCore
 
         uint endsceneReturnAddress;
 
-        private byte[] originalEndscene;
+        private byte[] originalEndscene = new byte[] { 0xB8, 0x51, 0xD7, 0xCA, 0x64 };
 
         public AmeisenHook() { Hook(); }
 
@@ -37,6 +36,7 @@ namespace AmeisenCore
                 // If WoW is already hooked, unhook it
                 if (AmeisenManager.GetInstance().GetBlackMagic().ReadByte(endscene) == 0xE9)
                 {
+                    originalEndscene = new byte[] { 0xB8, 0x51, 0xD7, 0xCA, 0x64 };
                     DisposeHooking();
                 }
 
@@ -64,6 +64,7 @@ namespace AmeisenCore
                     AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "CodeCave at:" + codeCave.ToString("X"), this);
                     AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "CodeCaveForInjection at:" + codeCaveForInjection.ToString("X"), this);
                     AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "CodeToExecute at:" + codeToExecute.ToString("X"), this);
+                    AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Original Endscene bytes: " + Utils.ByteArrayToString(originalEndscene), this);
 
                     AmeisenManager.GetInstance().GetBlackMagic().WriteBytes(codeCave, originalEndscene);
 
@@ -125,7 +126,6 @@ namespace AmeisenCore
         public byte[] InjectAndExecute(string[] asm)
         {
             AmeisenManager.GetInstance().GetBlackMagic().WriteInt(codeToExecute, 1);
-
             AmeisenManager.GetInstance().GetBlackMagic().Asm.Clear();
 
             if (asm != null)
@@ -135,7 +135,6 @@ namespace AmeisenCore
             //AmeisenManager.GetInstance().GetBlackMagic().Asm.AddLine("JMP " + (endsceneReturnAddress));
 
             int asmLenght = AmeisenManager.GetInstance().GetBlackMagic().Asm.Assemble().Length;
-
             AmeisenManager.GetInstance().GetBlackMagic().Asm.Inject(codeCaveForInjection);
 
             while (AmeisenManager.GetInstance().GetBlackMagic().ReadInt(codeToExecute) > 0)

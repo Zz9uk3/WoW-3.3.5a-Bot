@@ -95,6 +95,16 @@
         USE_SPELL_ON_ME,
         INTERACT_TARGET,
         MOVE_TO_POSITION,
+        MOVE_NEAR_TARGET,
+        FORCE_MOVE_TO_POSITION,
+        FORCE_MOVE_NEAR_TARGET,
         TARGET_ENTITY
+    }
+
+    public struct WoWSpellInfo
+    {
+        public string name;
+        public int castTime;
+        public int cost;
     }
 }

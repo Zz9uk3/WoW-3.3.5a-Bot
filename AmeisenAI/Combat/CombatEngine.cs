@@ -18,12 +18,15 @@ namespace AmeisenAI
 
         public void ExecuteNextStep()
         {
-            if (posAt == currentCombatLogic.combatLogicEntries.Capacity)
-                posAt = 0;
-            if (ExecuteLogic(currentCombatLogic.combatLogicEntries[posAt]))
+            if (currentCombatLogic.combatLogicEntries.Count > 0)
             {
-                ExecuteAction(currentCombatLogic.combatLogicEntries[posAt]);
-                posAt++;
+                if (posAt == currentCombatLogic.combatLogicEntries.Count)
+                    posAt = 0;
+                if (ExecuteLogic(currentCombatLogic.combatLogicEntries[posAt]))
+                {
+                    ExecuteAction(currentCombatLogic.combatLogicEntries[posAt]);
+                    posAt++;
+                }
             }
         }
 
@@ -39,6 +42,8 @@ namespace AmeisenAI
                             action = new AmeisenAction(AmeisenActionType.USE_SPELL_ON_ME, (string)entry.Parameters);
                         else
                             action = new AmeisenAction(AmeisenActionType.USE_SPELL, (string)entry.Parameters);
+                        
+                        AmeisenCore.AmeisenCore.MovePlayerToXYZ(AmeisenManager.GetInstance().GetMe().pos, Interaction.FACETARGET);
 
                         AmeisenAIManager.GetInstance().AddActionToQueue(ref action);
 
@@ -64,12 +69,22 @@ namespace AmeisenAI
 
         public bool ExecuteLogic(CombatLogicEntry entry)
         {
+            bool isMeeleeSpell = entry.MaxSpellDistance < 3.2 ? true : false;
+
             if (AmeisenManager.GetInstance().GetMe().target == null)
                 return false;
 
             if (AmeisenManager.GetInstance().GetMe().target.distance > entry.MaxSpellDistance)
             {
-                AmeisenAction action = new AmeisenAction(AmeisenActionType.INTERACT_TARGET, Interaction.ATTACKPOS);
+                AmeisenAction action;
+                if (isMeeleeSpell)
+                    action = new AmeisenAction(AmeisenActionType.INTERACT_TARGET, Interaction.ATTACKPOS);
+                else
+                {
+                    object[] parameters = new object[2] { AmeisenManager.GetInstance().GetMe().target.pos, entry.MaxSpellDistance * 0.9 };
+                    action = new AmeisenAction(AmeisenActionType.FORCE_MOVE_NEAR_TARGET, parameters); // 10% Offset
+                }
+
                 AmeisenAIManager.GetInstance().AddActionToQueue(ref action);
 
                 do Thread.Sleep(100);
@@ -123,23 +138,25 @@ namespace AmeisenAI
                     default:
                         break;
                 }
+            else if (condition.customValue.GetType() == typeof(double))
+                value2 = (double)condition.customValue;
 
             switch (condition.statement)
             {
                 case CombatLogicStatement.GREATER:
-                    return CompareGreater(value1, (double)condition.customValue);
+                    return CompareGreater(value1, value2);
 
                 case CombatLogicStatement.GREATER_OR_EQUAL:
-                    return CompareGreaterOrEqual(value1, (double)condition.customValue);
+                    return CompareGreaterOrEqual(value1, value2);
 
                 case CombatLogicStatement.EQUAL:
-                    return CompareEqual(value1, (double)condition.customValue);
+                    return CompareEqual(value1, value2);
 
                 case CombatLogicStatement.LESS_OR_EQUAL:
-                    return CompareLessOrEqual(value1, (double)condition.customValue);
+                    return CompareLessOrEqual(value1, value2);
 
                 case CombatLogicStatement.LESS:
-                    return CompareLess(value1, (double)condition.customValue);
+                    return CompareLess(value1, value2);
 
                 case CombatLogicStatement.HAS_BUFF:
                     return AmeisenCore.AmeisenCore.CheckForAura((string)condition.customValue, false);
@@ -189,15 +206,6 @@ namespace AmeisenAI
                 return currentCombatLogic;
             }
             return null;
-        }
-
-        /// <summary>
-        /// Load a combatclass file from ./combatclasses/ folder by its name. No need to append .json to the end.
-        /// </summary>
-        /// <param name="filename">Filename without extension</param>
-        public static CombatLogic LoadCombatLogicFromFileByName(string filename)
-        {
-            return LoadCombatLogicFromFile(combatclassesPath + filename + ".json");
         }
     }
 }

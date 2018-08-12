@@ -31,9 +31,9 @@ namespace AmeisenBotGUI
         {
             InitializeComponent();
 
-            string defaultCombatClass = AmeisenSettings.GetInstance().settings.combatClassName;
+            string defaultCombatClass = AmeisenSettings.GetInstance().settings.combatClassPath;
             if (defaultCombatClass != "none")
-                loadedLogic = CombatEngine.LoadCombatLogicFromFileByName(defaultCombatClass);
+                loadedLogic = CombatEngine.LoadCombatLogicFromFile(defaultCombatClass);
             else
                 loadedLogic = new CombatLogic();
         }
@@ -109,7 +109,7 @@ namespace AmeisenBotGUI
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
 
-            string defaultCombatClass = AmeisenSettings.GetInstance().settings.combatClassName;
+            string defaultCombatClass = AmeisenSettings.GetInstance().settings.combatClassPath;
             if (defaultCombatClass == "none")
                 saveFileDialog.FileName = "sampleCombatClass.json";
             else
