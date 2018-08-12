@@ -684,6 +684,19 @@ namespace AmeisenCore
         }
 
         /// <summary>
+        /// Returns wether the Unit is Friendly or not
+        /// </summary>
+        /// <returns>true if unit is friendly, false if not</returns>
+        public static bool IsTargetFriendly()
+        {
+            bool isFriendly;
+            LUADoString("isFriendly  = UnitAffectingCombat(\"player\", \"target\");");
+
+            try { if (int.Parse(GetLocalizedText("isFriendly")) == 1) isFriendly = true; else isFriendly = false; } catch { isFriendly = false; }
+            return isFriendly;
+        }
+
+        /// <summary>
         /// Let the bot jump by pressing the spacebar once for 20-40ms
         /// 
         /// This runs Async.
