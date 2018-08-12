@@ -34,6 +34,7 @@ namespace AmeisenCore
         private List<WoWObject> activeWoWObjects;
         // To determine if we need to refresh some things
         private DateTime timestampObjects;
+
         private bool isAllowedToMove;
 
         private AmeisenManager()

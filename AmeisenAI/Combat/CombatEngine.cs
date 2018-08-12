@@ -79,6 +79,10 @@ namespace AmeisenAI
         /// <returns>true if we are able to, false if not</returns>
         public bool ExecuteLogic(CombatLogicEntry entry)
         {
+            if (entry.CombatOnly)
+                if (!AmeisenCore.AmeisenCore.GetCombatState(true) || !AmeisenCore.AmeisenCore.GetCombatState(true))
+                    return false;
+
             bool isMeeleeSpell = entry.MaxSpellDistance < 3.2 ? true : false;
 
             if (!entry.IsBuff && !entry.IsForMyself)

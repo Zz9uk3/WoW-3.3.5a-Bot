@@ -666,6 +666,24 @@ namespace AmeisenCore
         }
 
         /// <summary>
+        /// Returns the current combat state
+        /// </summary>
+        /// <param name="onMyself">check my owm state</param>
+        /// <returns>true if unit is in combat, false if not</returns>
+        public static bool GetCombatState(bool onMyself)
+        {
+            bool isInCombat;
+
+            if (onMyself)
+                LUADoString("affectingCombat = UnitAffectingCombat(\"player\");");
+            else
+                LUADoString("affectingCombat = UnitAffectingCombat(\"target\");");
+
+            try { if (int.Parse(GetLocalizedText("affectingCombat")) == 1) isInCombat = true; else isInCombat = false; } catch { isInCombat = false; }
+            return isInCombat;
+        }
+
+        /// <summary>
         /// Let the bot jump by pressing the spacebar once for 20-40ms
         /// 
         /// This runs Async.
