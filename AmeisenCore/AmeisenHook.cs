@@ -125,6 +125,11 @@ namespace AmeisenCore
 
         public byte[] InjectAndExecute(string[] asm)
         {
+            /*while (AmeisenManager.GetInstance().GetBlackMagic().ReadInt(codeToExecute) > 0)
+            {
+                Thread.Sleep(50);
+            }*/
+
             AmeisenManager.GetInstance().GetBlackMagic().WriteInt(codeToExecute, 1);
             AmeisenManager.GetInstance().GetBlackMagic().Asm.Clear();
 
@@ -139,7 +144,7 @@ namespace AmeisenCore
 
             while (AmeisenManager.GetInstance().GetBlackMagic().ReadInt(codeToExecute) > 0)
             {
-                Thread.Sleep(5);
+                Thread.Sleep(1);
             }
 
             byte buffer = new Byte();

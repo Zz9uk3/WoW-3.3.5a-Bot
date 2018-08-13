@@ -6,7 +6,6 @@ using AmeisenUtilities;
 using Microsoft.Win32;
 using System;
 using System.IO;
-using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -94,6 +93,8 @@ namespace AmeisenBotGUI
             {
                 // Fire up the AI
                 AmeisenAIManager.GetInstance().StartAI(AmeisenSettings.GetInstance().settings.botMaxThreads);
+                // Fire up the CombatEngine
+                AmeisenCombatManager.GetInstance().Start();
 
                 Title = "AmeisenBot - " + wowExe.characterName + " [" + wowExe.process.Id + "]";
                 UpdateUI();
@@ -156,32 +157,6 @@ namespace AmeisenBotGUI
         private void ButtonMoveInteractTarget_Click(object sender, RoutedEventArgs e)
         {
             AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.INTERACT_TARGET, (AmeisenActionType)comboboxInteraction.SelectedItem));
-        }
-
-        private void ButtonTest_Click(object sender, RoutedEventArgs e)
-        {
-            AmeisenCore.AmeisenCore.LUADoString(debugInput.Text);
-        }
-
-        private void ButtonTargetMyself_Click(object sender, RoutedEventArgs e)
-        {
-            AmeisenCore.AmeisenCore.TargetGUID(AmeisenManager.GetInstance().GetMe().guid);
-        }
-
-        private void ButtonTargetGUID_Click(object sender, RoutedEventArgs e)
-        {
-            AmeisenCore.AmeisenCore.TargetGUID(Convert.ToUInt64(debugInputGUID.Text));
-        }
-
-        private void ButtonTest2_Click(object sender, RoutedEventArgs e)
-        {
-            AmeisenCore.AmeisenCore.LUADoString("start, duration, enabled = GetSpellCooldown(\"Every Man for Himself\");");
-            labelDebug.Content = AmeisenCore.AmeisenCore.GetLocalizedText("duration");
-        }
-
-        private void ButtonTestX_Click(object sender, RoutedEventArgs e)
-        {
-            AmeisenCombatManager.GetInstance().Start();
         }
         #endregion
 
