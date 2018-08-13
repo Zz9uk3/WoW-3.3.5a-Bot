@@ -43,6 +43,7 @@ namespace AmeisenAI.Combat
         public float MaxSpellDistance { get; set; }
         public object Parameters { get; set; }
         public bool IsForMyself { get; set; }
+        public CombatActionType ActionType { get; set; }
 
         public CombatLogicEntry(
             int priority,
@@ -54,7 +55,8 @@ namespace AmeisenAI.Combat
             bool canMoveDuringCast,
             float spellDistance,
             object parameters,
-            bool isForMyself)
+            bool isForMyself,
+            CombatActionType actionType)
         {
             Priority = priority;
             Action = action;
@@ -66,11 +68,13 @@ namespace AmeisenAI.Combat
             MaxSpellDistance = spellDistance;
             Parameters = parameters;
             IsForMyself = isForMyself;
+            ActionType = actionType;
         }
 
         public CombatLogicEntry()
         {
             Action = CombatLogicAction.USE_SPELL;
+            ActionType = CombatActionType.ATTACK;
             Conditions = new List<Condition>();
             Parameters = "";
         }

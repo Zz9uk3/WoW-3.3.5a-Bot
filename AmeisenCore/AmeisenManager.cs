@@ -37,6 +37,10 @@ namespace AmeisenCore
 
         private bool isAllowedToMove;
 
+        public bool IsSupposedToAttack { get; set; }
+        public bool IsSupposedToTank { get; set; }
+        public bool IsSupposedToHeal { get; set; }
+
         private AmeisenManager()
         {
             isAttached = false;

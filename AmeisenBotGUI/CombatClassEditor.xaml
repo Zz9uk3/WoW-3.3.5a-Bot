@@ -107,7 +107,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
         </Label>
-        <ComboBox x:Name="comboboxAction" HorizontalAlignment="Left" Margin="204,104,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="ComboboxAction_SelectionChanged"/>
+        <ComboBox x:Name="comboboxAction" HorizontalAlignment="Left" Margin="204,102,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="ComboboxAction_SelectionChanged"/>
         <ListBox x:Name="listboxConditions" HorizontalAlignment="Left" Height="160" Margin="204,268,0,0" VerticalAlignment="Top" Width="520" BorderThickness="2" SelectionChanged="ListboxConditions_SelectionChanged">
             <ListBox.Background>
                 <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
@@ -301,6 +301,12 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>
         </Button>
+        <ComboBox x:Name="comboboxActionType" HorizontalAlignment="Left" Margin="585,48,0,0" VerticalAlignment="Top" Width="139" SelectionChanged="ComboboxActionType_SelectionChanged"/>
+        <Label Content="Action Type:" HorizontalAlignment="Left" Margin="581,23,0,0" VerticalAlignment="Top">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Label.Foreground>
+        </Label>
 
     </Grid>
 </Window>

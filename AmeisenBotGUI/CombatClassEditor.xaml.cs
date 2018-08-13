@@ -65,6 +65,10 @@ namespace AmeisenBotGUI
             comboboxValueOperator.Items.Add(CombatLogicStatement.NOT_HAS_BUFF);
             comboboxValueOperator.Items.Add(CombatLogicStatement.NOT_HAS_BUFF_MYSELF);
 
+            comboboxActionType.Items.Add(CombatActionType.ATTACK);
+            comboboxActionType.Items.Add(CombatActionType.HEAL);
+            comboboxActionType.Items.Add(CombatActionType.TANK);
+
             LoadEntries();
         }
 
@@ -137,6 +141,8 @@ namespace AmeisenBotGUI
             listboxConditions.Items.Clear();
             foreach (AmeisenAI.Combat.Condition c in entry.Conditions)
                 listboxConditions.Items.Add(c);
+
+            comboboxActionType.SelectedItem = entry.ActionType;
         }
 
         private void ButtonAddCombatEntry_Click(object sender, RoutedEventArgs e)
@@ -346,6 +352,12 @@ namespace AmeisenBotGUI
             foreach (CombatLogicEntry entry in loadedLogic.combatLogicEntries)
                 listboxCombatActions.Items.Add(entry);
             prio = listboxCombatActions.Items.Count;
+        }
+
+        private void ComboboxActionType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
+                ((CombatLogicEntry)listboxCombatActions.SelectedItem).ActionType = (CombatActionType)comboboxActionType.SelectedItem;
         }
     }
 }

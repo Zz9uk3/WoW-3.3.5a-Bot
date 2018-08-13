@@ -23,6 +23,13 @@
             FLEE
         }
 
+        public enum CombatActionType
+        {
+            ATTACK,
+            TANK,
+            HEAL,
+        }
+
         public enum CombatLogicValues
         {
             MYSELF_HP,
