@@ -56,16 +56,18 @@ namespace AmeisenBotGUI
         private void DebugUI_Loaded(object sender, RoutedEventArgs e)
         {
             DispatcherTimer uiUpdateTimer = new DispatcherTimer();
-            uiUpdateTimer.Tick += new EventHandler(UIUpdateTimer_Tick);
+            uiUpdateTimer.Tick += new EventHandler(ObjectUpdateTimer_Tick);
             uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 1, 0);
             uiUpdateTimer.Start();
         }
 
-        private void UIUpdateTimer_Tick(object sender, EventArgs e)
+        private void ObjectUpdateTimer_Tick(object sender, EventArgs e)
         {
             listboxObjects.Items.Clear();
             foreach (WoWObject obj in AmeisenManager.GetInstance().GetObjects())
             {
+                if (obj == null)
+                    break;
                 if (obj.GetType() == typeof(WoWObject) && checkboxFilterWOWOBJECT.IsChecked == true)
                     listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["WowobjectColor"])));
                 else if (obj.GetType() == typeof(Unit) && checkboxFilterUNIT.IsChecked == true)

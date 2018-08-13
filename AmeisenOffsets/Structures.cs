@@ -60,8 +60,8 @@
         CONTAINER = 2,
         UNIT = 3,
         PLAYER = 4,
-        GAMEOBJ = 5,
-        DYNOBJ = 6,
+        GAMEOBJECT = 5,
+        DYNOBJECT = 6,
         CORPSE = 7
     }
 

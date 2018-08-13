@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using AmeisenUtilities;
+using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace AmeisenCore.Objects
@@ -7,9 +9,58 @@ namespace AmeisenCore.Objects
     {
         public int exp;
         public int maxExp;
+        
+        public UnitState currentState;
+
+        public Unit target;
 
         public Unit partyLeader;
         public List<Unit> partymembers;
+
+        public Me(uint baseAddress, uint playerBase) : base(baseAddress)
+        {
+            name = AmeisenManager.GetInstance().GetBlackMagic().ReadASCIIString(WoWOffsets.playerName, 12);
+            exp = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(playerBase + 0x3794);
+            maxExp = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(playerBase + 0x3798);
+
+            // Somehow this is really sketchy, need to replace this...
+            uint castingState = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt((uint)AmeisenManager.GetInstance().GetBlackMagic().MainModule.BaseAddress + WoWOffsets.localPlayerCharacterState);
+            castingState = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(castingState + WoWOffsets.localPlayerCharacterStateOffset1);
+            castingState = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(castingState + WoWOffsets.localPlayerCharacterStateOffset2);
+            currentState = (UnitState)AmeisenManager.GetInstance().GetBlackMagic().ReadInt(castingState + WoWOffsets.localPlayerCharacterStateOffset3);
+
+            partymembers = new List<Unit>();
+            UInt64 leaderGUID = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64((WoWOffsets.partyLeader));
+
+            if (leaderGUID != 0)
+            {
+                partymembers.Add(AmeisenCore.TryReadPartymember(WoWOffsets.partyPlayer1));
+                partymembers.Add(AmeisenCore.TryReadPartymember(WoWOffsets.partyPlayer2));
+                partymembers.Add(AmeisenCore.TryReadPartymember(WoWOffsets.partyPlayer3));
+                partymembers.Add(AmeisenCore.TryReadPartymember(WoWOffsets.partyPlayer4));
+
+                foreach (Unit u in partymembers)
+                    if (u.guid == leaderGUID)
+                    {
+                        partyLeader = u;
+                        partyLeader.distance = Utils.GetDistance(pos, partyLeader.pos);
+                    }
+            }
+
+            UInt64 targetGuid = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(baseUnitFields + (0x12 * 4));
+            // If we have a target lets read it
+            if (targetGuid != 0)
+            {
+                // Read all information from memory
+                target = (Unit)AmeisenCore.ReadWoWObjectFromWoW(AmeisenCore.GetMemLocByGUID(targetGuid), WoWObjectType.UNIT);
+
+                // Calculate the distance
+                target.distance = Utils.GetDistance(AmeisenManager.GetInstance().GetMe().pos, target.pos);
+
+                //uint targetCastingstate = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt((uint)AmeisenManager.GetInstance().GetBlackMagic().MainModule.BaseAddress + WoWOffsets.staticTargetCastingstate);
+                //((Me)tmpResult).target.isCasting = (targetCastingstate == 640138312) ? true : false;
+            }
+        }
 
         public override string ToString()
         {

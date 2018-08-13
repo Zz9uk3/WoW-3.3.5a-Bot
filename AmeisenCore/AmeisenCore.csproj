@@ -58,8 +58,8 @@
     <Compile Include="AmeisenSettings.cs" />
     <Compile Include="Objects\WoWClass.cs" />
     <Compile Include="Objects\WoWObjects\Corpse.cs" />
-    <Compile Include="Objects\WoWObjects\DynObj.cs" />
-    <Compile Include="Objects\WoWObjects\GameObj.cs" />
+    <Compile Include="Objects\WoWObjects\DynObject.cs" />
+    <Compile Include="Objects\WoWObjects\GameObject.cs" />
     <Compile Include="Objects\WoWObjects\Unit.cs" />
     <Compile Include="Objects\WoWObjects\Container.cs" />
     <Compile Include="Objects\WoWObjects\Item.cs" />
