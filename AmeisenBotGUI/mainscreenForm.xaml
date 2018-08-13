@@ -55,7 +55,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
         </Label>
-        <Label x:Name="labelNameTarget" Content="..." HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,96,0,0" FontWeight="Bold" Grid.ColumnSpan="2" Width="325">
+        <Label x:Name="labelNameTarget" Content="..." HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,100,0,0" FontWeight="Bold" Grid.ColumnSpan="2" Width="325">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
@@ -78,7 +78,7 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>
         </Button>
-        <CheckBox x:Name="checkBoxFollowMaster" Content="🚀 Follow Master" Margin="0,122,367,0" Background="White" HorizontalAlignment="Right" Width="150" BorderThickness="2" Height="20" VerticalAlignment="Top" Grid.Column="1">
+        <CheckBox x:Name="checkBoxFollowMaster" Content="🚀 Follow Master" Margin="0,122,400,0" Background="White" HorizontalAlignment="Right" Width="120" BorderThickness="2" Height="20" VerticalAlignment="Top" Grid.Column="1">
             <CheckBox.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </CheckBox.Foreground>
@@ -86,7 +86,7 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </CheckBox.BorderBrush>
         </CheckBox>
-        <Label x:Name="labelThreadsActive" Content="⚡ Threads: 0/0" HorizontalAlignment="Left" Margin="4,0,0,241" Background="{x:Null}" Height="22" VerticalAlignment="Bottom" FontSize="10">
+        <Label x:Name="labelThreadsActive" Content="⚡ Threads: 0/0" HorizontalAlignment="Left" Margin="4,0,0,235" Background="{x:Null}" Height="29" VerticalAlignment="Bottom" FontSize="11" Grid.ColumnSpan="2" Width="88">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
@@ -220,6 +220,27 @@
             <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>
+        </Button>
+        <Label x:Name="labelTargetDistance" Content="0m" HorizontalAlignment="Left" Margin="4,0,0,253" Height="26" VerticalAlignment="Bottom" FontSize="10">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Label.Foreground>
+        </Label>
+        <Label x:Name="labelLoadedCombatClass" Content="CombatClass: " HorizontalAlignment="Left" Margin="242,0,0,370" Height="26" VerticalAlignment="Bottom" FontSize="10" Grid.Column="1">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Label.Foreground>
+        </Label>
+        <Button x:Name="buttonOpenFile" Content="📂 Open CombatClass" Grid.Column="1" HorizontalAlignment="Left" Margin="247,31,0,0" VerticalAlignment="Top" Width="140" BorderThickness="2" Click="ButtonOpenFile_Click">
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Button.Foreground>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+            <Button.Background>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+            </Button.Background>
         </Button>
     </Grid>
 </Window>

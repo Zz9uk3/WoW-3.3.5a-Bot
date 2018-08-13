@@ -27,7 +27,7 @@ namespace AmeisenBotGUI
             Close();
         }
 
-        private void buttonMinimize_Click(object sender, RoutedEventArgs e)
+        private void ButtonMinimize_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
         }

@@ -21,7 +21,7 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>
         </Button>
-        <Button x:Name="buttonMinimize" Content="_" Margin="0,-2,16,0" FontFamily="Consolas" FontWeight="Bold" Background="{x:Null}" BorderThickness="2" HorizontalAlignment="Right" Width="20" Height="20" VerticalAlignment="Top" Click="buttonMinimize_Click">
+        <Button x:Name="buttonMinimize" Content="_" Margin="0,-2,16,0" FontFamily="Consolas" FontWeight="Bold" Background="{x:Null}" BorderThickness="2" HorizontalAlignment="Right" Width="20" Height="20" VerticalAlignment="Top" Click="ButtonMinimize_Click">
             <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>

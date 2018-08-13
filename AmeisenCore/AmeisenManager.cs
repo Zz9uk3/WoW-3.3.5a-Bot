@@ -35,10 +35,13 @@ namespace AmeisenCore
         // To determine if we need to refresh some things
         private DateTime timestampObjects;
 
+        private bool isAllowedToMove;
+
         private AmeisenManager()
         {
             isAttached = false;
             isHooked = false;
+            isAllowedToMove = true;
         }
 
         public static AmeisenManager GetInstance()
@@ -172,5 +175,20 @@ namespace AmeisenCore
         {
             activeWoWObjects = AmeisenCore.RefreshAllWoWObjects();
         }
+
+        /// <summary>
+        /// Lock bot movement
+        /// </summary>
+        public void LockMovement() { isAllowedToMove = false; }
+
+        /// <summary>
+        /// Unlock bot movement
+        /// </summary>
+        public void UnlockMovement() { isAllowedToMove = true; }
+
+        /// <summary>
+        /// Is the bot allowed to move right now?
+        /// </summary>
+        public bool IsAllowedToMove() { return isAllowedToMove; }
     }
 }

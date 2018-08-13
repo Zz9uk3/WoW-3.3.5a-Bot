@@ -3,7 +3,9 @@ using AmeisenCore;
 using AmeisenCore.Objects;
 using AmeisenLogging;
 using AmeisenUtilities;
+using Microsoft.Win32;
 using System;
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
@@ -92,10 +94,6 @@ namespace AmeisenBotGUI
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Close();
-            AmeisenManager.GetInstance().GetAmeisenHook().DisposeHooking();
-            AmeisenAIManager.GetInstance().StopAI();
-            AmeisenCombatManager.GetInstance().Stop();
-            AmeisenLogger.GetInstance().StopLogging();
         }
 
         private void ButtonSettings_Click(object sender, RoutedEventArgs e)
@@ -170,6 +168,8 @@ namespace AmeisenBotGUI
             // TODO: find a better way to update this
             AmeisenManager.GetInstance().GetObjects();
 
+            labelLoadedCombatClass.Content = "CombatClass: " + Path.GetFileName(AmeisenSettings.GetInstance().settings.combatClassPath);
+
             if (me != null)
             {
                 try
@@ -213,7 +213,7 @@ namespace AmeisenBotGUI
                         progressBarEnergyTarget.Maximum = me.target.maxEnergy;
                         progressBarEnergyTarget.Value = me.target.energy;
 
-                        //labelDistanceTarget.Content = "Distance: " + me.target.distance + "m";
+                        labelTargetDistance.Content = "Distance: " + me.target.distance + "m";
 
                         /*labelPositionTarget.Content =
                             "X: " + me.target.pos.x +
@@ -260,11 +260,29 @@ namespace AmeisenBotGUI
             AmeisenSettings.GetInstance().settings.behaviourHeal = (bool)checkBoxAssistPartyHeal.IsChecked;
             AmeisenSettings.GetInstance().settings.followMaster = (bool)checkBoxFollowMaster.IsChecked;
             AmeisenSettings.GetInstance().SaveToFile(AmeisenSettings.GetInstance().loadedconfName);
+            
+            AmeisenManager.GetInstance().GetAmeisenHook().DisposeHooking();
+            AmeisenAIManager.GetInstance().StopAI();
+            AmeisenCombatManager.GetInstance().Stop();
+            AmeisenLogger.GetInstance().StopLogging();
         }
 
         private void ButtonTestX_Click(object sender, RoutedEventArgs e)
         {
             AmeisenCombatManager.GetInstance().Start();
+        }
+
+        private void ButtonOpenFile_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                AmeisenSettings.GetInstance().settings.combatClassPath = openFileDialog.FileName;
+                AmeisenSettings.GetInstance().SaveToFile(AmeisenSettings.GetInstance().loadedconfName);
+
+                AmeisenCombatManager.GetInstance().ReloadCombatClass();
+            }
         }
     }
 }

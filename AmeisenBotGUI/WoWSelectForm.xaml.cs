@@ -73,8 +73,12 @@ namespace AmeisenBotGUI
                 {
                     AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Selected WoW: " + ((WoWExe)comboBoxWoWs.SelectedItem).ToString(), this);
 
+                    // Load Settings
+                    AmeisenSettings.GetInstance().LoadFromFile(((WoWExe)comboBoxWoWs.SelectedItem).characterName);
+
                     // Attach to WoW
                     AmeisenManager.GetInstance().AttachManager(((WoWExe)comboBoxWoWs.SelectedItem).process);
+
                     // Load the config for specific charactername
                     // May need to add another factor like the REALMNAME to it to make it unique...
                     AmeisenSettings.GetInstance().LoadFromFile(((WoWExe)comboBoxWoWs.SelectedItem).characterName);
@@ -200,7 +204,7 @@ namespace AmeisenBotGUI
         private void StartAutoLogin(Process p, string charname)
         {
             p.WaitForExit();
-            SearchForWoW(charname);
+            ((WoWExe)comboBoxWoWs.SelectedItem).characterName = charname;
             ButtonGo_Click(this, null);
         }
 
