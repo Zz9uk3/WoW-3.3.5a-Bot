@@ -8,5 +8,9 @@ namespace AmeisenCore.Objects
 {
     public class Corpse : WoWObject
     {
+        public Corpse(uint baseAddress) : base(baseAddress)
+        {
+
+        }
     }
 }

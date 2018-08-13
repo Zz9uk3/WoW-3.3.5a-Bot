@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace AmeisenCore.Objects
 {
-    public class DynObj : WoWObject
+    public class GameObject : WoWObject
     {
+        public GameObject(uint baseAddress) : base(baseAddress)
+        {
+
+        }
     }
 }
