@@ -221,7 +221,7 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>
         </Button>
-        <Label x:Name="labelTargetDistance" Content="0m" HorizontalAlignment="Left" Margin="4,0,0,253" Height="26" VerticalAlignment="Bottom" FontSize="10">
+        <Label x:Name="labelTargetDistance" Content="0m" HorizontalAlignment="Left" Margin="4,0,0,253" Height="26" VerticalAlignment="Bottom" FontSize="10" Grid.ColumnSpan="2" Width="153">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>

@@ -37,10 +37,7 @@ namespace AmeisenCore.Objects
             channelSpell = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0x16 * 4));
             //guid = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(baseUnitFields + (0x12 * 4));
 
-            name = AmeisenCore.GetMobNameFromBase(baseAddress);
-
-            if (name == "")
-                name = AmeisenCore.GetPlayerNameFromGuid(guid);
+            try { name = AmeisenCore.GetMobNameFromBase(baseAddress); } catch { }
         }
 
         public override string ToString()

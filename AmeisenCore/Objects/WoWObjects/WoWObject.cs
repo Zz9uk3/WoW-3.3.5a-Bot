@@ -22,7 +22,7 @@ namespace AmeisenCore.Objects
         public WoWObject(uint baseAddress)
         {
             this.baseAddress = baseAddress;
-            guid = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(baseAddress + 0x8 + (0x12 * 4));
+            guid = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(baseAddress + 0x30);
 
             pos.x = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x798);
             pos.y = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x79C);

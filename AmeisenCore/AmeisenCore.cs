@@ -208,6 +208,8 @@ namespace AmeisenCore
             uint activeObj = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(currentObjectManager + WoWOffsets.firstObjectOffset);
             uint objType = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(activeObj + WoWOffsets.gameobjectTypeOffset);
 
+            UInt64 myGUID = GetPlayerGUID();
+
             // loop through the objects until an object is bigger than 7 or lower than 1, that means we got all objects
             while (objType <= 7 && objType > 0)
             {
@@ -315,7 +317,7 @@ namespace AmeisenCore
                 case WoWObjectType.PLAYER:
                     Player obj = new Player(baseAddress);
 
-                    if (isMe)
+                    if (obj.guid == GetPlayerGUID())
                     {
                         uint playerBase = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(WoWOffsets.playerBase);
                         playerBase = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(playerBase + 0x34);
@@ -363,7 +365,7 @@ namespace AmeisenCore
         }
 
         /// <summary>
-        /// Get the bot#s char's GUID
+        /// Get the bot's char's GUID
         /// </summary>
         /// <returns>the GUID</returns>
         public static UInt64 GetPlayerGUID()
