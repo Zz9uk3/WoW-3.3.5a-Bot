@@ -59,10 +59,10 @@ namespace AmeisenCore
         public static void MovePlayerToXYZ(Vector3 pos, Interaction action)
         {
             AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Moving to: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "]", "AmeisenCore.AmeisenCore");
-            if (AmeisenManager.GetInstance().GetMe().pos.x != pos.x && AmeisenManager.GetInstance().GetMe().pos.y != pos.y && AmeisenManager.GetInstance().GetMe().pos.z != pos.z)
-            {
-                WriteXYZToMemory(pos, action);
-            }
+            //if (AmeisenManager.GetInstance().GetMe().pos.x != pos.x && AmeisenManager.GetInstance().GetMe().pos.y != pos.y && AmeisenManager.GetInstance().GetMe().pos.z != pos.z)
+            //{
+            WriteXYZToMemory(pos, action);
+            //}
         }
 
         /// <summary>
@@ -208,6 +208,8 @@ namespace AmeisenCore
             uint activeObj = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(currentObjectManager + WoWOffsets.firstObjectOffset);
             uint objType = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(activeObj + WoWOffsets.gameobjectTypeOffset);
 
+            UInt64 myGUID = GetPlayerGUID();
+
             // loop through the objects until an object is bigger than 7 or lower than 1, that means we got all objects
             while (objType <= 7 && objType > 0)
             {
@@ -315,7 +317,7 @@ namespace AmeisenCore
                 case WoWObjectType.PLAYER:
                     Player obj = new Player(baseAddress);
 
-                    if (isMe)
+                    if (obj.guid == GetPlayerGUID())
                     {
                         uint playerBase = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(WoWOffsets.playerBase);
                         playerBase = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(playerBase + 0x34);
@@ -331,7 +333,6 @@ namespace AmeisenCore
                 default:
                     break;
             }
-
             return null;
         }
 
@@ -364,7 +365,7 @@ namespace AmeisenCore
         }
 
         /// <summary>
-        /// Get the bot#s char's GUID
+        /// Get the bot's char's GUID
         /// </summary>
         /// <returns>the GUID</returns>
         public static UInt64 GetPlayerGUID()
@@ -422,13 +423,20 @@ namespace AmeisenCore
         /// Check for Auras/Buffs
         /// </summary>
         /// <returns>true if target has that aura, false if not</returns>
-        public static bool CheckForAura(string auraname, bool onMyself)
+        public static WoWAuraInfo GetAuraInfo(string auraname, bool onMyself)
         {
+            WoWAuraInfo info = new WoWAuraInfo();
+
             if (onMyself)
-                LUADoString("UnitAura(\"player\",\"" + auraname + "\");");
+                LUADoString("name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId = UnitAura(\"player\", \"" + auraname + "\");");
             else
-                LUADoString("UnitAura(\"target" + auraname + "\", true);");
-            return false;
+                LUADoString("name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId = UnitAura(\"target\", \"" + auraname + "\");");
+
+            try { info.name = GetLocalizedText("name"); } catch { info.name = ""; }
+            try { info.stacks = int.Parse(GetLocalizedText("count")); } catch { info.stacks = -1; }
+            try { info.duration = int.Parse(GetLocalizedText("duration")); } catch { info.duration = -1; }
+
+            return info;
         }
 
         /// <summary>
@@ -449,6 +457,56 @@ namespace AmeisenCore
             LUADoString("start, duration, enabled = GetSpellCooldown(\"" + spell + "\");");
             Thread.Sleep(100);
             try { return int.Parse(GetLocalizedText("duration")) > 0; } catch { return true; }
+        }
+
+        /// <summary>
+        /// Check if the spell is on cooldown
+        /// </summary>
+        /// <param name="spell">spellname</param>
+        /// <returns>true if it is on cooldown, false if not</returns>
+        public static WoWSpellInfo GetSpellInfo(string spell)
+        {
+            WoWSpellInfo info = new WoWSpellInfo();
+
+            LUADoString("name, rank, icon, cost, minRange, maxRange, castTime, powerType = GetSpellInfo(\"" + spell + "\");");
+            Thread.Sleep(100);
+
+            info.name = spell; //try { info.name = GetLocalizedText("name"); } catch { info.castTime = -1; }
+            try { info.castTime = int.Parse(GetLocalizedText("castTime")); } catch { info.castTime = -1; }
+            try { info.cost = int.Parse(GetLocalizedText("cost")); } catch { info.cost = -1; }
+
+            return info;
+        }
+
+        /// <summary>
+        /// Returns the current combat state
+        /// </summary>
+        /// <param name="onMyself">check my owm state</param>
+        /// <returns>true if unit is in combat, false if not</returns>
+        public static bool GetCombatState(bool onMyself)
+        {
+            bool isInCombat;
+
+            if (onMyself)
+                LUADoString("affectingCombat = UnitAffectingCombat(\"player\");");
+            else
+                LUADoString("affectingCombat = UnitAffectingCombat(\"target\");");
+
+            try { if (int.Parse(GetLocalizedText("affectingCombat")) == 1) isInCombat = true; else isInCombat = false; } catch { isInCombat = false; }
+            return isInCombat;
+        }
+
+        /// <summary>
+        /// Returns wether the Unit is Friendly or not
+        /// </summary>
+        /// <returns>true if unit is friendly, false if not</returns>
+        public static bool IsTargetFriendly()
+        {
+            bool isFriendly;
+            LUADoString("isFriendly  = UnitAffectingCombat(\"player\", \"target\");");
+
+            try { if (int.Parse(GetLocalizedText("isFriendly")) == 1) isFriendly = true; else isFriendly = false; } catch { isFriendly = false; }
+            return isFriendly;
         }
 
         /// <summary>

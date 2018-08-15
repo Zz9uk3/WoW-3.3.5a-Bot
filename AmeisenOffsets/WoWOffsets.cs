@@ -38,6 +38,7 @@
 
         public static uint currentClientConnection = 0xC79CE0;
         public static uint currentManagerOffset = 0x2ED0;
+        public static uint currentManagerLocalGUID = 0xC0;
         public static uint firstObjectOffset = 0xAC;
         public static uint nextObjectOffset = 0x3C;
         public static uint gameobjectTypeOffset = 0x14;

@@ -3,8 +3,9 @@ using AmeisenCore;
 using AmeisenCore.Objects;
 using AmeisenLogging;
 using AmeisenUtilities;
+using Microsoft.Win32;
 using System;
-using System.Text;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -31,6 +32,36 @@ namespace AmeisenBotGUI
                 this.wowExe = wowExe;
         }
 
+        // -- Window state stuff
+        // Minimize, Exit, FileDialogs
+        #region WindowStuff
+        private void ButtonExit_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void ButtonMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void ButtonOpenFile_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                AmeisenSettings.GetInstance().settings.combatClassPath = openFileDialog.FileName;
+                AmeisenSettings.GetInstance().SaveToFile(AmeisenSettings.GetInstance().loadedconfName);
+
+                AmeisenCombatManager.GetInstance().ReloadCombatClass();
+            }
+        }
+        #endregion
+
+        // -- Window Callbacks
+        // Loading, Closing, MouseDown
+        #region WindowCallbacks
         private void Mainscreen_MouseDown(object sender, MouseButtonEventArgs e)
         {
             DragMove();
@@ -62,6 +93,8 @@ namespace AmeisenBotGUI
             {
                 // Fire up the AI
                 AmeisenAIManager.GetInstance().StartAI(AmeisenSettings.GetInstance().settings.botMaxThreads);
+                // Fire up the CombatEngine
+                AmeisenCombatManager.GetInstance().Start();
 
                 Title = "AmeisenBot - " + wowExe.characterName + " [" + wowExe.process.Id + "]";
                 UpdateUI();
@@ -79,6 +112,43 @@ namespace AmeisenBotGUI
             }
         }
 
+        private void Mainscreen_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            AmeisenSettings.GetInstance().settings.behaviourAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
+            AmeisenSettings.GetInstance().settings.behaviourTank = (bool)checkBoxAssistPartyTank.IsChecked;
+            AmeisenSettings.GetInstance().settings.behaviourHeal = (bool)checkBoxAssistPartyHeal.IsChecked;
+            AmeisenSettings.GetInstance().settings.followMaster = (bool)checkBoxFollowMaster.IsChecked;
+            AmeisenSettings.GetInstance().SaveToFile(AmeisenSettings.GetInstance().loadedconfName);
+
+            AmeisenManager.GetInstance().GetAmeisenHook().DisposeHooking();
+            AmeisenAIManager.GetInstance().StopAI();
+            AmeisenCombatManager.GetInstance().Stop();
+            AmeisenLogger.GetInstance().StopLogging();
+        }
+        #endregion
+
+        // -- Bot Combat STATES
+        // TANK, HEAL, ATTACK, checkboxes
+        #region BotCombatStates
+        private void CheckBoxAssistPartyTank_Click(object sender, RoutedEventArgs e)
+        {
+            AmeisenManager.GetInstance().IsSupposedToTank = (bool)checkBoxAssistPartyTank.IsChecked;
+        }
+
+        private void CheckBoxAssistPartyHeal_Click(object sender, RoutedEventArgs e)
+        {
+            AmeisenManager.GetInstance().IsSupposedToHeal = (bool)checkBoxAssistPartyHeal.IsChecked;
+        }
+
+        private void CheckBoxAssistPartyAttack_Click(object sender, RoutedEventArgs e)
+        {
+            AmeisenManager.GetInstance().IsSupposedToAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
+        }
+        #endregion
+
+        // -- Debug stuff goes here, will be removed in the future
+        // Debug stuff, buttons
+        #region DebugStuff
         private void ButtonMoveToTarget_Click(object sender, RoutedEventArgs e)
         {
             AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.MOVE_TO_POSITION, null));
@@ -88,24 +158,14 @@ namespace AmeisenBotGUI
         {
             AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.INTERACT_TARGET, (AmeisenActionType)comboboxInteraction.SelectedItem));
         }
+        #endregion
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-            AmeisenManager.GetInstance().GetAmeisenHook().DisposeHooking();
-            AmeisenAIManager.GetInstance().StopAI();
-            AmeisenCombatManager.GetInstance().Stop();
-            AmeisenLogger.GetInstance().StopLogging();
-        }
-
+        // -- External Windows
+        // SettingsWindow, DebugUI, CombatClass Editor
+        #region ExternalWindows
         private void ButtonSettings_Click(object sender, RoutedEventArgs e)
         {
             new SettingsWindow(uiMode).ShowDialog();
-        }
-
-        private void ButtonMinimize_Click(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
         }
 
         private void ButtonExtendedDebugUI_Click(object sender, RoutedEventArgs e)
@@ -113,21 +173,15 @@ namespace AmeisenBotGUI
             new DebugUI().Show();
         }
 
-        private void ButtonTest_Click(object sender, RoutedEventArgs e)
+        private void ButtonCobatClassEditor_Click(object sender, RoutedEventArgs e)
         {
-            AmeisenCore.AmeisenCore.LUADoString(debugInput.Text);
+            new CombatClassEditor().Show();
         }
+        #endregion
 
-        private void ButtonTargetMyself_Click(object sender, RoutedEventArgs e)
-        {
-            AmeisenCore.AmeisenCore.TargetGUID(AmeisenManager.GetInstance().GetMe().guid);
-        }
-
-        private void ButtonTargetGUID_Click(object sender, RoutedEventArgs e)
-        {
-            AmeisenCore.AmeisenCore.TargetGUID(Convert.ToUInt64(debugInputGUID.Text));
-        }
-
+        // -- UI TIMER
+        // Update the GUI
+        #region UITimer
         private void UIUpdateTimer_Tick(object sender, EventArgs e)
         {
             if (AmeisenCore.AmeisenCore.CheckWorldLoaded()
@@ -169,6 +223,8 @@ namespace AmeisenBotGUI
 
             // TODO: find a better way to update this
             AmeisenManager.GetInstance().GetObjects();
+
+            labelLoadedCombatClass.Content = "CombatClass: " + Path.GetFileName(AmeisenSettings.GetInstance().settings.combatClassPath);
 
             if (me != null)
             {
@@ -213,7 +269,7 @@ namespace AmeisenBotGUI
                         progressBarEnergyTarget.Maximum = me.target.maxEnergy;
                         progressBarEnergyTarget.Value = me.target.energy;
 
-                        //labelDistanceTarget.Content = "Distance: " + me.target.distance + "m";
+                        labelTargetDistance.Content = "Distance: " + me.target.distance + "m";
 
                         /*labelPositionTarget.Content =
                             "X: " + me.target.pos.x +
@@ -241,30 +297,7 @@ namespace AmeisenBotGUI
                 AmeisenLogger.GetInstance().Log(LogLevel.ERROR, e.ToString(), this);
             }
         }
+        #endregion
 
-        private void ButtonCobatClassEditor_Click(object sender, RoutedEventArgs e)
-        {
-            new CombatClassEditor().Show();
-        }
-
-        private void ButtonTest2_Click(object sender, RoutedEventArgs e)
-        {
-            AmeisenCore.AmeisenCore.LUADoString("start, duration, enabled = GetSpellCooldown(\"Every Man for Himself\");");
-            labelDebug.Content = AmeisenCore.AmeisenCore.GetLocalizedText("duration");
-        }
-
-        private void Mainscreen_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            AmeisenSettings.GetInstance().settings.behaviourAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
-            AmeisenSettings.GetInstance().settings.behaviourTank = (bool)checkBoxAssistPartyTank.IsChecked;
-            AmeisenSettings.GetInstance().settings.behaviourHeal = (bool)checkBoxAssistPartyHeal.IsChecked;
-            AmeisenSettings.GetInstance().settings.followMaster = (bool)checkBoxFollowMaster.IsChecked;
-            AmeisenSettings.GetInstance().SaveToFile(AmeisenSettings.GetInstance().loadedconfName);
-        }
-
-        private void ButtonTestX_Click(object sender, RoutedEventArgs e)
-        {
-            AmeisenCombatManager.GetInstance().Start();
-        }
     }
 }

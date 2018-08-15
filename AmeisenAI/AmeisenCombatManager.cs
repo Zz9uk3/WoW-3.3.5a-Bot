@@ -17,15 +17,16 @@ namespace AmeisenAI
             mainWorker = new Thread(new ThreadStart(DoWork));
             combatEngine = new CombatEngine();
 
-            string defaultCombatClass = AmeisenSettings.GetInstance().settings.combatClassName;
-            if (defaultCombatClass != "none")
-                combatEngine.currentCombatLogic = CombatEngine.LoadCombatLogicFromFileByName(defaultCombatClass);
+            ReloadCombatClass();
         }
 
         /// <summary>
         /// Stop the CombatEngine
         /// </summary>
-        public void Stop() { stop = true; }
+        public void Stop() {
+            stop = true;
+            mainWorker.Abort();
+        }
 
         /// <summary>
         /// Start the CombatEngine
@@ -39,6 +40,16 @@ namespace AmeisenAI
                 combatEngine.ExecuteNextStep();
                 Thread.Sleep(100);
             }
+        }
+
+        /// <summary>
+        /// Reload our CombatClass specified in the AmeisenSettings class
+        /// </summary>
+        public void ReloadCombatClass()
+        {
+            string defaultCombatClass = AmeisenSettings.GetInstance().settings.combatClassPath;
+            if (defaultCombatClass != "none")
+                combatEngine.currentCombatLogic = CombatEngine.LoadCombatLogicFromFile(defaultCombatClass);
         }
 
         /// <summary>

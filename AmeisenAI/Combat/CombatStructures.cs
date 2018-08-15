@@ -10,7 +10,9 @@
             LESS_OR_EQUAL,
             LESS,
             HAS_BUFF,
-            HAS_BUFF_MYSELF
+            HAS_BUFF_MYSELF,
+            NOT_HAS_BUFF,
+            NOT_HAS_BUFF_MYSELF
         }
 
         public enum CombatLogicAction
@@ -19,6 +21,13 @@
             USE_AOE_SPELL,
             SHAPESHIFT,
             FLEE
+        }
+
+        public enum CombatActionType
+        {
+            ATTACK,
+            TANK,
+            HEAL,
         }
 
         public enum CombatLogicValues

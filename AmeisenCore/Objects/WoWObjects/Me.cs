@@ -9,7 +9,7 @@ namespace AmeisenCore.Objects
     {
         public int exp;
         public int maxExp;
-        
+
         public UnitState currentState;
 
         public Unit target;
@@ -77,7 +77,11 @@ namespace AmeisenCore.Objects
             sb.Append(" >> MapID: " + mapID);
             sb.Append(" >> ZoneID: " + zoneID);
 
-            sb.Append(" >> Target: " + target.ToString());
+            if (target != null)
+                sb.Append(" >> Target: " + target.ToString());
+            else
+                sb.Append(" >> Target: none");
+
             sb.Append(" >> combatReach: " + combatReach);
             sb.Append(" >> channelSpell: " + channelSpell);
             sb.Append(" >> currentState: " + currentState);
@@ -90,7 +94,11 @@ namespace AmeisenCore.Objects
 
             sb.Append(" >> exp: " + exp);
             sb.Append(" >> maxExp: " + maxExp);
-            sb.Append(" >> partyLeader: " + partyLeader.guid);
+
+            if (partyLeader != null)
+                sb.Append(" >> partyLeader: " + partyLeader.guid);
+            else
+                sb.Append(" >> partyLeader: none");
 
             int count = 1;
             foreach (Player p in partymembers)
