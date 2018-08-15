@@ -82,11 +82,7 @@ namespace AmeisenAI
         {
             if (entry.CombatOnly)
                 if (!AmeisenCore.AmeisenCore.GetCombatState(true))
-<<<<<<< HEAD
-                    if(!AmeisenCore.AmeisenCore.IsTargetFriendly())
-=======
                     if (!AmeisenCore.AmeisenCore.IsTargetFriendly())
->>>>>>> 0569b2d7a73ab32a1711a3211e79422aaffb804a
                         return false;
 
             bool isMeeleeSpell = entry.MaxSpellDistance < 3.2 ? true : false;

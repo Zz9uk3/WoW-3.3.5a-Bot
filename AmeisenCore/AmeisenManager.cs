@@ -27,13 +27,9 @@ namespace AmeisenCore
         private static AmeisenManager i;
 
         private bool isAttached;
-<<<<<<< HEAD
-        private readonly bool isHooked;
-        private readonly bool isMeAllowedToMove;
-        private bool stopClientThread;
-=======
         private bool isHooked;
->>>>>>> 0f341a9d01f4341d5ad3f14b13b8997e983d5eeb
+
+        private bool stopClientThread;
 
         private Process wowProcess;
         private BlackMagic blackmagic;
@@ -58,11 +54,7 @@ namespace AmeisenCore
         {
             isAttached = false;
             isHooked = false;
-<<<<<<< HEAD
-            stopClientThread = false;
-=======
             isAllowedToMove = true;
->>>>>>> 0f341a9d01f4341d5ad3f14b13b8997e983d5eeb
         }
 
         public static AmeisenManager GetInstance()
@@ -198,8 +190,7 @@ namespace AmeisenCore
         {
             activeWoWObjects = AmeisenCore.RefreshAllWoWObjects();
         }
-
-<<<<<<< HEAD
+        
         public void ConnectToAmeisenServer(IPEndPoint endPoint)
         {
             ameisenServerClientThread = new Thread(new ThreadStart(() => AmeisenServerClientThreadRun(endPoint)));
@@ -236,7 +227,7 @@ namespace AmeisenCore
             ameisenServerClient.Client.Disconnect(false);
             ameisenServerClient.Close();
         }
-=======
+
         /// <summary>
         /// Lock bot movement
         /// </summary>
@@ -251,6 +242,5 @@ namespace AmeisenCore
         /// Is the bot allowed to move right now?
         /// </summary>
         public bool IsAllowedToMove() { return isAllowedToMove; }
->>>>>>> 0f341a9d01f4341d5ad3f14b13b8997e983d5eeb
     }
 }
