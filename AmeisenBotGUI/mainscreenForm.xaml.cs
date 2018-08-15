@@ -4,6 +4,7 @@ using AmeisenCore.Objects;
 using AmeisenLogging;
 using AmeisenUtilities;
 using System;
+using System.Net;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
@@ -89,6 +90,7 @@ namespace AmeisenBotGUI
             Close();
             AmeisenAIManager.GetInstance().StopAI();
             AmeisenLogger.GetInstance().StopLogging();
+            AmeisenManager.GetInstance().DisconnectFromAmeisenServer();
         }
 
         private void ButtonSettings_Click(object sender, RoutedEventArgs e)
@@ -108,8 +110,7 @@ namespace AmeisenBotGUI
 
         private void ButtonTest_Click(object sender, RoutedEventArgs e)
         {
-            //AmeisenAIManager.GetInstance().AddActionToQueue(new AmeisenAction(AmeisenActionType.TARGET_MYSELF, null));
-            AmeisenCore.AmeisenCore.CharacterJumpAsync();
+            AmeisenManager.GetInstance().ConnectToAmeisenServer(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 16200));
         }
 
         private void UIUpdateTimer_Tick(object sender, EventArgs e)

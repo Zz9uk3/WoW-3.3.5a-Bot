@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using AmeisenCore.Objects;
 using AmeisenLogging;
@@ -25,10 +29,14 @@ namespace AmeisenCore
         private bool isAttached;
         private readonly bool isHooked;
         private readonly bool isMeAllowedToMove;
+        private bool stopClientThread;
 
         private Process wowProcess;
         private BlackMagic blackmagic;
         private readonly AmeisenHook ameisenHook;
+
+        private TcpClient ameisenServerClient;
+        private Thread ameisenServerClientThread;
 
         private Me me;
 
@@ -40,6 +48,7 @@ namespace AmeisenCore
         {
             isAttached = false;
             isHooked = false;
+            stopClientThread = false;
         }
 
         public static AmeisenManager GetInstance()
@@ -172,6 +181,43 @@ namespace AmeisenCore
         private void RefreshObjects()
         {
             activeWoWObjects = AmeisenCore.RefreshAllWoWObjects();
+        }
+
+        public void ConnectToAmeisenServer(IPEndPoint endPoint)
+        {
+            ameisenServerClientThread = new Thread(new ThreadStart(() => AmeisenServerClientThreadRun(endPoint)));
+            ameisenServerClientThread.Start();
+        }
+
+        public void DisconnectFromAmeisenServer()
+        {
+            stopClientThread = true;
+        }
+
+        private void AmeisenServerClientThreadRun(IPEndPoint endPoint)
+        {
+            ameisenServerClient = new TcpClient();
+            ameisenServerClient.Connect(endPoint);
+
+            Stream outStream = ameisenServerClient.GetStream();
+            Byte[] sendBytes = Encoding.ASCII.GetBytes(AmeisenSettings.GetInstance().settings.ameisenServerName + "\r\n");
+            outStream.Write(sendBytes, 0, sendBytes.Length);
+            outStream.Flush();
+
+            while (!stopClientThread && ameisenServerClient.Connected)
+            {
+                Byte[] sendMeBytes = Encoding.ASCII.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(me) + "\r\n");
+                outStream.Write(sendMeBytes, 0, sendMeBytes.Length);
+                outStream.Flush();
+                Thread.Sleep(1000);
+            }
+
+            sendBytes = Encoding.ASCII.GetBytes("SHUTDOWN" + "\r\n");
+            outStream.Write(sendBytes, 0, sendBytes.Length);
+            outStream.Flush();
+
+            ameisenServerClient.Client.Disconnect(false);
+            ameisenServerClient.Close();
         }
     }
 }
