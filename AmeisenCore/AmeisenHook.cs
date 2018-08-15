@@ -14,6 +14,7 @@ namespace AmeisenCore
     public class AmeisenHook
     {
         public bool isHooked = false;
+        public bool isHookUsed = false;
 
         private uint codeCave;
         private uint codeCaveForInjection;
@@ -125,10 +126,12 @@ namespace AmeisenCore
 
         public byte[] InjectAndExecute(string[] asm)
         {
-            /*while (AmeisenManager.GetInstance().GetBlackMagic().ReadInt(codeToExecute) > 0)
+            while (isHookUsed)
             {
-                Thread.Sleep(50);
-            }*/
+                Thread.Sleep(5);
+            }
+
+            isHookUsed = true;
 
             AmeisenManager.GetInstance().GetBlackMagic().WriteInt(codeToExecute, 1);
             AmeisenManager.GetInstance().GetBlackMagic().Asm.Clear();
@@ -144,7 +147,7 @@ namespace AmeisenCore
 
             while (AmeisenManager.GetInstance().GetBlackMagic().ReadInt(codeToExecute) > 0)
             {
-                Thread.Sleep(1);
+                Thread.Sleep(5);
             }
 
             byte buffer = new Byte();
@@ -163,6 +166,8 @@ namespace AmeisenCore
                 }
             }
             catch (Exception e) { AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Crash at reading returnAddress: " + e.ToString(), this); }
+
+            isHookUsed = false;
 
             return retnByte.ToArray();
         }

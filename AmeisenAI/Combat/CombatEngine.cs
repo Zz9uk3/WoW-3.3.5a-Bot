@@ -80,7 +80,7 @@ namespace AmeisenAI
         public bool ExecuteLogic(CombatLogicEntry entry)
         {
             if (entry.CombatOnly)
-                if (!AmeisenCore.AmeisenCore.GetCombatState(true) || !AmeisenCore.AmeisenCore.GetCombatState(true))
+                if (!AmeisenCore.AmeisenCore.GetCombatState(true))
                     if(!AmeisenCore.AmeisenCore.IsTargetFriendly())
                         return false;
 
