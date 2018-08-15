@@ -78,11 +78,7 @@ namespace AmeisenBotGUI
 
                     // Attach to WoW
                     AmeisenManager.GetInstance().AttachManager(((WoWExe)comboBoxWoWs.SelectedItem).process);
-
-                    // Load the config for specific charactername
-                    // May need to add another factor like the REALMNAME to it to make it unique...
-                    AmeisenSettings.GetInstance().LoadFromFile(((WoWExe)comboBoxWoWs.SelectedItem).characterName);
-
+                    
                     // Apply our colors defined in the config file
                     Application.Current.Resources["AccentColor"] = (Color)ColorConverter.ConvertFromString(AmeisenSettings.GetInstance().settings.accentColor);
                     Application.Current.Resources["BackgroundColor"] = (Color)ColorConverter.ConvertFromString(AmeisenSettings.GetInstance().settings.backgroundColor);

@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using AmeisenCore.Objects;
 using AmeisenLogging;
@@ -23,11 +27,20 @@ namespace AmeisenCore
         private static AmeisenManager i;
 
         private bool isAttached;
+<<<<<<< HEAD
+        private readonly bool isHooked;
+        private readonly bool isMeAllowedToMove;
+        private bool stopClientThread;
+=======
         private bool isHooked;
+>>>>>>> 0f341a9d01f4341d5ad3f14b13b8997e983d5eeb
 
         private Process wowProcess;
         private BlackMagic blackmagic;
         private AmeisenHook ameisenHook;
+
+        private TcpClient ameisenServerClient;
+        private Thread ameisenServerClientThread;
 
         private Me me;
 
@@ -45,7 +58,11 @@ namespace AmeisenCore
         {
             isAttached = false;
             isHooked = false;
+<<<<<<< HEAD
+            stopClientThread = false;
+=======
             isAllowedToMove = true;
+>>>>>>> 0f341a9d01f4341d5ad3f14b13b8997e983d5eeb
         }
 
         public static AmeisenManager GetInstance()
@@ -135,12 +152,14 @@ namespace AmeisenCore
             AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Getting Objects", this);
             if (isAttached)
             {
-                bool needToRefresh = (DateTime.Now - timestampObjects).TotalSeconds > 5;
+                //bool needToRefresh = (DateTime.Now - timestampObjects).TotalSeconds > 5;
 
                 if (activeWoWObjects == null)
-                    RefreshObjects();
-                if (needToRefresh)
                     RefreshObjectsAsync();
+
+                // need to do this only for specific objects, saving cpu usage
+                //if (needToRefresh)
+                //RefreshObjectsAsync();
                 return activeWoWObjects;
             }
             else
@@ -180,6 +199,44 @@ namespace AmeisenCore
             activeWoWObjects = AmeisenCore.RefreshAllWoWObjects();
         }
 
+<<<<<<< HEAD
+        public void ConnectToAmeisenServer(IPEndPoint endPoint)
+        {
+            ameisenServerClientThread = new Thread(new ThreadStart(() => AmeisenServerClientThreadRun(endPoint)));
+            ameisenServerClientThread.Start();
+        }
+
+        public void DisconnectFromAmeisenServer()
+        {
+            stopClientThread = true;
+        }
+
+        private void AmeisenServerClientThreadRun(IPEndPoint endPoint)
+        {
+            ameisenServerClient = new TcpClient();
+            ameisenServerClient.Connect(endPoint);
+
+            Stream outStream = ameisenServerClient.GetStream();
+            Byte[] sendBytes = Encoding.ASCII.GetBytes(AmeisenSettings.GetInstance().settings.ameisenServerName + "\r\n");
+            outStream.Write(sendBytes, 0, sendBytes.Length);
+            outStream.Flush();
+
+            while (!stopClientThread && ameisenServerClient.Connected)
+            {
+                Byte[] sendMeBytes = Encoding.ASCII.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(me) + "\r\n");
+                outStream.Write(sendMeBytes, 0, sendMeBytes.Length);
+                outStream.Flush();
+                Thread.Sleep(1000);
+            }
+
+            sendBytes = Encoding.ASCII.GetBytes("SHUTDOWN" + "\r\n");
+            outStream.Write(sendBytes, 0, sendBytes.Length);
+            outStream.Flush();
+
+            ameisenServerClient.Client.Disconnect(false);
+            ameisenServerClient.Close();
+        }
+=======
         /// <summary>
         /// Lock bot movement
         /// </summary>
@@ -194,5 +251,6 @@ namespace AmeisenCore
         /// Is the bot allowed to move right now?
         /// </summary>
         public bool IsAllowedToMove() { return isAllowedToMove; }
+>>>>>>> 0f341a9d01f4341d5ad3f14b13b8997e983d5eeb
     }
 }

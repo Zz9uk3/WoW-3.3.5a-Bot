@@ -56,6 +56,7 @@
     /// </summary>
     public enum WoWObjectType
     {
+        NONE = 0,
         ITEM = 1,
         CONTAINER = 2,
         UNIT = 3,

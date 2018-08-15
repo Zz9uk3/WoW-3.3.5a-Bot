@@ -14,7 +14,11 @@ namespace AmeisenCore
     public class AmeisenHook
     {
         public bool isHooked = false;
+<<<<<<< HEAD
         public bool isHookUsed = false;
+=======
+        public bool isInjectionUsed = false;
+>>>>>>> 0569b2d7a73ab32a1711a3211e79422aaffb804a
 
         private uint codeCave;
         private uint codeCaveForInjection;
@@ -126,12 +130,19 @@ namespace AmeisenCore
 
         public byte[] InjectAndExecute(string[] asm)
         {
+<<<<<<< HEAD
             while (isHookUsed)
             {
                 Thread.Sleep(5);
             }
 
             isHookUsed = true;
+=======
+            while (isInjectionUsed)
+                Thread.Sleep(5);
+
+            isInjectionUsed = true;
+>>>>>>> 0569b2d7a73ab32a1711a3211e79422aaffb804a
 
             AmeisenManager.GetInstance().GetBlackMagic().WriteInt(codeToExecute, 1);
             AmeisenManager.GetInstance().GetBlackMagic().Asm.Clear();
@@ -146,12 +157,16 @@ namespace AmeisenCore
             AmeisenManager.GetInstance().GetBlackMagic().Asm.Inject(codeCaveForInjection);
 
             while (AmeisenManager.GetInstance().GetBlackMagic().ReadInt(codeToExecute) > 0)
+<<<<<<< HEAD
             {
                 Thread.Sleep(5);
             }
+=======
+                Thread.Sleep(5);
+>>>>>>> 0569b2d7a73ab32a1711a3211e79422aaffb804a
 
             byte buffer = new Byte();
-            List<byte> retnByte = new List<byte>();
+            List<byte> returnBytes = new List<byte>();
 
             try
             {
@@ -160,16 +175,21 @@ namespace AmeisenCore
                 buffer = AmeisenManager.GetInstance().GetBlackMagic().ReadByte(dwAddress);
                 while (buffer != 0)
                 {
-                    retnByte.Add(buffer);
+                    returnBytes.Add(buffer);
                     dwAddress = dwAddress + 1;
                     buffer = AmeisenManager.GetInstance().GetBlackMagic().ReadByte(dwAddress);
                 }
             }
             catch (Exception e) { AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Crash at reading returnAddress: " + e.ToString(), this); }
 
+<<<<<<< HEAD
             isHookUsed = false;
 
             return retnByte.ToArray();
+=======
+            isInjectionUsed = false;
+            return returnBytes.ToArray();
+>>>>>>> 0569b2d7a73ab32a1711a3211e79422aaffb804a
         }
 
         private uint GetEndScene()

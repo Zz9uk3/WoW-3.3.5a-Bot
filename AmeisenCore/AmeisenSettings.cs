@@ -83,6 +83,13 @@ namespace AmeisenCore
         public string fontColor = "#FFFFFFFF";
         public string backgroundColor = "#FF303030";
 
+<<<<<<< HEAD
+        public string combatClassName = "none";
+
+        public string ameisenServerIP = "127.0.0.1";
+        public string ameisenServerPort = "16200";
+        public string ameisenServerName = AmeisenUtilities.Utils.GenerateRandonString(12, "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
+=======
         public string combatClassPath = "none";
 
         public bool behaviourAttack = false;
@@ -92,5 +99,6 @@ namespace AmeisenCore
         public bool followMaster = false;
 
         public string masterName = "";
+>>>>>>> 0f341a9d01f4341d5ad3f14b13b8997e983d5eeb
     }
 }

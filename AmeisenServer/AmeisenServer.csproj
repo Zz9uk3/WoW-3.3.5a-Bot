@@ -46,11 +46,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AmeisenServer.cs" />
+    <Compile Include="AmeisenServerManager.cs" />
+    <Compile Include="AmeisenServerThread.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AmeisenCore\AmeisenCore.csproj">
+      <Project>{567F9DF2-E2D0-4BC8-A295-B7913CC1303E}</Project>
+      <Name>AmeisenCore</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

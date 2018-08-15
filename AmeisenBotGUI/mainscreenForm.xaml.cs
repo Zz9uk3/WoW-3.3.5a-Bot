@@ -5,6 +5,8 @@ using AmeisenLogging;
 using AmeisenUtilities;
 using Microsoft.Win32;
 using System;
+using System.Net;
+using System.Text;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
@@ -137,7 +139,10 @@ namespace AmeisenBotGUI
 
         private void CheckBoxAssistPartyHeal_Click(object sender, RoutedEventArgs e)
         {
-            AmeisenManager.GetInstance().IsSupposedToHeal = (bool)checkBoxAssistPartyHeal.IsChecked;
+            Close();
+            AmeisenAIManager.GetInstance().StopAI();
+            AmeisenLogger.GetInstance().StopLogging();
+            AmeisenManager.GetInstance().DisconnectFromAmeisenServer();
         }
 
         private void CheckBoxAssistPartyAttack_Click(object sender, RoutedEventArgs e)

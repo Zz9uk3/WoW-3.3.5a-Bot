@@ -289,6 +289,12 @@ namespace AmeisenAI
         private double lastDistance;
         private Vector3 lastPosition = new Vector3 { x = float.MaxValue, y = float.MaxValue, z = float.MaxValue };
 
+        /// <summary>
+        /// Modify our go-to-position by a small factor to provide "naturality"
+        /// </summary>
+        /// <param name="targetPos">pos you want to go to/param>
+        /// <param name="distanceToTarget">distance to keep to the target</param>
+        /// <returns>modified position</returns>
         private Vector3 CalculatePosToGoTo(Vector3 targetPos, int distanceToTarget)
         {
             Random rnd = new Random();

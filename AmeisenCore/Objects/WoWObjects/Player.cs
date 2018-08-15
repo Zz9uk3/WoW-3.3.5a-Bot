@@ -10,6 +10,11 @@ namespace AmeisenCore.Objects
     {
         public Player(uint baseAddress) : base(baseAddress)
         {
+            Update();
+        }
+
+        public override void Update()
+        {
             try { name = AmeisenCore.GetPlayerNameFromGuid(guid); } catch { }
         }
 
@@ -18,6 +23,8 @@ namespace AmeisenCore.Objects
             StringBuilder sb = new StringBuilder();
 
             sb.Append("PLAYER");
+            sb.Append(" >> Address: " + baseAddress.ToString("X"));
+            sb.Append(" >> UnitFields: " + baseUnitFields.ToString("X"));
             sb.Append(" >> Name: " + name);
             sb.Append(" >> GUID: " + guid);
             sb.Append(" >> PosX: " + pos.x);
