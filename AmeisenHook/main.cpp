@@ -3,17 +3,39 @@
 // !!! THIS THING ISNT ACTIVE AT THE MOMENT !!!
 // it may be used in the future but who knows..
 
-typedef void(__stdcall * XAmeisenHook)(char * string);
-XAmeisenHook AmeisenHookDoString;
+bool Hook(void * funcToHook, void * funcToExecute, int lenght) {
+	if (lenght < 5)
+		return false;
+
+	DWORD currentProtection;
+	VirtualProtect(funcToHook, lenght, PAGE_EXECUTE_READWRITE, &currentProtection);
+
+	memset(funcToExecute, 0x90, lenght);
+
+	DWORD relativeAdress = ((DWORD)funcToExecute - (DWORD)funcToHook) - 5;
+
+	*(BYTE*)funcToHook = 0xE9;
+	*(DWORD*)((DWORD)funcToHook + 1) = relativeAdress;
+
+	DWORD temp;
+	VirtualProtect(funcToHook, lenght, currentProtection, &temp);
+
+	return true;
+}
+
+DWORD jumpBackAddress;
+void __declspec(naked) FunctionToExecute() {
+	__asm {
+		jmp [jumpBackAddress]
+	}
+}
 
 DWORD WINAPI MainThread(LPVOID param) {
-	uintptr_t modBase = (uintptr_t)GetModuleHandle(NULL);
-	AmeisenHookDoString = (XAmeisenHook)(modBase + 0x819210);
+	while (true) {
+		if (GetAsyncKeyState(VK_NUMPAD0)) break;
+		Sleep(50);
+	}
 
-	while (true) 
-		if (GetAsyncKeyState(VK_NUMPAD0)) {
-			AmeisenHookDoString((char *)"/target player");
-		}
 	FreeLibraryAndExitThread((HMODULE)param, 0);
 	return 0;
 }

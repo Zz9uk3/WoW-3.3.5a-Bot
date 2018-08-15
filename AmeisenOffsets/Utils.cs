@@ -12,12 +12,21 @@ namespace AmeisenUtilities
                              (a.z - b.z) * (a.z - b.z));
         }
 
+<<<<<<< HEAD
         public static string GenerateRandonString(int lenght, string chars)
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < lenght; i++)
                 sb.Append(chars[new Random().Next(0, chars.Length - 1)]);
             return sb.ToString();
+=======
+        public static string ByteArrayToString(byte[] ba)
+        {
+            StringBuilder hex = new StringBuilder(ba.Length * 2);
+            foreach (byte b in ba)
+                hex.AppendFormat("{0:x2}", b);
+            return hex.ToString();
+>>>>>>> 0f341a9d01f4341d5ad3f14b13b8997e983d5eeb
         }
     }
 }

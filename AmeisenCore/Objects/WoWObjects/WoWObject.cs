@@ -4,15 +4,14 @@ using System.Text;
 
 namespace AmeisenCore.Objects
 {
-    public abstract class WoWObject
+    public class WoWObject
     {
         public string name;
 
         public UInt64 guid;
-        public uint memoryLocation;
 
-        public int summonedBy;
-
+        public uint baseAddress;
+        
         public Vector3 pos;
         public float rotation;
         public double distance;
@@ -20,11 +19,25 @@ namespace AmeisenCore.Objects
         public int mapID;
         public int zoneID;
 
+        public WoWObject(uint baseAddress)
+        {
+            this.baseAddress = baseAddress;
+            Update();
+        }
+
+        public virtual void Update()
+        {
+            guid = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(baseAddress + 0x30);
+            mapID = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(WoWOffsets.mapID);
+            zoneID = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(WoWOffsets.zoneID);
+        }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
 
             sb.Append("WOWOBJECT");
+            sb.Append(" >> Address: " + baseAddress.ToString("X"));
             sb.Append(" >> Name: " + name);
             sb.Append(" >> GUID: " + guid);
             sb.Append(" >> PosX: " + pos.x);

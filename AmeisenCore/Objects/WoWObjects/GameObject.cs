@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AmeisenUtilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,22 +7,33 @@ using System.Threading.Tasks;
 
 namespace AmeisenCore.Objects
 {
-    public class Item : WoWObject
+    public class GameObject : WoWObject
     {
-        public Item(uint baseAddress) : base(baseAddress)
+        public GameObject(uint baseAddress) : base(baseAddress)
         {
             Update();
         }
 
         public override void Update()
         {
+            pos.x = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x3C);
+            pos.y = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x40);
+            pos.z = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x44);
+            rotation = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x28);
+
+            // too cpu heavy
+            /*try
+            {
+                distance = Utils.GetDistance(pos, AmeisenManager.GetInstance().GetMe().pos);
+            }
+            catch { }*/
         }
 
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("ITEM");
+            sb.Append("GAMEOBJECT");
             sb.Append(" >> Address: " + baseAddress.ToString("X"));
             sb.Append(" >> Name: " + name);
             sb.Append(" >> GUID: " + guid);

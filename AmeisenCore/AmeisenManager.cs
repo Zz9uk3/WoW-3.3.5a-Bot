@@ -27,13 +27,17 @@ namespace AmeisenCore
         private static AmeisenManager i;
 
         private bool isAttached;
+<<<<<<< HEAD
         private readonly bool isHooked;
         private readonly bool isMeAllowedToMove;
         private bool stopClientThread;
+=======
+        private bool isHooked;
+>>>>>>> 0f341a9d01f4341d5ad3f14b13b8997e983d5eeb
 
         private Process wowProcess;
         private BlackMagic blackmagic;
-        private readonly AmeisenHook ameisenHook;
+        private AmeisenHook ameisenHook;
 
         private TcpClient ameisenServerClient;
         private Thread ameisenServerClientThread;
@@ -44,11 +48,21 @@ namespace AmeisenCore
         // To determine if we need to refresh some things
         private DateTime timestampObjects;
 
+        private bool isAllowedToMove;
+
+        public bool IsSupposedToAttack { get; set; }
+        public bool IsSupposedToTank { get; set; }
+        public bool IsSupposedToHeal { get; set; }
+
         private AmeisenManager()
         {
             isAttached = false;
             isHooked = false;
+<<<<<<< HEAD
             stopClientThread = false;
+=======
+            isAllowedToMove = true;
+>>>>>>> 0f341a9d01f4341d5ad3f14b13b8997e983d5eeb
         }
 
         public static AmeisenManager GetInstance()
@@ -72,8 +86,8 @@ namespace AmeisenCore
 
             // Hook EndScene LMAO
             // TODO: Fix this piece of garbage
-            // ameisenHook = new AmeisenHook();
-            // isHooked = ameisenHook.isHooked;
+            ameisenHook = new AmeisenHook();
+            isHooked = ameisenHook.isHooked;
         }
 
         /// <summary>
@@ -138,12 +152,14 @@ namespace AmeisenCore
             AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Getting Objects", this);
             if (isAttached)
             {
-                bool needToRefresh = (DateTime.Now - timestampObjects).TotalSeconds > 5;
+                //bool needToRefresh = (DateTime.Now - timestampObjects).TotalSeconds > 5;
 
                 if (activeWoWObjects == null)
-                    RefreshObjects();
-                if (needToRefresh)
                     RefreshObjectsAsync();
+
+                // need to do this only for specific objects, saving cpu usage
+                //if (needToRefresh)
+                //RefreshObjectsAsync();
                 return activeWoWObjects;
             }
             else
@@ -183,6 +199,7 @@ namespace AmeisenCore
             activeWoWObjects = AmeisenCore.RefreshAllWoWObjects();
         }
 
+<<<<<<< HEAD
         public void ConnectToAmeisenServer(IPEndPoint endPoint)
         {
             ameisenServerClientThread = new Thread(new ThreadStart(() => AmeisenServerClientThreadRun(endPoint)));
@@ -219,5 +236,21 @@ namespace AmeisenCore
             ameisenServerClient.Client.Disconnect(false);
             ameisenServerClient.Close();
         }
+=======
+        /// <summary>
+        /// Lock bot movement
+        /// </summary>
+        public void LockMovement() { isAllowedToMove = false; }
+
+        /// <summary>
+        /// Unlock bot movement
+        /// </summary>
+        public void UnlockMovement() { isAllowedToMove = true; }
+
+        /// <summary>
+        /// Is the bot allowed to move right now?
+        /// </summary>
+        public bool IsAllowedToMove() { return isAllowedToMove; }
+>>>>>>> 0f341a9d01f4341d5ad3f14b13b8997e983d5eeb
     }
 }

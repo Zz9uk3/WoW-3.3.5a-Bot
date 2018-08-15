@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace AmeisenCore.Objects
 {
-    public class Item : WoWObject
+    public class DynObject : WoWObject
     {
-        public Item(uint baseAddress) : base(baseAddress)
+        public DynObject(uint baseAddress) : base(baseAddress)
         {
             Update();
         }
@@ -21,7 +21,7 @@ namespace AmeisenCore.Objects
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("ITEM");
+            sb.Append("DYNOBJECT");
             sb.Append(" >> Address: " + baseAddress.ToString("X"));
             sb.Append(" >> Name: " + name);
             sb.Append(" >> GUID: " + guid);

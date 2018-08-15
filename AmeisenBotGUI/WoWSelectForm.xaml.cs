@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -72,12 +73,12 @@ namespace AmeisenBotGUI
                 {
                     AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Selected WoW: " + ((WoWExe)comboBoxWoWs.SelectedItem).ToString(), this);
 
-                    // Attach to WoW
-                    AmeisenManager.GetInstance().AttachManager(((WoWExe)comboBoxWoWs.SelectedItem).process);
-                    // Load the config for specific charactername
-                    // May need to add another factor like the REALMNAME to it to make it unique...
+                    // Load Settings
                     AmeisenSettings.GetInstance().LoadFromFile(((WoWExe)comboBoxWoWs.SelectedItem).characterName);
 
+                    // Attach to WoW
+                    AmeisenManager.GetInstance().AttachManager(((WoWExe)comboBoxWoWs.SelectedItem).process);
+                    
                     // Apply our colors defined in the config file
                     Application.Current.Resources["AccentColor"] = (Color)ColorConverter.ConvertFromString(AmeisenSettings.GetInstance().settings.accentColor);
                     Application.Current.Resources["BackgroundColor"] = (Color)ColorConverter.ConvertFromString(AmeisenSettings.GetInstance().settings.backgroundColor);
@@ -109,7 +110,7 @@ namespace AmeisenBotGUI
             }
         }
 
-        private void SearchForWoW()
+        private void SearchForWoW(string selectByCharname = "")
         {
             AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Searching for WoW's", this);
 
@@ -117,9 +118,20 @@ namespace AmeisenBotGUI
             List<WoWExe> wowList = AmeisenCore.AmeisenCore.GetRunningWoWs();
 
             foreach (WoWExe w in wowList)
-            {
                 comboBoxWoWs.Items.Add(w);
-                comboBoxWoWs.SelectedItem = w;
+
+            if (selectByCharname != "")
+            {
+                foreach (WoWExe i in comboBoxWoWs.Items)
+                    if (i.characterName == selectByCharname)
+                        comboBoxWoWs.SelectedItem = i;
+            }
+            else if (comboBoxWoWs.Items.Count > 0)
+            {
+                if ((WoWExe)comboBoxWoWs.SelectedItem == null
+                || ((WoWExe)comboBoxWoWs.SelectedItem).characterName == ""
+                || ((WoWExe)comboBoxWoWs.SelectedItem).process == null)
+                    comboBoxWoWs.SelectedItem = comboBoxWoWs.Items[0];
             }
         }
 
@@ -151,6 +163,7 @@ namespace AmeisenBotGUI
                 {
                     credentials = Newtonsoft.Json.JsonConvert.DeserializeObject<Credentials>(File.ReadAllText(path));
 
+                    textboxCharactername.Text = credentials.charname;
                     textboxUsername.Text = credentials.username;
                     textboxPassword.Password = credentials.password;
                     textboxCharSlot.Text = credentials.charSlot.ToString();
@@ -162,13 +175,14 @@ namespace AmeisenBotGUI
         {
             Credentials credentials;
 
-            if (loginAutoIsPossible)
+            if (loginAutoIsPossible && ((WoWExe)comboBoxWoWs.SelectedItem).characterName == "")
             {
                 if (!Directory.Exists(configPath))
                     Directory.CreateDirectory(configPath);
 
                 string path = configPath + textboxCharactername.Text.ToLower() + extension;
 
+                credentials.charname = textboxCharactername.Text;
                 credentials.username = textboxUsername.Text;
                 credentials.password = textboxPassword.Password;
                 credentials.charSlot = Convert.ToInt32(textboxCharSlot.Text);
@@ -176,9 +190,18 @@ namespace AmeisenBotGUI
                 if (checkboxSave.IsChecked == true)
                     File.WriteAllText(path, Newtonsoft.Json.JsonConvert.SerializeObject(credentials));
 
+                string charname = textboxCharactername.Text;
                 Process p = Process.Start(autoLoginExe, ((WoWExe)comboBoxWoWs.SelectedItem).process.Id.ToString() + " " + credentials.charSlot + " " + credentials.username + " " + credentials.password);
-                p.WaitForExit();
+                StartAutoLogin(p, charname);
+                buttonGo.IsEnabled = false;
             }
+        }
+
+        private void StartAutoLogin(Process p, string charname)
+        {
+            p.WaitForExit();
+            ((WoWExe)comboBoxWoWs.SelectedItem).characterName = charname;
+            ButtonGo_Click(this, null);
         }
 
         private void OnlyNumberTextBox(object sender, TextCompositionEventArgs e)
@@ -192,8 +215,11 @@ namespace AmeisenBotGUI
             if (!Directory.Exists(configPath))
                 Directory.CreateDirectory(configPath);
 
+            comboBoxAccounts.Items.Clear();
+
             foreach (string f in Directory.GetFiles(configPath))
-                comboBoxAccounts.Items.Add(Path.GetFileNameWithoutExtension(f));
+                if (f.Length > 0)
+                    comboBoxAccounts.Items.Add(Path.GetFileNameWithoutExtension(f));
         }
     }
 }

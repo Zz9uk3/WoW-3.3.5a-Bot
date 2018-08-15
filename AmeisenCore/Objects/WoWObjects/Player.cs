@@ -8,11 +8,23 @@ namespace AmeisenCore.Objects
 {
     public class Player : Unit
     {
+        public Player(uint baseAddress) : base(baseAddress)
+        {
+            Update();
+        }
+
+        public override void Update()
+        {
+            try { name = AmeisenCore.GetPlayerNameFromGuid(guid); } catch { }
+        }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
 
             sb.Append("PLAYER");
+            sb.Append(" >> Address: " + baseAddress.ToString("X"));
+            sb.Append(" >> UnitFields: " + baseUnitFields.ToString("X"));
             sb.Append(" >> Name: " + name);
             sb.Append(" >> GUID: " + guid);
             sb.Append(" >> PosX: " + pos.x);
@@ -23,13 +35,13 @@ namespace AmeisenCore.Objects
             sb.Append(" >> MapID: " + mapID);
             sb.Append(" >> ZoneID: " + zoneID);
 
-            if (target != null)
+            /*if (target != null)
                 sb.Append(" >> Target: " + target.guid);
             else
-                sb.Append(" >> Target: null");
+                sb.Append(" >> Target: null");*/
+
             sb.Append(" >> combatReach: " + combatReach);
             sb.Append(" >> channelSpell: " + channelSpell);
-            sb.Append(" >> currentState: " + currentState);
             sb.Append(" >> factionTemplate: " + factionTemplate);
             sb.Append(" >> level: " + level);
             sb.Append(" >> health: " + health);

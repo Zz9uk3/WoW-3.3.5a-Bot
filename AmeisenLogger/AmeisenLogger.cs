@@ -48,6 +48,10 @@ namespace AmeisenLogging
             logName = DateTime.Now.ToString("dd-MM-yyyy") + "_" + DateTime.Now.ToString("HH-mm") + ".txt";
         }
 
+        ~AmeisenLogger(){
+            GetInstance().StopLogging();
+        }
+
         /// <summary>
         /// Initialize/Get the instance of our singleton
         /// </summary>

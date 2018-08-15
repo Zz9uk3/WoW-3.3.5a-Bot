@@ -55,9 +55,9 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </Button.BorderBrush>
         </Button>
-        <CheckBox x:Name="checkboxFilterWOWOBJECT" Content="WOWOBJECT" HorizontalAlignment="Left" Margin="300,24,0,0" VerticalAlignment="Top" BorderThickness="2" IsChecked="True">
+        <CheckBox x:Name="checkboxFilterWOWOBJECT" Content="WOWOBJECT" HorizontalAlignment="Left" Margin="300,16,0,0" VerticalAlignment="Top" BorderThickness="2" IsChecked="True">
             <CheckBox.Background>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource WoWObjectColor}"/>
             </CheckBox.Background>
             <CheckBox.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
@@ -66,9 +66,9 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </CheckBox.Foreground>
         </CheckBox>
-        <CheckBox x:Name="checkboxFilterUNIT" Content="UNIT" HorizontalAlignment="Left" Margin="406,24,0,0" VerticalAlignment="Top" BorderThickness="2" IsChecked="True">
+        <CheckBox x:Name="checkboxFilterUNIT" Content="UNIT" HorizontalAlignment="Left" Margin="398,36,0,0" VerticalAlignment="Top" BorderThickness="2" IsChecked="True">
             <CheckBox.Background>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource UnitColor}"/>
             </CheckBox.Background>
             <CheckBox.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
@@ -77,9 +77,9 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </CheckBox.Foreground>
         </CheckBox>
-        <CheckBox x:Name="checkboxFilterPLAYER" Content="PLAYER" HorizontalAlignment="Left" Margin="468,24,0,0" VerticalAlignment="Top" BorderThickness="2" IsChecked="True">
+        <CheckBox x:Name="checkboxFilterPLAYER" Content="PLAYER" HorizontalAlignment="Left" Margin="498,36,0,0" VerticalAlignment="Top" BorderThickness="2" IsChecked="True">
             <CheckBox.Background>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource PlayerColor}"/>
             </CheckBox.Background>
             <CheckBox.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
@@ -88,9 +88,9 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </CheckBox.Foreground>
         </CheckBox>
-        <CheckBox x:Name="checkboxFilterME" Content="ME" HorizontalAlignment="Left" Margin="543,24,0,0" VerticalAlignment="Top" BorderThickness="2" IsChecked="True">
+        <CheckBox x:Name="checkboxFilterME" Content="ME" HorizontalAlignment="Left" Margin="589,36,0,0" VerticalAlignment="Top" BorderThickness="2" IsChecked="True">
             <CheckBox.Background>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource MeColor}"/>
             </CheckBox.Background>
             <CheckBox.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
@@ -110,6 +110,50 @@
         </Button>
         <TextBox x:Name="textboxInputMemLoc" HorizontalAlignment="Left" Height="21" Margin="10,540,0,0" TextWrapping="Wrap" Text="GUID" VerticalAlignment="Top" Width="140"/>
         <TextBox x:Name="textboxOutputMemLoc" HorizontalAlignment="Left" Height="20" Margin="10,566,0,0" TextWrapping="Wrap" Text="..." VerticalAlignment="Top" Width="140"/>
+        <CheckBox x:Name="checkboxFilterCORPSE" Content="CORPSE" HorizontalAlignment="Left" Margin="300,36,0,0" VerticalAlignment="Top" BorderThickness="2" IsChecked="True">
+            <CheckBox.Background>
+                <SolidColorBrush Color="{DynamicResource CorpseColor}"/>
+            </CheckBox.Background>
+            <CheckBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </CheckBox.BorderBrush>
+            <CheckBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </CheckBox.Foreground>
+        </CheckBox>
+        <CheckBox x:Name="checkboxFilterGAMEOBJECT" Content="GAMEOBJECT" HorizontalAlignment="Left" Margin="398,16,0,0" VerticalAlignment="Top" BorderThickness="2" IsChecked="True">
+            <CheckBox.Background>
+                <SolidColorBrush Color="{DynamicResource GameObjectColor}"/>
+            </CheckBox.Background>
+            <CheckBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </CheckBox.BorderBrush>
+            <CheckBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </CheckBox.Foreground>
+        </CheckBox>
+        <CheckBox x:Name="checkboxFilterDYNOBJECT" Content="DYNOBJECT" HorizontalAlignment="Left" Margin="498,16,0,0" VerticalAlignment="Top" BorderThickness="2" IsChecked="True">
+            <CheckBox.Background>
+                <SolidColorBrush Color="{DynamicResource PlayerColor}"/>
+            </CheckBox.Background>
+            <CheckBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </CheckBox.BorderBrush>
+            <CheckBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </CheckBox.Foreground>
+        </CheckBox>
+        <CheckBox x:Name="checkboxFilterCONTAINER" Content="CONTAINER" HorizontalAlignment="Left" Margin="589,16,0,0" VerticalAlignment="Top" BorderThickness="2" IsChecked="True">
+            <CheckBox.Background>
+                <SolidColorBrush Color="{DynamicResource ContainerColor}"/>
+            </CheckBox.Background>
+            <CheckBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </CheckBox.BorderBrush>
+            <CheckBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </CheckBox.Foreground>
+        </CheckBox>
 
     </Grid>
 </Window>

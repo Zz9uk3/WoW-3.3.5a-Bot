@@ -76,12 +76,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CombatClassEditor.xaml.cs">
+      <DependentUpon>CombatClassEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DebugUI.xaml.cs">
       <DependentUpon>DebugUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="CombatClassEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DebugUI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

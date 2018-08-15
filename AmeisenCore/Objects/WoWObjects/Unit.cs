@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace AmeisenCore.Objects
 {
-    public class Unit : WoWObject
+    public partial class Unit : WoWObject
     {
-        public Unit target;
+        public uint baseUnitFields;
 
         public int combatReach;
         public int channelSpell;
-        public UnitState currentState;
         public int factionTemplate;
+        public int summonedBy;
 
         public int level;
         public int health;
@@ -22,11 +22,52 @@ namespace AmeisenCore.Objects
         public int energy;
         public int maxEnergy;
 
+        public Unit(uint baseAddress) : base(baseAddress)
+        {
+            Update();
+        }
+
+        public override void Update()
+        {
+            baseUnitFields = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(baseAddress + 0x8);
+
+            pos.x = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x798);
+            pos.y = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x79C);
+            pos.z = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x7A0);
+            rotation = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x7A8);
+
+            // too cpu heavy
+            /*try
+            {
+                distance = Utils.GetDistance(pos, AmeisenManager.GetInstance().GetMe().pos);
+            }
+            catch { }*/
+
+            summonedBy = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0xE * 4));
+            factionTemplate = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0x37 * 4));
+            level = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0x36 * 4));
+            health = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0x18 * 4));
+            maxHealth = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0x20 * 4));
+            energy = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0x19 * 4));
+            maxEnergy = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0x21 * 4));
+            combatReach = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0x42 * 4));
+            channelSpell = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0x16 * 4));
+            //guid = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(baseUnitFields + (0x12 * 4));
+
+            try
+            {
+                name = AmeisenCore.GetMobNameFromBase(baseAddress);
+            }
+            catch { }
+        }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
 
             sb.Append("UNIT");
+            sb.Append(" >> Address: " + baseAddress.ToString("X"));
+            sb.Append(" >> UnitFields: " + baseUnitFields.ToString("X"));
             sb.Append(" >> Name: " + name);
             sb.Append(" >> GUID: " + guid);
             sb.Append(" >> PosX: " + pos.x);
@@ -37,13 +78,13 @@ namespace AmeisenCore.Objects
             sb.Append(" >> MapID: " + mapID);
             sb.Append(" >> ZoneID: " + zoneID);
 
-            if (target != null)
+            /*if (target != null)
                 sb.Append(" >> Target: " + target.guid);
             else
-                sb.Append(" >> Target: null");
+                sb.Append(" >> Target: null");*/
+
             sb.Append(" >> combatReach: " + combatReach);
             sb.Append(" >> channelSpell: " + channelSpell);
-            sb.Append(" >> currentState: " + currentState);
             sb.Append(" >> factionTemplate: " + factionTemplate);
             sb.Append(" >> level: " + level);
             sb.Append(" >> health: " + health);
