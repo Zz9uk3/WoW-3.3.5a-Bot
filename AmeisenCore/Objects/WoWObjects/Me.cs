@@ -10,6 +10,8 @@ namespace AmeisenCore.Objects
         public int exp;
         public int maxExp;
 
+        public uint playerBase;
+
         public UnitState currentState;
 
         public Unit target;
@@ -17,8 +19,17 @@ namespace AmeisenCore.Objects
         public Unit partyLeader;
         public List<Unit> partymembers;
 
-        public Me(uint baseAddress, uint playerBase) : base(baseAddress)
+        public Me(uint baseAddress) : base(baseAddress)
         {
+            Update();
+        }
+
+        public override void Update()
+        {
+            playerBase = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(WoWOffsets.playerBase);
+            playerBase = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(playerBase + 0x34);
+            playerBase = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(playerBase + 0x24);
+
             name = AmeisenManager.GetInstance().GetBlackMagic().ReadASCIIString(WoWOffsets.playerName, 12);
             exp = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(playerBase + 0x3794);
             maxExp = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(playerBase + 0x3798);

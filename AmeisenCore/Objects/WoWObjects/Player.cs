@@ -10,6 +10,11 @@ namespace AmeisenCore.Objects
     {
         public Player(uint baseAddress) : base(baseAddress)
         {
+            Update();
+        }
+
+        public override void Update()
+        {
             try { name = AmeisenCore.GetPlayerNameFromGuid(guid); } catch { }
         }
 

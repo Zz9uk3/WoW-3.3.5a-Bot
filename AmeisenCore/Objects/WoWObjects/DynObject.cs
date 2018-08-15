@@ -10,7 +10,11 @@ namespace AmeisenCore.Objects
     {
         public DynObject(uint baseAddress) : base(baseAddress)
         {
+            Update();
+        }
 
+        public override void Update()
+        {
         }
 
         public override string ToString()

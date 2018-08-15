@@ -11,6 +11,11 @@ namespace AmeisenCore.Objects
     {
         public GameObject(uint baseAddress) : base(baseAddress)
         {
+            Update();
+        }
+
+        public override void Update()
+        {
             pos.x = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x3C);
             pos.y = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x40);
             pos.z = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x44);

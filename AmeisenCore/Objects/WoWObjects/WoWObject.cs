@@ -22,8 +22,12 @@ namespace AmeisenCore.Objects
         public WoWObject(uint baseAddress)
         {
             this.baseAddress = baseAddress;
-            guid = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(baseAddress + 0x30);
+            Update();
+        }
 
+        public virtual void Update()
+        {
+            guid = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(baseAddress + 0x30);
             mapID = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(WoWOffsets.mapID);
             zoneID = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(WoWOffsets.zoneID);
         }

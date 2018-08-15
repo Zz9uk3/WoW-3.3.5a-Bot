@@ -321,12 +321,7 @@ namespace AmeisenCore
                     Player obj = new Player(baseAddress);
 
                     if (obj.guid == GetPlayerGUID())
-                    {
-                        uint playerBase = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(WoWOffsets.playerBase);
-                        playerBase = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(playerBase + 0x34);
-                        playerBase = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(playerBase + 0x24);
-                        return new Me(baseAddress, playerBase);
-                    }
+                        return new Me(baseAddress);
 
                     return obj;
 

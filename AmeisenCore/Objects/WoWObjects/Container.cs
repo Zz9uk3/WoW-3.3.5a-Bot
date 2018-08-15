@@ -10,6 +10,12 @@ namespace AmeisenCore.Objects
     {
         public Container(uint baseAddress) : base(baseAddress)
         {
+            Update();
+        }
+
+        public override void Update()
+        {
+            base.Update();
         }
 
         public override string ToString()

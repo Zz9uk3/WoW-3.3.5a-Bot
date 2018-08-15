@@ -10,7 +10,11 @@ namespace AmeisenCore.Objects
     {
         public Corpse(uint baseAddress) : base(baseAddress)
         {
+            Update();
+        }
 
+        public override void Update()
+        {
         }
 
         public override string ToString()

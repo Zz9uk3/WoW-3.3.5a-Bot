@@ -24,6 +24,11 @@ namespace AmeisenCore.Objects
 
         public Unit(uint baseAddress) : base(baseAddress)
         {
+            Update();
+        }
+
+        public override void Update()
+        {
             baseUnitFields = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(baseAddress + 0x8);
 
             pos.x = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x798);
@@ -54,9 +59,6 @@ namespace AmeisenCore.Objects
                 name = AmeisenCore.GetMobNameFromBase(baseAddress);
             }
             catch { }
-
-            if (name == "")
-                name = AmeisenCore.GetPlayerNameFromGuid(guid);
         }
 
         public override string ToString()
