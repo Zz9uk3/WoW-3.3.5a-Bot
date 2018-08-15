@@ -29,6 +29,7 @@ namespace AmeisenCore.Objects
 
         public override void Update()
         {
+            base.Update();
             baseUnitFields = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(baseAddress + 0x8);
 
             pos.x = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x798);

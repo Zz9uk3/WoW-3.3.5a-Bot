@@ -15,6 +15,7 @@ namespace AmeisenCore.Objects
 
         public override void Update()
         {
+            base.Update();
         }
 
         public override string ToString()

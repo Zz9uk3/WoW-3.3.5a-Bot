@@ -8,6 +8,8 @@ namespace AmeisenCore.Objects
 {
     public class Corpse : WoWObject
     {
+        UInt64 owner;
+
         public Corpse(uint baseAddress) : base(baseAddress)
         {
             Update();
@@ -15,6 +17,13 @@ namespace AmeisenCore.Objects
 
         public override void Update()
         {
+            base.Update();
+
+            pos.x = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x24);
+            pos.y = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x28);
+            pos.z = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x2C);
+            rotation = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x20);
+            owner = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(baseAddress + 0x18);
         }
 
         public override string ToString()
@@ -23,7 +32,7 @@ namespace AmeisenCore.Objects
 
             sb.Append("CORPSE");
             sb.Append(" >> Address: " + baseAddress.ToString("X"));
-            sb.Append(" >> Name: " + name);
+            sb.Append(" >> OwnerGUID: " + owner);
             sb.Append(" >> GUID: " + guid);
             sb.Append(" >> PosX: " + pos.x);
             sb.Append(" >> PosY: " + pos.y);

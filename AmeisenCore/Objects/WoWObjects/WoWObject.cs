@@ -22,7 +22,6 @@ namespace AmeisenCore.Objects
         public WoWObject(uint baseAddress)
         {
             this.baseAddress = baseAddress;
-            Update();
         }
 
         public virtual void Update()

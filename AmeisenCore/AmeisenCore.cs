@@ -218,6 +218,8 @@ namespace AmeisenCore
             {
                 WoWObject wowObject = ReadWoWObjectFromWoW(activeObj, (WoWObjectType)objType);
 
+                wowObject.Update();
+
                 objects.Add(wowObject);
 
                 activeObj = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(activeObj + WoWOffsets.nextObjectOffset);

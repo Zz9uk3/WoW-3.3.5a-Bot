@@ -16,6 +16,7 @@ namespace AmeisenCore.Objects
 
         public override void Update()
         {
+            base.Update();
             pos.x = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x3C);
             pos.y = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x40);
             pos.z = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x44);

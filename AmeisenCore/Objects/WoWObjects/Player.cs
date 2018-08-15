@@ -15,6 +15,7 @@ namespace AmeisenCore.Objects
 
         public override void Update()
         {
+            base.Update();
             try { name = AmeisenCore.GetPlayerNameFromGuid(guid); } catch { }
         }
 

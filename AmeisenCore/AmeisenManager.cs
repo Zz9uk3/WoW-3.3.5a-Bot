@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Windows.Threading;
 using AmeisenCore.Objects;
 using AmeisenLogging;
 using AmeisenUtilities;
@@ -50,11 +51,22 @@ namespace AmeisenCore
         public bool IsSupposedToTank { get; set; }
         public bool IsSupposedToHeal { get; set; }
 
+        DispatcherTimer objectUpdateTimer;
+
         private AmeisenManager()
         {
             isAttached = false;
             isHooked = false;
             isAllowedToMove = true;
+
+            objectUpdateTimer = new DispatcherTimer();
+            objectUpdateTimer.Tick += new EventHandler(ObjectUpdateTimer_Tick);
+            objectUpdateTimer.Interval = new TimeSpan(0, 0, 0, 1, 0);
+        }
+
+        private void ObjectUpdateTimer_Tick(object sender, EventArgs e)
+        {
+            RefreshObjects();
         }
 
         public static AmeisenManager GetInstance()
@@ -80,6 +92,9 @@ namespace AmeisenCore
             // TODO: Fix this piece of garbage
             ameisenHook = new AmeisenHook();
             isHooked = ameisenHook.isHooked;
+
+            // Update our ObjectList
+            objectUpdateTimer.Start();
         }
 
         /// <summary>
