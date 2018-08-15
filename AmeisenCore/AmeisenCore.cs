@@ -190,10 +190,13 @@ namespace AmeisenCore
         {
             AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Reading: GUID [" + guid + "]", "AmeisenCore.AmeisenCore");
 
-            foreach (WoWObject obj in AmeisenManager.GetInstance().GetObjects())
-                if (obj != null)
-                    if (obj.guid == guid)
-                        return obj.baseAddress;
+            List<WoWObject> woWObjects = AmeisenManager.GetInstance().GetObjects();
+
+            if (woWObjects != null)
+                foreach (WoWObject obj in woWObjects)
+                    if (obj != null)
+                        if (obj.guid == guid)
+                            return obj.baseAddress;
 
             return 0;
         }
@@ -309,7 +312,7 @@ namespace AmeisenCore
                     return new GameObject(baseAddress);
 
                 case WoWObjectType.DYNOBJECT:
-                    return new DynObj(baseAddress);
+                    return new DynObject(baseAddress);
 
                 case WoWObjectType.CORPSE:
                     return new Corpse(baseAddress);

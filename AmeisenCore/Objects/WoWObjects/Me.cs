@@ -40,11 +40,12 @@ namespace AmeisenCore.Objects
                 partymembers.Add(AmeisenCore.TryReadPartymember(WoWOffsets.partyPlayer4));
 
                 foreach (Unit u in partymembers)
-                    if (u.guid == leaderGUID)
-                    {
-                        partyLeader = u;
-                        partyLeader.distance = Utils.GetDistance(pos, partyLeader.pos);
-                    }
+                    if (u != null)
+                        if (u.guid == leaderGUID)
+                        {
+                            partyLeader = u;
+                            partyLeader.distance = Utils.GetDistance(pos, partyLeader.pos);
+                        }
             }
 
             UInt64 targetGuid = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(baseUnitFields + (0x12 * 4));
@@ -67,6 +68,8 @@ namespace AmeisenCore.Objects
             StringBuilder sb = new StringBuilder();
 
             sb.Append("ME");
+            sb.Append(" >> Address: " + baseAddress.ToString("X"));
+            sb.Append(" >> UnitFields: " + baseUnitFields.ToString("X"));
             sb.Append(" >> Name: " + name);
             sb.Append(" >> GUID: " + guid);
             sb.Append(" >> PosX: " + pos.x);
@@ -103,8 +106,11 @@ namespace AmeisenCore.Objects
             int count = 1;
             foreach (Player p in partymembers)
             {
-                sb.Append(" >> partymember" + count + ": " + p.guid);
-                count++;
+                if (p != null)
+                {
+                    sb.Append(" >> partymember" + count + ": " + p.guid);
+                    count++;
+                }
             }
             return sb.ToString();
         }

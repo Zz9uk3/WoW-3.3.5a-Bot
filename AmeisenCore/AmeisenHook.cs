@@ -14,6 +14,7 @@ namespace AmeisenCore
     public class AmeisenHook
     {
         public bool isHooked = false;
+        public bool isInjectionUsed = false;
 
         private uint codeCave;
         private uint codeCaveForInjection;
@@ -125,10 +126,10 @@ namespace AmeisenCore
 
         public byte[] InjectAndExecute(string[] asm)
         {
-            /*while (AmeisenManager.GetInstance().GetBlackMagic().ReadInt(codeToExecute) > 0)
-            {
-                Thread.Sleep(50);
-            }*/
+            while (isInjectionUsed)
+                Thread.Sleep(5);
+
+            isInjectionUsed = true;
 
             AmeisenManager.GetInstance().GetBlackMagic().WriteInt(codeToExecute, 1);
             AmeisenManager.GetInstance().GetBlackMagic().Asm.Clear();
@@ -143,12 +144,10 @@ namespace AmeisenCore
             AmeisenManager.GetInstance().GetBlackMagic().Asm.Inject(codeCaveForInjection);
 
             while (AmeisenManager.GetInstance().GetBlackMagic().ReadInt(codeToExecute) > 0)
-            {
-                Thread.Sleep(1);
-            }
+                Thread.Sleep(5);
 
             byte buffer = new Byte();
-            List<byte> retnByte = new List<byte>();
+            List<byte> returnBytes = new List<byte>();
 
             try
             {
@@ -157,14 +156,15 @@ namespace AmeisenCore
                 buffer = AmeisenManager.GetInstance().GetBlackMagic().ReadByte(dwAddress);
                 while (buffer != 0)
                 {
-                    retnByte.Add(buffer);
+                    returnBytes.Add(buffer);
                     dwAddress = dwAddress + 1;
                     buffer = AmeisenManager.GetInstance().GetBlackMagic().ReadByte(dwAddress);
                 }
             }
             catch (Exception e) { AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Crash at reading returnAddress: " + e.ToString(), this); }
 
-            return retnByte.ToArray();
+            isInjectionUsed = false;
+            return returnBytes.ToArray();
         }
 
         private uint GetEndScene()

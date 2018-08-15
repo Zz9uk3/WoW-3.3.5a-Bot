@@ -69,7 +69,15 @@ namespace AmeisenBotGUI
                 if (obj == null)
                     break;
                 if (obj.GetType() == typeof(WoWObject) && checkboxFilterWOWOBJECT.IsChecked == true)
-                    listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["WowobjectColor"])));
+                    listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["WoWObjectColor"])));
+                else if (obj.GetType() == typeof(GameObject) && checkboxFilterGAMEOBJECT.IsChecked == true)
+                    listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["GameObjectColor"])));
+                else if (obj.GetType() == typeof(DynObject) && checkboxFilterDYNOBJECT.IsChecked == true)
+                    listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["DynObjectColor"])));
+                else if (obj.GetType() == typeof(Container) && checkboxFilterCONTAINER.IsChecked == true)
+                    listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["ContainerColor"])));
+                else if (obj.GetType() == typeof(Corpse) && checkboxFilterCORPSE.IsChecked == true)
+                    listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["CorpseColor"])));
                 else if (obj.GetType() == typeof(Unit) && checkboxFilterUNIT.IsChecked == true)
                     listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["UnitColor"])));
                 else if (obj.GetType() == typeof(Player) && checkboxFilterPLAYER.IsChecked == true)

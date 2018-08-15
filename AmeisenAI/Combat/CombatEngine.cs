@@ -21,14 +21,15 @@ namespace AmeisenAI
         /// </summary>
         public void ExecuteNextStep()
         {
-            if (currentCombatLogic.combatLogicEntries.Count > 0)
-            {
-                if (posAt == currentCombatLogic.combatLogicEntries.Count)
-                    posAt = 0;
-                if (ExecuteLogic(currentCombatLogic.combatLogicEntries[posAt]))
-                    ExecuteAction(currentCombatLogic.combatLogicEntries[posAt]);
-                posAt++;
-            }
+            if (currentCombatLogic != null)
+                if (currentCombatLogic.combatLogicEntries.Count > 0)
+                {
+                    if (posAt == currentCombatLogic.combatLogicEntries.Count)
+                        posAt = 0;
+                    if (ExecuteLogic(currentCombatLogic.combatLogicEntries[posAt]))
+                        ExecuteAction(currentCombatLogic.combatLogicEntries[posAt]);
+                    posAt++;
+                }
         }
 
         /// <summary>
@@ -80,8 +81,8 @@ namespace AmeisenAI
         public bool ExecuteLogic(CombatLogicEntry entry)
         {
             if (entry.CombatOnly)
-                if (!AmeisenCore.AmeisenCore.GetCombatState(true) || !AmeisenCore.AmeisenCore.GetCombatState(true))
-                    if(!AmeisenCore.AmeisenCore.IsTargetFriendly())
+                if (!AmeisenCore.AmeisenCore.GetCombatState(true))
+                    if (!AmeisenCore.AmeisenCore.IsTargetFriendly())
                         return false;
 
             bool isMeeleeSpell = entry.MaxSpellDistance < 3.2 ? true : false;

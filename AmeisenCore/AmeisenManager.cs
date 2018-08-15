@@ -135,12 +135,14 @@ namespace AmeisenCore
             AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Getting Objects", this);
             if (isAttached)
             {
-                bool needToRefresh = (DateTime.Now - timestampObjects).TotalSeconds > 5;
+                //bool needToRefresh = (DateTime.Now - timestampObjects).TotalSeconds > 5;
 
                 if (activeWoWObjects == null)
-                    RefreshObjects();
-                if (needToRefresh)
                     RefreshObjectsAsync();
+
+                // need to do this only for specific objects, saving cpu usage
+                //if (needToRefresh)
+                //RefreshObjectsAsync();
                 return activeWoWObjects;
             }
             else

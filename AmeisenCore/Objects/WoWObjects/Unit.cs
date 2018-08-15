@@ -26,6 +26,18 @@ namespace AmeisenCore.Objects
         {
             baseUnitFields = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(baseAddress + 0x8);
 
+            pos.x = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x798);
+            pos.y = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x79C);
+            pos.z = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x7A0);
+            rotation = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x7A8);
+
+            // too cpu heavy
+            /*try
+            {
+                distance = Utils.GetDistance(pos, AmeisenManager.GetInstance().GetMe().pos);
+            }
+            catch { }*/
+
             summonedBy = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0xE * 4));
             factionTemplate = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0x37 * 4));
             level = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0x36 * 4));
@@ -52,6 +64,8 @@ namespace AmeisenCore.Objects
             StringBuilder sb = new StringBuilder();
 
             sb.Append("UNIT");
+            sb.Append(" >> Address: " + baseAddress.ToString("X"));
+            sb.Append(" >> UnitFields: " + baseUnitFields.ToString("X"));
             sb.Append(" >> Name: " + name);
             sb.Append(" >> GUID: " + guid);
             sb.Append(" >> PosX: " + pos.x);
