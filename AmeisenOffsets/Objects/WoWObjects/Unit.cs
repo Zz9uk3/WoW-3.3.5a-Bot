@@ -41,7 +41,7 @@ namespace AmeisenCore.Objects
             // too cpu heavy
             /*try
             {
-                distance = Utils.GetDistance(pos, AmeisenManager.GetInstance().GetMe().pos);
+                distance = Utils.GetDistance(pos, AmeisenManager.GetInstance().Me().pos);
             }
             catch { }*/
 

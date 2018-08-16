@@ -86,7 +86,8 @@ namespace AmeisenBotLib
 
         #region Objects
         public WoWExe GetWowExe() { return wowExe; }
-        public Me Me { get { return ameisenManager.GetMe(); } }
+        public Me Me { get { return ameisenManager.Me; } }
+        public Unit Target { get { return ameisenManager.Target; } }
         public List<WoWObject> WoWObjects { get { return ameisenManager.GetObjects(); } }
         #endregion
 

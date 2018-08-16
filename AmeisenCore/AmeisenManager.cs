@@ -39,7 +39,8 @@ namespace AmeisenCore
         private TcpClient ameisenServerClient;
         private Thread ameisenServerClientThread;
 
-        private Me me;
+        public Me Me { get; set; }
+        public Unit Target { get; set; }
 
         private List<WoWObject> activeWoWObjects;
         // To determine if we need to refresh some things
@@ -51,20 +52,16 @@ namespace AmeisenCore
         public bool IsSupposedToTank { get; set; }
         public bool IsSupposedToHeal { get; set; }
 
-        DispatcherTimer objectUpdateTimer;
+        Timer objectUpdateTimer;
 
         private AmeisenManager()
         {
             isAttached = false;
             isHooked = false;
             isAllowedToMove = true;
-
-            objectUpdateTimer = new DispatcherTimer();
-            objectUpdateTimer.Tick += new EventHandler(ObjectUpdateTimer_Tick);
-            objectUpdateTimer.Interval = new TimeSpan(0, 0, 0, 1, 0);
         }
 
-        private void ObjectUpdateTimer_Tick(object sender, EventArgs e)
+        private void ObjectUpdateTimer_Tick(Object stateInfo)
         {
             RefreshObjects();
         }
@@ -93,8 +90,8 @@ namespace AmeisenCore
             ameisenHook = new AmeisenHook();
             isHooked = ameisenHook.isHooked;
 
-            // Update our ObjectList
-            objectUpdateTimer.Start();
+            // Update our ObjectList AmeisenSettings.GetInstance().Settings.dataRefreshRate
+            objectUpdateTimer = new Timer(ObjectUpdateTimer_Tick, new AutoResetEvent(false), 0, AmeisenSettings.GetInstance().Settings.dataRefreshRate);
         }
 
         /// <summary>
@@ -122,20 +119,7 @@ namespace AmeisenCore
         }
 
         /// <summary>
-        /// Get our char's stats, group members, target...
-        /// </summary>
-        /// <returns>char's stats, group members, target</returns>
-        public Me GetMe()
-        {
-            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Getting Me", this);
-            if (isAttached)
-                return me;
-            else
-                throw new Exception("Manager is not attached to any WoW...");
-        }
-
-        /// <summary>
-        /// Refresh our bot's stats, you can get the stats by calling GetMe().
+        /// Refresh our bot's stats, you can get the stats by calling Me().
         /// 
         /// This runs Async.
         /// </summary>
@@ -199,13 +183,35 @@ namespace AmeisenCore
             return wowProcess;
         }
 
-        public void RefreshMe() { me = AmeisenCore.ReadMe(); }
+        public void RefreshMe() { Me = AmeisenCore.ReadMe(); }
 
         private void RefreshObjects()
         {
             activeWoWObjects = AmeisenCore.RefreshAllWoWObjects();
+
+            foreach (WoWObject m in activeWoWObjects)
+                if (m.GetType() == typeof(Me))
+                {
+                    Me = (Me)m;
+                    break;
+                }
+
+            foreach (WoWObject t in activeWoWObjects)
+                if (t.Guid == Me.targetGUID)
+                    if (t.GetType() == typeof(Player))
+                    {
+                        t.Distance = Utils.GetDistance(Me.pos, t.pos);
+                        Target = (Player)t;
+                        break;
+                    }
+                    else if (t.GetType() == typeof(Unit))
+                    {
+                        t.Distance = Utils.GetDistance(Me.pos, t.pos);
+                        Target = (Unit)t;
+                        break;
+                    }
         }
-        
+
         public void ConnectToAmeisenServer(IPEndPoint endPoint)
         {
             ameisenServerClientThread = new Thread(new ThreadStart(() => AmeisenServerClientThreadRun(endPoint)));
@@ -229,7 +235,7 @@ namespace AmeisenCore
 
             while (!stopClientThread && ameisenServerClient.Connected)
             {
-                Byte[] sendMeBytes = Encoding.ASCII.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(me) + "\r\n");
+                Byte[] sendMeBytes = Encoding.ASCII.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(Me) + "\r\n");
                 outStream.Write(sendMeBytes, 0, sendMeBytes.Length);
                 outStream.Flush();
                 Thread.Sleep(1000);

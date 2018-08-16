@@ -15,7 +15,7 @@ namespace AmeisenCore.Objects
 
         public UnitState currentState;
 
-        public Unit target;
+        public UInt64 targetGUID;
 
         public Unit partyLeader;
         public List<Unit> partymembers;
@@ -41,6 +41,7 @@ namespace AmeisenCore.Objects
             castingState = BlackMagicInstance.ReadUInt(castingState + WoWOffsets.localPlayerCharacterStateOffset1);
             castingState = BlackMagicInstance.ReadUInt(castingState + WoWOffsets.localPlayerCharacterStateOffset2);
             currentState = (UnitState)BlackMagicInstance.ReadInt(castingState + WoWOffsets.localPlayerCharacterStateOffset3);
+            targetGUID = BlackMagicInstance.ReadUInt64(baseUnitFields + (0x12 * 4));
 
             partymembers = new List<Unit>();
         }
@@ -62,8 +63,8 @@ namespace AmeisenCore.Objects
             sb.Append(" >> MapID: " + MapID);
             sb.Append(" >> ZoneID: " + ZoneID);
 
-            if (target != null)
-                sb.Append(" >> Target: " + target.ToString());
+            if (targetGUID != 0)
+                sb.Append(" >> TargetGUID: " + targetGUID.ToString());
             else
                 sb.Append(" >> Target: none");
 

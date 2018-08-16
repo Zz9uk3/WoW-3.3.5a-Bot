@@ -59,7 +59,7 @@ namespace AmeisenCore
         public static void MovePlayerToXYZ(Vector3 pos, Interaction action)
         {
             AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Moving to: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "]", "AmeisenCore.AmeisenCore");
-            //if (AmeisenManager.GetInstance().GetMe().pos.x != pos.x && AmeisenManager.GetInstance().GetMe().pos.y != pos.y && AmeisenManager.GetInstance().GetMe().pos.z != pos.z)
+            //if (AmeisenManager.GetInstance().Me().pos.x != pos.x && AmeisenManager.GetInstance().Me().pos.y != pos.y && AmeisenManager.GetInstance().Me().pos.z != pos.z)
             //{
             WriteXYZToMemory(pos, action);
             //}
@@ -291,20 +291,6 @@ namespace AmeisenCore
                                         meObj.partyLeader.Distance = Utils.GetDistance(meObj.pos, meObj.partyLeader.pos);
                                     }
                         }
-
-                        UInt64 targetGuid = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(meObj.baseUnitFields + (0x12 * 4));
-                        // If we have a target lets read it
-                        if (targetGuid != 0)
-                        {
-                            // Read all information from memory
-                            meObj.target = (Unit)ReadWoWObjectFromWoW(GetMemLocByGUID(targetGuid), WoWObjectType.UNIT);
-
-                            // Calculate the distance
-                            //meObj.target.Distance = Utils.GetDistance(AmeisenManager.GetInstance().GetMe().pos, meObj.target.pos);
-
-                            //uint targetCastingstate = BlackMagic.ReadUInt((uint)BlackMagic.MainModule.BaseAddress + WoWOffsets.staticTargetCastingstate);
-                            //((Me)tmpResult).target.isCasting = (targetCastingstate == 640138312) ? true : false;
-                        }
                         return meObj;
                     }
 
@@ -330,7 +316,7 @@ namespace AmeisenCore
             try
             {
                 Player t = (Player)ReadWoWObjectFromWoW(GetMemLocByGUID(AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(offset)), WoWObjectType.PLAYER);
-                Me me = AmeisenManager.GetInstance().GetMe();
+                Me me = AmeisenManager.GetInstance().Me;
 
                 if (t.pos.x != 0 && t.pos.y != 0 && t.pos.z != 0)
                     t.Distance = Math.Sqrt((me.pos.x - t.pos.x) * (me.pos.x - t.pos.x) +

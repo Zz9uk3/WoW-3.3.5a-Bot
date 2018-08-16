@@ -19,15 +19,15 @@ namespace AmeisenCore.Objects
         {
             base.Update();
 
-            pos.x = BlackMagicInstance.ReadFloat(BaseAddress + 0x3C);
+            /*pos.x = BlackMagicInstance.ReadFloat(BaseAddress + 0x3C);
             pos.y = BlackMagicInstance.ReadFloat(BaseAddress + 0x40);
             pos.z = BlackMagicInstance.ReadFloat(BaseAddress + 0x44);
-            Rotation = BlackMagicInstance.ReadFloat(BaseAddress + 0x28);
+            Rotation = BlackMagicInstance.ReadFloat(BaseAddress + 0x28);*/
 
             // too cpu heavy
             /*try
             {
-                distance = Utils.GetDistance(pos, AmeisenManager.GetInstance().GetMe().pos);
+                distance = Utils.GetDistance(pos, AmeisenManager.GetInstance().Me().pos);
             }
             catch { }*/
         }

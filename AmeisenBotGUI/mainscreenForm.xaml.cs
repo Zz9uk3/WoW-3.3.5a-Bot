@@ -168,8 +168,6 @@ namespace AmeisenBotGUI
             {
                 try
                 {
-                    BotManager.Me.Update();
-
                     labelName.Content = BotManager.Me.Name + " lvl." + BotManager.Me.level;
                     //labelCasting.Content = "Casting: " + me.currentState;
 
@@ -195,21 +193,21 @@ namespace AmeisenBotGUI
                 {
                     AmeisenLogger.GetInstance().Log(LogLevel.ERROR, e.ToString(), this);
                 }
-                if (BotManager.Me.target != null)
+                if (BotManager.Target != null)
                     try
                     {
-                        labelNameTarget.Content = BotManager.Me.target.Name + " lvl." + BotManager.Me.target.level;
+                        labelNameTarget.Content = BotManager.Target.Name + " lvl." + BotManager.Target.level;
                         //labelCastingTarget.Content = "Current state: " + me.target.currentState;
 
                         //labelHPTarget.Content = "HP [" + me.target.health + "/" + me.target.maxHealth + "]";
-                        progressBarHPTarget.Maximum = BotManager.Me.target.maxHealth;
-                        progressBarHPTarget.Value = BotManager.Me.target.health;
+                        progressBarHPTarget.Maximum = BotManager.Target.maxHealth;
+                        progressBarHPTarget.Value = BotManager.Target.health;
 
                         //labelEnergyTarget.Content = "Energy [" + me.target.energy + "/" + me.target.maxEnergy + "]";
-                        progressBarEnergyTarget.Maximum = BotManager.Me.target.maxEnergy;
-                        progressBarEnergyTarget.Value = BotManager.Me.target.energy;
+                        progressBarEnergyTarget.Maximum = BotManager.Target.maxEnergy;
+                        progressBarEnergyTarget.Value = BotManager.Target.energy;
 
-                        labelTargetDistance.Content = "Distance: " + BotManager.Me.target.Distance + "m";
+                        labelTargetDistance.Content = "Distance: " + BotManager.Target.Distance + "m";
 
                         /*labelPositionTarget.Content =
                             "X: " + me.target.pos.x +

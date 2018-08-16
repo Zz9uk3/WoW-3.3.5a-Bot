@@ -268,7 +268,7 @@ namespace AmeisenAI
 
         private void MoveToPosition(Vector3 position, double distance, ref AmeisenAction ameisenAction)
         {
-            Me me = AmeisenManager.GetInstance().GetMe();
+            Me me = AmeisenManager.GetInstance().Me;
             double distanceToPoint = Utils.GetDistance(me.pos, position);
 
             if (distanceToPoint > distance * 2)
@@ -292,7 +292,7 @@ namespace AmeisenAI
 
         private void MoveNearPosition(Vector3 position, double distance, ref AmeisenAction ameisenAction)
         {
-            Me me = AmeisenManager.GetInstance().GetMe();
+            Me me = AmeisenManager.GetInstance().Me;
             double distanceToPoint = Utils.GetDistance(me.pos, position);
 
             if (distanceToPoint > distance)
@@ -312,7 +312,7 @@ namespace AmeisenAI
             }
             else
             {
-                Vector3 currentPosition = AmeisenManager.GetInstance().GetMe().pos;
+                Vector3 currentPosition = AmeisenManager.GetInstance().Me.pos;
 
                 if (currentPosition.x != 0 && currentPosition.y != 0 && currentPosition.z != 0)
                 {
@@ -324,29 +324,30 @@ namespace AmeisenAI
 
         private void InteractWithTarget(double distance, Interaction action, ref AmeisenAction ameisenAction)
         {
-            Me me = AmeisenManager.GetInstance().GetMe();
+            Me me = AmeisenManager.GetInstance().Me;
+            Unit target = AmeisenManager.GetInstance().Target;
 
-            if (me.target == null)
+            if (target == null)
                 ameisenAction.ActionIsDone();  // If there is no target, we can't interact with anyone...
-            else if (me.target.Distance > 3 && me.target.Distance > distance)
+            else if (target.Distance > 3 && target.Distance > distance)
             {
-                Vector3 posToGoTo = CalculatePosToGoTo(me.target.pos, (int)distance);
-                AmeisenCore.AmeisenCore.InteractWithGUID(posToGoTo, me.target.Guid, action);
+                Vector3 posToGoTo = CalculatePosToGoTo(target.pos, (int)distance);
+                AmeisenCore.AmeisenCore.InteractWithGUID(posToGoTo, target.Guid, action);
 
                 ameisenAction.ActionIsDone();
             }
-            else if (me.target.Distance < 3) // Check If we are standing to near to the current target to trigger the CTM-Action
+            else if (target.Distance < 3) // Check If we are standing to near to the current target to trigger the CTM-Action
             {
-                CheckIfWeAreStuckIfYesJump(me.target.Distance);
+                CheckIfWeAreStuckIfYesJump(target.Distance);
 
-                Vector3 posToGoToToMakeSureTheInteractionGetsFired = CalculatePosToGoTo(me.target.pos, 16);
+                Vector3 posToGoToToMakeSureTheInteractionGetsFired = CalculatePosToGoTo(target.pos, 16);
                 AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoToToMakeSureTheInteractionGetsFired, Interaction.MOVE);
 
                 // Let the character run
                 Thread.Sleep(2000);
 
                 lastPosition = me.pos;
-                lastDistance = me.target.Distance;
+                lastDistance = target.Distance;
             }
             else
                 ameisenAction.ActionIsDone();

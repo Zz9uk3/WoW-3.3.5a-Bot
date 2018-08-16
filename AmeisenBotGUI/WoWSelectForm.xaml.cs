@@ -177,7 +177,6 @@ namespace AmeisenBotGUI
                 string charname = textboxCharactername.Text;
                 Process p = Process.Start(autoLoginExe, ((WoWExe)comboBoxWoWs.SelectedItem).process.Id.ToString() + " " + credentials.charSlot + " " + credentials.username + " " + credentials.password);
                 StartAutoLogin(p, charname);
-                buttonGo.IsEnabled = false;
             }
         }
 

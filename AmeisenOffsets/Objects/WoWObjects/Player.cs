@@ -21,8 +21,6 @@ namespace AmeisenCore.Objects
             try { Name = GetPlayerNameFromGuid(Guid); } catch { }
         }
 
-
-
         /// <summary>
         /// Get a player's name from its GUID
         /// </summary>
