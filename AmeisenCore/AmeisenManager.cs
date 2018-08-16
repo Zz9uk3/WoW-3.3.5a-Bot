@@ -223,7 +223,7 @@ namespace AmeisenCore
             ameisenServerClient.Connect(endPoint);
 
             Stream outStream = ameisenServerClient.GetStream();
-            Byte[] sendBytes = Encoding.ASCII.GetBytes(AmeisenSettings.GetInstance().settings.ameisenServerName + "\r\n");
+            Byte[] sendBytes = Encoding.ASCII.GetBytes(AmeisenSettings.GetInstance().Settings.ameisenServerName + "\r\n");
             outStream.Write(sendBytes, 0, sendBytes.Length);
             outStream.Flush();
 

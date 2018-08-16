@@ -8,6 +8,17 @@ using System.Threading;
 namespace AmeisenLogging
 {
     /// <summary>
+    /// LogLevels
+    /// </summary>
+    public enum LogLevel
+    {
+        VERBOSE,
+        DEBUG,
+        WARNING,
+        ERROR
+    }
+
+    /// <summary>
     /// Class to store a log entry within
     /// </summary>
     public class AmeisenLogEntry

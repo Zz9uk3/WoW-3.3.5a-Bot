@@ -41,17 +41,6 @@
     }
 
     /// <summary>
-    /// LogLevels
-    /// </summary>
-    public enum LogLevel
-    {
-        VERBOSE,
-        DEBUG,
-        WARNING,
-        ERROR
-    }
-
-    /// <summary>
     /// WoW Object types
     /// </summary>
     public enum WoWObjectType

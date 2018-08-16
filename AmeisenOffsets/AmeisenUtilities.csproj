@@ -44,6 +44,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Objects\AmeisenAction.cs" />
+    <Compile Include="Objects\Settings.cs" />
+    <Compile Include="Objects\WoWClass.cs" />
+    <Compile Include="Objects\WoWExe.cs" />
+    <Compile Include="Objects\WoWObjects\Container.cs" />
+    <Compile Include="Objects\WoWObjects\Corpse.cs" />
+    <Compile Include="Objects\WoWObjects\DynObject.cs" />
+    <Compile Include="Objects\WoWObjects\GameObject.cs" />
+    <Compile Include="Objects\WoWObjects\Item.cs" />
+    <Compile Include="Objects\WoWObjects\Me.cs" />
+    <Compile Include="Objects\WoWObjects\Player.cs" />
+    <Compile Include="Objects\WoWObjects\Unit.cs" />
+    <Compile Include="Objects\WoWObjects\WoWObject.cs" />
     <Compile Include="Structures.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="WoWOffsets.cs" />

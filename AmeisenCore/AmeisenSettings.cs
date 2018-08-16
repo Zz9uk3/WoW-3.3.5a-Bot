@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AmeisenOffsets.Objects;
+using System;
 using System.IO;
 
 namespace AmeisenCore
@@ -19,7 +20,7 @@ namespace AmeisenCore
         private static readonly string configPath = AppDomain.CurrentDomain.BaseDirectory + "/config/";
         private static readonly string extension = ".json";
 
-        public Settings settings;
+        public Settings Settings { get; private set; }
         public string loadedconfName;
 
         private AmeisenSettings()
@@ -44,7 +45,7 @@ namespace AmeisenCore
                 Directory.CreateDirectory(configPath);
 
             // Serialize our object with the help of NewtosoftJSON
-            File.WriteAllText(configPath + filename.ToLower() + extension, Newtonsoft.Json.JsonConvert.SerializeObject(settings));
+            File.WriteAllText(configPath + filename.ToLower() + extension, Newtonsoft.Json.JsonConvert.SerializeObject(Settings));
         }
 
         /// <summary>
@@ -58,43 +59,16 @@ namespace AmeisenCore
 
             if (File.Exists(configPath + filename.ToLower() + extension))
                 // Deserialize our object with the help of NewtosoftJSON
-                settings = Newtonsoft.Json.JsonConvert.DeserializeObject<Settings>(File.ReadAllText(configPath + filename.ToLower() + extension));
+                Settings = Newtonsoft.Json.JsonConvert.DeserializeObject<Settings>(File.ReadAllText(configPath + filename.ToLower() + extension));
             else
             {
                 // Load default settings
-                settings = new Settings();
+                Settings = new Settings();
 
                 SaveToFile(filename);
             }
 
             loadedconfName = filename;
         }
-    }
-
-    /// <summary>
-    /// Class containing the default and loaded settings
-    /// </summary>
-    public class Settings
-    {
-        public int dataRefreshRate = 250;
-        public int botMaxThreads = 2;
-
-        public string accentColor = "#FFAAAAAA";
-        public string fontColor = "#FFFFFFFF";
-        public string backgroundColor = "#FF303030";
-
-        public string ameisenServerIP = "127.0.0.1";
-        public string ameisenServerPort = "16200";
-        public string ameisenServerName = AmeisenUtilities.Utils.GenerateRandonString(12, "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
-
-        public string combatClassPath = "none";
-
-        public bool behaviourAttack = false;
-        public bool behaviourHeal = false;
-        public bool behaviourTank = false;
-
-        public bool followMaster = false;
-
-        public string masterName = "";
     }
 }
