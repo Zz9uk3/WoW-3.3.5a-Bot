@@ -1,4 +1,5 @@
-﻿using AmeisenCore;
+﻿using AmeisenBotLib;
+using AmeisenCore;
 using AmeisenCore.Objects;
 using System;
 using System.Collections.Generic;
@@ -33,9 +34,12 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class DebugUI : Window
     {
+        private AmeisenBotManager BotManager { get; }
+
         public DebugUI()
         {
             InitializeComponent();
+            BotManager = AmeisenBotManager.GetInstance();
         }
 
         private void DebugUI_MouseDown(object sender, MouseButtonEventArgs e)
@@ -64,7 +68,7 @@ namespace AmeisenBotGUI
         private void ObjectUpdateTimer_Tick(object sender, EventArgs e)
         {
             listboxObjects.Items.Clear();
-            foreach (WoWObject obj in AmeisenManager.GetInstance().GetObjects())
+            foreach (WoWObject obj in BotManager.WoWObjects)
             {
                 if (obj == null)
                     break;
@@ -91,11 +95,6 @@ namespace AmeisenBotGUI
         {
             if (listboxObjects.SelectedValue != null)
                 textboxSelectedItem.Text = ((DataItem)listboxObjects.SelectedValue).Text;
-        }
-
-        private void ButtonGetMemLoc_Click(object sender, RoutedEventArgs e)
-        {
-            textboxOutputMemLoc.Text = String.Format("0x{0:X}", AmeisenCore.AmeisenCore.GetMemLocByGUID(Convert.ToUInt64(textboxInputMemLoc.Text)));
         }
     }
 }

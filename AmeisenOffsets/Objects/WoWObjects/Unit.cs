@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Magic;
 
 namespace AmeisenCore.Objects
 {
@@ -22,7 +23,7 @@ namespace AmeisenCore.Objects
         public int energy;
         public int maxEnergy;
 
-        public Unit(uint baseAddress) : base(baseAddress)
+        public Unit(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
             Update();
         }
@@ -30,12 +31,12 @@ namespace AmeisenCore.Objects
         public override void Update()
         {
             base.Update();
-            baseUnitFields = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(baseAddress + 0x8);
+            baseUnitFields = BlackMagicInstance.ReadUInt(BaseAddress + 0x8);
 
-            pos.x = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x798);
-            pos.y = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x79C);
-            pos.z = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x7A0);
-            rotation = AmeisenManager.GetInstance().GetBlackMagic().ReadFloat(baseAddress + 0x7A8);
+            pos.x = BlackMagicInstance.ReadFloat(BaseAddress + 0x798);
+            pos.y = BlackMagicInstance.ReadFloat(BaseAddress + 0x79C);
+            pos.z = BlackMagicInstance.ReadFloat(BaseAddress + 0x7A0);
+            Rotation = BlackMagicInstance.ReadFloat(BaseAddress + 0x7A8);
 
             // too cpu heavy
             /*try
@@ -44,22 +45,35 @@ namespace AmeisenCore.Objects
             }
             catch { }*/
 
-            summonedBy = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0xE * 4));
-            factionTemplate = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0x37 * 4));
-            level = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0x36 * 4));
-            health = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0x18 * 4));
-            maxHealth = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0x20 * 4));
-            energy = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0x19 * 4));
-            maxEnergy = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0x21 * 4));
-            combatReach = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0x42 * 4));
-            channelSpell = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(baseUnitFields + (0x16 * 4));
-            //guid = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(baseUnitFields + (0x12 * 4));
+            summonedBy = BlackMagicInstance.ReadInt(baseUnitFields + (0xE * 4));
+            factionTemplate = BlackMagicInstance.ReadInt(baseUnitFields + (0x37 * 4));
+            level = BlackMagicInstance.ReadInt(baseUnitFields + (0x36 * 4));
+            health = BlackMagicInstance.ReadInt(baseUnitFields + (0x18 * 4));
+            maxHealth = BlackMagicInstance.ReadInt(baseUnitFields + (0x20 * 4));
+            energy = BlackMagicInstance.ReadInt(baseUnitFields + (0x19 * 4));
+            maxEnergy = BlackMagicInstance.ReadInt(baseUnitFields + (0x21 * 4));
+            combatReach = BlackMagicInstance.ReadInt(baseUnitFields + (0x42 * 4));
+            channelSpell = BlackMagicInstance.ReadInt(baseUnitFields + (0x16 * 4));
+            //guid = BlackMagic.ReadUInt64(baseUnitFields + (0x12 * 4));
 
             try
             {
-                name = AmeisenCore.GetMobNameFromBase(baseAddress);
+                Name = GetMobNameFromBase(BaseAddress);
             }
             catch { }
+        }
+
+        /// <summary>
+        /// Get any NPC's name by its BaseAdress
+        /// </summary>
+        /// <param name="objBase">BaseAdress of the npc to search the name for</param>
+        /// <returns>name of the npc</returns>
+        public string GetMobNameFromBase(uint objBase)
+        {
+            uint objName = BlackMagicInstance.ReadUInt(objBase + 0x964);
+            objName = BlackMagicInstance.ReadUInt(objName + 0x05C);
+
+            return BlackMagicInstance.ReadASCIIString(objName, 24);
         }
 
         public override string ToString()
@@ -67,17 +81,17 @@ namespace AmeisenCore.Objects
             StringBuilder sb = new StringBuilder();
 
             sb.Append("UNIT");
-            sb.Append(" >> Address: " + baseAddress.ToString("X"));
+            sb.Append(" >> Address: " + BaseAddress.ToString("X"));
             sb.Append(" >> UnitFields: " + baseUnitFields.ToString("X"));
-            sb.Append(" >> Name: " + name);
-            sb.Append(" >> GUID: " + guid);
+            sb.Append(" >> Name: " + Name);
+            sb.Append(" >> GUID: " + Guid);
             sb.Append(" >> PosX: " + pos.x);
             sb.Append(" >> PosY: " + pos.y);
             sb.Append(" >> PosZ: " + pos.z);
-            sb.Append(" >> Rotation: " + rotation);
-            sb.Append(" >> Distance: " + distance);
-            sb.Append(" >> MapID: " + mapID);
-            sb.Append(" >> ZoneID: " + zoneID);
+            sb.Append(" >> Rotation: " + Rotation);
+            sb.Append(" >> Distance: " + Distance);
+            sb.Append(" >> MapID: " + MapID);
+            sb.Append(" >> ZoneID: " + ZoneID);
 
             /*if (target != null)
                 sb.Append(" >> Target: " + target.guid);

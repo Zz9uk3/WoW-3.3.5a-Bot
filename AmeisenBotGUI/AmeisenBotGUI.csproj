@@ -156,6 +156,10 @@
     <Resource Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AmeisenAI\AmeisenAI.csproj">
+      <Project>{3c281530-7a81-4803-bc85-de46ed2d6e74}</Project>
+      <Name>AmeisenAI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AmeisenBotLib\AmeisenBotLib.csproj">
       <Project>{0665c44a-0e3f-4570-9dcf-7388fe1e2424}</Project>
       <Name>AmeisenBotLib</Name>

@@ -1,4 +1,5 @@
 ﻿using AmeisenUtilities;
+using Magic;
 using System;
 using System.Text;
 
@@ -6,29 +7,32 @@ namespace AmeisenCore.Objects
 {
     public class WoWObject
     {
-        public string name;
+        public BlackMagic BlackMagicInstance { get; set; }
 
-        public UInt64 guid;
+        public string Name { get; set; }
 
-        public uint baseAddress;
-        
+        public UInt64 Guid { get; set; }
+
+        public uint BaseAddress { get; set; }
+
         public Vector3 pos;
-        public float rotation;
-        public double distance;
+        public float Rotation { get; set; }
+        public double Distance { get; set; }
 
-        public int mapID;
-        public int zoneID;
+        public int MapID { get; set; }
+        public int ZoneID { get; set; }
 
-        public WoWObject(uint baseAddress)
+        public WoWObject(uint baseAddress, BlackMagic blackMagic)
         {
-            this.baseAddress = baseAddress;
+            BaseAddress = baseAddress;
+            BlackMagicInstance = blackMagic;
         }
 
         public virtual void Update()
         {
-            guid = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(baseAddress + 0x30);
-            mapID = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(WoWOffsets.mapID);
-            zoneID = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(WoWOffsets.zoneID);
+            Guid = BlackMagicInstance.ReadUInt64(BaseAddress + 0x30);
+            MapID = BlackMagicInstance.ReadInt(WoWOffsets.mapID);
+            ZoneID = BlackMagicInstance.ReadInt(WoWOffsets.zoneID);
         }
 
         public override string ToString()
@@ -36,16 +40,16 @@ namespace AmeisenCore.Objects
             StringBuilder sb = new StringBuilder();
 
             sb.Append("WOWOBJECT");
-            sb.Append(" >> Address: " + baseAddress.ToString("X"));
-            sb.Append(" >> Name: " + name);
-            sb.Append(" >> GUID: " + guid);
+            sb.Append(" >> Address: " + BaseAddress.ToString("X"));
+            sb.Append(" >> Name: " + Name);
+            sb.Append(" >> GUID: " + Guid);
             sb.Append(" >> PosX: " + pos.x);
             sb.Append(" >> PosY: " + pos.y);
             sb.Append(" >> PosZ: " + pos.z);
-            sb.Append(" >> Rotation: " + rotation);
-            sb.Append(" >> Distance: " + distance);
-            sb.Append(" >> MapID: " + mapID);
-            sb.Append(" >> ZoneID: " + zoneID);
+            sb.Append(" >> Rotation: " + Rotation);
+            sb.Append(" >> Distance: " + Distance);
+            sb.Append(" >> MapID: " + MapID);
+            sb.Append(" >> ZoneID: " + ZoneID);
 
             return sb.ToString();
         }

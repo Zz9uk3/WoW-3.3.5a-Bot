@@ -1,5 +1,6 @@
 ﻿using AmeisenAI.Combat;
 using AmeisenCore;
+using AmeisenOffsets.Objects;
 using AmeisenUtilities;
 using System;
 using System.IO;
@@ -92,7 +93,7 @@ namespace AmeisenAI
                 if (AmeisenManager.GetInstance().GetMe().target == null)
                     return false;
 
-                if (AmeisenManager.GetInstance().GetMe().target.distance > entry.MaxSpellDistance)
+                if (AmeisenManager.GetInstance().GetMe().target.Distance > entry.MaxSpellDistance)
                 {
                     AmeisenAction action;
                     if (isMeeleeSpell)

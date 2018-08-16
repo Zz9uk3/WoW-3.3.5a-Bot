@@ -1,4 +1,5 @@
-﻿using AmeisenCore;
+﻿using AmeisenBotLib;
+using AmeisenCore;
 using AmeisenCore.Objects;
 using AmeisenLogging;
 using AmeisenUtilities;
@@ -20,6 +21,7 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private AmeisenBotManager BotManager { get; }
         private bool loginAutoIsPossible = false;
 
         private readonly string configPath = AppDomain.CurrentDomain.BaseDirectory + "/credentials/";
@@ -29,6 +31,7 @@ namespace AmeisenBotGUI
         public MainWindow()
         {
             InitializeComponent();
+            BotManager = AmeisenBotManager.GetInstance();
 
             if (File.Exists(autoLoginExe))
             {
@@ -72,17 +75,11 @@ namespace AmeisenBotGUI
                 else
                 {
                     AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Selected WoW: " + ((WoWExe)comboBoxWoWs.SelectedItem).ToString(), this);
-
-                    // Load Settings
-                    AmeisenSettings.GetInstance().LoadFromFile(((WoWExe)comboBoxWoWs.SelectedItem).characterName);
-
-                    // Attach to WoW
-                    AmeisenManager.GetInstance().AttachManager(((WoWExe)comboBoxWoWs.SelectedItem).process);
                     
                     // Apply our colors defined in the config file
-                    Application.Current.Resources["AccentColor"] = (Color)ColorConverter.ConvertFromString(AmeisenSettings.GetInstance().settings.accentColor);
-                    Application.Current.Resources["BackgroundColor"] = (Color)ColorConverter.ConvertFromString(AmeisenSettings.GetInstance().settings.backgroundColor);
-                    Application.Current.Resources["TextColor"] = (Color)ColorConverter.ConvertFromString(AmeisenSettings.GetInstance().settings.fontColor);
+                    Application.Current.Resources["AccentColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.accentColor);
+                    Application.Current.Resources["BackgroundColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.backgroundColor);
+                    Application.Current.Resources["TextColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.fontColor);
 
                     AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Loaded colors ["
                         + Application.Current.Resources["AccentColor"] + "]["
@@ -95,19 +92,6 @@ namespace AmeisenBotGUI
                     Close();
                 }
             }
-            else
-            {
-#if DEBUG
-                WoWExe debugExe = new WoWExe
-                {
-                    characterName = "DEBUG",
-                    process = null
-                };
-
-                new MainscreenForm(debugExe).Show();
-                Close();
-#endif
-            }
         }
 
         private void SearchForWoW(string selectByCharname = "")
@@ -115,7 +99,7 @@ namespace AmeisenBotGUI
             AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Searching for WoW's", this);
 
             comboBoxWoWs.Items.Clear();
-            List<WoWExe> wowList = AmeisenCore.AmeisenCore.GetRunningWoWs();
+            List<WoWExe> wowList = BotManager.RunningWoWs;
 
             foreach (WoWExe w in wowList)
                 comboBoxWoWs.Items.Add(w);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Magic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace AmeisenCore.Objects
 {
     public class Container : WoWObject
     {
-        public Container(uint baseAddress) : base(baseAddress)
+        public Container(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
             Update();
         }
@@ -23,16 +24,16 @@ namespace AmeisenCore.Objects
             StringBuilder sb = new StringBuilder();
 
             sb.Append("CONTAINER");
-            sb.Append(" >> Address: " + baseAddress.ToString("X"));
-            sb.Append(" >> Name: " + name);
-            sb.Append(" >> GUID: " + guid);
+            sb.Append(" >> Address: " + BaseAddress.ToString("X"));
+            sb.Append(" >> Name: " + Name);
+            sb.Append(" >> GUID: " + Guid);
             sb.Append(" >> PosX: " + pos.x);
             sb.Append(" >> PosY: " + pos.y);
             sb.Append(" >> PosZ: " + pos.z);
-            sb.Append(" >> Rotation: " + rotation);
-            sb.Append(" >> Distance: " + distance);
-            sb.Append(" >> MapID: " + mapID);
-            sb.Append(" >> ZoneID: " + zoneID);
+            sb.Append(" >> Rotation: " + Rotation);
+            sb.Append(" >> Distance: " + Distance);
+            sb.Append(" >> MapID: " + MapID);
+            sb.Append(" >> ZoneID: " + ZoneID);
 
             return sb.ToString();
         }

@@ -47,9 +47,12 @@ namespace AmeisenAI
         /// </summary>
         public void ReloadCombatClass()
         {
-            string defaultCombatClass = AmeisenSettings.GetInstance().settings.combatClassPath;
-            if (defaultCombatClass != "none")
-                combatEngine.currentCombatLogic = CombatEngine.LoadCombatLogicFromFile(defaultCombatClass);
+            if (AmeisenSettings.GetInstance().Settings != null)
+            {
+                string defaultCombatClass = AmeisenSettings.GetInstance().Settings.combatClassPath;
+                if (defaultCombatClass != "none")
+                    combatEngine.currentCombatLogic = CombatEngine.LoadCombatLogicFromFile(defaultCombatClass);
+            }
         }
 
         /// <summary>

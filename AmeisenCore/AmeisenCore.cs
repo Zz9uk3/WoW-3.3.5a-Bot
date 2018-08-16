@@ -195,8 +195,8 @@ namespace AmeisenCore
             if (woWObjects != null)
                 foreach (WoWObject obj in woWObjects)
                     if (obj != null)
-                        if (obj.guid == guid)
-                            return obj.baseAddress;
+                        if (obj.Guid == guid)
+                            return obj.BaseAddress;
 
             return 0;
         }
@@ -230,57 +230,6 @@ namespace AmeisenCore
         }
 
         /// <summary>
-        /// Get any NPC's name by its BaseAdress
-        /// </summary>
-        /// <param name="objBase">BaseAdress of the npc to search the name for</param>
-        /// <returns>name of the npc</returns>
-        public static string GetMobNameFromBase(uint objBase)
-        {
-            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Reading: ObjectBase [" + objBase + "]", "AmeisenCore.AmeisenCore");
-            uint objName = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(objBase + 0x964);
-            objName = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(objName + 0x05C);
-
-            return AmeisenManager.GetInstance().GetBlackMagic().ReadASCIIString(objName, 24);
-        }
-
-        /// <summary>
-        /// Get a player's name from its GUID
-        /// </summary>
-        /// <param name="guid">player's GUID</param>
-        /// <returns>name of the player</returns>
-        public static string GetPlayerNameFromGuid(UInt64 guid)
-        {
-            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Reading: GUID [" + guid + "]", "AmeisenCore.AmeisenCore");
-            uint playerMask, playerBase, shortGUID, testGUID, offset, current;
-
-            playerMask = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt((WoWOffsets.nameStore + WoWOffsets.nameMask));
-            playerBase = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt((WoWOffsets.nameStore + WoWOffsets.nameBase));
-
-            // Shorten the GUID
-            shortGUID = (uint)guid & 0xfffffff;
-            offset = 12 * (playerMask & shortGUID);
-
-            current = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(playerBase + offset + 8);
-            offset = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(playerBase + offset);
-
-            // Check for empty name
-            if ((current & 0x1) == 0x1) { return ""; }
-
-            testGUID = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(current);
-
-            while (testGUID != shortGUID)
-            {
-                current = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(current + offset + 4);
-
-                // Check for empty name
-                if ((current & 0x1) == 0x1) { return ""; }
-                testGUID = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(current);
-            }
-
-            return AmeisenManager.GetInstance().GetBlackMagic().ReadASCIIString(current + WoWOffsets.nameString, 12);
-        }
-
-        /// <summary>
         /// Get the current state of the bots character including its target
         /// </summary>
         /// <returns>the bots character information</returns>
@@ -305,30 +254,64 @@ namespace AmeisenCore
             switch (woWObjectType)
             {
                 case WoWObjectType.CONTAINER:
-                    return new Container(baseAddress);
+                    return new Container(baseAddress, AmeisenManager.GetInstance().GetBlackMagic());
 
                 case WoWObjectType.ITEM:
-                    return new Item(baseAddress);
+                    return new Item(baseAddress, AmeisenManager.GetInstance().GetBlackMagic());
 
                 case WoWObjectType.GAMEOBJECT:
-                    return new GameObject(baseAddress);
+                    return new GameObject(baseAddress, AmeisenManager.GetInstance().GetBlackMagic());
 
                 case WoWObjectType.DYNOBJECT:
-                    return new DynObject(baseAddress);
+                    return new DynObject(baseAddress, AmeisenManager.GetInstance().GetBlackMagic());
 
                 case WoWObjectType.CORPSE:
-                    return new Corpse(baseAddress);
+                    return new Corpse(baseAddress, AmeisenManager.GetInstance().GetBlackMagic());
 
                 case WoWObjectType.PLAYER:
-                    Player obj = new Player(baseAddress);
+                    Player obj = new Player(baseAddress, AmeisenManager.GetInstance().GetBlackMagic());
 
-                    if (obj.guid == GetPlayerGUID())
-                        return new Me(baseAddress);
+                    if (obj.Guid == GetPlayerGUID())
+                    {
+                        Me meObj = new Me(baseAddress, AmeisenManager.GetInstance().GetBlackMagic());
+
+                        UInt64 leaderGUID = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64((WoWOffsets.partyLeader));
+                        if (leaderGUID != 0)
+                        {
+                            meObj.partymembers.Add(TryReadPartymember(WoWOffsets.partyPlayer1));
+                            meObj.partymembers.Add(TryReadPartymember(WoWOffsets.partyPlayer2));
+                            meObj.partymembers.Add(TryReadPartymember(WoWOffsets.partyPlayer3));
+                            meObj.partymembers.Add(TryReadPartymember(WoWOffsets.partyPlayer4));
+
+                            foreach (Unit u in meObj.partymembers)
+                                if (u != null)
+                                    if (u.Guid == leaderGUID)
+                                    {
+                                        meObj.partyLeader = u;
+                                        meObj.partyLeader.Distance = Utils.GetDistance(meObj.pos, meObj.partyLeader.pos);
+                                    }
+                        }
+
+                        UInt64 targetGuid = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(meObj.baseUnitFields + (0x12 * 4));
+                        // If we have a target lets read it
+                        if (targetGuid != 0)
+                        {
+                            // Read all information from memory
+                            meObj.target = (Unit)ReadWoWObjectFromWoW(GetMemLocByGUID(targetGuid), WoWObjectType.UNIT);
+
+                            // Calculate the distance
+                            //meObj.target.Distance = Utils.GetDistance(AmeisenManager.GetInstance().GetMe().pos, meObj.target.pos);
+
+                            //uint targetCastingstate = BlackMagic.ReadUInt((uint)BlackMagic.MainModule.BaseAddress + WoWOffsets.staticTargetCastingstate);
+                            //((Me)tmpResult).target.isCasting = (targetCastingstate == 640138312) ? true : false;
+                        }
+                        return meObj;
+                    }
 
                     return obj;
 
                 case WoWObjectType.UNIT:
-                    return new Unit(baseAddress);
+                    return new Unit(baseAddress, AmeisenManager.GetInstance().GetBlackMagic());
 
                 default:
                     break;
@@ -344,14 +327,13 @@ namespace AmeisenCore
         /// <returns>a Target object containing the party member's deatils</returns>
         public static Player TryReadPartymember(uint offset)
         {
-            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Reading: Offset [" + offset + "]", "AmeisenCore.AmeisenCore");
             try
             {
                 Player t = (Player)ReadWoWObjectFromWoW(GetMemLocByGUID(AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(offset)), WoWObjectType.PLAYER);
                 Me me = AmeisenManager.GetInstance().GetMe();
 
                 if (t.pos.x != 0 && t.pos.y != 0 && t.pos.z != 0)
-                    t.distance = Math.Sqrt((me.pos.x - t.pos.x) * (me.pos.x - t.pos.x) +
+                    t.Distance = Math.Sqrt((me.pos.x - t.pos.x) * (me.pos.x - t.pos.x) +
                                            (me.pos.y - t.pos.y) * (me.pos.y - t.pos.y) +
                                            (me.pos.z - t.pos.z) * (me.pos.z - t.pos.z));
 

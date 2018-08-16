@@ -1,5 +1,6 @@
 ﻿using AmeisenAI;
 using AmeisenAI.Combat;
+using AmeisenBotLib;
 using AmeisenCore;
 using Microsoft.Win32;
 using System;
@@ -24,14 +25,16 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class CombatClassEditor : Window
     {
+        private AmeisenBotManager BotManager { get; }
         private CombatLogic loadedLogic;
         private int prio;
 
         public CombatClassEditor()
         {
             InitializeComponent();
+            BotManager = AmeisenBotManager.GetInstance();
 
-            string defaultCombatClass = AmeisenSettings.GetInstance().settings.combatClassPath;
+            string defaultCombatClass = BotManager.Settings.combatClassPath;
             if (defaultCombatClass != "none")
                 loadedLogic = CombatEngine.LoadCombatLogicFromFile(defaultCombatClass);
             else
@@ -115,7 +118,7 @@ namespace AmeisenBotGUI
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
 
-            string defaultCombatClass = AmeisenSettings.GetInstance().settings.combatClassPath;
+            string defaultCombatClass = BotManager.Settings.combatClassPath;
             if (defaultCombatClass == "none")
                 saveFileDialog.FileName = "sampleCombatClass.json";
             else

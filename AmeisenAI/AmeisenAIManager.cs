@@ -328,16 +328,16 @@ namespace AmeisenAI
 
             if (me.target == null)
                 ameisenAction.ActionIsDone();  // If there is no target, we can't interact with anyone...
-            else if (me.target.distance > 3 && me.target.distance > distance)
+            else if (me.target.Distance > 3 && me.target.Distance > distance)
             {
                 Vector3 posToGoTo = CalculatePosToGoTo(me.target.pos, (int)distance);
-                AmeisenCore.AmeisenCore.InteractWithGUID(posToGoTo, me.target.guid, action);
+                AmeisenCore.AmeisenCore.InteractWithGUID(posToGoTo, me.target.Guid, action);
 
                 ameisenAction.ActionIsDone();
             }
-            else if (me.target.distance < 3) // Check If we are standing to near to the current target to trigger the CTM-Action
+            else if (me.target.Distance < 3) // Check If we are standing to near to the current target to trigger the CTM-Action
             {
-                CheckIfWeAreStuckIfYesJump(me.target.distance);
+                CheckIfWeAreStuckIfYesJump(me.target.Distance);
 
                 Vector3 posToGoToToMakeSureTheInteractionGetsFired = CalculatePosToGoTo(me.target.pos, 16);
                 AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoToToMakeSureTheInteractionGetsFired, Interaction.MOVE);
@@ -346,7 +346,7 @@ namespace AmeisenAI
                 Thread.Sleep(2000);
 
                 lastPosition = me.pos;
-                lastDistance = me.target.distance;
+                lastDistance = me.target.Distance;
             }
             else
                 ameisenAction.ActionIsDone();

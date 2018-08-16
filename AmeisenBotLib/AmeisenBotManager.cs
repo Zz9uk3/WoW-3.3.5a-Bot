@@ -25,12 +25,6 @@ namespace AmeisenBotLib
         private AmeisenBotManager()
         {
             ameisenSettings = AmeisenSettings.GetInstance();
-            ameisenCombatManager = AmeisenCombatManager.GetInstance();
-            ameisenAIManager = AmeisenAIManager.GetInstance();
-            ameisenManager = AmeisenManager.GetInstance();
-
-            // TODO vvvv
-            AmeisenCore.AmeisenCore.AntiAFK();
         }
 
         public static AmeisenBotManager GetInstance()
@@ -43,12 +37,21 @@ namespace AmeisenBotLib
         public void StartBot(WoWExe wowExe)
         {
             this.wowExe = wowExe;
-            // Fire up the AI
-            ameisenAIManager.StartAI(ameisenSettings.Settings.botMaxThreads);
-            // Fire up the CombatEngine
-            ameisenCombatManager.Start();
+
+            ameisenManager = AmeisenManager.GetInstance();
             // Attach the shit
             ameisenManager.AttachManager(wowExe.process);
+
+            ameisenCombatManager = AmeisenCombatManager.GetInstance();
+            ameisenAIManager = AmeisenAIManager.GetInstance();
+
+            // TODO vvvv
+            //AmeisenCore.AmeisenCore.AntiAFK();
+
+            // Fire up the CombatEngine
+            ameisenCombatManager.Start();
+            // Fire up the AI
+            ameisenAIManager.StartAI(ameisenSettings.Settings.botMaxThreads);
         }
 
         public void StopBot()
@@ -58,6 +61,8 @@ namespace AmeisenBotLib
             ameisenCombatManager.Stop();
             AmeisenLogger.GetInstance().StopLogging();
         }
+
+        public List<WoWExe> RunningWoWs { get { return AmeisenCore.AmeisenCore.GetRunningWoWs(); } }
 
         public void LoadCombatCLass(string fileName)
         {
@@ -82,6 +87,7 @@ namespace AmeisenBotLib
         #region Objects
         public WoWExe GetWowExe() { return wowExe; }
         public Me Me { get { return ameisenManager.GetMe(); } }
+        public List<WoWObject> WoWObjects { get { return ameisenManager.GetObjects(); } }
         #endregion
 
         #region Combat
@@ -99,6 +105,7 @@ namespace AmeisenBotLib
         public Settings Settings { get { return ameisenSettings.Settings; } }
 
         public void SaveSettingsToFile(string filename) { ameisenSettings.SaveToFile(filename); }
+        public void LoadSettingsFromFile(string filename) { ameisenSettings.LoadFromFile(filename); }
         public string GetLoadedConfigName() { return ameisenSettings.loadedconfName; }
         #endregion
     }

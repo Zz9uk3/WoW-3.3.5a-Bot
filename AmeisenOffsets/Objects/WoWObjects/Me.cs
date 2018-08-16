@@ -1,4 +1,5 @@
 ﻿using AmeisenUtilities;
+using Magic;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,7 +20,7 @@ namespace AmeisenCore.Objects
         public Unit partyLeader;
         public List<Unit> partymembers;
 
-        public Me(uint baseAddress) : base(baseAddress)
+        public Me(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
             Update();
         }
@@ -27,52 +28,21 @@ namespace AmeisenCore.Objects
         public override void Update()
         {
             base.Update();
-            playerBase = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(WoWOffsets.playerBase);
-            playerBase = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(playerBase + 0x34);
-            playerBase = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(playerBase + 0x24);
+            playerBase = BlackMagicInstance.ReadUInt(WoWOffsets.playerBase);
+            playerBase = BlackMagicInstance.ReadUInt(playerBase + 0x34);
+            playerBase = BlackMagicInstance.ReadUInt(playerBase + 0x24);
 
-            name = AmeisenManager.GetInstance().GetBlackMagic().ReadASCIIString(WoWOffsets.playerName, 12);
-            exp = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(playerBase + 0x3794);
-            maxExp = AmeisenManager.GetInstance().GetBlackMagic().ReadInt(playerBase + 0x3798);
+            Name = BlackMagicInstance.ReadASCIIString(WoWOffsets.playerName, 12);
+            exp = BlackMagicInstance.ReadInt(playerBase + 0x3794);
+            maxExp = BlackMagicInstance.ReadInt(playerBase + 0x3798);
 
             // Somehow this is really sketchy, need to replace this...
-            uint castingState = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt((uint)AmeisenManager.GetInstance().GetBlackMagic().MainModule.BaseAddress + WoWOffsets.localPlayerCharacterState);
-            castingState = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(castingState + WoWOffsets.localPlayerCharacterStateOffset1);
-            castingState = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(castingState + WoWOffsets.localPlayerCharacterStateOffset2);
-            currentState = (UnitState)AmeisenManager.GetInstance().GetBlackMagic().ReadInt(castingState + WoWOffsets.localPlayerCharacterStateOffset3);
+            uint castingState = BlackMagicInstance.ReadUInt((uint)BlackMagicInstance.MainModule.BaseAddress + WoWOffsets.localPlayerCharacterState);
+            castingState = BlackMagicInstance.ReadUInt(castingState + WoWOffsets.localPlayerCharacterStateOffset1);
+            castingState = BlackMagicInstance.ReadUInt(castingState + WoWOffsets.localPlayerCharacterStateOffset2);
+            currentState = (UnitState)BlackMagicInstance.ReadInt(castingState + WoWOffsets.localPlayerCharacterStateOffset3);
 
             partymembers = new List<Unit>();
-            UInt64 leaderGUID = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64((WoWOffsets.partyLeader));
-
-            if (leaderGUID != 0)
-            {
-                partymembers.Add(AmeisenCore.TryReadPartymember(WoWOffsets.partyPlayer1));
-                partymembers.Add(AmeisenCore.TryReadPartymember(WoWOffsets.partyPlayer2));
-                partymembers.Add(AmeisenCore.TryReadPartymember(WoWOffsets.partyPlayer3));
-                partymembers.Add(AmeisenCore.TryReadPartymember(WoWOffsets.partyPlayer4));
-
-                foreach (Unit u in partymembers)
-                    if (u != null)
-                        if (u.guid == leaderGUID)
-                        {
-                            partyLeader = u;
-                            partyLeader.distance = Utils.GetDistance(pos, partyLeader.pos);
-                        }
-            }
-
-            UInt64 targetGuid = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(baseUnitFields + (0x12 * 4));
-            // If we have a target lets read it
-            if (targetGuid != 0)
-            {
-                // Read all information from memory
-                target = (Unit)AmeisenCore.ReadWoWObjectFromWoW(AmeisenCore.GetMemLocByGUID(targetGuid), WoWObjectType.UNIT);
-
-                // Calculate the distance
-                target.distance = Utils.GetDistance(AmeisenManager.GetInstance().GetMe().pos, target.pos);
-
-                //uint targetCastingstate = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt((uint)AmeisenManager.GetInstance().GetBlackMagic().MainModule.BaseAddress + WoWOffsets.staticTargetCastingstate);
-                //((Me)tmpResult).target.isCasting = (targetCastingstate == 640138312) ? true : false;
-            }
         }
 
         public override string ToString()
@@ -80,17 +50,17 @@ namespace AmeisenCore.Objects
             StringBuilder sb = new StringBuilder();
 
             sb.Append("ME");
-            sb.Append(" >> Address: " + baseAddress.ToString("X"));
+            sb.Append(" >> Address: " + BaseAddress.ToString("X"));
             sb.Append(" >> UnitFields: " + baseUnitFields.ToString("X"));
-            sb.Append(" >> Name: " + name);
-            sb.Append(" >> GUID: " + guid);
+            sb.Append(" >> Name: " + Name);
+            sb.Append(" >> GUID: " + Guid);
             sb.Append(" >> PosX: " + pos.x);
             sb.Append(" >> PosY: " + pos.y);
             sb.Append(" >> PosZ: " + pos.z);
-            sb.Append(" >> Rotation: " + rotation);
-            sb.Append(" >> Distance: " + distance);
-            sb.Append(" >> MapID: " + mapID);
-            sb.Append(" >> ZoneID: " + zoneID);
+            sb.Append(" >> Rotation: " + Rotation);
+            sb.Append(" >> Distance: " + Distance);
+            sb.Append(" >> MapID: " + MapID);
+            sb.Append(" >> ZoneID: " + ZoneID);
 
             if (target != null)
                 sb.Append(" >> Target: " + target.ToString());
@@ -111,7 +81,7 @@ namespace AmeisenCore.Objects
             sb.Append(" >> maxExp: " + maxExp);
 
             if (partyLeader != null)
-                sb.Append(" >> partyLeader: " + partyLeader.guid);
+                sb.Append(" >> partyLeader: " + partyLeader.Guid);
             else
                 sb.Append(" >> partyLeader: none");
 
@@ -120,7 +90,7 @@ namespace AmeisenCore.Objects
             {
                 if (p != null)
                 {
-                    sb.Append(" >> partymember" + count + ": " + p.guid);
+                    sb.Append(" >> partymember" + count + ": " + p.Guid);
                     count++;
                 }
             }

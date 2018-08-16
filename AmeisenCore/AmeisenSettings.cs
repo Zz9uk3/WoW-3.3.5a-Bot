@@ -25,7 +25,7 @@ namespace AmeisenCore
 
         private AmeisenSettings()
         {
-
+            Settings = new Settings();
         }
 
         public static AmeisenSettings GetInstance()

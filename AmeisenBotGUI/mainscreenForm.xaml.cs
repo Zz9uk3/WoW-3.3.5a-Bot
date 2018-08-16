@@ -22,13 +22,13 @@ namespace AmeisenBotGUI
         private AmeisenBotManager BotManager { get; }
         private DispatcherTimer uiUpdateTimer;
 
-        private bool uiMode;
-
         public MainscreenForm(WoWExe wowExe)
         {
             InitializeComponent();
             BotManager = AmeisenBotManager.GetInstance();
 
+            // Load Settings
+            BotManager.LoadSettingsFromFile(wowExe.characterName);
             BotManager.StartBot(wowExe);
         }
 
@@ -38,6 +38,7 @@ namespace AmeisenBotGUI
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
             Close();
+            BotManager.StopBot();
         }
 
         private void ButtonMinimize_Click(object sender, RoutedEventArgs e)
@@ -158,8 +159,6 @@ namespace AmeisenBotGUI
         /// </summary>
         private void UpdateUI()
         {
-            BotManager.Me.Update();
-
             // TODO: find a better way to update this
             //AmeisenManager.GetInstance().GetObjects();
 
@@ -169,7 +168,9 @@ namespace AmeisenBotGUI
             {
                 try
                 {
-                    labelName.Content = BotManager.Me.name + " lvl." + BotManager.Me.level;
+                    BotManager.Me.Update();
+
+                    labelName.Content = BotManager.Me.Name + " lvl." + BotManager.Me.level;
                     //labelCasting.Content = "Casting: " + me.currentState;
 
                     //labelHP.Content = "HP [" + me.health + "/" + me.maxHealth + "]";
@@ -197,7 +198,7 @@ namespace AmeisenBotGUI
                 if (BotManager.Me.target != null)
                     try
                     {
-                        labelNameTarget.Content = BotManager.Me.target.name + " lvl." + BotManager.Me.target.level;
+                        labelNameTarget.Content = BotManager.Me.target.Name + " lvl." + BotManager.Me.target.level;
                         //labelCastingTarget.Content = "Current state: " + me.target.currentState;
 
                         //labelHPTarget.Content = "HP [" + me.target.health + "/" + me.target.maxHealth + "]";
@@ -208,7 +209,7 @@ namespace AmeisenBotGUI
                         progressBarEnergyTarget.Maximum = BotManager.Me.target.maxEnergy;
                         progressBarEnergyTarget.Value = BotManager.Me.target.energy;
 
-                        labelTargetDistance.Content = "Distance: " + BotManager.Me.target.distance + "m";
+                        labelTargetDistance.Content = "Distance: " + BotManager.Me.target.Distance + "m";
 
                         /*labelPositionTarget.Content =
                             "X: " + me.target.pos.x +
