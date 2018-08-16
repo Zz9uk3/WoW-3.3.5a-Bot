@@ -6,6 +6,7 @@ using AmeisenOffsets.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,12 +20,14 @@ namespace AmeisenBotLib
         private AmeisenCombatManager ameisenCombatManager;
         private AmeisenAIManager ameisenAIManager;
         private AmeisenManager ameisenManager;
+        private AmeisenClient ameisenClient;
 
         private WoWExe wowExe;
 
         private AmeisenBotManager()
         {
             ameisenSettings = AmeisenSettings.GetInstance();
+            ameisenClient = AmeisenClient.GetInstance();
         }
 
         public static AmeisenBotManager GetInstance()
@@ -52,10 +55,18 @@ namespace AmeisenBotLib
             ameisenCombatManager.Start();
             // Fire up the AI
             ameisenAIManager.StartAI(ameisenSettings.Settings.botMaxThreads);
+
+            try
+            {
+                ameisenClient.Connect(IPAddress.Parse("127.0.0.1"), 16200);
+            }
+            catch { }
         }
 
         public void StopBot()
         {
+            if (ameisenClient.IsConnected)
+                ameisenClient.Disconnect();
             ameisenManager.GetAmeisenHook().DisposeHooking();
             ameisenAIManager.StopAI();
             ameisenCombatManager.Stop();
