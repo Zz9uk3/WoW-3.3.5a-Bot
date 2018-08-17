@@ -1,4 +1,5 @@
 ﻿using AmeisenCore.Objects;
+using AmeisenUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,14 +9,6 @@ using System.Threading.Tasks;
 
 namespace AmeisenServer
 {
-    struct Bot
-    {
-        public int id;
-        public Me me;
-        public string name;
-        public string ip;
-    }
-
     class AmeisenServerManager
     {
         private static AmeisenServerManager i;
@@ -40,12 +33,14 @@ namespace AmeisenServer
             return bot.id;
         }
 
-        public void UpdateBot(int id, Me me)
+        public void UpdateBot(int id, MeSendable me)
         {
             Bot bot = bots[id];
             bot.me = me;
             bots[id] = bot;
         }
+
+        public int GetBotCount() { return bots.Count; }
 
         public void RemoveBot(int id) { bots.RemoveAt(id); }
 

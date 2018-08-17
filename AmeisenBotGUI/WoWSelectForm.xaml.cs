@@ -52,7 +52,11 @@ namespace AmeisenBotGUI
 
         private void LoadingForm_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            DragMove();
+            try
+            {
+                DragMove();
+            }
+            catch { }
         }
 
         private void ButtonRefresh_Click(object sender, RoutedEventArgs e)

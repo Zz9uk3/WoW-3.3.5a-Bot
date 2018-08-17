@@ -6,6 +6,8 @@ using System.Threading;
 using System.IO;
 using System.Net.Sockets;
 using AmeisenCore.Objects;
+using AmeisenUtilities;
+using Newtonsoft.Json;
 
 namespace AmeisenServer
 {
@@ -37,13 +39,34 @@ namespace AmeisenServer
             while (!Stop && client.Connected)
             {
                 string data = inStream.ReadLine();
-                Console.WriteLine(clientName + ": " + data);
-                AmeisenServerManager.GetInstance().UpdateBot(botID, Newtonsoft.Json.JsonConvert.DeserializeObject<Me>(data));
 
-                if (data.Contains("SHUTDOWN"))
-                    Stop = true;
+                string cmd = data.Split(']')[0].Replace("]", "");
+                data = data.Split(']')[1];
 
-                Thread.Sleep(1000);
+                Console.WriteLine(clientName + " [" + cmd + "]: " + data);
+
+                switch (cmd)
+                {
+                    case "0":
+                        if (data.Contains("SHUTDOWN"))
+                            Stop = true;
+                        break;
+
+                    case "1":
+                        try { AmeisenServerManager.GetInstance().UpdateBot(botID, JsonConvert.DeserializeObject<MeSendable>(data)); } catch { }
+                        break;
+
+                    case "2":
+                        string bots = JsonConvert.SerializeObject(AmeisenServerManager.GetInstance().GetBots());
+                        StreamWriter outStream = new StreamWriter(client.GetStream());
+                        outStream.WriteLine(bots);
+                        break;
+
+                    default:
+                        break;
+                }
+
+                Thread.Sleep(100);
             }
 
             AmeisenServerManager.GetInstance().RemoveBot(botID);

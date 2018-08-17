@@ -77,7 +77,11 @@ namespace AmeisenBotGUI
 
         private void GuiCombatClassEditor_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            DragMove();
+            try
+            {
+                DragMove();
+            }
+            catch { }
         }
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)

@@ -11,6 +11,7 @@ using AmeisenLogging;
 using AmeisenCore.Objects;
 using AmeisenOffsets.Objects;
 using AmeisenUtilities;
+using Newtonsoft.Json;
 
 namespace AmeisenBotGUI
 {
@@ -60,7 +61,11 @@ namespace AmeisenBotGUI
         #region WindowCallbacks
         private void Mainscreen_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            DragMove();
+            try
+            {
+                DragMove();
+            }
+            catch { }
         }
 
         private void Mainscreen_Loaded(object sender, RoutedEventArgs e)
@@ -168,6 +173,7 @@ namespace AmeisenBotGUI
             {
                 try
                 {
+
                     labelName.Content = BotManager.Me.Name + " lvl." + BotManager.Me.level;
                     //labelCasting.Content = "Casting: " + me.currentState;
 
@@ -237,6 +243,5 @@ namespace AmeisenBotGUI
             }
         }
         #endregion
-
     }
 }

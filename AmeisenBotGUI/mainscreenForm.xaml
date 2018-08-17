@@ -196,5 +196,22 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>
             </Label.Foreground>
         </Label>
+        <ListView x:Name="listViewNetworkBots" HorizontalAlignment="Left" Height="159" Margin="10,227,0,0" VerticalAlignment="Top" Width="464">
+            <ListView.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </ListView.Foreground>
+            <ListView.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </ListView.BorderBrush>
+            <ListView.Background>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+            </ListView.Background>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Button x:Name="buttonRefreshBots" Content="RefreshBots();" HorizontalAlignment="Left" Margin="479,227,0,0" VerticalAlignment="Top" Width="207" Click="ButtonRefreshBots_Click"/>
     </Grid>
 </Window>

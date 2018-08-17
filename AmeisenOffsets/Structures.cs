@@ -1,4 +1,6 @@
-﻿namespace AmeisenUtilities
+﻿using AmeisenCore.Objects;
+
+namespace AmeisenUtilities
 {
     /// <summary>
     /// Simple X,Y & Z struct
@@ -16,6 +18,54 @@
         public string username;
         public string password;
         public int charSlot;
+    }
+
+    public class MeSendable
+    {
+        public string Name { get; }
+        public ulong Guid { get; }
+
+        public Vector3 Pos { get; }
+        public float Rotation { get; }
+
+        public int Level { get; }
+
+        public int Health { get; }
+        public int MaxHealth { get; }
+
+        public int Energy { get; }
+        public int MaxEnergy { get; }
+
+        public int Exp { get; }
+        public int MaxExp { get; }
+
+        public MeSendable(Me me)
+        {
+            Name = me.Name;
+            Guid = me.Guid;
+
+            Pos = me.pos;
+            Rotation = me.Rotation;
+
+            Level = me.level;
+
+            Health = me.health;
+            MaxHealth = me.maxHealth;
+
+            Energy = me.energy;
+            MaxEnergy = me.maxEnergy;
+
+            Exp = me.exp;
+            MaxExp = me.maxExp;
+        }
+    }
+
+    public struct Bot
+    {
+        public int id;
+        public MeSendable me;
+        public string name;
+        public string ip;
     }
 
     /// <summary>

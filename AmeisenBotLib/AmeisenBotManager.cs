@@ -3,6 +3,7 @@ using AmeisenCore;
 using AmeisenCore.Objects;
 using AmeisenLogging;
 using AmeisenOffsets.Objects;
+using AmeisenUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,18 +56,11 @@ namespace AmeisenBotLib
             ameisenCombatManager.Start();
             // Fire up the AI
             ameisenAIManager.StartAI(ameisenSettings.Settings.botMaxThreads);
-
-            try
-            {
-                ameisenClient.Connect(IPAddress.Parse("127.0.0.1"), 16200);
-            }
-            catch { }
+            
         }
 
         public void StopBot()
         {
-            if (ameisenClient.IsConnected)
-                ameisenClient.Disconnect();
             ameisenManager.GetAmeisenHook().DisposeHooking();
             ameisenAIManager.StopAI();
             ameisenCombatManager.Stop();

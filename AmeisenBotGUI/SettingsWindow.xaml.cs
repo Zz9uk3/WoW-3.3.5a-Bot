@@ -20,7 +20,11 @@ namespace AmeisenBotGUI
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            DragMove();
+            try
+            {
+                DragMove();
+            }
+            catch { }
         }
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
