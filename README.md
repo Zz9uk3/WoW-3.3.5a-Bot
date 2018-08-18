@@ -76,4 +76,4 @@ To use this piece of turd, junk, trash, don't know how to call this thing, Open 
 
 ### Web Interface 💩💩💩
 
-![alt text](https://github.com/Jnnshschl/WoW-3.3.5a-Bot/blob/master/images/webinerface.PNG?raw=true "Web Interface")
+![alt text](https://github.com/Jnnshschl/WoW-3.3.5a-Bot/blob/master/images/webinterface.PNG?raw=true "Web Interface")
