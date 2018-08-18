@@ -212,6 +212,6 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button x:Name="buttonRefreshBots" Content="RefreshBots();" HorizontalAlignment="Left" Margin="479,227,0,0" VerticalAlignment="Top" Width="207"/>
+        <Button x:Name="buttonRefreshBots" Content="RefreshBots();" HorizontalAlignment="Left" Margin="479,227,0,0" VerticalAlignment="Top" Width="207" Click="ButtonRefreshBots_Click"/>
     </Grid>
 </Window>

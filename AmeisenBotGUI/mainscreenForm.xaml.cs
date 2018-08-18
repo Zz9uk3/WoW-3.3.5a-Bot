@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Net;
-using System.Text;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
@@ -11,7 +9,6 @@ using AmeisenLogging;
 using AmeisenCore.Objects;
 using AmeisenOffsets.Objects;
 using AmeisenUtilities;
-using Newtonsoft.Json;
 
 namespace AmeisenBotGUI
 {
@@ -95,6 +92,12 @@ namespace AmeisenBotGUI
             BotManager.Settings.followMaster = (bool)checkBoxFollowMaster.IsChecked;
             BotManager.SaveSettingsToFile(BotManager.GetLoadedConfigName());
         }
+
+
+        private void ButtonRefreshBots_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateNetworkPlayers();
+        }
         #endregion
 
         // -- Bot Combat STATES
@@ -149,7 +152,7 @@ namespace AmeisenBotGUI
         }
         #endregion
 
-        // -- UI TIMER
+        // -- UI Stuff
         // Update the GUI
         #region UITimer
         private void UIUpdateTimer_Tick(object sender, EventArgs e)
@@ -241,6 +244,14 @@ namespace AmeisenBotGUI
             {
                 AmeisenLogger.GetInstance().Log(LogLevel.ERROR, e.ToString(), this);
             }
+        }
+
+        private void UpdateNetworkPlayers()
+        {
+            listViewNetworkBots.Items.Clear();
+            if (BotManager.GetNetworkBots() != null)
+                foreach (Bot bot in BotManager.GetNetworkBots())
+                    listViewNetworkBots.Items.Add(bot.id + " >> " + bot.ip + " >> " + bot.name + " >> " + bot.me);
         }
         #endregion
     }

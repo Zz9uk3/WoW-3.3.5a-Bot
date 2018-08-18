@@ -40,16 +40,24 @@ namespace AmeisenServer
                                 if (listenerContext == null)
                                     return;
 
-                                string rstr = responseFunction(listenerContext.Request);
-                                byte[] buf = Encoding.UTF8.GetBytes(rstr);
-                                listenerContext.Response.ContentLength64 = buf.Length;
-                                listenerContext.Response.OutputStream.Write(buf, 0, buf.Length);
+                                string responseString = responseFunction(listenerContext.Request);
+                                byte[] buffer = Encoding.UTF8.GetBytes(responseString);
+
+                                // For javashit auto-refresh
+                                listenerContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+
+                                listenerContext.Response.ContentLength64 = buffer.Length;
+                                listenerContext.Response.OutputStream.Write(buffer, 0, buffer.Length);
                             }
                             catch { }
                             finally
                             {
-                                if (listenerContext != null)
-                                    listenerContext.Response.OutputStream.Close();
+                                try
+                                {
+                                    if (listenerContext != null)
+                                        listenerContext.Response.OutputStream.Close();
+                                }
+                                catch { }
                             }
                         }, httpListener.GetContext());
                 }

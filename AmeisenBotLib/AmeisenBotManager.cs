@@ -45,6 +45,7 @@ namespace AmeisenBotLib
             ameisenManager = AmeisenManager.GetInstance();
             // Attach the shit
             ameisenManager.AttachManager(wowExe.process);
+            ameisenManager.StartObjectUpdates();
 
             ameisenCombatManager = AmeisenCombatManager.GetInstance();
             ameisenAIManager = AmeisenAIManager.GetInstance();
@@ -56,14 +57,24 @@ namespace AmeisenBotLib
             ameisenCombatManager.Start();
             // Fire up the AI
             ameisenAIManager.StartAI(ameisenSettings.Settings.botMaxThreads);
-            
+
+            // Connect to Server
+            ameisenClient.Register(Me, IPAddress.Parse("127.0.0.1"));
         }
+
+        public void NoAction() { }
 
         public void StopBot()
         {
+            ameisenClient.Unregister();
+
+            ameisenManager.StopObjectUpdates();
             ameisenManager.GetAmeisenHook().DisposeHooking();
+
             ameisenAIManager.StopAI();
+
             ameisenCombatManager.Stop();
+
             AmeisenLogger.GetInstance().StopLogging();
         }
 
@@ -88,6 +99,8 @@ namespace AmeisenBotLib
             get { return FollowGroup; }
             set { FollowGroup = value; /*Add Follow code here*/ }
         }
+
+        public List<Bot> GetNetworkBots() { if (ameisenClient.IsRegistered) return ameisenClient.BotList; else return null; }
 
         #region Objects
         public WoWExe GetWowExe() { return wowExe; }

@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Timers;
 using System.Windows.Threading;
 using AmeisenCore.Objects;
 using AmeisenLogging;
@@ -30,14 +31,9 @@ namespace AmeisenCore
         private bool isAttached;
         private bool isHooked;
 
-        private bool stopClientThread;
-
         private Process wowProcess;
         private BlackMagic blackmagic;
         private AmeisenHook ameisenHook;
-
-        private TcpClient ameisenServerClient;
-        private Thread ameisenServerClientThread;
 
         public Me Me { get; set; }
         public Unit Target { get; set; }
@@ -52,7 +48,8 @@ namespace AmeisenCore
         public bool IsSupposedToTank { get; set; }
         public bool IsSupposedToHeal { get; set; }
 
-        Timer objectUpdateTimer;
+        private System.Timers.Timer objectUpdateTimer;
+        private Thread objectUpdateThread;
 
         private AmeisenManager()
         {
@@ -61,7 +58,7 @@ namespace AmeisenCore
             isAllowedToMove = true;
         }
 
-        private void ObjectUpdateTimer_Tick(Object stateInfo)
+        private void ObjectUpdateTimer(object source, ElapsedEventArgs e)
         {
             RefreshObjects();
         }
@@ -90,8 +87,29 @@ namespace AmeisenCore
             ameisenHook = new AmeisenHook();
             isHooked = ameisenHook.isHooked;
 
+            // Read all objects to prevent crashes
+            RefreshObjects();
+        }
+
+        /// <summary>
+        /// Starts the ObjectUpdates
+        /// </summary>
+        public void StartObjectUpdates()
+        {
             // Update our ObjectList AmeisenSettings.GetInstance().Settings.dataRefreshRate
-            objectUpdateTimer = new Timer(ObjectUpdateTimer_Tick, new AutoResetEvent(false), 0, AmeisenSettings.GetInstance().Settings.dataRefreshRate);
+            objectUpdateTimer = new System.Timers.Timer(AmeisenSettings.GetInstance().Settings.dataRefreshRate);
+            objectUpdateTimer.Elapsed += ObjectUpdateTimer;
+            objectUpdateThread = new Thread(new ThreadStart(() => { objectUpdateTimer.Start(); }));
+            objectUpdateThread.Start();
+        }
+
+        /// <summary>
+        /// Stops the ObjectUpdates
+        /// </summary>
+        public void StopObjectUpdates()
+        {
+            objectUpdateTimer.Stop();
+            objectUpdateThread.Join();
         }
 
         /// <summary>
@@ -210,43 +228,6 @@ namespace AmeisenCore
                         Target = (Unit)t;
                         break;
                     }
-        }
-
-        public void ConnectToAmeisenServer(IPEndPoint endPoint)
-        {
-            ameisenServerClientThread = new Thread(new ThreadStart(() => AmeisenServerClientThreadRun(endPoint)));
-            ameisenServerClientThread.Start();
-        }
-
-        public void DisconnectFromAmeisenServer()
-        {
-            stopClientThread = true;
-        }
-
-        private void AmeisenServerClientThreadRun(IPEndPoint endPoint)
-        {
-            ameisenServerClient = new TcpClient();
-            ameisenServerClient.Connect(endPoint);
-
-            Stream outStream = ameisenServerClient.GetStream();
-            Byte[] sendBytes = Encoding.ASCII.GetBytes(AmeisenSettings.GetInstance().Settings.ameisenServerName + "\r\n");
-            outStream.Write(sendBytes, 0, sendBytes.Length);
-            outStream.Flush();
-
-            while (!stopClientThread && ameisenServerClient.Connected)
-            {
-                Byte[] sendMeBytes = Encoding.ASCII.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(Me) + "\r\n");
-                outStream.Write(sendMeBytes, 0, sendMeBytes.Length);
-                outStream.Flush();
-                Thread.Sleep(1000);
-            }
-
-            sendBytes = Encoding.ASCII.GetBytes("SHUTDOWN" + "\r\n");
-            outStream.Write(sendBytes, 0, sendBytes.Length);
-            outStream.Flush();
-
-            ameisenServerClient.Client.Disconnect(false);
-            ameisenServerClient.Close();
         }
 
         /// <summary>

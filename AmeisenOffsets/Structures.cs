@@ -22,24 +22,24 @@ namespace AmeisenUtilities
 
     public class MeSendable
     {
-        public string Name { get; }
-        public ulong Guid { get; }
+        public string Name;
+        public ulong Guid;
 
-        public Vector3 Pos { get; }
-        public float Rotation { get; }
+        public Vector3 Pos;
+        public float Rotation;
 
-        public int Level { get; }
+        public int Level;
 
-        public int Health { get; }
-        public int MaxHealth { get; }
+        public int Health;
+        public int MaxHealth;
 
-        public int Energy { get; }
-        public int MaxEnergy { get; }
+        public int Energy;
+        public int MaxEnergy;
 
-        public int Exp { get; }
-        public int MaxExp { get; }
+        public int Exp;
+        public int MaxExp;
 
-        public MeSendable(Me me)
+        public MeSendable ConvertFromMe(Me me)
         {
             Name = me.Name;
             Guid = me.Guid;
@@ -57,6 +57,7 @@ namespace AmeisenUtilities
 
             Exp = me.exp;
             MaxExp = me.maxExp;
+            return this;
         }
     }
 

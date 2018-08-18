@@ -81,6 +81,9 @@ namespace AmeisenAI
         /// <returns>true if we are able to, false if not</returns>
         public bool ExecuteLogic(CombatLogicEntry entry)
         {
+            if (AmeisenManager.GetInstance().Me == null)
+                return false;
+
             /*if (entry.CombatOnly)
                 if (!AmeisenCore.AmeisenCore.GetCombatState(true))
                 {

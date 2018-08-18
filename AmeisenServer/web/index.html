@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>AmeisenBot - WebInterface</title>
+
+    <!-- UIKit stuff-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.10/css/uikit.min.css" />
+    <!-- UIkit JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.10/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.10/js/uikit-icons.min.js"></script>
+    <!-- UIKit stuff-->
+    
+</head>
+<body>
+    <div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
+        <div uk-grid>
+            <div class="uk-card uk-card-default uk-card-body uk-width-1-3 uk-margin-right">
+                <h3 class="uk-card-title">
+                    <span class="uk-margin-small-right" uk-icon="server"></span>
+                    <text class="uk-text-bold">Server Statistics</text>
+                </h3>
+                <div id="serverStats">
+                    <!-- Insert Server Stats Here -->
+                </div>
+            </div>
+            
+            <div class="uk-card uk-card-default uk-card-body uk-width-1-3 uk-margin-left">
+                <h3 class="uk-card-title">
+                    <span class="uk-margin-small-right" uk-icon="bolt"></span>
+                    <text class="uk-text-bold">AmeisenBot</text>
+                </h3>
+                <div id="activeBots">
+                    <!-- Insert Active Bots Here -->
+                </div>
+            </div>
+            
+            <div class="uk-card uk-card-default uk-card-body uk-width-1-1">
+                <h3 class="uk-card-title">
+                    <span class="uk-margin-small-right" uk-icon="users"></span>
+                    <text class="uk-text-bold">Character Info</text>
+                </h3>
+                <div>
+                    <div class="uk-grid" data-uk-grid-margin id="characterInfo">
+                        <!-- Insert Character Info Here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="./groessterMuellEUWest.javashit"></script>
+</body>
+</html>
