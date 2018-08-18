@@ -10,7 +10,7 @@ This project will be developed like "Kraut und Rüben" (Herb and beet?) as we sa
 
 ❤️ **Libaries used:** Blackmagic (Memory Editing) - https://github.com/acidburn974/Blackmagic
 
-❤️ **Framework used:** UIKit (Web Tnterface) - https://github.com/uikit/uikit
+❤️ **Framework used:** UIKit (Web Interface) - https://github.com/uikit/uikit
 
 ---
 ## Usage
