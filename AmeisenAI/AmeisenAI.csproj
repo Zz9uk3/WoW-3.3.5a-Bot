@@ -61,11 +61,15 @@
       <Project>{567f9df2-e2d0-4bc8-a295-b7913cc1303e}</Project>
       <Name>AmeisenCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AmeisenData\AmeisenData.csproj">
+      <Project>{4B6AB536-AF35-4970-89FB-B45BC495F8BE}</Project>
+      <Name>AmeisenData</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AmeisenLogger\AmeisenLogger.csproj">
       <Project>{017a67a9-f7bd-46e3-b716-e1d601afca4b}</Project>
       <Name>AmeisenLogger</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenOffsets\AmeisenUtilities.csproj">
+    <ProjectReference Include="..\AmeisenUtilities\AmeisenUtilities.csproj">
       <Project>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</Project>
       <Name>AmeisenUtilities</Name>
     </ProjectReference>

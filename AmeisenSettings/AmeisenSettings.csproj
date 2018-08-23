@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{567F9DF2-E2D0-4BC8-A295-B7913CC1303E}</ProjectGuid>
+    <ProjectGuid>{895768DF-7A1B-4C3D-8F65-4E8AA388ABE1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AmeisenCore</RootNamespace>
-    <AssemblyName>AmeisenCore</AssemblyName>
+    <RootNamespace>AmeisenSettings</RootNamespace>
+    <AssemblyName>AmeisenSettings</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,8 +20,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,44 +28,26 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BlackMagic">
-      <HintPath>..\Blackmagic\BlackMagic.dll</HintPath>
-    </Reference>
-    <Reference Include="fasmdll_managed">
-      <HintPath>..\Blackmagic\fasmdll_managed.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AmeisenCore.cs" />
-    <Compile Include="AmeisenHook.cs" />
+    <Compile Include="AmeisenSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmeisenLogger\AmeisenLogger.csproj">
-      <Project>{017a67a9-f7bd-46e3-b716-e1d601afca4b}</Project>
-      <Name>AmeisenLogger</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmeisenUtilities\AmeisenUtilities.csproj">
+    <ProjectReference Include="..\AmeisenOffsets\AmeisenUtilities.csproj">
       <Project>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</Project>
       <Name>AmeisenUtilities</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

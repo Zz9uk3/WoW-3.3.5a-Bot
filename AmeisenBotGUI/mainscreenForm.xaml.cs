@@ -4,11 +4,9 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Win32;
-using AmeisenBotLib;
 using AmeisenLogging;
-using AmeisenCore.Objects;
-using AmeisenOffsets.Objects;
 using AmeisenUtilities;
+using AmeisenManager;
 
 namespace AmeisenBotGUI
 {
@@ -23,7 +21,7 @@ namespace AmeisenBotGUI
         public MainscreenForm(WoWExe wowExe)
         {
             InitializeComponent();
-            BotManager = AmeisenBotManager.GetInstance();
+            BotManager = AmeisenBotManager.Instance;
 
             // Load Settings
             BotManager.LoadSettingsFromFile(wowExe.characterName);
@@ -49,7 +47,7 @@ namespace AmeisenBotGUI
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
             if (openFileDialog.ShowDialog() == true)
-                AmeisenBotManager.GetInstance().LoadCombatCLass(openFileDialog.FileName);
+                AmeisenBotManager.Instance.LoadCombatClass(openFileDialog.FileName);
         }
         #endregion
 
@@ -67,7 +65,7 @@ namespace AmeisenBotGUI
 
         private void Mainscreen_Loaded(object sender, RoutedEventArgs e)
         {
-            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Loaded MainScreen", this);
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Loaded MainScreen", this);
 
             Title = "AmeisenBot - " + BotManager.GetWowExe().characterName + " [" + BotManager.GetWowExe().process.Id + "]";
             UpdateUI();
@@ -76,7 +74,7 @@ namespace AmeisenBotGUI
             uiUpdateTimer.Tick += new EventHandler(UIUpdateTimer_Tick);
             uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, BotManager.Settings.dataRefreshRate);
             uiUpdateTimer.Start();
-            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Started UI-Update-Timer", this);
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Started UI-Update-Timer", this);
 
             checkBoxAssistPartyAttack.IsChecked = BotManager.Settings.behaviourAttack;
             checkBoxAssistPartyTank.IsChecked = BotManager.Settings.behaviourTank;
@@ -168,7 +166,7 @@ namespace AmeisenBotGUI
         private void UpdateUI()
         {
             // TODO: find a better way to update this
-            //AmeisenManager.GetInstance().GetObjects();
+            //AmeisenManager.Instance.GetObjects();
 
             labelLoadedCombatClass.Content = "CombatClass: " + Path.GetFileName(BotManager.Settings.combatClassPath);
 
@@ -200,7 +198,7 @@ namespace AmeisenBotGUI
                 }
                 catch (Exception e)
                 {
-                    AmeisenLogger.GetInstance().Log(LogLevel.ERROR, e.ToString(), this);
+                    AmeisenLogger.Instance.Log(LogLevel.ERROR, e.ToString(), this);
                 }
                 if (BotManager.Target != null)
                     try
@@ -226,23 +224,23 @@ namespace AmeisenBotGUI
                     }
                     catch (Exception e)
                     {
-                        AmeisenLogger.GetInstance().Log(LogLevel.ERROR, e.ToString(), this);
+                        AmeisenLogger.Instance.Log(LogLevel.ERROR, e.ToString(), this);
                     }
             }
 
             try
             {
-                //labelThreadsActive.Content = "⚡ Threads: " + AmeisenAIManager.GetInstance().GetBusyThreadCount() + "/" + AmeisenAIManager.GetInstance().GetActiveThreadCount();
-                //progressBarBusyAIThreads.Maximum = AmeisenAIManager.GetInstance().GetActiveThreadCount();
-                //progressBarBusyAIThreads.Value = AmeisenAIManager.GetInstance().GetBusyThreadCount();
+                //labelThreadsActive.Content = "⚡ Threads: " + AmeisenAIManager.Instance.GetBusyThreadCount() + "/" + AmeisenAIManager.Instance.GetActiveThreadCount();
+                //progressBarBusyAIThreads.Maximum = AmeisenAIManager.Instance.GetActiveThreadCount();
+                //progressBarBusyAIThreads.Value = AmeisenAIManager.Instance.GetBusyThreadCount();
 
                 //listboxCurrentQueue.Items.Clear();
-                //foreach (AmeisenAction a in AmeisenAIManager.GetInstance().GetQueueItems())
+                //foreach (AmeisenAction a in AmeisenAIManager.Instance.GetQueueItems())
                 //listboxCurrentQueue.Items.Add(a.GetActionType() + " [" + a.GetActionParams() + "]");
             }
             catch (Exception e)
             {
-                AmeisenLogger.GetInstance().Log(LogLevel.ERROR, e.ToString(), this);
+                AmeisenLogger.Instance.Log(LogLevel.ERROR, e.ToString(), this);
             }
         }
 

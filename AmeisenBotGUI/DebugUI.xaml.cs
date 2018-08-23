@@ -1,16 +1,8 @@
-﻿using AmeisenBotLib;
-using AmeisenCore;
-using AmeisenCore.Objects;
+﻿using AmeisenManager;
+using AmeisenUtilities;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -39,7 +31,7 @@ namespace AmeisenBotGUI
         public DebugUI()
         {
             InitializeComponent();
-            BotManager = AmeisenBotManager.GetInstance();
+            BotManager = AmeisenBotManager.Instance;
         }
 
         private void DebugUI_MouseDown(object sender, MouseButtonEventArgs e)

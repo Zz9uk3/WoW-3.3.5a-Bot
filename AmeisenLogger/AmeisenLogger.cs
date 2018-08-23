@@ -38,6 +38,9 @@ namespace AmeisenLogging
 
     public class AmeisenLogger
     {
+        private static AmeisenLogger instance;
+        private static readonly object padlock = new object();
+
         private readonly string logPath = AppDomain.CurrentDomain.BaseDirectory + "/logs/";
         private readonly string logName;
 
@@ -46,8 +49,6 @@ namespace AmeisenLogging
         private bool loggingActive;
         private ConcurrentQueue<AmeisenLogEntry> entries;
         private Thread loggingThread;
-
-        private static AmeisenLogger i;
 
         private AmeisenLogger()
         {
@@ -59,19 +60,21 @@ namespace AmeisenLogging
             logName = DateTime.Now.ToString("dd-MM-yyyy") + "_" + DateTime.Now.ToString("HH-mm") + ".txt";
         }
 
-        ~AmeisenLogger(){
-            GetInstance().StopLogging();
-        }
-
         /// <summary>
         /// Initialize/Get the instance of our singleton
         /// </summary>
         /// <returns>AmeisenLogger instance</returns>
-        public static AmeisenLogger GetInstance()
+        public static AmeisenLogger Instance
         {
-            if (i == null)
-                i = new AmeisenLogger();
-            return i;
+            get
+            {
+                lock (padlock)
+                {
+                    if (instance == null)
+                        instance = new AmeisenLogger();
+                    return instance;
+                }
+            }
         }
 
         /// <summary>

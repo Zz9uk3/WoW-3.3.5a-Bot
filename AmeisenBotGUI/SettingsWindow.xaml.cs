@@ -1,5 +1,4 @@
-﻿using AmeisenBotLib;
-using AmeisenCore;
+﻿using AmeisenManager;
 using System.Windows;
 using System.Windows.Input;
 
@@ -15,7 +14,7 @@ namespace AmeisenBotGUI
         public SettingsWindow()
         {
             InitializeComponent();
-            BotManager = AmeisenBotManager.GetInstance();
+            BotManager = AmeisenBotManager.Instance;
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)

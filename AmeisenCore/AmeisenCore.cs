@@ -1,5 +1,4 @@
-﻿using AmeisenCore.Objects;
-using AmeisenLogging;
+﻿using AmeisenLogging;
 using AmeisenUtilities;
 using Magic;
 using System;
@@ -26,6 +25,8 @@ namespace AmeisenCore
         public static extern IntPtr PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
         // - Imports for the SendMessage Windows interactions
 
+        public static BlackMagic Blackmagic { get; set; }
+
         /// <summary>
         /// Returns the running WoW's in a WoWExe List
         /// containing the logged in playername and Process object.
@@ -38,7 +39,7 @@ namespace AmeisenCore
 
             foreach (Process p in processList)
             {
-                AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Found WoW Process! PID: " + p.Id, "AmeisenCore.AmeisenCore");
+                AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Found WoW Process! PID: " + p.Id, "AmeisenCore.AmeisenCore");
 
                 WoWExe wow = new WoWExe();
                 BlackMagic blackmagic = new BlackMagic(p.Id);
@@ -58,8 +59,8 @@ namespace AmeisenCore
         /// <param name="action">CTM Interaction to perform</param>
         public static void MovePlayerToXYZ(Vector3 pos, Interaction action)
         {
-            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Moving to: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "]", "AmeisenCore.AmeisenCore");
-            //if (AmeisenManager.GetInstance().Me().pos.x != pos.x && AmeisenManager.GetInstance().Me().pos.y != pos.y && AmeisenManager.GetInstance().Me().pos.z != pos.z)
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Moving to: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "]", "AmeisenCore.AmeisenCore");
+            //if (AmeisenManager.Instance.Me().pos.x != pos.x && AmeisenManager.Instance.Me().pos.y != pos.y && AmeisenManager.Instance.Me().pos.z != pos.z)
             //{
             WriteXYZToMemory(pos, action);
             //}
@@ -73,8 +74,8 @@ namespace AmeisenCore
         /// <param name="action">CTM Interaction to perform</param>
         public static void InteractWithGUID(Vector3 pos, UInt64 guid, Interaction action)
         {
-            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Interacting: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "] GUID [" + guid + "]", "AmeisenCore.AmeisenCore");
-            AmeisenManager.GetInstance().GetBlackMagic().WriteUInt64(WoWOffsets.ctmGUID, guid);
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Interacting: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "] GUID [" + guid + "]", "AmeisenCore.AmeisenCore");
+            Blackmagic.WriteUInt64(WoWOffsets.ctmGUID, guid);
             MovePlayerToXYZ(pos, action);
         }
 
@@ -87,12 +88,12 @@ namespace AmeisenCore
         {
             const float distance = 1.5f;
 
-            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Writing: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "] Action [" + action + "] Distance [" + distance + "]", "AmeisenCore.AmeisenCore");
-            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmX, (float)pos.x);
-            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmY, (float)pos.y);
-            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmZ, (float)pos.z);
-            AmeisenManager.GetInstance().GetBlackMagic().WriteInt(WoWOffsets.ctmAction, (int)action);
-            AmeisenManager.GetInstance().GetBlackMagic().WriteFloat(WoWOffsets.ctmDistance, distance);
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Writing: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "] Action [" + action + "] Distance [" + distance + "]", "AmeisenCore.AmeisenCore");
+            Blackmagic.WriteFloat(WoWOffsets.ctmX, (float)pos.x);
+            Blackmagic.WriteFloat(WoWOffsets.ctmY, (float)pos.y);
+            Blackmagic.WriteFloat(WoWOffsets.ctmZ, (float)pos.z);
+            Blackmagic.WriteInt(WoWOffsets.ctmAction, (int)action);
+            Blackmagic.WriteFloat(WoWOffsets.ctmDistance, distance);
         }
 
         /// <summary>
@@ -101,9 +102,9 @@ namespace AmeisenCore
         /// <param name="command">lua command to run</param>
         public static void LUADoString(string command)
         {
-            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Doing string: Command [" + command + "]", "AmeisenCore.AmeisenCore");
-            uint argCC = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(Encoding.UTF8.GetBytes(command).Length + 1);
-            AmeisenManager.GetInstance().GetBlackMagic().WriteBytes(argCC, Encoding.UTF8.GetBytes(command));
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Doing string: Command [" + command + "]", "AmeisenCore.AmeisenCore");
+            uint argCC = Blackmagic.AllocateMemory(Encoding.UTF8.GetBytes(command).Length + 1);
+            Blackmagic.WriteBytes(argCC, Encoding.UTF8.GetBytes(command));
 
             string[] asm = new string[]
             {
@@ -116,11 +117,11 @@ namespace AmeisenCore
                 "RETN",
             };
 
-            byte[] returnBytes = AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm);
+            byte[] returnBytes = AmeisenHook.Instance.InjectAndExecute(asm);
             string result = Encoding.UTF8.GetString(returnBytes);
 
-            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Command returned: Command [" + command + "] ReturnValue: " + result + " ReturnBytes: " + returnBytes.ToString(), "AmeisenCore.AmeisenCore");
-            AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(argCC);
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Command returned: Command [" + command + "] ReturnValue: " + result + " ReturnBytes: " + returnBytes.ToString(), "AmeisenCore.AmeisenCore");
+            Blackmagic.FreeMemory(argCC);
         }
 
         /// <summary>
@@ -129,9 +130,9 @@ namespace AmeisenCore
         /// <param name="command">lua command to run</param>
         public static string GetLocalizedText(string variable)
         {
-            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Getting text: Variable [" + variable + "]", "AmeisenCore.AmeisenCore");
-            uint argCC = AmeisenManager.GetInstance().GetBlackMagic().AllocateMemory(Encoding.UTF8.GetBytes(variable).Length + 1);
-            AmeisenManager.GetInstance().GetBlackMagic().WriteBytes(argCC, Encoding.UTF8.GetBytes(variable));
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Getting text: Variable [" + variable + "]", "AmeisenCore.AmeisenCore");
+            uint argCC = Blackmagic.AllocateMemory(Encoding.UTF8.GetBytes(variable).Length + 1);
+            Blackmagic.WriteBytes(argCC, Encoding.UTF8.GetBytes(variable));
 
             string[] asm = new string[]
             {
@@ -144,8 +145,8 @@ namespace AmeisenCore
                 "RETN",
             };
 
-            string result = Encoding.UTF8.GetString(AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm));
-            AmeisenManager.GetInstance().GetBlackMagic().FreeMemory(argCC);
+            string result = Encoding.UTF8.GetString(AmeisenHook.Instance.InjectAndExecute(asm));
+            Blackmagic.FreeMemory(argCC);
 
             return result;
         }
@@ -165,7 +166,7 @@ namespace AmeisenCore
         /// <param name="guid">guid to target</param>
         public static void TargetGUID(UInt64 guid)
         {
-            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "TargetGUID: " + guid, "AmeisenCore.AmeisenCore");
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "TargetGUID: " + guid, "AmeisenCore.AmeisenCore");
 
             byte[] guidBytes = BitConverter.GetBytes(guid);
 
@@ -177,7 +178,7 @@ namespace AmeisenCore
                 "RETN",
             };
 
-            AmeisenManager.GetInstance().GetAmeisenHook().InjectAndExecute(asm);
+            AmeisenHook.Instance.InjectAndExecute(asm);
         }
 
         /// <summary>
@@ -186,11 +187,9 @@ namespace AmeisenCore
         /// </summary>
         /// <param name="guid">guid to search for</param>
         /// <returns>BaseAdress of the WoWObject</returns>
-        public static uint GetMemLocByGUID(UInt64 guid)
+        public static uint GetMemLocByGUID(UInt64 guid, List<WoWObject> woWObjects)
         {
-            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Reading: GUID [" + guid + "]", "AmeisenCore.AmeisenCore");
-
-            List<WoWObject> woWObjects = AmeisenManager.GetInstance().GetObjects();
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Reading: GUID [" + guid + "]", "AmeisenCore.AmeisenCore");
 
             if (woWObjects != null)
                 foreach (WoWObject obj in woWObjects)
@@ -205,11 +204,11 @@ namespace AmeisenCore
         {
             List<WoWObject> objects = new List<WoWObject>();
 
-            uint currentObjectManager = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(WoWOffsets.currentClientConnection);
-            currentObjectManager = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(currentObjectManager + WoWOffsets.currentManagerOffset);
+            uint currentObjectManager = Blackmagic.ReadUInt(WoWOffsets.currentClientConnection);
+            currentObjectManager = Blackmagic.ReadUInt(currentObjectManager + WoWOffsets.currentManagerOffset);
 
-            uint activeObj = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(currentObjectManager + WoWOffsets.firstObjectOffset);
-            uint objType = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(activeObj + WoWOffsets.gameobjectTypeOffset);
+            uint activeObj = Blackmagic.ReadUInt(currentObjectManager + WoWOffsets.firstObjectOffset);
+            uint objType = Blackmagic.ReadUInt(activeObj + WoWOffsets.gameobjectTypeOffset);
 
             UInt64 myGUID = GetPlayerGUID();
 
@@ -222,8 +221,8 @@ namespace AmeisenCore
 
                 objects.Add(wowObject);
 
-                activeObj = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(activeObj + WoWOffsets.nextObjectOffset);
-                objType = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt(activeObj + WoWOffsets.gameobjectTypeOffset);
+                activeObj = Blackmagic.ReadUInt(activeObj + WoWOffsets.nextObjectOffset);
+                objType = Blackmagic.ReadUInt(activeObj + WoWOffsets.gameobjectTypeOffset);
             }
 
             return objects;
@@ -233,9 +232,9 @@ namespace AmeisenCore
         /// Get the current state of the bots character including its target
         /// </summary>
         /// <returns>the bots character information</returns>
-        public static Me ReadMe()
+        public static Me ReadMe(uint address)
         {
-            return (Me)ReadWoWObjectFromWoW(GetMemLocByGUID(GetPlayerGUID()), WoWObjectType.PLAYER, true);
+            return (Me)ReadWoWObjectFromWoW(address, WoWObjectType.PLAYER, true);
         }
 
         /// <summary>
@@ -246,7 +245,7 @@ namespace AmeisenCore
         /// <returns>the WoWObject</returns>
         public static WoWObject ReadWoWObjectFromWoW(uint baseAddress, WoWObjectType woWObjectType, bool isMe = false)
         {
-            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Reading: baseAddress [" + baseAddress + "]", "AmeisenCore.AmeisenCore");
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Reading: baseAddress [" + baseAddress + "]", "AmeisenCore.AmeisenCore");
 
             if (baseAddress == 0)
                 return null;
@@ -254,34 +253,34 @@ namespace AmeisenCore
             switch (woWObjectType)
             {
                 case WoWObjectType.CONTAINER:
-                    return new Container(baseAddress, AmeisenManager.GetInstance().GetBlackMagic());
+                    return new Container(baseAddress, Blackmagic);
 
                 case WoWObjectType.ITEM:
-                    return new Item(baseAddress, AmeisenManager.GetInstance().GetBlackMagic());
+                    return new Item(baseAddress, Blackmagic);
 
                 case WoWObjectType.GAMEOBJECT:
-                    return new GameObject(baseAddress, AmeisenManager.GetInstance().GetBlackMagic());
+                    return new GameObject(baseAddress, Blackmagic);
 
                 case WoWObjectType.DYNOBJECT:
-                    return new DynObject(baseAddress, AmeisenManager.GetInstance().GetBlackMagic());
+                    return new DynObject(baseAddress, Blackmagic);
 
                 case WoWObjectType.CORPSE:
-                    return new Corpse(baseAddress, AmeisenManager.GetInstance().GetBlackMagic());
+                    return new Corpse(baseAddress, Blackmagic);
 
                 case WoWObjectType.PLAYER:
-                    Player obj = new Player(baseAddress, AmeisenManager.GetInstance().GetBlackMagic());
+                    Player obj = new Player(baseAddress, Blackmagic);
 
                     if (obj.Guid == GetPlayerGUID())
                     {
-                        Me meObj = new Me(baseAddress, AmeisenManager.GetInstance().GetBlackMagic());
+                        Me meObj = new Me(baseAddress, Blackmagic);
 
-                        UInt64 leaderGUID = AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64((WoWOffsets.partyLeader));
+                        UInt64 leaderGUID = Blackmagic.ReadUInt64((WoWOffsets.partyLeader));
                         if (leaderGUID != 0)
                         {
-                            meObj.partymembers.Add(TryReadPartymember(WoWOffsets.partyPlayer1));
-                            meObj.partymembers.Add(TryReadPartymember(WoWOffsets.partyPlayer2));
-                            meObj.partymembers.Add(TryReadPartymember(WoWOffsets.partyPlayer3));
-                            meObj.partymembers.Add(TryReadPartymember(WoWOffsets.partyPlayer4));
+                            meObj.partymembers.Add((Unit)ReadWoWObjectFromWoW(WoWOffsets.partyPlayer1, WoWObjectType.UNIT));
+                            meObj.partymembers.Add((Unit)ReadWoWObjectFromWoW(WoWOffsets.partyPlayer2, WoWObjectType.UNIT));
+                            meObj.partymembers.Add((Unit)ReadWoWObjectFromWoW(WoWOffsets.partyPlayer3, WoWObjectType.UNIT));
+                            meObj.partymembers.Add((Unit)ReadWoWObjectFromWoW(WoWOffsets.partyPlayer4, WoWObjectType.UNIT));
 
                             foreach (Unit u in meObj.partymembers)
                                 if (u != null)
@@ -297,37 +296,10 @@ namespace AmeisenCore
                     return obj;
 
                 case WoWObjectType.UNIT:
-                    return new Unit(baseAddress, AmeisenManager.GetInstance().GetBlackMagic());
+                    return new Unit(baseAddress, Blackmagic);
 
                 default:
                     break;
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Try to get a partymember
-        /// </summary>
-        /// <param name="leaderGUID">guid of the party leader</param>
-        /// <param name="offset">offset to read the party member from</param>
-        /// <returns>a Target object containing the party member's deatils</returns>
-        public static Player TryReadPartymember(uint offset)
-        {
-            try
-            {
-                Player t = (Player)ReadWoWObjectFromWoW(GetMemLocByGUID(AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(offset)), WoWObjectType.PLAYER);
-                Me me = AmeisenManager.GetInstance().Me;
-
-                if (t.pos.x != 0 && t.pos.y != 0 && t.pos.z != 0)
-                    t.Distance = Math.Sqrt((me.pos.x - t.pos.x) * (me.pos.x - t.pos.x) +
-                                           (me.pos.y - t.pos.y) * (me.pos.y - t.pos.y) +
-                                           (me.pos.z - t.pos.z) * (me.pos.z - t.pos.z));
-
-                return t;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
             }
             return null;
         }
@@ -338,7 +310,7 @@ namespace AmeisenCore
         /// <returns>the GUID</returns>
         public static UInt64 GetPlayerGUID()
         {
-            return AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(WoWOffsets.localPlayerGUID);
+            return Blackmagic.ReadUInt64(WoWOffsets.localPlayerGUID);
         }
 
         /// <summary>
@@ -347,7 +319,7 @@ namespace AmeisenCore
         /// <returns>guid</returns>
         public static UInt64 GetTargetGUID()
         {
-            return AmeisenManager.GetInstance().GetBlackMagic().ReadUInt64(WoWOffsets.localTargetGUID);
+            return Blackmagic.ReadUInt64(WoWOffsets.localTargetGUID);
         }
 
         /// <summary>
@@ -355,7 +327,7 @@ namespace AmeisenCore
         /// </summary>
         public static void AntiAFK()
         {
-            AmeisenManager.GetInstance().GetBlackMagic().WriteInt(WoWOffsets.tickCount, Environment.TickCount);
+            Blackmagic.WriteInt(WoWOffsets.tickCount, Environment.TickCount);
         }
 
         /// <summary>
@@ -364,7 +336,7 @@ namespace AmeisenCore
         /// <returns>true if yes, false if no</returns>
         public static bool CheckWorldLoaded()
         {
-            return AmeisenManager.GetInstance().GetBlackMagic().ReadInt(WoWOffsets.worldLoaded) == 1;
+            return Blackmagic.ReadInt(WoWOffsets.worldLoaded) == 1;
         }
 
         /// <summary>
@@ -484,7 +456,7 @@ namespace AmeisenCore
         /// </summary>
         public static void CharacterJumpAsync()
         {
-            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Jumping", "AmeisenCore.AmeisenCore");
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Jumping", "AmeisenCore.AmeisenCore");
             new Thread(CharacterJump).Start();
         }
 
@@ -493,7 +465,7 @@ namespace AmeisenCore
             const uint KEYDOWN = 0x100;
             const uint KEYUP = 0x101;
 
-            IntPtr windowHandle = AmeisenManager.GetInstance().GetProcess().MainWindowHandle;
+            IntPtr windowHandle = Blackmagic.WindowHandle;
 
             // 0x20 = Spacebar (VK_SPACE)
             SendMessage(windowHandle, KEYDOWN, new IntPtr(0x20), new IntPtr(0));

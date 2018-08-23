@@ -1,12 +1,10 @@
-﻿using AmeisenCore;
-using AmeisenCore.Objects;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using AmeisenLogging;
+using AmeisenData;
 using AmeisenUtilities;
-using AmeisenOffsets.Objects;
 
 namespace AmeisenAI
 {
@@ -32,32 +30,51 @@ namespace AmeisenAI
     /// </summary>
     public class AmeisenAIManager
     {
+        private static AmeisenAIManager instance;
+        private static readonly object padlock = new object();
+
         private List<Thread> aiWorkers;
         private bool aiActive;
         private bool[] busyThreads;
-        private static AmeisenAIManager i;
         private ConcurrentQueue<AmeisenAction> actionQueue;
+        
+        public bool IsAllowedToMove { get; set; }
+
+        private Me Me
+        {
+            get { return AmeisenDataHolder.Instance.Me; }
+            set { AmeisenDataHolder.Instance.Me = value; }
+        }
+
+        private Unit Target
+        {
+            get { return AmeisenDataHolder.Instance.Target; }
+            set { AmeisenDataHolder.Instance.Target = value; }
+        }
 
         private AmeisenAIManager()
         {
+            IsAllowedToMove = true;
+
             actionQueue = new ConcurrentQueue<AmeisenAction>();
             aiWorkers = new List<Thread>();
-        }
-
-        ~AmeisenAIManager()
-        {
-            GetInstance().StopAI();
         }
 
         /// <summary>
         /// Initialize/Get the instance of our singleton
         /// </summary>
         /// <returns>AmeisenAIManager instance</returns>
-        public static AmeisenAIManager GetInstance()
+        public static AmeisenAIManager Instance
         {
-            if (i == null)
-                i = new AmeisenAIManager();
-            return i;
+            get
+            {
+                lock (padlock)
+                {
+                    if (instance == null)
+                        instance = new AmeisenAIManager();
+                    return instance;
+                }
+            }
         }
 
         /// <summary>
@@ -67,7 +84,7 @@ namespace AmeisenAI
         /// <param name="threadID">id to identify the thread</param>
         private void WorkActions(int threadID)
         {
-            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "AI-Thread up: " + threadID, this);
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "AI-Thread up: " + threadID, this);
             while (aiActive)
             {
                 if (!actionQueue.IsEmpty)
@@ -75,18 +92,18 @@ namespace AmeisenAI
                     busyThreads[threadID - 1] = true;
                     if (actionQueue.TryDequeue(out AmeisenAction currentAction))
                     {
-                        AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Processing Action: " + currentAction.ToString(), this);
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Processing Action: " + currentAction.ToString(), this);
                         switch (currentAction.GetActionType())
                         {
                             case AmeisenActionType.MOVE_TO_POSITION:
-                                if (AmeisenManager.GetInstance().IsAllowedToMove())
+                                if (IsAllowedToMove)
                                     MoveToPosition((Vector3)currentAction.GetActionParams(), 3.0, ref currentAction);
                                 else
                                     currentAction.ActionIsDone();
                                 break;
 
                             case AmeisenActionType.MOVE_NEAR_TARGET:
-                                if (AmeisenManager.GetInstance().IsAllowedToMove())
+                                if (IsAllowedToMove)
                                     MoveNearPosition((Vector3)((object[])currentAction.GetActionParams())[0], (double)((object[])currentAction.GetActionParams())[1], ref currentAction);
                                 else
                                     currentAction.ActionIsDone();
@@ -102,7 +119,7 @@ namespace AmeisenAI
                                 break;
 
                             case AmeisenActionType.INTERACT_TARGET:
-                                if (AmeisenManager.GetInstance().IsAllowedToMove())
+                                if (IsAllowedToMove)
                                     InteractWithTarget(3.0, (Interaction)currentAction.GetActionParams(), ref currentAction);
                                 else
                                     currentAction.ActionIsDone();
@@ -114,12 +131,12 @@ namespace AmeisenAI
                                 break;
 
                             case AmeisenActionType.USE_SPELL:
-                                AmeisenManager.GetInstance().LockMovement();
+                                IsAllowedToMove = false;
                                 WoWSpellInfo spellInfo = AmeisenCore.AmeisenCore.GetSpellInfo((string)currentAction.GetActionParams());
                                 AmeisenCore.AmeisenCore.CastSpellByName((string)currentAction.GetActionParams(), false);
 
                                 Thread.Sleep(spellInfo.castTime + 500);
-                                AmeisenManager.GetInstance().UnlockMovement();
+                                IsAllowedToMove = true;
 
                                 currentAction.ActionIsDone();
                                 break;
@@ -153,7 +170,7 @@ namespace AmeisenAI
         /// <param name="threadCount">how many "Brain-Thread's" should our bot get</param>
         public void StartAI(int threadCount)
         {
-            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Starting AI", this);
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Starting AI", this);
             if (!aiActive)
             {
                 busyThreads = new bool[threadCount];
@@ -165,7 +182,7 @@ namespace AmeisenAI
                     t.Start();
 
                 aiActive = true;
-                AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "AI running", this);
+                AmeisenLogger.Instance.Log(LogLevel.DEBUG, "AI running", this);
             }
         }
 
@@ -174,12 +191,12 @@ namespace AmeisenAI
         /// </summary>
         public void StopAI()
         {
-            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Stopping AI", this);
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Stopping AI", this);
             if (aiActive)
             {
                 aiActive = false;
                 aiWorkers.Clear();
-                AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "AI stopped", this);
+                AmeisenLogger.Instance.Log(LogLevel.DEBUG, "AI stopped", this);
             }
         }
 
@@ -189,7 +206,7 @@ namespace AmeisenAI
         /// <param name="action">Action you want the bot to do</param>
         public void AddActionToQueue(ref AmeisenAction action)
         {
-            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Added action to AI-Queue: " + action.ToString(), this);
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Added action to AI-Queue: " + action.ToString(), this);
             actionQueue.Enqueue(action);
         }
 
@@ -199,7 +216,7 @@ namespace AmeisenAI
         /// <param name="action">Action you want the bot to do</param>
         public void AddActionToQueue(AmeisenAction action)
         {
-            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Added action to AI-Queue: " + action.ToString(), this);
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Added action to AI-Queue: " + action.ToString(), this);
             actionQueue.Enqueue(action);
         }
 
@@ -209,7 +226,7 @@ namespace AmeisenAI
         /// <returns>list of actions in the queue</returns>
         public List<AmeisenAction> GetQueueItems()
         {
-            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Getting AI-Queue", this);
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Getting AI-Queue", this);
             List<AmeisenAction> actions = new List<AmeisenAction>();
             foreach (AmeisenAction a in actionQueue)
                 actions.Add(a);
@@ -222,7 +239,7 @@ namespace AmeisenAI
         /// <returns>active threads</returns>
         public int GetActiveThreadCount()
         {
-            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Getting active Thread count", this);
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Getting active Thread count", this);
             return aiWorkers.Count;
         }
 
@@ -232,7 +249,7 @@ namespace AmeisenAI
         /// <returns>busy threads</returns>
         public int GetBusyThreadCount()
         {
-            AmeisenLogger.GetInstance().Log(LogLevel.VERBOSE, "Getting busy threads", this);
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Getting busy threads", this);
             int bThreads = 0;
 
             foreach (bool b in busyThreads)
@@ -268,8 +285,7 @@ namespace AmeisenAI
 
         private void MoveToPosition(Vector3 position, double distance, ref AmeisenAction ameisenAction)
         {
-            Me me = AmeisenManager.GetInstance().Me;
-            double distanceToPoint = Utils.GetDistance(me.pos, position);
+            double distanceToPoint = Utils.GetDistance(Me.pos, position);
 
             if (distanceToPoint > distance * 2)
             {
@@ -282,8 +298,8 @@ namespace AmeisenAI
                 Thread.Sleep(500);
 
                 // recalculate
-                distanceToPoint = Utils.GetDistance(me.pos, position);
-                lastPosition = me.pos;
+                distanceToPoint = Utils.GetDistance(Me.pos, position);
+                lastPosition = Me.pos;
                 lastDistance = distanceToPoint;
             }
             else
@@ -292,8 +308,7 @@ namespace AmeisenAI
 
         private void MoveNearPosition(Vector3 position, double distance, ref AmeisenAction ameisenAction)
         {
-            Me me = AmeisenManager.GetInstance().Me;
-            double distanceToPoint = Utils.GetDistance(me.pos, position);
+            double distanceToPoint = Utils.GetDistance(Me.pos, position);
 
             if (distanceToPoint > distance)
             {
@@ -306,13 +321,13 @@ namespace AmeisenAI
                 Thread.Sleep(500);
 
                 // recalculate
-                distanceToPoint = Utils.GetDistance(me.pos, position);
-                lastPosition = me.pos;
+                distanceToPoint = Utils.GetDistance(Me.pos, position);
+                lastPosition = Me.pos;
                 lastDistance = distanceToPoint;
             }
             else
             {
-                Vector3 currentPosition = AmeisenManager.GetInstance().Me.pos;
+                Vector3 currentPosition = AmeisenDataHolder.Instance.Me.pos;
 
                 if (currentPosition.x != 0 && currentPosition.y != 0 && currentPosition.z != 0)
                 {
@@ -324,30 +339,27 @@ namespace AmeisenAI
 
         private void InteractWithTarget(double distance, Interaction action, ref AmeisenAction ameisenAction)
         {
-            Me me = AmeisenManager.GetInstance().Me;
-            Unit target = AmeisenManager.GetInstance().Target;
-
-            if (target == null)
+            if (Target == null)
                 ameisenAction.ActionIsDone();  // If there is no target, we can't interact with anyone...
-            else if (target.Distance > 3 && target.Distance > distance)
+            else if (Target.Distance > 3 && Target.Distance > distance)
             {
-                Vector3 posToGoTo = CalculatePosToGoTo(target.pos, (int)distance);
-                AmeisenCore.AmeisenCore.InteractWithGUID(posToGoTo, target.Guid, action);
+                Vector3 posToGoTo = CalculatePosToGoTo(Target.pos, (int)distance);
+                AmeisenCore.AmeisenCore.InteractWithGUID(posToGoTo, Target.Guid, action);
 
                 ameisenAction.ActionIsDone();
             }
-            else if (target.Distance < 3) // Check If we are standing to near to the current target to trigger the CTM-Action
+            else if (Target.Distance < 3) // Check If we are standing to near to the current target to trigger the CTM-Action
             {
-                CheckIfWeAreStuckIfYesJump(target.Distance);
+                CheckIfWeAreStuckIfYesJump(Target.Distance);
 
-                Vector3 posToGoToToMakeSureTheInteractionGetsFired = CalculatePosToGoTo(target.pos, 16);
+                Vector3 posToGoToToMakeSureTheInteractionGetsFired = CalculatePosToGoTo(Target.pos, 16);
                 AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoToToMakeSureTheInteractionGetsFired, Interaction.MOVE);
 
                 // Let the character run
                 Thread.Sleep(2000);
 
-                lastPosition = me.pos;
-                lastDistance = target.Distance;
+                lastPosition = Me.pos;
+                lastDistance = Target.Distance;
             }
             else
                 ameisenAction.ActionIsDone();

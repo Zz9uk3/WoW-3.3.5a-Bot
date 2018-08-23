@@ -58,12 +58,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmeisenOffsets\AmeisenUtilities.csproj">
-      <Project>{5369e077-2dc4-4de5-9020-2c7ddb41686f}</Project>
-      <Name>AmeisenUtilities</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="web\index.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

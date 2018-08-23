@@ -1,15 +1,11 @@
-﻿using AmeisenBotLib;
-using AmeisenCore;
-using AmeisenCore.Objects;
-using AmeisenLogging;
+﻿using AmeisenLogging;
+using AmeisenManager;
 using AmeisenUtilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -31,7 +27,7 @@ namespace AmeisenBotGUI
         public MainWindow()
         {
             InitializeComponent();
-            BotManager = AmeisenBotManager.GetInstance();
+            BotManager = AmeisenBotManager.Instance;
 
             if (File.Exists(autoLoginExe))
             {
@@ -45,8 +41,8 @@ namespace AmeisenBotGUI
 
         private void LoadingForm_Loaded(object sender, RoutedEventArgs e)
         {
-            AmeisenLogger.GetInstance().SetActiveLogLevel(LogLevel.DEBUG);
-            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Loaded MainWindow", this);
+            AmeisenLogger.Instance.SetActiveLogLevel(LogLevel.DEBUG);
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Loaded MainWindow", this);
             SearchForWoW();
         }
 
@@ -67,7 +63,7 @@ namespace AmeisenBotGUI
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
             Close();
-            AmeisenLogger.GetInstance().StopLogging();
+            AmeisenLogger.Instance.StopLogging();
         }
 
         private void ButtonGo_Click(object sender, RoutedEventArgs e)
@@ -78,14 +74,14 @@ namespace AmeisenBotGUI
                     MessageBox.Show("Please login first!", "Warning");
                 else
                 {
-                    AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Selected WoW: " + ((WoWExe)comboBoxWoWs.SelectedItem).ToString(), this);
+                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Selected WoW: " + ((WoWExe)comboBoxWoWs.SelectedItem).ToString(), this);
                     
                     // Apply our colors defined in the config file
                     Application.Current.Resources["AccentColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.accentColor);
                     Application.Current.Resources["BackgroundColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.backgroundColor);
                     Application.Current.Resources["TextColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.fontColor);
 
-                    AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Loaded colors ["
+                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Loaded colors ["
                         + Application.Current.Resources["AccentColor"] + "]["
                         + Application.Current.Resources["BackgroundColor"] + "]["
                         + Application.Current.Resources["TextColor"] + "]"
@@ -100,7 +96,7 @@ namespace AmeisenBotGUI
 
         private void SearchForWoW(string selectByCharname = "")
         {
-            AmeisenLogger.GetInstance().Log(LogLevel.DEBUG, "Searching for WoW's", this);
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Searching for WoW's", this);
 
             comboBoxWoWs.Items.Clear();
             List<WoWExe> wowList = BotManager.RunningWoWs;

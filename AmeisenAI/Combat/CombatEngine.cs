@@ -1,6 +1,5 @@
 ﻿using AmeisenAI.Combat;
-using AmeisenCore;
-using AmeisenOffsets.Objects;
+using AmeisenData;
 using AmeisenUtilities;
 using System;
 using System.IO;
@@ -12,6 +11,18 @@ namespace AmeisenAI
 {
     public class CombatEngine
     {
+        private Me Me
+        {
+            get { return AmeisenDataHolder.Instance.Me; }
+            set { AmeisenDataHolder.Instance.Me = value; }
+        }
+
+        private Unit Target
+        {
+            get { return AmeisenDataHolder.Instance.Target; }
+            set { AmeisenDataHolder.Instance.Target = value; }
+        }
+
         private static readonly string combatclassesPath = AppDomain.CurrentDomain.BaseDirectory + "/combatclasses/";
 
         private int posAt;
@@ -50,9 +61,9 @@ namespace AmeisenAI
                         else
                             action = new AmeisenAction(AmeisenActionType.USE_SPELL, (string)entry.Parameters);
 
-                        AmeisenCore.AmeisenCore.MovePlayerToXYZ(AmeisenManager.GetInstance().Me.pos, Interaction.FACETARGET);
+                        AmeisenCore.AmeisenCore.MovePlayerToXYZ(Me.pos, Interaction.FACETARGET);
 
-                        AmeisenAIManager.GetInstance().AddActionToQueue(ref action);
+                        AmeisenAIManager.Instance.AddActionToQueue(ref action);
 
                         do Thread.Sleep(100);
                         while (!action.IsActionDone());
@@ -81,7 +92,7 @@ namespace AmeisenAI
         /// <returns>true if we are able to, false if not</returns>
         public bool ExecuteLogic(CombatLogicEntry entry)
         {
-            if (AmeisenManager.GetInstance().Me == null)
+            if (Me == null)
                 return false;
 
             /*if (entry.CombatOnly)
@@ -98,27 +109,27 @@ namespace AmeisenAI
 
             if (!entry.IsBuff && !entry.IsForMyself)
             {
-                if (AmeisenManager.GetInstance().Me.targetGUID == 0)
+                if (Me.targetGUID == 0)
                     return false;
 
-                if (AmeisenManager.GetInstance().Target.Distance > entry.MaxSpellDistance)
+                if (Target.Distance > entry.MaxSpellDistance)
                 {
                     AmeisenAction action;
                     if (isMeeleeSpell)
                         action = new AmeisenAction(AmeisenActionType.INTERACT_TARGET, Interaction.ATTACKPOS);
                     else
                     {
-                        object[] parameters = new object[2] { AmeisenManager.GetInstance().Target.pos, entry.MaxSpellDistance * 0.9 };
+                        object[] parameters = new object[2] { Target.pos, entry.MaxSpellDistance * 0.9 };
                         action = new AmeisenAction(AmeisenActionType.FORCE_MOVE_NEAR_TARGET, parameters); // 10% Offset
                     }
 
-                    AmeisenAIManager.GetInstance().AddActionToQueue(ref action);
+                    AmeisenAIManager.Instance.AddActionToQueue(ref action);
 
                     do Thread.Sleep(100);
                     while (!action.IsActionDone());
                 }
 
-                AmeisenCore.AmeisenCore.MovePlayerToXYZ(AmeisenManager.GetInstance().Target.pos, Interaction.FACETARGET);
+                AmeisenCore.AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.FACETARGET);
             }
 
             foreach (Condition c in entry.Conditions)
@@ -136,15 +147,15 @@ namespace AmeisenAI
             switch (condition.conditionValues[0])
             {
                 case CombatLogicValues.MYSELF_HP:
-                    value1 = AmeisenManager.GetInstance().Me.health;
+                    value1 = Me.health;
                     break;
 
                 case CombatLogicValues.MYSELF_ENERGY:
-                    value1 = AmeisenManager.GetInstance().Me.energy;
+                    value1 = Me.energy;
                     break;
 
                 case CombatLogicValues.TARGET_HP:
-                    value1 = AmeisenManager.GetInstance().Target.health;
+                    value1 = Target.health;
                     break;
 
                 default:
@@ -155,15 +166,15 @@ namespace AmeisenAI
                 switch (condition.conditionValues[1])
                 {
                     case CombatLogicValues.MYSELF_HP:
-                        value2 = AmeisenManager.GetInstance().Me.health;
+                        value2 = Me.health;
                         break;
 
                     case CombatLogicValues.MYSELF_ENERGY:
-                        value2 = AmeisenManager.GetInstance().Me.energy;
+                        value2 = Me.energy;
                         break;
 
                     case CombatLogicValues.TARGET_HP:
-                        value2 = AmeisenManager.GetInstance().Target.health;
+                        value2 = Target.health;
                         break;
 
                     default:
