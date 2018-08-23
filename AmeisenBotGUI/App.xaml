@@ -17,6 +17,5 @@
         <Color x:Key="UnitColor">#FFD0FFD4</Color>
         <Color x:Key="PlayerColor">#FFD0FFFD</Color>
         <Color x:Key="MeColor">#FFFFD0D0</Color>
-        
     </Application.Resources>
 </Application>

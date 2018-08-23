@@ -9,7 +9,7 @@ using System.Windows.Threading;
 
 namespace AmeisenBotGUI
 {
-    class DataItem
+    internal class DataItem
     {
         public string Text { get; set; }
         public Brush Background { get; set; }

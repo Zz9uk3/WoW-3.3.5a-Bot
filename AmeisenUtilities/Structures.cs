@@ -69,8 +69,8 @@
 
     /// <summary>
     /// Weird values, need to investigate this crap
-    /// but hey its working... 
-    /// 
+    /// but hey its working...
+    ///
     /// Looks like some sort of flags to be honest...
     /// </summary>
     public enum UnitState

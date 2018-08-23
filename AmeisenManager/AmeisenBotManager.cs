@@ -105,7 +105,9 @@ namespace AmeisenManager
             AmeisenClient.Register(Me, IPAddress.Parse("127.0.0.1"));
         }
 
-        public void NoAction() { }
+        public void NoAction()
+        {
+        }
 
         public void StopBot()
         {
@@ -153,24 +155,55 @@ namespace AmeisenManager
             set { FollowGroup = value; /*Add Follow code here*/ }
         }
 
-        public List<Bot> GetNetworkBots() { if (AmeisenClient.IsRegistered) return AmeisenClient.BotList; else return null; }
+        public List<Bot> GetNetworkBots()
+        {
+            if (AmeisenClient.IsRegistered) return AmeisenClient.BotList; else return null;
+        }
 
         #region Objects
-        public WoWExe GetWowExe() { return WowExe; }
+
+        public WoWExe GetWowExe()
+        {
+            return WowExe;
+        }
+
         public List<WoWObject> WoWObjects { get { return AmeisenObjectManager.GetObjects(); } }
-        #endregion
+
+        #endregion Objects
 
         #region AI
-        public void AddActionToAIQueue(AmeisenAction ameisenAction) { AmeisenAIManager.AddActionToQueue(ameisenAction); }
-        public void AddActionToAIQueue(ref AmeisenAction ameisenAction) { AmeisenAIManager.AddActionToQueue(ref ameisenAction); }
-        #endregion
+
+        public void AddActionToAIQueue(AmeisenAction ameisenAction)
+        {
+            AmeisenAIManager.AddActionToQueue(ameisenAction);
+        }
+
+        public void AddActionToAIQueue(ref AmeisenAction ameisenAction)
+        {
+            AmeisenAIManager.AddActionToQueue(ref ameisenAction);
+        }
+
+        #endregion AI
 
         #region Settings
+
         public Settings Settings { get { return AmeisenSettings.Settings; } }
 
-        public void SaveSettingsToFile(string filename) { AmeisenSettings.SaveToFile(filename); }
-        public void LoadSettingsFromFile(string filename) { AmeisenSettings.LoadFromFile(filename); }
-        public string GetLoadedConfigName() { return AmeisenSettings.loadedconfName; }
-        #endregion
+        public void SaveSettingsToFile(string filename)
+        {
+            AmeisenSettings.SaveToFile(filename);
+        }
+
+        public void LoadSettingsFromFile(string filename)
+        {
+            AmeisenSettings.LoadFromFile(filename);
+        }
+
+        public string GetLoadedConfigName()
+        {
+            return AmeisenSettings.loadedconfName;
+        }
+
+        #endregion Settings
     }
 }

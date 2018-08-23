@@ -1,12 +1,12 @@
-﻿using System;
+﻿using AmeisenLogging;
+using AmeisenManager;
+using AmeisenUtilities;
+using Microsoft.Win32;
+using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Microsoft.Win32;
-using AmeisenLogging;
-using AmeisenUtilities;
-using AmeisenManager;
 
 namespace AmeisenBotGUI
 {
@@ -30,7 +30,9 @@ namespace AmeisenBotGUI
 
         // -- Window state stuff
         // Minimize, Exit, FileDialogs
+
         #region WindowStuff
+
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
             Close();
@@ -49,11 +51,14 @@ namespace AmeisenBotGUI
             if (openFileDialog.ShowDialog() == true)
                 AmeisenBotManager.Instance.LoadCombatClass(openFileDialog.FileName);
         }
-        #endregion
+
+        #endregion WindowStuff
 
         // -- Window Callbacks
         // Loading, Closing, MouseDown
+
         #region WindowCallbacks
+
         private void Mainscreen_MouseDown(object sender, MouseButtonEventArgs e)
         {
             try
@@ -91,16 +96,18 @@ namespace AmeisenBotGUI
             BotManager.SaveSettingsToFile(BotManager.GetLoadedConfigName());
         }
 
-
         private void ButtonRefreshBots_Click(object sender, RoutedEventArgs e)
         {
             UpdateNetworkPlayers();
         }
-        #endregion
+
+        #endregion WindowCallbacks
 
         // -- Bot Combat STATES
         // TANK, HEAL, ATTACK, checkboxes
+
         #region BotCombatStates
+
         private void CheckBoxAssistPartyTank_Click(object sender, RoutedEventArgs e)
         {
             BotManager.IsSupposedToTank = (bool)checkBoxAssistPartyTank.IsChecked;
@@ -115,11 +122,14 @@ namespace AmeisenBotGUI
         {
             BotManager.IsSupposedToAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
         }
-        #endregion
+
+        #endregion BotCombatStates
 
         // -- Debug stuff goes here, will be removed in the future
         // Debug stuff, buttons
+
         #region DebugStuff
+
         private void ButtonMoveToTarget_Click(object sender, RoutedEventArgs e)
         {
             BotManager.AddActionToAIQueue(new AmeisenAction(AmeisenActionType.MOVE_TO_POSITION, null));
@@ -129,11 +139,14 @@ namespace AmeisenBotGUI
         {
             BotManager.AddActionToAIQueue(new AmeisenAction(AmeisenActionType.INTERACT_TARGET, (AmeisenActionType)comboboxInteraction.SelectedItem));
         }
-        #endregion
+
+        #endregion DebugStuff
 
         // -- External Windows
         // SettingsWindow, DebugUI, CombatClass Editor
+
         #region ExternalWindows
+
         private void ButtonSettings_Click(object sender, RoutedEventArgs e)
         {
             new SettingsWindow().ShowDialog();
@@ -148,11 +161,14 @@ namespace AmeisenBotGUI
         {
             new CombatClassEditor().Show();
         }
-        #endregion
+
+        #endregion ExternalWindows
 
         // -- UI Stuff
         // Update the GUI
+
         #region UITimer
+
         private void UIUpdateTimer_Tick(object sender, EventArgs e)
         {
             if (BotManager.IsBotIngame())
@@ -174,7 +190,6 @@ namespace AmeisenBotGUI
             {
                 try
                 {
-
                     labelName.Content = BotManager.Me.Name + " lvl." + BotManager.Me.level;
                     //labelCasting.Content = "Casting: " + me.currentState;
 
@@ -251,6 +266,7 @@ namespace AmeisenBotGUI
                 foreach (Bot bot in BotManager.GetNetworkBots())
                     listViewNetworkBots.Items.Add(bot.id + " >> " + bot.ip + " >> " + bot.name + " >> " + bot.me);
         }
-        #endregion
+
+        #endregion UITimer
     }
 }

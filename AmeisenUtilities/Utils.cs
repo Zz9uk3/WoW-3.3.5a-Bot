@@ -12,7 +12,6 @@ namespace AmeisenUtilities
                              (a.z - b.z) * (a.z - b.z));
         }
 
-
         public static string GenerateRandonString(int lenght, string chars)
         {
             Random rnd = new Random();

@@ -217,11 +217,30 @@ namespace AmeisenAI
             }
         }
 
-        private bool CompareGreater(double a, double b) { return a > b ? true : false; }
-        private bool CompareGreaterOrEqual(double a, double b) { return a >= b ? true : false; }
-        private bool CompareEqual(double a, double b) { return a == b ? true : false; }
-        private bool CompareLessOrEqual(double a, double b) { return a <= b ? true : false; }
-        private bool CompareLess(double a, double b) { return a < b ? true : false; }
+        private bool CompareGreater(double a, double b)
+        {
+            return a > b ? true : false;
+        }
+
+        private bool CompareGreaterOrEqual(double a, double b)
+        {
+            return a >= b ? true : false;
+        }
+
+        private bool CompareEqual(double a, double b)
+        {
+            return a == b ? true : false;
+        }
+
+        private bool CompareLessOrEqual(double a, double b)
+        {
+            return a <= b ? true : false;
+        }
+
+        private bool CompareLess(double a, double b)
+        {
+            return a < b ? true : false;
+        }
 
         /// <summary>
         /// Save a combatclass file to the given filepath.

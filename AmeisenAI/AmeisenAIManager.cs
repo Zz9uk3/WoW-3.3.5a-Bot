@@ -1,29 +1,29 @@
-﻿using System;
+﻿using AmeisenData;
+using AmeisenLogging;
+using AmeisenUtilities;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
-using AmeisenLogging;
-using AmeisenData;
-using AmeisenUtilities;
 
 namespace AmeisenAI
 {
     /// <summary>
     /// Singleton to manage the bots AI.
-    /// 
+    ///
     /// It contains a Queue that can be filled up with AmeisenAction objects.
     /// This Queue will be processed by the threads powering this AI.
-    /// 
+    ///
     /// To Start / Stop the AI call:
     /// - StartAI(THREADCOUNT);
     /// - StopAI();
-    /// 
+    ///
     /// You can Add Actions like this:
     /// - AddActionToQueue(AMEISENACTIONOBJECT);
-    /// 
+    ///
     /// If you wannt to get all remaining actions in the Queue call:
     /// - GetQueueItems();
-    /// 
+    ///
     /// Or get Informations about the Threads:
     /// - GetActiveThreadCount();
     /// - GetBusyThreadCount();
@@ -37,7 +37,7 @@ namespace AmeisenAI
         private bool aiActive;
         private bool[] busyThreads;
         private ConcurrentQueue<AmeisenAction> actionQueue;
-        
+
         public bool IsAllowedToMove { get; set; }
 
         private Me Me

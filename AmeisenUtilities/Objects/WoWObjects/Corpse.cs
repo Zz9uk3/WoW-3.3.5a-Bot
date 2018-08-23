@@ -1,15 +1,12 @@
 ﻿using Magic;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AmeisenUtilities
 {
     public class Corpse : WoWObject
     {
-        UInt64 Owner { get; set; }
+        private UInt64 Owner { get; set; }
 
         public Corpse(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {

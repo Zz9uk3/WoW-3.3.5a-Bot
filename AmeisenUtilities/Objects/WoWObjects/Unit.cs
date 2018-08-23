@@ -1,10 +1,5 @@
-﻿using AmeisenUtilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Magic;
 using System.Text;
-using System.Threading.Tasks;
-using Magic;
 
 namespace AmeisenUtilities
 {

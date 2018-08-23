@@ -5,6 +5,7 @@
         public abstract class Warrior
         {
             public readonly int classID = 1;
+
             public enum ShapeshiftForms
             {
                 BATTLE,
@@ -26,6 +27,7 @@
         public abstract class Rogue
         {
             public readonly int classID = 4;
+
             public enum ShapeshiftForms
             {
                 STEALTH
@@ -60,6 +62,7 @@
         public abstract class Druid
         {
             public readonly int classID = 11;
+
             public enum ShapeshiftForms
             {
                 BEAR,

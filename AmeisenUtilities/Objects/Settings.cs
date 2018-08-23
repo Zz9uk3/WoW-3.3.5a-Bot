@@ -1,11 +1,4 @@
-﻿using AmeisenUtilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AmeisenUtilities
+﻿namespace AmeisenUtilities
 {
     /// <summary>
     /// Class containing the default and loaded settings

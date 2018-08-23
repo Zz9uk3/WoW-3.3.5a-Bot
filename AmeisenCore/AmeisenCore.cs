@@ -19,10 +19,13 @@ namespace AmeisenCore
         // - Imports for the SendMessage Windows interactions
         [DllImport("user32.dll")]
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
         [DllImport("user32.dll")]
         public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
         [DllImport("user32.dll")]
         public static extern IntPtr PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
         // - Imports for the SendMessage Windows interactions
 
         public static BlackMagic Blackmagic { get; set; }
@@ -451,7 +454,7 @@ namespace AmeisenCore
 
         /// <summary>
         /// Let the bot jump by pressing the spacebar once for 20-40ms
-        /// 
+        ///
         /// This runs Async.
         /// </summary>
         public static void CharacterJumpAsync()

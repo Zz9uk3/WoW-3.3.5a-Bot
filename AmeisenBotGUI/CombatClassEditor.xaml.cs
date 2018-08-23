@@ -333,7 +333,8 @@ namespace AmeisenBotGUI
             {
                 if (listboxConditions.SelectedItem != null && textboxCustomValue.Text.Length > 0)
                     ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).customValue = double.Parse(textboxCustomValue.Text);
-            } catch { }
+            }
+            catch { }
         }
 
         private void ButtonNew_Click(object sender, RoutedEventArgs e)

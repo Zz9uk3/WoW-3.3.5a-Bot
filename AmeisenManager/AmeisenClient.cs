@@ -44,7 +44,7 @@ namespace AmeisenManager
             botListUpdateTimer = new System.Timers.Timer(1000);
             botListUpdateTimer.Elapsed += UpdateBotList;
         }
-        
+
         public static AmeisenClient Instance
         {
             get

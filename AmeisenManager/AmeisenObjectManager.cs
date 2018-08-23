@@ -1,10 +1,10 @@
-﻿using System;
+﻿using AmeisenData;
+using AmeisenLogging;
+using AmeisenUtilities;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Timers;
-using AmeisenData;
-using AmeisenLogging;
-using AmeisenUtilities;
 
 namespace AmeisenManager
 {
@@ -50,7 +50,6 @@ namespace AmeisenManager
             RefreshObjects();
         }
 
-
         public static AmeisenObjectManager Instance
         {
             get
@@ -92,7 +91,7 @@ namespace AmeisenManager
 
         /// <summary>
         /// Refresh our bot's stats, you can get the stats by calling Me().
-        /// 
+        ///
         /// This runs Async.
         /// </summary>
         public void RefreshMeAsync()
@@ -120,7 +119,7 @@ namespace AmeisenManager
 
         /// <summary>
         /// Refresh our bot's objectlist, you can get the stats by calling GetObjects().
-        /// 
+        ///
         /// This runs Async.
         /// </summary>
         private void RefreshObjectsAsync()
@@ -131,7 +130,10 @@ namespace AmeisenManager
             new Thread(new ThreadStart(RefreshObjects)).Start();
         }
 
-        public void RefreshMe() { Me = AmeisenCore.AmeisenCore.ReadMe(Me.BaseAddress); }
+        public void RefreshMe()
+        {
+            Me = AmeisenCore.AmeisenCore.ReadMe(Me.BaseAddress);
+        }
 
         private void RefreshObjects()
         {

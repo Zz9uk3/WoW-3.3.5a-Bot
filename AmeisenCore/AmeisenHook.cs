@@ -8,7 +8,7 @@ namespace AmeisenCore
 {
     /// <summary>
     /// Class that manages the hooking of WoW's EndScene
-    /// 
+    ///
     /// !!! W.I.P !!!
     /// </summary>
     public class AmeisenHook
@@ -37,11 +37,14 @@ namespace AmeisenCore
         private uint codeToExecute;
         private uint returnAdress;
 
-        uint endsceneReturnAddress;
+        private uint endsceneReturnAddress;
 
         private byte[] originalEndscene = new byte[] { 0xB8, 0x51, 0xD7, 0xCA, 0x64 };
 
-        private AmeisenHook() { Hook(); }
+        private AmeisenHook()
+        {
+            Hook();
+        }
 
         public void Hook()
         {
@@ -112,11 +115,9 @@ namespace AmeisenCore
                     AmeisenCore.Blackmagic.Asm.Clear();
                     AmeisenCore.Blackmagic.Asm.AddLine("JMP " + (codeCave));
                     AmeisenCore.Blackmagic.Asm.Inject(endscene);
-
                 }
                 isHooked = true;
             }
-
         }
 
         public void DisposeHooking()

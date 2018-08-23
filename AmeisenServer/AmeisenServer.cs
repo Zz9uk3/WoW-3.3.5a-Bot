@@ -1,18 +1,17 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
-using System.Net;
 using System.IO;
-using AmeisenUtilities;
-using Newtonsoft.Json;
+using System.Net;
 
 namespace AmeisenServer
 {
-    class AmeisenServer
+    internal class AmeisenServer
     {
         private static ArrayList activeBots;
         private static int botCount;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Console.Title = "AmeisenServer";
 
