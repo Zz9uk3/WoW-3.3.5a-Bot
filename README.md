@@ -35,17 +35,20 @@ To use this piece of turd, junk, trash, don't know how to call this thing, Open 
 
 **AmeisenBotGUI**: This is the bot's GUI (C# WPF), what did you expect? :D
 
-**AmeisenBotLib**: Bot Interaction-Point or something like this...
+**AmeisenManager**: Bot Interaction-Point or something like this...
 
-**AmeisenCore**: This is where the memory magic happens, data gets stored, etc.
+**AmeisenCore**: This is where the memory magic happens.
 
 **AmeisenUtilities**: Memory offsets and data structs can be foud here.
 
-**AmeisenServer**: This thing is planned to be a server for the bots to communicate to each other.
+**AmeisenData**: This thing holds the Me, Target and WoWObjects.
 
 **AmeisenAI**: The bots "Brain" to work on its queue and make decisions etc.
 
 **AmeisenLogging**: Basic logging class
+
+**AmeisenServer**: This thing is planned to be a server for the bots to communicate to each other.
+
 
 ---
 ## Screenshots
