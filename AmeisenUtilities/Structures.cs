@@ -141,6 +141,19 @@
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    public enum LUAUnit
+    {
+        player,
+        target,
+        party1,
+        party2,
+        party3,
+        party4,
+    }
+
+    /// <summary>
     /// UnitFlags
     /// </summary>
     public enum UnitFlags

@@ -33,6 +33,8 @@ namespace AmeisenAI
         /// </summary>
         public void ExecuteNextStep()
         {
+            AssistParty();
+
             if (currentCombatLogic != null)
                 if (currentCombatLogic.combatLogicEntries.Count > 0)
                 {
@@ -44,11 +46,23 @@ namespace AmeisenAI
                 }
         }
 
+        private void AssistParty()
+        {
+            LUAUnit[] partyLuaUnits = { LUAUnit.party1, LUAUnit.party2, LUAUnit.party3, LUAUnit.party4 };
+
+            for (int i = 0; i < Me.PartymemberGUIDs.Count; i++)
+                if (AmeisenCore.AmeisenCore.GetCombatState(partyLuaUnits[i]))
+                {
+                    AmeisenCore.AmeisenCore.RunSlashCommand("/assist party" + i);
+                    AmeisenCore.AmeisenCore.AttackTarget();
+                }
+        }
+
         /// <summary>
         /// Executes the action specified in the CombatLogicEntry object
         /// </summary>
         /// <param name="entry">CombatLogicEntry entry that contains an action to execute</param>
-        public void ExecuteAction(CombatLogicEntry entry)
+        private void ExecuteAction(CombatLogicEntry entry)
         {
             switch (entry.Action)
             {
@@ -90,20 +104,18 @@ namespace AmeisenAI
         /// </summary>
         /// <param name="entry">CombatLogicEntry containing the Conditions and parameters</param>
         /// <returns>true if we are able to, false if not</returns>
-        public bool ExecuteLogic(CombatLogicEntry entry)
+        private bool ExecuteLogic(CombatLogicEntry entry)
         {
             if (Me == null)
                 return false;
 
             if (entry.CombatOnly)
             {
-                if (!AmeisenCore.AmeisenCore.GetCombatState(true))
+                if (!AmeisenCore.AmeisenCore.GetCombatState(LUAUnit.player))
                 {
                     AmeisenAIManager.Instance.IsAllowedToMove = true;
                     if (!AmeisenCore.AmeisenCore.IsTargetFriendly())
-                    {
                         return false;
-                    }
                 }
                 else { AmeisenAIManager.Instance.IsAllowedToMove = false; }
             }
@@ -224,22 +236,18 @@ namespace AmeisenAI
         {
             return a > b ? true : false;
         }
-
         private bool CompareGreaterOrEqual(double a, double b)
         {
             return a >= b ? true : false;
         }
-
         private bool CompareEqual(double a, double b)
         {
             return a == b ? true : false;
         }
-
         private bool CompareLessOrEqual(double a, double b)
         {
             return a <= b ? true : false;
         }
-
         private bool CompareLess(double a, double b)
         {
             return a < b ? true : false;

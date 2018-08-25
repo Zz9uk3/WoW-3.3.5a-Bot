@@ -420,14 +420,11 @@ namespace AmeisenCore
         /// </summary>
         /// <param name="onMyself">check my owm state</param>
         /// <returns>true if unit is in combat, false if not</returns>
-        public static bool GetCombatState(bool onMyself)
+        public static bool GetCombatState(LUAUnit luaUnit)
         {
             bool isInCombat;
 
-            if (onMyself)
-                LUADoString("affectingCombat = UnitAffectingCombat(\"player\");");
-            else
-                LUADoString("affectingCombat = UnitAffectingCombat(\"target\");");
+            LUADoString("affectingCombat = UnitAffectingCombat(\"" + luaUnit.ToString() + "\");");
 
             try { if (int.Parse(GetLocalizedText("affectingCombat")) == 1) isInCombat = true; else isInCombat = false; } catch { isInCombat = false; }
             return isInCombat;
@@ -445,6 +442,11 @@ namespace AmeisenCore
             try { if (int.Parse(GetLocalizedText("isFriendly")) == 1) isFriendly = true; else isFriendly = false; } catch { isFriendly = false; }
             return isFriendly;
         }
+
+        /// <summary>
+        /// Attack our target
+        /// </summary>
+        public static void AttackTarget() { LUADoString("AttackTarget();"); }
         #endregion
 
         #region KeyInteractions

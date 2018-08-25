@@ -1,4 +1,5 @@
 ﻿using Magic;
+using System.Collections.Specialized;
 using System.Text;
 
 namespace AmeisenUtilities
@@ -17,6 +18,8 @@ namespace AmeisenUtilities
         public int MaxHealth { get; set; }
         public int Energy { get; set; }
         public int MaxEnergy { get; set; }
+
+        BitVector32 UnitFlags { get; set; }
 
         public Unit(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
@@ -58,6 +61,8 @@ namespace AmeisenUtilities
                 //ChannelSpell = BlackMagicInstance.ReadInt(BaseUnitFields + (0x16 * 4));
             }
             catch { }
+            
+            UnitFlags = (BitVector32)BlackMagicInstance.ReadObject(0xDD, typeof(BitVector32));
         }
 
         /// <summary>
