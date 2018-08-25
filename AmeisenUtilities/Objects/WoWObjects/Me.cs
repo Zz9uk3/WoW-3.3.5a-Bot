@@ -7,17 +7,17 @@ namespace AmeisenUtilities
 {
     public class Me : Player
     {
-        public int exp;
-        public int maxExp;
+        public int Exp { get; set; }
+        public int MaxExp { get; set; }
 
-        public uint playerBase;
+        public uint PlayerBase { get; set; }
 
-        public UnitState currentState;
+        public UnitState CurrentState { get; set; }
 
-        public UInt64 targetGUID;
+        public UInt64 TargetGUID { get; set; }
 
-        public Unit partyLeader;
-        public List<Unit> partymembers;
+        public UInt64 PartyleaderGUID { get; set; }
+        public List<UInt64> PartymemberGUIDs { get; set; }
 
         public Me(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
@@ -27,22 +27,31 @@ namespace AmeisenUtilities
         public override void Update()
         {
             base.Update();
-            playerBase = BlackMagicInstance.ReadUInt(WoWOffsets.playerBase);
-            playerBase = BlackMagicInstance.ReadUInt(playerBase + 0x34);
-            playerBase = BlackMagicInstance.ReadUInt(playerBase + 0x24);
+            PlayerBase = BlackMagicInstance.ReadUInt(WoWOffsets.playerBase);
+            PlayerBase = BlackMagicInstance.ReadUInt(PlayerBase + 0x34);
+            PlayerBase = BlackMagicInstance.ReadUInt(PlayerBase + 0x24);
 
             Name = BlackMagicInstance.ReadASCIIString(WoWOffsets.playerName, 12);
-            exp = BlackMagicInstance.ReadInt(playerBase + 0x3794);
-            maxExp = BlackMagicInstance.ReadInt(playerBase + 0x3798);
+            Exp = BlackMagicInstance.ReadInt(PlayerBase + 0x3794);
+            MaxExp = BlackMagicInstance.ReadInt(PlayerBase + 0x3798);
 
             // Somehow this is really sketchy, need to replace this...
             uint castingState = BlackMagicInstance.ReadUInt((uint)BlackMagicInstance.MainModule.BaseAddress + WoWOffsets.localPlayerCharacterState);
             castingState = BlackMagicInstance.ReadUInt(castingState + WoWOffsets.localPlayerCharacterStateOffset1);
             castingState = BlackMagicInstance.ReadUInt(castingState + WoWOffsets.localPlayerCharacterStateOffset2);
-            currentState = (UnitState)BlackMagicInstance.ReadInt(castingState + WoWOffsets.localPlayerCharacterStateOffset3);
-            targetGUID = BlackMagicInstance.ReadUInt64(baseUnitFields + (0x12 * 4));
+            CurrentState = (UnitState)BlackMagicInstance.ReadInt(castingState + WoWOffsets.localPlayerCharacterStateOffset3);
+            TargetGUID = BlackMagicInstance.ReadUInt64(BaseUnitFields + (0x12 * 4));
 
-            partymembers = new List<Unit>();
+            PartymemberGUIDs = new List<UInt64>();
+
+            PartyleaderGUID = BlackMagicInstance.ReadUInt64(WoWOffsets.partyLeader);
+            if (PartyleaderGUID != 0)
+            {
+                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(WoWOffsets.partyPlayer1));
+                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(WoWOffsets.partyPlayer2));
+                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(WoWOffsets.partyPlayer3));
+                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(WoWOffsets.partyPlayer4));
+            }
         }
 
         public override string ToString()
@@ -51,7 +60,7 @@ namespace AmeisenUtilities
 
             sb.Append("ME");
             sb.Append(" >> Address: " + BaseAddress.ToString("X"));
-            sb.Append(" >> UnitFields: " + baseUnitFields.ToString("X"));
+            sb.Append(" >> UnitFields: " + BaseUnitFields.ToString("X"));
             sb.Append(" >> Name: " + Name);
             sb.Append(" >> GUID: " + Guid);
             sb.Append(" >> PosX: " + pos.x);
@@ -62,37 +71,31 @@ namespace AmeisenUtilities
             sb.Append(" >> MapID: " + MapID);
             sb.Append(" >> ZoneID: " + ZoneID);
 
-            if (targetGUID != 0)
-                sb.Append(" >> TargetGUID: " + targetGUID.ToString());
+            if (TargetGUID != 0)
+                sb.Append(" >> TargetGUID: " + TargetGUID.ToString());
             else
                 sb.Append(" >> Target: none");
 
-            sb.Append(" >> combatReach: " + combatReach);
-            sb.Append(" >> channelSpell: " + channelSpell);
-            sb.Append(" >> currentState: " + currentState);
-            sb.Append(" >> factionTemplate: " + factionTemplate);
-            sb.Append(" >> level: " + level);
-            sb.Append(" >> health: " + health);
-            sb.Append(" >> maxHealth: " + maxHealth);
-            sb.Append(" >> energy: " + energy);
-            sb.Append(" >> maxEnergy: " + maxEnergy);
+            sb.Append(" >> combatReach: " + CombatReach);
+            sb.Append(" >> channelSpell: " + ChannelSpell);
+            sb.Append(" >> currentState: " + CurrentState);
+            sb.Append(" >> factionTemplate: " + FactionTemplate);
+            sb.Append(" >> level: " + Level);
+            sb.Append(" >> health: " + Health);
+            sb.Append(" >> maxHealth: " + MaxHealth);
+            sb.Append(" >> energy: " + Energy);
+            sb.Append(" >> maxEnergy: " + MaxEnergy);
 
-            sb.Append(" >> exp: " + exp);
-            sb.Append(" >> maxExp: " + maxExp);
+            sb.Append(" >> exp: " + Exp);
+            sb.Append(" >> maxExp: " + MaxExp);
 
-            if (partyLeader != null)
-                sb.Append(" >> partyLeader: " + partyLeader.Guid);
-            else
-                sb.Append(" >> partyLeader: none");
+            sb.Append(" >> partyLeader: " + PartyleaderGUID);
 
             int count = 1;
-            foreach (Player p in partymembers)
+            foreach (UInt64 guid in PartymemberGUIDs)
             {
-                if (p != null)
-                {
-                    sb.Append(" >> partymember" + count + ": " + p.Guid);
-                    count++;
-                }
+                sb.Append(" >> partymember" + count + ": " + guid);
+                count++;
             }
             return sb.ToString();
         }

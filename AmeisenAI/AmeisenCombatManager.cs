@@ -57,7 +57,7 @@ namespace AmeisenAI
             while (!stop)
             {
                 combatEngine.ExecuteNextStep();
-                Thread.Sleep(100);
+                Thread.Sleep(1000);
             }
         }
 

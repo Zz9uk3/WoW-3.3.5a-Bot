@@ -45,16 +45,16 @@
             Pos = me.pos;
             Rotation = me.Rotation;
 
-            Level = me.level;
+            Level = me.Level;
 
-            Health = me.health;
-            MaxHealth = me.maxHealth;
+            Health = me.Health;
+            MaxHealth = me.MaxHealth;
 
-            Energy = me.energy;
-            MaxEnergy = me.maxEnergy;
+            Energy = me.Energy;
+            MaxEnergy = me.MaxEnergy;
 
-            Exp = me.exp;
-            MaxExp = me.maxExp;
+            Exp = me.Exp;
+            MaxExp = me.MaxExp;
             return this;
         }
     }

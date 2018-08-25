@@ -5,18 +5,18 @@ namespace AmeisenUtilities
 {
     public partial class Unit : WoWObject
     {
-        public uint baseUnitFields;
+        public uint BaseUnitFields { get; set; }
 
-        public int combatReach;
-        public int channelSpell;
-        public int factionTemplate;
-        public int summonedBy;
+        public int CombatReach { get; set; }
+        public int ChannelSpell { get; set; }
+        public int FactionTemplate { get; set; }
+        public int SummonedBy { get; set; }
 
-        public int level;
-        public int health;
-        public int maxHealth;
-        public int energy;
-        public int maxEnergy;
+        public int Level { get; set; }
+        public int Health { get; set; }
+        public int MaxHealth { get; set; }
+        public int Energy { get; set; }
+        public int MaxEnergy { get; set; }
 
         public Unit(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
@@ -26,7 +26,7 @@ namespace AmeisenUtilities
         public override void Update()
         {
             base.Update();
-            baseUnitFields = BlackMagicInstance.ReadUInt(BaseAddress + 0x8);
+            BaseUnitFields = BlackMagicInstance.ReadUInt(BaseAddress + 0x8);
 
             pos.x = BlackMagicInstance.ReadFloat(BaseAddress + 0x798);
             pos.y = BlackMagicInstance.ReadFloat(BaseAddress + 0x79C);
@@ -40,16 +40,19 @@ namespace AmeisenUtilities
             }
             catch { }*/
 
-            summonedBy = BlackMagicInstance.ReadInt(baseUnitFields + (0xE * 4));
-            factionTemplate = BlackMagicInstance.ReadInt(baseUnitFields + (0x37 * 4));
-            level = BlackMagicInstance.ReadInt(baseUnitFields + (0x36 * 4));
-            health = BlackMagicInstance.ReadInt(baseUnitFields + (0x18 * 4));
-            maxHealth = BlackMagicInstance.ReadInt(baseUnitFields + (0x20 * 4));
-            energy = BlackMagicInstance.ReadInt(baseUnitFields + (0x19 * 4));
-            maxEnergy = BlackMagicInstance.ReadInt(baseUnitFields + (0x21 * 4));
-            combatReach = BlackMagicInstance.ReadInt(baseUnitFields + (0x42 * 4));
-            channelSpell = BlackMagicInstance.ReadInt(baseUnitFields + (0x16 * 4));
-            //guid = BlackMagic.ReadUInt64(baseUnitFields + (0x12 * 4));
+            try
+            {
+                SummonedBy = BlackMagicInstance.ReadInt(BaseUnitFields + (0xE * 4));
+                FactionTemplate = BlackMagicInstance.ReadInt(BaseUnitFields + (0x37 * 4));
+                Level = BlackMagicInstance.ReadInt(BaseUnitFields + (0x36 * 4));
+                Health = BlackMagicInstance.ReadInt(BaseUnitFields + (0x18 * 4));
+                MaxHealth = BlackMagicInstance.ReadInt(BaseUnitFields + (0x20 * 4));
+                Energy = BlackMagicInstance.ReadInt(BaseUnitFields + (0x19 * 4));
+                MaxEnergy = BlackMagicInstance.ReadInt(BaseUnitFields + (0x21 * 4));
+                CombatReach = BlackMagicInstance.ReadInt(BaseUnitFields + (0x42 * 4));
+                ChannelSpell = BlackMagicInstance.ReadInt(BaseUnitFields + (0x16 * 4));
+            }
+            catch { }
 
             try
             {
@@ -77,7 +80,7 @@ namespace AmeisenUtilities
 
             sb.Append("UNIT");
             sb.Append(" >> Address: " + BaseAddress.ToString("X"));
-            sb.Append(" >> UnitFields: " + baseUnitFields.ToString("X"));
+            sb.Append(" >> UnitFields: " + BaseUnitFields.ToString("X"));
             sb.Append(" >> Name: " + Name);
             sb.Append(" >> GUID: " + Guid);
             sb.Append(" >> PosX: " + pos.x);
@@ -93,14 +96,14 @@ namespace AmeisenUtilities
             else
                 sb.Append(" >> Target: null");*/
 
-            sb.Append(" >> combatReach: " + combatReach);
-            sb.Append(" >> channelSpell: " + channelSpell);
-            sb.Append(" >> factionTemplate: " + factionTemplate);
-            sb.Append(" >> level: " + level);
-            sb.Append(" >> health: " + health);
-            sb.Append(" >> maxHealth: " + maxHealth);
-            sb.Append(" >> energy: " + energy);
-            sb.Append(" >> maxEnergy: " + maxEnergy);
+            sb.Append(" >> combatReach: " + CombatReach);
+            sb.Append(" >> channelSpell: " + ChannelSpell);
+            sb.Append(" >> factionTemplate: " + FactionTemplate);
+            sb.Append(" >> level: " + Level);
+            sb.Append(" >> health: " + Health);
+            sb.Append(" >> maxHealth: " + MaxHealth);
+            sb.Append(" >> energy: " + Energy);
+            sb.Append(" >> maxEnergy: " + MaxEnergy);
 
             return sb.ToString();
         }

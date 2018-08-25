@@ -84,7 +84,9 @@ namespace AmeisenBotGUI
             checkBoxAssistPartyAttack.IsChecked = BotManager.Settings.behaviourAttack;
             checkBoxAssistPartyTank.IsChecked = BotManager.Settings.behaviourTank;
             checkBoxAssistPartyHeal.IsChecked = BotManager.Settings.behaviourHeal;
+
             checkBoxFollowMaster.IsChecked = BotManager.Settings.followMaster;
+            AmeisenBotManager.Instance.FollowGroup = BotManager.Settings.followMaster;
         }
 
         private void Mainscreen_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -190,20 +192,20 @@ namespace AmeisenBotGUI
             {
                 try
                 {
-                    labelName.Content = BotManager.Me.Name + " lvl." + BotManager.Me.level;
+                    labelName.Content = BotManager.Me.Name + " lvl." + BotManager.Me.Level;
                     //labelCasting.Content = "Casting: " + me.currentState;
 
                     //labelHP.Content = "HP [" + me.health + "/" + me.maxHealth + "]";
-                    progressBarHP.Maximum = BotManager.Me.maxHealth;
-                    progressBarHP.Value = BotManager.Me.health;
+                    progressBarHP.Maximum = BotManager.Me.MaxHealth;
+                    progressBarHP.Value = BotManager.Me.Health;
 
                     //labelEnergy.Content = "Energy [" + me.energy + "/" + me.maxEnergy + "]";
-                    progressBarEnergy.Maximum = BotManager.Me.maxEnergy;
-                    progressBarEnergy.Value = BotManager.Me.energy;
+                    progressBarEnergy.Maximum = BotManager.Me.MaxEnergy;
+                    progressBarEnergy.Value = BotManager.Me.Energy;
 
                     //labelXP.Content = "XP [" + me.exp + "/" + me.maxExp + "]";
-                    progressBarXP.Maximum = BotManager.Me.maxExp;
-                    progressBarXP.Value = BotManager.Me.exp;
+                    progressBarXP.Maximum = BotManager.Me.MaxExp;
+                    progressBarXP.Value = BotManager.Me.Exp;
 
                     /*labelPosition.Content =
                         "X: " + me.pos.x +
@@ -218,16 +220,16 @@ namespace AmeisenBotGUI
                 if (BotManager.Target != null)
                     try
                     {
-                        labelNameTarget.Content = BotManager.Target.Name + " lvl." + BotManager.Target.level;
+                        labelNameTarget.Content = BotManager.Target.Name + " lvl." + BotManager.Target.Level;
                         //labelCastingTarget.Content = "Current state: " + me.target.currentState;
 
                         //labelHPTarget.Content = "HP [" + me.target.health + "/" + me.target.maxHealth + "]";
-                        progressBarHPTarget.Maximum = BotManager.Target.maxHealth;
-                        progressBarHPTarget.Value = BotManager.Target.health;
+                        progressBarHPTarget.Maximum = BotManager.Target.MaxHealth;
+                        progressBarHPTarget.Value = BotManager.Target.Health;
 
                         //labelEnergyTarget.Content = "Energy [" + me.target.energy + "/" + me.target.maxEnergy + "]";
-                        progressBarEnergyTarget.Maximum = BotManager.Target.maxEnergy;
-                        progressBarEnergyTarget.Value = BotManager.Target.energy;
+                        progressBarEnergyTarget.Maximum = BotManager.Target.MaxEnergy;
+                        progressBarEnergyTarget.Value = BotManager.Target.Energy;
 
                         labelTargetDistance.Content = "Distance: " + BotManager.Target.Distance + "m";
 
@@ -268,5 +270,10 @@ namespace AmeisenBotGUI
         }
 
         #endregion UITimer
+
+        private void CheckBoxFollowMaster_Click(object sender, RoutedEventArgs e)
+        {
+            AmeisenBotManager.Instance.FollowGroup = (bool)checkBoxFollowMaster.IsChecked;
+        }
     }
 }

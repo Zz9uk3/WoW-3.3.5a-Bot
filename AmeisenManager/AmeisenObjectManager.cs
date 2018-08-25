@@ -71,10 +71,9 @@ namespace AmeisenManager
         /// <summary>
         /// Starts the ObjectUpdates
         /// </summary>
-        public void StartObjectUpdates()
+        public void Start()
         {
-            // Update our ObjectList AmeisenSettings.Instance.Settings.dataRefreshRate
-            objectUpdateTimer = new System.Timers.Timer(AmeisenSettings.Instance.Settings.dataRefreshRate);
+            objectUpdateTimer = new System.Timers.Timer(2000);
             objectUpdateTimer.Elapsed += ObjectUpdateTimer;
             objectUpdateThread = new Thread(new ThreadStart(() => { objectUpdateTimer.Start(); }));
             objectUpdateThread.Start();
@@ -83,7 +82,7 @@ namespace AmeisenManager
         /// <summary>
         /// Stops the ObjectUpdates
         /// </summary>
-        public void StopObjectUpdates()
+        public void Stop()
         {
             objectUpdateTimer.Stop();
             objectUpdateThread.Join();
@@ -130,14 +129,31 @@ namespace AmeisenManager
             new Thread(new ThreadStart(RefreshObjects)).Start();
         }
 
+        /// <summary>
+        /// Refresh the Me Object
+        /// </summary>
         public void RefreshMe()
         {
             Me = AmeisenCore.AmeisenCore.ReadMe(Me.BaseAddress);
         }
 
+        /// <summary>
+        /// Return a Player by the given GUID
+        /// </summary>
+        /// <param name="guid">guid of the player you want to get</param>
+        /// <returns>Player that you want to get</returns>
+        public WoWObject GetWoWObjectFromGUID(UInt64 guid)
+        {
+            foreach (WoWObject p in ActiveWoWObjects)
+                    if (p.Guid == guid)
+                        return p;
+
+            return null;
+        }
+
         private void RefreshObjects()
         {
-            ActiveWoWObjects = AmeisenCore.AmeisenCore.RefreshAllWoWObjects();
+            ActiveWoWObjects = AmeisenCore.AmeisenCore.GetAllWoWObjects();
 
             foreach (WoWObject m in ActiveWoWObjects)
                 if (m.GetType() == typeof(Me))
@@ -147,25 +163,30 @@ namespace AmeisenManager
                 }
 
             foreach (WoWObject t in ActiveWoWObjects)
-                if (t.Guid == Me.targetGUID)
-                    if (t.GetType() == typeof(Player))
-                    {
-                        t.Distance = Utils.GetDistance(Me.pos, t.pos);
-                        Target = (Player)t;
-                        break;
-                    }
-                    else if (t.GetType() == typeof(Unit))
-                    {
-                        t.Distance = Utils.GetDistance(Me.pos, t.pos);
-                        Target = (Unit)t;
-                        break;
-                    }
-                    else if (t.GetType() == typeof(Me))
-                    {
-                        t.Distance = Utils.GetDistance(Me.pos, t.pos);
-                        Target = (Me)t;
-                        break;
-                    }
+                if (t != null && Me != null)
+                    if (t.Guid == Me.TargetGUID)
+                        if (t.GetType() == typeof(Player))
+                        {
+                            t.Distance = Utils.GetDistance(Me.pos, t.pos);
+                            Target = (Player)t;
+                            break;
+                        }
+                        else if (t.GetType() == typeof(Unit))
+                        {
+                            t.Distance = Utils.GetDistance(Me.pos, t.pos);
+                            Target = (Unit)t;
+                            break;
+                        }
+                        else if (t.GetType() == typeof(Me))
+                        {
+                            t.Distance = Utils.GetDistance(Me.pos, t.pos);
+                            Target = (Me)t;
+                            break;
+                        }
+            // Best place for this :^)
+            AntiAFK();
         }
+
+        private void AntiAFK() { AmeisenCore.AmeisenCore.AntiAFK(); }
     }
 }

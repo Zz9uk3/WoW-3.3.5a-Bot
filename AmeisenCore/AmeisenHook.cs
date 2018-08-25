@@ -144,7 +144,7 @@ namespace AmeisenCore
         public byte[] InjectAndExecute(string[] asm)
         {
             while (isInjectionUsed)
-                Thread.Sleep(5);
+                Thread.Sleep(50);
 
             isInjectionUsed = true;
 
@@ -161,7 +161,7 @@ namespace AmeisenCore
             AmeisenCore.Blackmagic.Asm.Inject(codeCaveForInjection);
 
             while (AmeisenCore.Blackmagic.ReadInt(codeToExecute) > 0)
-                Thread.Sleep(5);
+                Thread.Sleep(50);
 
             byte buffer = new Byte();
             List<byte> returnBytes = new List<byte>();

@@ -16,7 +16,9 @@ namespace AmeisenCore
     /// </summary>
     public abstract class AmeisenCore
     {
-        // - Imports for the SendMessage Windows interactions
+        public static BlackMagic Blackmagic { get; set; }
+
+        #region DllImports
         [DllImport("user32.dll")]
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
@@ -25,11 +27,9 @@ namespace AmeisenCore
 
         [DllImport("user32.dll")]
         public static extern IntPtr PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        #endregion
 
-        // - Imports for the SendMessage Windows interactions
-
-        public static BlackMagic Blackmagic { get; set; }
-
+        #region Getables
         /// <summary>
         /// Returns the running WoW's in a WoWExe List
         /// containing the logged in playername and Process object.
@@ -55,6 +55,40 @@ namespace AmeisenCore
             return wows;
         }
 
+        /// <summary>
+        /// Reads all WoWObject out of WoW's ObjectManager
+        /// </summary>
+        /// <returns>all WoWObjects in WoW Manager</returns>
+        public static List<WoWObject> GetAllWoWObjects()
+        {
+            List<WoWObject> objects = new List<WoWObject>();
+
+            uint currentObjectManager = Blackmagic.ReadUInt(WoWOffsets.currentClientConnection);
+            currentObjectManager = Blackmagic.ReadUInt(currentObjectManager + WoWOffsets.currentManagerOffset);
+
+            uint activeObj = Blackmagic.ReadUInt(currentObjectManager + WoWOffsets.firstObjectOffset);
+            uint objType = Blackmagic.ReadUInt(activeObj + WoWOffsets.gameobjectTypeOffset);
+
+            UInt64 myGUID = ReadPlayerGUID();
+
+            // loop through the objects until an object is bigger than 7 or lower than 1, that means we got all objects
+            while (objType <= 7 && objType > 0)
+            {
+                WoWObject wowObject = ReadWoWObjectFromWoW(activeObj, (WoWObjectType)objType);
+
+                wowObject.Update();
+
+                objects.Add(wowObject);
+
+                activeObj = Blackmagic.ReadUInt(activeObj + WoWOffsets.nextObjectOffset);
+                objType = Blackmagic.ReadUInt(activeObj + WoWOffsets.gameobjectTypeOffset);
+            }
+
+            return objects;
+        }
+        #endregion
+
+        #region Movement Interaction stuff
         /// <summary>
         /// Move the Player to the given x, y and z coordinates.
         /// </summary>
@@ -98,7 +132,9 @@ namespace AmeisenCore
             Blackmagic.WriteInt(WoWOffsets.ctmAction, (int)action);
             Blackmagic.WriteFloat(WoWOffsets.ctmDistance, distance);
         }
+        #endregion
 
+        #region Hook stuff
         /// <summary>
         /// Execute the given LUA command inside WoW's MainThread
         /// </summary>
@@ -202,35 +238,9 @@ namespace AmeisenCore
 
             return 0;
         }
+        #endregion
 
-        public static List<WoWObject> RefreshAllWoWObjects()
-        {
-            List<WoWObject> objects = new List<WoWObject>();
-
-            uint currentObjectManager = Blackmagic.ReadUInt(WoWOffsets.currentClientConnection);
-            currentObjectManager = Blackmagic.ReadUInt(currentObjectManager + WoWOffsets.currentManagerOffset);
-
-            uint activeObj = Blackmagic.ReadUInt(currentObjectManager + WoWOffsets.firstObjectOffset);
-            uint objType = Blackmagic.ReadUInt(activeObj + WoWOffsets.gameobjectTypeOffset);
-
-            UInt64 myGUID = GetPlayerGUID();
-
-            // loop through the objects until an object is bigger than 7 or lower than 1, that means we got all objects
-            while (objType <= 7 && objType > 0)
-            {
-                WoWObject wowObject = ReadWoWObjectFromWoW(activeObj, (WoWObjectType)objType);
-
-                wowObject.Update();
-
-                objects.Add(wowObject);
-
-                activeObj = Blackmagic.ReadUInt(activeObj + WoWOffsets.nextObjectOffset);
-                objType = Blackmagic.ReadUInt(activeObj + WoWOffsets.gameobjectTypeOffset);
-            }
-
-            return objects;
-        }
-
+        #region Reads
         /// <summary>
         /// Get the current state of the bots character including its target
         /// </summary>
@@ -273,28 +283,8 @@ namespace AmeisenCore
                 case WoWObjectType.PLAYER:
                     Player obj = new Player(baseAddress, Blackmagic);
 
-                    if (obj.Guid == GetPlayerGUID())
-                    {
-                        Me meObj = new Me(baseAddress, Blackmagic);
-
-                        UInt64 leaderGUID = Blackmagic.ReadUInt64((WoWOffsets.partyLeader));
-                        if (leaderGUID != 0)
-                        {
-                            meObj.partymembers.Add((Unit)ReadWoWObjectFromWoW(WoWOffsets.partyPlayer1, WoWObjectType.UNIT));
-                            meObj.partymembers.Add((Unit)ReadWoWObjectFromWoW(WoWOffsets.partyPlayer2, WoWObjectType.UNIT));
-                            meObj.partymembers.Add((Unit)ReadWoWObjectFromWoW(WoWOffsets.partyPlayer3, WoWObjectType.UNIT));
-                            meObj.partymembers.Add((Unit)ReadWoWObjectFromWoW(WoWOffsets.partyPlayer4, WoWObjectType.UNIT));
-
-                            foreach (Unit u in meObj.partymembers)
-                                if (u != null)
-                                    if (u.Guid == leaderGUID)
-                                    {
-                                        meObj.partyLeader = u;
-                                        meObj.partyLeader.Distance = Utils.GetDistance(meObj.pos, meObj.partyLeader.pos);
-                                    }
-                        }
-                        return meObj;
-                    }
+                    if (obj.Guid == ReadPlayerGUID())
+                        return new Me(baseAddress, Blackmagic);
 
                     return obj;
 
@@ -311,7 +301,7 @@ namespace AmeisenCore
         /// Get the bot's char's GUID
         /// </summary>
         /// <returns>the GUID</returns>
-        public static UInt64 GetPlayerGUID()
+        public static UInt64 ReadPlayerGUID()
         {
             return Blackmagic.ReadUInt64(WoWOffsets.localPlayerGUID);
         }
@@ -320,11 +310,13 @@ namespace AmeisenCore
         /// Get the bot's char's target's GUID
         /// </summary>
         /// <returns>guid</returns>
-        public static UInt64 GetTargetGUID()
+        public static UInt64 ReadTargetGUID()
         {
             return Blackmagic.ReadUInt64(WoWOffsets.localTargetGUID);
         }
+        #endregion
 
+        #region Misc
         /// <summary>
         /// AntiAFK
         /// </summary>
@@ -350,7 +342,9 @@ namespace AmeisenCore
         {
             return false;
         }
+        #endregion
 
+        #region LUA stuff
         /// <summary>
         /// Cast a spell by its name
         /// </summary>
@@ -451,7 +445,9 @@ namespace AmeisenCore
             try { if (int.Parse(GetLocalizedText("isFriendly")) == 1) isFriendly = true; else isFriendly = false; } catch { isFriendly = false; }
             return isFriendly;
         }
+        #endregion
 
+        #region KeyInteractions
         /// <summary>
         /// Let the bot jump by pressing the spacebar once for 20-40ms
         ///
@@ -475,5 +471,6 @@ namespace AmeisenCore
             Thread.Sleep(new Random().Next(20, 40)); // make it look more human-like :^)
             SendMessage(windowHandle, KEYUP, new IntPtr(0x20), new IntPtr(0));
         }
+        #endregion
     }
 }

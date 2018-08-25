@@ -168,7 +168,7 @@ namespace AmeisenAI
         /// Call this to start our bots "brain" and get things up and running inside the bot.
         /// </summary>
         /// <param name="threadCount">how many "Brain-Thread's" should our bot get</param>
-        public void StartAI(int threadCount)
+        public void Start(int threadCount)
         {
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Starting AI", this);
             if (!aiActive)
@@ -189,7 +189,7 @@ namespace AmeisenAI
         /// <summary>
         /// Stop the bots "brain" it won't process actions if its stopped.
         /// </summary>
-        public void StopAI()
+        public void Stop()
         {
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Stopping AI", this);
             if (aiActive)
@@ -259,9 +259,6 @@ namespace AmeisenAI
             return bThreads;
         }
 
-        private double lastDistance;
-        private Vector3 lastPosition = new Vector3 { x = float.MaxValue, y = float.MaxValue, z = float.MaxValue };
-
         /// <summary>
         /// Modify our go-to-position by a small factor to provide "naturality"
         /// </summary>
@@ -276,9 +273,9 @@ namespace AmeisenAI
             return new Vector3 { x = targetPos.x + factorX, y = targetPos.y + factorY, z = targetPos.z };
         }
 
-        private void CheckIfWeAreStuckIfYesJump(double activeDistance)
+        private void CheckIfWeAreStuckIfYesJump(Vector3 initialPosition, Vector3 activePosition)
         {
-            if (activeDistance * 0.9 >= lastDistance)
+            if (Utils.GetDistance(initialPosition, activePosition) < 1)
                 AmeisenCore.AmeisenCore.CharacterJumpAsync();
             // Here comes the Obstacle-Avoid-System in the future
         }
@@ -289,18 +286,18 @@ namespace AmeisenAI
 
             if (distanceToPoint > distance * 2)
             {
-                CheckIfWeAreStuckIfYesJump(distanceToPoint); // Stuck check, if we haven't moved since the last iteration, jump
-
+                Me.Update();
+                Vector3 initialPosition = Me.pos;
                 Vector3 posToGoTo = CalculatePosToGoTo(position, (int)distance);
                 AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoTo, Interaction.MOVE);
 
                 // Let the character run to prevent random jumping
-                Thread.Sleep(500);
+                Thread.Sleep(200);
 
-                // recalculate
-                distanceToPoint = Utils.GetDistance(Me.pos, position);
-                lastPosition = Me.pos;
-                lastDistance = distanceToPoint;
+                Me.Update();
+                Vector3 activePosition = Me.pos;
+                // Stuck check, if we haven't moved since the last iteration, jump
+                CheckIfWeAreStuckIfYesJump(initialPosition, activePosition);
             }
             else
                 ameisenAction.ActionIsDone();
@@ -312,18 +309,18 @@ namespace AmeisenAI
 
             if (distanceToPoint > distance)
             {
-                //CheckIfWeAreStuckIfYesJump(distanceToPoint); // Stuck check, if we haven't moved since the last iteration, jump
-
+                Me.Update();
+                Vector3 initialPosition = Me.pos;
                 Vector3 posToGoTo = CalculatePosToGoTo(position, (int)distance);
                 AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoTo, Interaction.MOVE);
 
                 // Let the character run to prevent random jumping
-                Thread.Sleep(500);
+                Thread.Sleep(200);
 
-                // recalculate
-                distanceToPoint = Utils.GetDistance(Me.pos, position);
-                lastPosition = Me.pos;
-                lastDistance = distanceToPoint;
+                Me.Update();
+                Vector3 activePosition = Me.pos;
+                // Stuck check, if we haven't moved since the last iteration, jump
+                CheckIfWeAreStuckIfYesJump(initialPosition, activePosition);
             }
             else
             {
@@ -350,16 +347,18 @@ namespace AmeisenAI
             }
             else if (Target.Distance < 3) // Check If we are standing to near to the current target to trigger the CTM-Action
             {
-                CheckIfWeAreStuckIfYesJump(Target.Distance);
-
+                Me.Update();
+                Vector3 initialPosition = Me.pos;
                 Vector3 posToGoToToMakeSureTheInteractionGetsFired = CalculatePosToGoTo(Target.pos, 16);
                 AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoToToMakeSureTheInteractionGetsFired, Interaction.MOVE);
 
                 // Let the character run
                 Thread.Sleep(2000);
 
-                lastPosition = Me.pos;
-                lastDistance = Target.Distance;
+                Me.Update();
+                Vector3 activePosition = Me.pos;
+                // Stuck check, if we haven't moved since the last iteration, jump
+                CheckIfWeAreStuckIfYesJump(initialPosition, activePosition);
             }
             else
                 ameisenAction.ActionIsDone();

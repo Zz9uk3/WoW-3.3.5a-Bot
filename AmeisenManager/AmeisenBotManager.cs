@@ -4,6 +4,7 @@ using AmeisenData;
 using AmeisenLogging;
 using AmeisenUtilities;
 using Magic;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
@@ -18,6 +19,7 @@ namespace AmeisenManager
         private static AmeisenBotManager instance;
         private static readonly object padlock = new object();
 
+        #region Instances
         public BlackMagic Blackmagic { get; private set; }
         public AmeisenSettings AmeisenSettings { get; private set; }
         public AmeisenCombatManager AmeisenCombatManager { get; private set; }
@@ -25,14 +27,19 @@ namespace AmeisenManager
         public AmeisenObjectManager AmeisenObjectManager { get; private set; }
         public AmeisenClient AmeisenClient { get; private set; }
         public AmeisenHook AmeisenHook { get; private set; }
+        public AmeisenFollowManager AmeisenFollowManager { get; private set; }
+        #endregion
 
+        #region Fields
         public Me Me { get { return AmeisenDataHolder.Instance.Me; } }
         public Unit Target { get { return AmeisenDataHolder.Instance.Target; } }
         public List<WoWObject> ActiveWoWObjects { get { return AmeisenDataHolder.Instance.ActiveWoWObjects; } }
 
         public WoWExe WowExe { get; private set; }
         public Process WowProcess { get; private set; }
+        #endregion
 
+        #region StateFields
         public bool IsAttached { get; private set; }
         public bool IsHooked { get; private set; }
 
@@ -45,7 +52,9 @@ namespace AmeisenManager
         public bool IsSupposedToAttack { get; set; }
         public bool IsSupposedToTank { get; set; }
         public bool IsSupposedToHeal { get; set; }
+        #endregion
 
+        #region SingletonStuff
         private AmeisenBotManager()
         {
             IsAttached = false;
@@ -67,7 +76,9 @@ namespace AmeisenManager
                 }
             }
         }
+        #endregion
 
+        #region BotActions
         public void StartBot(WoWExe wowExe)
         {
             WowExe = wowExe;
@@ -87,26 +98,23 @@ namespace AmeisenManager
 
             // Start our object updates
             AmeisenObjectManager = AmeisenObjectManager.Instance;
-            AmeisenObjectManager.StartObjectUpdates();
+            AmeisenObjectManager.Start();
 
             // Start the AI
             AmeisenAIManager = AmeisenAIManager.Instance;
-            AmeisenAIManager.StartAI(AmeisenSettings.Settings.botMaxThreads);
+            AmeisenAIManager.Start(AmeisenSettings.Settings.botMaxThreads);
 
             // Start the combatmanager
             AmeisenCombatManager = AmeisenCombatManager.Instance;
             AmeisenCombatManager.Start();
 
-            // TODO vvvv
-            //AmeisenCore.AmeisenCore.AntiAFK();
+            // Start Follow Engine
+            AmeisenFollowManager = AmeisenFollowManager.Instance;
+            AmeisenFollowManager.Start();
 
             // Connect to Server
             // TODO: Move into settings
             AmeisenClient.Register(Me, IPAddress.Parse("127.0.0.1"));
-        }
-
-        public void NoAction()
-        {
         }
 
         public void StopBot()
@@ -115,13 +123,16 @@ namespace AmeisenManager
             AmeisenClient.Unregister();
 
             // Stop object updates
-            AmeisenObjectManager.StopObjectUpdates();
+            AmeisenObjectManager.Stop();
 
             // Stop the combatmanager
             AmeisenCombatManager.Stop();
 
+            // Stop the Follow Engine
+            AmeisenFollowManager.Stop();
+
             // Stop the AI
-            AmeisenAIManager.StopAI();
+            AmeisenAIManager.Stop();
 
             // Unhook the EndScene
             AmeisenHook.DisposeHooking();
@@ -133,8 +144,6 @@ namespace AmeisenManager
             AmeisenLogger.Instance.StopLogging();
         }
 
-        public List<WoWExe> RunningWoWs { get { return AmeisenCore.AmeisenCore.GetRunningWoWs(); } }
-
         public void LoadCombatClass(string fileName)
         {
             AmeisenSettings.Settings.combatClassPath = fileName;
@@ -143,22 +152,37 @@ namespace AmeisenManager
             AmeisenCombatManager.ReloadCombatClass();
         }
 
+        private bool followGroup;
+        public bool FollowGroup
+        {
+            get { return followGroup; }
+            set
+            {
+                followGroup = value;
+
+                if (value == true)
+                    foreach (UInt64 guid in Me.PartymemberGUIDs)
+                        AmeisenFollowManager.AddPlayerToFollow((Unit)AmeisenObjectManager.GetWoWObjectFromGUID(guid));
+                else
+                    AmeisenFollowManager.RemoveAllPlayersToFollow();
+            }
+        }
+        #endregion
+
+        #region Retriveables
+        public List<WoWExe> RunningWoWs { get { return AmeisenCore.AmeisenCore.GetRunningWoWs(); } }
+
         public bool IsBotIngame()
         {
             return AmeisenCore.AmeisenCore.CheckWorldLoaded()
                && !AmeisenCore.AmeisenCore.CheckLoadingScreen();
         }
 
-        public bool FollowGroup
-        {
-            get { return FollowGroup; }
-            set { FollowGroup = value; /*Add Follow code here*/ }
-        }
-
         public List<Bot> GetNetworkBots()
         {
             if (AmeisenClient.IsRegistered) return AmeisenClient.BotList; else return null;
         }
+        #endregion
 
         #region Objects
 

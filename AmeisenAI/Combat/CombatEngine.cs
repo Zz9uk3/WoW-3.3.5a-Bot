@@ -95,21 +95,20 @@ namespace AmeisenAI
             if (Me == null)
                 return false;
 
-            /*if (entry.CombatOnly)
+            if (entry.CombatOnly)
                 if (!AmeisenCore.AmeisenCore.GetCombatState(true))
                 {
-                    //Thread.Sleep(100);
                     if (!AmeisenCore.AmeisenCore.IsTargetFriendly())
                     {
                         return false;
                     }
-                }*/
+                }
 
             bool isMeeleeSpell = entry.MaxSpellDistance < 3.2 ? true : false;
 
             if (!entry.IsBuff && !entry.IsForMyself)
             {
-                if (Me.targetGUID == 0)
+                if (Me.TargetGUID == 0)
                     return false;
 
                 if (Target.Distance > entry.MaxSpellDistance)
@@ -147,15 +146,15 @@ namespace AmeisenAI
             switch (condition.conditionValues[0])
             {
                 case CombatLogicValues.MYSELF_HP:
-                    value1 = Me.health;
+                    value1 = Me.Health;
                     break;
 
                 case CombatLogicValues.MYSELF_ENERGY:
-                    value1 = Me.energy;
+                    value1 = Me.Energy;
                     break;
 
                 case CombatLogicValues.TARGET_HP:
-                    value1 = Target.health;
+                    value1 = Target.Health;
                     break;
 
                 default:
@@ -166,15 +165,15 @@ namespace AmeisenAI
                 switch (condition.conditionValues[1])
                 {
                     case CombatLogicValues.MYSELF_HP:
-                        value2 = Me.health;
+                        value2 = Me.Health;
                         break;
 
                     case CombatLogicValues.MYSELF_ENERGY:
-                        value2 = Me.energy;
+                        value2 = Me.Energy;
                         break;
 
                     case CombatLogicValues.TARGET_HP:
-                        value2 = Target.health;
+                        value2 = Target.Health;
                         break;
 
                     default:

@@ -59,7 +59,7 @@ namespace AmeisenUtilities
 
             sb.Append("PLAYER");
             sb.Append(" >> Address: " + BaseAddress.ToString("X"));
-            sb.Append(" >> UnitFields: " + baseUnitFields.ToString("X"));
+            sb.Append(" >> UnitFields: " + BaseUnitFields.ToString("X"));
             sb.Append(" >> Name: " + Name);
             sb.Append(" >> GUID: " + Guid);
             sb.Append(" >> PosX: " + pos.x);
@@ -75,14 +75,14 @@ namespace AmeisenUtilities
             else
                 sb.Append(" >> Target: null");*/
 
-            sb.Append(" >> combatReach: " + combatReach);
-            sb.Append(" >> channelSpell: " + channelSpell);
-            sb.Append(" >> factionTemplate: " + factionTemplate);
-            sb.Append(" >> level: " + level);
-            sb.Append(" >> health: " + health);
-            sb.Append(" >> maxHealth: " + maxHealth);
-            sb.Append(" >> energy: " + energy);
-            sb.Append(" >> maxEnergy: " + maxEnergy);
+            sb.Append(" >> combatReach: " + CombatReach);
+            sb.Append(" >> channelSpell: " + ChannelSpell);
+            sb.Append(" >> factionTemplate: " + FactionTemplate);
+            sb.Append(" >> level: " + Level);
+            sb.Append(" >> health: " + Health);
+            sb.Append(" >> maxHealth: " + MaxHealth);
+            sb.Append(" >> energy: " + Energy);
+            sb.Append(" >> maxEnergy: " + MaxEnergy);
 
             return sb.ToString();
         }
