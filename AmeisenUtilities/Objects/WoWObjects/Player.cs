@@ -14,7 +14,9 @@ namespace AmeisenUtilities
         public override void Update()
         {
             base.Update();
-            try { Name = GetPlayerNameFromGuid(Guid); } catch { }
+
+            if (Name == null)
+                try { Name = GetPlayerNameFromGuid(Guid); } catch { }
         }
 
         /// <summary>

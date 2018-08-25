@@ -27,13 +27,11 @@ namespace AmeisenManager
             get { return AmeisenDataHolder.Instance.Me; }
             set { AmeisenDataHolder.Instance.Me = value; }
         }
-
         private Unit Target
         {
             get { return AmeisenDataHolder.Instance.Target; }
             set { AmeisenDataHolder.Instance.Target = value; }
         }
-
         private List<WoWObject> ActiveWoWObjects
         {
             get { return AmeisenDataHolder.Instance.ActiveWoWObjects; }
@@ -45,11 +43,11 @@ namespace AmeisenManager
         private System.Timers.Timer objectUpdateTimer;
         private Thread objectUpdateThread;
 
+        #region Singleton stuff
         private AmeisenObjectManager()
         {
             RefreshObjects();
         }
-
         public static AmeisenObjectManager Instance
         {
             get
@@ -62,6 +60,7 @@ namespace AmeisenManager
                 }
             }
         }
+        #endregion
 
         private void ObjectUpdateTimer(object source, ElapsedEventArgs e)
         {

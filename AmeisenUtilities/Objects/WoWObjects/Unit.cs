@@ -26,7 +26,12 @@ namespace AmeisenUtilities
         public override void Update()
         {
             base.Update();
-            BaseUnitFields = BlackMagicInstance.ReadUInt(BaseAddress + 0x8);
+
+            if (BaseUnitFields == 0)
+                BaseUnitFields = BlackMagicInstance.ReadUInt(BaseAddress + 0x8);
+
+            if (Name == null)
+                try { Name = GetMobNameFromBase(BaseAddress); } catch { }
 
             pos.x = BlackMagicInstance.ReadFloat(BaseAddress + 0x798);
             pos.y = BlackMagicInstance.ReadFloat(BaseAddress + 0x79C);
@@ -42,21 +47,15 @@ namespace AmeisenUtilities
 
             try
             {
-                SummonedBy = BlackMagicInstance.ReadInt(BaseUnitFields + (0xE * 4));
-                FactionTemplate = BlackMagicInstance.ReadInt(BaseUnitFields + (0x37 * 4));
+                //SummonedBy = BlackMagicInstance.ReadInt(BaseUnitFields + (0xE * 4));
+                //FactionTemplate = BlackMagicInstance.ReadInt(BaseUnitFields + (0x37 * 4));
                 Level = BlackMagicInstance.ReadInt(BaseUnitFields + (0x36 * 4));
                 Health = BlackMagicInstance.ReadInt(BaseUnitFields + (0x18 * 4));
                 MaxHealth = BlackMagicInstance.ReadInt(BaseUnitFields + (0x20 * 4));
                 Energy = BlackMagicInstance.ReadInt(BaseUnitFields + (0x19 * 4));
                 MaxEnergy = BlackMagicInstance.ReadInt(BaseUnitFields + (0x21 * 4));
-                CombatReach = BlackMagicInstance.ReadInt(BaseUnitFields + (0x42 * 4));
-                ChannelSpell = BlackMagicInstance.ReadInt(BaseUnitFields + (0x16 * 4));
-            }
-            catch { }
-
-            try
-            {
-                Name = GetMobNameFromBase(BaseAddress);
+                //CombatReach = BlackMagicInstance.ReadInt(BaseUnitFields + (0x42 * 4));
+                //ChannelSpell = BlackMagicInstance.ReadInt(BaseUnitFields + (0x16 * 4));
             }
             catch { }
         }

@@ -25,13 +25,16 @@ namespace AmeisenUtilities
         {
             BaseAddress = baseAddress;
             BlackMagicInstance = blackMagic;
+
+            Guid = BlackMagicInstance.ReadUInt64(BaseAddress + 0x30);
+            MapID = BlackMagicInstance.ReadInt(WoWOffsets.mapID);
+            ZoneID = BlackMagicInstance.ReadInt(WoWOffsets.zoneID);
+
+            Update();
         }
 
         public virtual void Update()
         {
-            Guid = BlackMagicInstance.ReadUInt64(BaseAddress + 0x30);
-            MapID = BlackMagicInstance.ReadInt(WoWOffsets.mapID);
-            ZoneID = BlackMagicInstance.ReadInt(WoWOffsets.zoneID);
         }
 
         public override string ToString()

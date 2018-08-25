@@ -27,9 +27,13 @@ namespace AmeisenUtilities
         public override void Update()
         {
             base.Update();
-            PlayerBase = BlackMagicInstance.ReadUInt(WoWOffsets.playerBase);
-            PlayerBase = BlackMagicInstance.ReadUInt(PlayerBase + 0x34);
-            PlayerBase = BlackMagicInstance.ReadUInt(PlayerBase + 0x24);
+
+            if (PlayerBase == 0)
+            {
+                PlayerBase = BlackMagicInstance.ReadUInt(WoWOffsets.playerBase);
+                PlayerBase = BlackMagicInstance.ReadUInt(PlayerBase + 0x34);
+                PlayerBase = BlackMagicInstance.ReadUInt(PlayerBase + 0x24);
+            }
 
             Name = BlackMagicInstance.ReadASCIIString(WoWOffsets.playerName, 12);
             Exp = BlackMagicInstance.ReadInt(PlayerBase + 0x3794);
@@ -40,11 +44,12 @@ namespace AmeisenUtilities
             castingState = BlackMagicInstance.ReadUInt(castingState + WoWOffsets.localPlayerCharacterStateOffset1);
             castingState = BlackMagicInstance.ReadUInt(castingState + WoWOffsets.localPlayerCharacterStateOffset2);
             CurrentState = (UnitState)BlackMagicInstance.ReadInt(castingState + WoWOffsets.localPlayerCharacterStateOffset3);
+
             TargetGUID = BlackMagicInstance.ReadUInt64(BaseUnitFields + (0x12 * 4));
 
             PartymemberGUIDs = new List<UInt64>();
-
             PartyleaderGUID = BlackMagicInstance.ReadUInt64(WoWOffsets.partyLeader);
+
             if (PartyleaderGUID != 0)
             {
                 PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(WoWOffsets.partyPlayer1));
