@@ -72,9 +72,9 @@ namespace AmeisenManager
         /// </summary>
         public void Start()
         {
-            objectUpdateTimer = new System.Timers.Timer(2000);
+            objectUpdateTimer = new System.Timers.Timer(1000);
             objectUpdateTimer.Elapsed += ObjectUpdateTimer;
-            objectUpdateThread = new Thread(new ThreadStart(() => { objectUpdateTimer.Start(); }));
+            objectUpdateThread = new Thread(new ThreadStart(StartTimer));
             objectUpdateThread.Start();
         }
 
@@ -86,6 +86,8 @@ namespace AmeisenManager
             objectUpdateTimer.Stop();
             objectUpdateThread.Join();
         }
+
+        private void StartTimer() { objectUpdateTimer.Start(); }
 
         /// <summary>
         /// Refresh our bot's stats, you can get the stats by calling Me().
@@ -144,8 +146,8 @@ namespace AmeisenManager
         public WoWObject GetWoWObjectFromGUID(UInt64 guid)
         {
             foreach (WoWObject p in ActiveWoWObjects)
-                    if (p.Guid == guid)
-                        return p;
+                if (p.Guid == guid)
+                    return p;
 
             return null;
         }

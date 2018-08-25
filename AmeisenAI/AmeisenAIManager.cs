@@ -136,8 +136,6 @@ namespace AmeisenAI
                                 AmeisenCore.AmeisenCore.CastSpellByName((string)currentAction.GetActionParams(), false);
 
                                 Thread.Sleep(spellInfo.castTime + 500);
-                                IsAllowedToMove = true;
-
                                 currentAction.ActionIsDone();
                                 break;
 
@@ -292,7 +290,7 @@ namespace AmeisenAI
                 AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoTo, Interaction.MOVE);
 
                 // Let the character run to prevent random jumping
-                Thread.Sleep(200);
+                Thread.Sleep(300);
 
                 Me.Update();
                 Vector3 activePosition = Me.pos;
@@ -303,7 +301,7 @@ namespace AmeisenAI
                 ameisenAction.ActionIsDone();
         }
 
-        private void MoveNearPosition(Vector3 position, double distance, ref AmeisenAction ameisenAction)
+        private void MoveNearPosition(Vector3 position, double distance, ref AmeisenAction ameisenAction, bool shouldStopInRange = false)
         {
             double distanceToPoint = Utils.GetDistance(Me.pos, position);
 
@@ -312,10 +310,12 @@ namespace AmeisenAI
                 Me.Update();
                 Vector3 initialPosition = Me.pos;
                 Vector3 posToGoTo = CalculatePosToGoTo(position, (int)distance);
-                AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoTo, Interaction.MOVE);
+
+                if (IsAllowedToMove)
+                    AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoTo, Interaction.MOVE);
 
                 // Let the character run to prevent random jumping
-                Thread.Sleep(200);
+                Thread.Sleep(300);
 
                 Me.Update();
                 Vector3 activePosition = Me.pos;
@@ -324,12 +324,14 @@ namespace AmeisenAI
             }
             else
             {
-                Vector3 currentPosition = AmeisenDataHolder.Instance.Me.pos;
-
-                if (currentPosition.x != 0 && currentPosition.y != 0 && currentPosition.z != 0)
+                if (shouldStopInRange)
                 {
-                    AmeisenCore.AmeisenCore.MovePlayerToXYZ(currentPosition, Interaction.STOP);
+                    Vector3 currentPosition = AmeisenDataHolder.Instance.Me.pos;
+                    if (currentPosition.x != 0 && currentPosition.y != 0 && currentPosition.z != 0)
+                        AmeisenCore.AmeisenCore.MovePlayerToXYZ(currentPosition, Interaction.STOP);
                 }
+
+
                 ameisenAction.ActionIsDone();
             }
         }

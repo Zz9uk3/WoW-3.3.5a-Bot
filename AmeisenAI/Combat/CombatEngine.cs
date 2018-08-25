@@ -96,13 +96,17 @@ namespace AmeisenAI
                 return false;
 
             if (entry.CombatOnly)
+            {
                 if (!AmeisenCore.AmeisenCore.GetCombatState(true))
                 {
+                    AmeisenAIManager.Instance.IsAllowedToMove = true;
                     if (!AmeisenCore.AmeisenCore.IsTargetFriendly())
                     {
                         return false;
                     }
                 }
+                else { AmeisenAIManager.Instance.IsAllowedToMove = false; }
+            }
 
             bool isMeeleeSpell = entry.MaxSpellDistance < 3.2 ? true : false;
 

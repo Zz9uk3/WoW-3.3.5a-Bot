@@ -52,14 +52,22 @@ namespace AmeisenAI
 
                     foreach (Unit u in followUnitList)
                     {
+                        if (u == null)
+                            continue;
                         u.Update();
                         activeUnit = u;
                         break;
                     }
 
-                    if(activeUnit != null)
+                    if (activeUnit != null)
                     {
-                        AmeisenAction ameisenAction = new AmeisenAction(AmeisenActionType.MOVE_TO_POSITION, activeUnit.pos);
+                        AmeisenAction ameisenAction = new AmeisenAction(
+                            AmeisenActionType.MOVE_NEAR_TARGET,
+                            new object[] {
+                                activeUnit.pos,
+                                4.0 } // Follow distance
+                            );
+
                         AmeisenAIManager.Instance.AddActionToQueue(ref ameisenAction);
 
                         while (!ameisenAction.IsActionDone())
