@@ -5,9 +5,15 @@
     /// </summary>
     public class AmeisenAction
     {
-        private readonly AmeisenActionType actionType;
+        #region Private Fields
+
         private readonly object actionParams;
+        private readonly AmeisenActionType actionType;
         private bool isDone;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         /// <summary>
         /// Class to describe an action for the Brain-Threads to process
@@ -21,11 +27,14 @@
             isDone = false;
         }
 
+        #endregion Public Constructors
+
+        #region Public Methods
+
         /// <summary>
-        /// Return the AmeisenActionType of AmeisenAction
+        /// Flag the AmeisenAction as done, this allows it to be removed from the queue
         /// </summary>
-        /// <returns></returns>
-        public AmeisenActionType GetActionType() { return actionType; }
+        public void ActionIsDone() { isDone = true; }
 
         /// <summary>
         /// Get the parameters for our AmeisenAction
@@ -34,14 +43,17 @@
         public object GetActionParams() { return actionParams; }
 
         /// <summary>
-        /// Flag the AmeisenAction as done, this allows it to be removed from the queue
+        /// Return the AmeisenActionType of AmeisenAction
         /// </summary>
-        public void ActionIsDone() { isDone = true; }
+        /// <returns></returns>
+        public AmeisenActionType GetActionType() { return actionType; }
 
         /// <summary>
         /// Is the AmeisenAction done
         /// </summary>
         /// <returns>true when its done, false when there is still stuff to do</returns>
         public bool IsActionDone() { return isDone; }
+
+        #endregion Public Methods
     }
 }

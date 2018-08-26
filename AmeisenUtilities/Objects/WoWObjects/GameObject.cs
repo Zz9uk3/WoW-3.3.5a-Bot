@@ -5,27 +5,16 @@ namespace AmeisenUtilities
 {
     public class GameObject : WoWObject
     {
+        #region Public Constructors
+
         public GameObject(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
             Update();
         }
 
-        public override void Update()
-        {
-            base.Update();
+        #endregion Public Constructors
 
-            /*pos.x = BlackMagicInstance.ReadFloat(BaseAddress + 0x3C);
-            pos.y = BlackMagicInstance.ReadFloat(BaseAddress + 0x40);
-            pos.z = BlackMagicInstance.ReadFloat(BaseAddress + 0x44);
-            Rotation = BlackMagicInstance.ReadFloat(BaseAddress + 0x28);*/
-
-            // too cpu heavy
-            /*try
-            {
-                distance = Utils.GetDistance(pos, AmeisenManager.GetInstance().Me().pos);
-            }
-            catch { }*/
-        }
+        #region Public Methods
 
         public override string ToString()
         {
@@ -45,5 +34,24 @@ namespace AmeisenUtilities
 
             return sb.ToString();
         }
+
+        public override void Update()
+        {
+            base.Update();
+
+            /*pos.x = BlackMagicInstance.ReadFloat(BaseAddress + 0x3C);
+            pos.y = BlackMagicInstance.ReadFloat(BaseAddress + 0x40);
+            pos.z = BlackMagicInstance.ReadFloat(BaseAddress + 0x44);
+            Rotation = BlackMagicInstance.ReadFloat(BaseAddress + 0x28);*/
+
+            // too cpu heavy
+            /*try
+            {
+                distance = Utils.GetDistance(pos, AmeisenManager.GetInstance().Me().pos);
+            }
+            catch { }*/
+        }
+
+        #endregion Public Methods
     }
 }

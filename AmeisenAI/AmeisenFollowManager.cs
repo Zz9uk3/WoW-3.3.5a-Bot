@@ -6,16 +6,22 @@ namespace AmeisenAI
 {
     public class AmeisenFollowManager
     {
-        private static AmeisenFollowManager instance;
+        #region Private Fields
+
         private static readonly object padlock = new object();
-
-        private bool stop = false;
+        private static AmeisenFollowManager instance;
         private readonly Thread mainWorker;
-
         private List<Unit> followUnitList = new List<Unit>();
+        private bool stop = false;
+
+        #endregion Private Fields
 
         #region Singleton stuff
-        private AmeisenFollowManager() { mainWorker = new Thread(new ThreadStart(DoWork)); }
+
+        private AmeisenFollowManager()
+        {
+            mainWorker = new Thread(new ThreadStart(DoWork));
+        }
 
         /// <summary>
         /// Initialize/Get the instance of our singleton
@@ -33,14 +39,39 @@ namespace AmeisenAI
                 }
             }
         }
-        #endregion
 
-        public void Start() { mainWorker.Start(); }
-        public void Stop() { stop = true; mainWorker.Join(); }
+        #endregion Singleton stuff
 
-        public void AddPlayerToFollow(Unit unit) { followUnitList.Add(unit); }
-        public void RemovePlayerToFollow(Unit unit) { followUnitList.Remove(unit); }
-        public void RemoveAllPlayersToFollow() { followUnitList.Clear(); }
+        #region Public Methods
+
+        public void AddPlayerToFollow(Unit unit)
+        {
+            followUnitList.Add(unit);
+        }
+
+        public void RemoveAllPlayersToFollow()
+        {
+            followUnitList.Clear();
+        }
+
+        public void RemovePlayerToFollow(Unit unit)
+        {
+            followUnitList.Remove(unit);
+        }
+
+        public void Start()
+        {
+            mainWorker.Start();
+        }
+
+        public void Stop()
+        {
+            stop = true; mainWorker.Join();
+        }
+
+        #endregion Public Methods
+
+        #region Private Methods
 
         private void DoWork()
         {
@@ -78,5 +109,7 @@ namespace AmeisenAI
                 Thread.Sleep(50);
             }
         }
+
+        #endregion Private Methods
     }
 }

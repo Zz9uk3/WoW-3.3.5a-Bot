@@ -6,18 +6,16 @@ namespace AmeisenUtilities
 {
     public class Player : Unit
     {
+        #region Public Constructors
+
         public Player(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
             Update();
         }
 
-        public override void Update()
-        {
-            base.Update();
+        #endregion Public Constructors
 
-            if (Name == null)
-                try { Name = GetPlayerNameFromGuid(Guid); } catch { }
-        }
+        #region Public Methods
 
         /// <summary>
         /// Get a player's name from its GUID
@@ -77,7 +75,7 @@ namespace AmeisenUtilities
                 sb.Append(" >> Target: " + target.guid);
             else
                 sb.Append(" >> Target: null");*/
-                
+
             sb.Append(" >> level: " + Level);
             sb.Append(" >> health: " + Health);
             sb.Append(" >> maxHealth: " + MaxHealth);
@@ -86,5 +84,15 @@ namespace AmeisenUtilities
 
             return sb.ToString();
         }
+
+        public override void Update()
+        {
+            base.Update();
+
+            if (Name == null)
+                try { Name = GetPlayerNameFromGuid(Guid); } catch { }
+        }
+
+        #endregion Public Methods
     }
 }

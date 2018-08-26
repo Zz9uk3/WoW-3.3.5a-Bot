@@ -7,29 +7,6 @@ using System.Threading;
 
 namespace AmeisenCore
 {
-    public class HookJob
-    {
-        public string[] Asm { get; set; }
-        public bool IsFinished { get; set; }
-        public bool ReadReturnBytes { get; set; }
-        public object ReturnValue { get; set; }
-
-        public HookJob(string[] asm, bool readReturnBytes)
-        {
-            IsFinished = false;
-            Asm = asm;
-            ReadReturnBytes = readReturnBytes;
-            ReturnValue = null;
-        }
-    }
-
-    public class ReturnHookJob : HookJob
-    {
-        public HookJob ChainedJob { get; private set; }
-
-        public ReturnHookJob(string[] asm, bool readReturnBytes, HookJob chainedJob) : base(asm, readReturnBytes) { ChainedJob = chainedJob; }
-    }
-
     /// <summary>
     /// Class that manages the hooking of WoW's EndScene
     ///
@@ -37,8 +14,45 @@ namespace AmeisenCore
     /// </summary>
     public class AmeisenHook
     {
-        private static AmeisenHook instance;
+        #region Public Fields
+
+        public bool isHooked = false;
+        public bool isInjectionUsed = false;
+
+        #endregion Public Fields
+
+        #region Private Fields
+
         private static readonly object padlock = new object();
+        private static AmeisenHook instance;
+        private uint endsceneReturnAddress;
+        private ConcurrentQueue<HookJob> hookJobs;
+        private Thread hookWorker;
+
+        #endregion Private Fields
+
+        #region Codecaves
+
+        private uint codeCave;
+        private uint codeCaveForInjection;
+        private uint codeToExecute;
+        private uint returnAdress;
+
+        #endregion Codecaves
+
+        private byte[] originalEndscene = new byte[] { 0xB8, 0x51, 0xD7, 0xCA, 0x64 };
+
+        #region Singleton stuff
+
+        private AmeisenHook()
+        {
+            Hook();
+            hookJobs = new ConcurrentQueue<HookJob>();
+            hookWorker = new Thread(new ThreadStart(DoWork));
+
+            if (isHooked)
+                hookWorker.Start();
+        }
 
         public static AmeisenHook Instance
         {
@@ -53,33 +67,19 @@ namespace AmeisenCore
             }
         }
 
-        private Thread hookWorker;
-        private ConcurrentQueue<HookJob> hookJobs;
+        #endregion Singleton stuff
 
-        public bool isHooked = false;
-        public bool isInjectionUsed = false;
+        #region Worker stuff
 
-        private uint codeCave;
-        private uint codeCaveForInjection;
-        private uint codeToExecute;
-        private uint returnAdress;
-
-        private uint endsceneReturnAddress;
-
-        private byte[] originalEndscene = new byte[] { 0xB8, 0x51, 0xD7, 0xCA, 0x64 };
-
-        private AmeisenHook()
+        public void AddHookJob(ref HookJob hookJob)
         {
-            Hook();
-            hookJobs = new ConcurrentQueue<HookJob>();
-            hookWorker = new Thread(new ThreadStart(DoWork));
-
-            if (isHooked)
-                hookWorker.Start();
+            hookJobs.Enqueue(hookJob);
         }
 
-        public void AddHookJob(ref HookJob hookJob) { hookJobs.Enqueue(hookJob); }
-        public void AddHookJob(ref ReturnHookJob hookJob) { hookJobs.Enqueue(hookJob); }
+        public void AddHookJob(ref ReturnHookJob hookJob)
+        {
+            hookJobs.Enqueue(hookJob);
+        }
 
         private void DoWork()
         {
@@ -102,6 +102,32 @@ namespace AmeisenCore
                 }
                 Thread.Sleep(1);
             }
+        }
+
+        #endregion Worker stuff
+
+        #region Start, stop
+
+        public void DisposeHooking()
+        {
+            // Get D3D9 Endscene Pointer
+            uint endscene = GetEndScene();
+
+            uint endsceneHookOffset = 0x2;
+            endscene += endsceneHookOffset;
+
+            // Check if WoW is hooked
+            if (AmeisenCore.Blackmagic.ReadByte(endscene) == 0xE9)
+            {
+                AmeisenCore.Blackmagic.WriteBytes(endscene, originalEndscene);
+
+                AmeisenCore.Blackmagic.FreeMemory(codeCave);
+                AmeisenCore.Blackmagic.FreeMemory(codeToExecute);
+                AmeisenCore.Blackmagic.FreeMemory(codeCaveForInjection);
+            }
+
+            isHooked = false;
+            hookWorker.Join();
         }
 
         private void Hook()
@@ -178,26 +204,17 @@ namespace AmeisenCore
             }
         }
 
-        public void DisposeHooking()
+        #endregion Start, stop
+
+        #region EndScene stuff
+
+        private uint GetEndScene()
         {
-            // Get D3D9 Endscene Pointer
-            uint endscene = GetEndScene();
-
-            uint endsceneHookOffset = 0x2;
-            endscene += endsceneHookOffset;
-
-            // Check if WoW is hooked
-            if (AmeisenCore.Blackmagic.ReadByte(endscene) == 0xE9)
-            {
-                AmeisenCore.Blackmagic.WriteBytes(endscene, originalEndscene);
-
-                AmeisenCore.Blackmagic.FreeMemory(codeCave);
-                AmeisenCore.Blackmagic.FreeMemory(codeToExecute);
-                AmeisenCore.Blackmagic.FreeMemory(codeCaveForInjection);
-            }
-
-            isHooked = false;
-            hookWorker.Join();
+            uint pDevice = AmeisenCore.Blackmagic.ReadUInt(WoWOffsets.devicePtr1);
+            uint pEnd = AmeisenCore.Blackmagic.ReadUInt(pDevice + WoWOffsets.devicePtr2);
+            uint pScene = AmeisenCore.Blackmagic.ReadUInt(pEnd);
+            uint endscene = AmeisenCore.Blackmagic.ReadUInt(pScene + WoWOffsets.endScene);
+            return endscene;
         }
 
         private byte[] InjectAndExecute(string[] asm, bool readReturnBytes)
@@ -248,13 +265,62 @@ namespace AmeisenCore
             return new List<byte>().ToArray();
         }
 
-        private uint GetEndScene()
+        #endregion EndScene stuff
+    }
+
+    /// <summary>
+    /// Job to execute ASM code on the endscene hook
+    /// </summary>
+    public class HookJob
+    {
+        #region Public Constructors
+
+        /// <summary>
+        /// Build a job to execute on the endscene hook
+        /// </summary>
+        /// <param name="asm">ASM to execute</param>
+        /// <param name="readReturnBytes">read the return bytes</param>
+        public HookJob(string[] asm, bool readReturnBytes)
         {
-            uint pDevice = AmeisenCore.Blackmagic.ReadUInt(WoWOffsets.devicePtr1);
-            uint pEnd = AmeisenCore.Blackmagic.ReadUInt(pDevice + WoWOffsets.devicePtr2);
-            uint pScene = AmeisenCore.Blackmagic.ReadUInt(pEnd);
-            uint endscene = AmeisenCore.Blackmagic.ReadUInt(pScene + WoWOffsets.endScene);
-            return endscene;
+            IsFinished = false;
+            Asm = asm;
+            ReadReturnBytes = readReturnBytes;
+            ReturnValue = null;
         }
+
+        #endregion Public Constructors
+
+        #region Public Properties
+
+        public string[] Asm { get; set; }
+        public bool IsFinished { get; set; }
+        public bool ReadReturnBytes { get; set; }
+        public object ReturnValue { get; set; }
+
+        #endregion Public Properties
+    }
+
+    /// <summary>
+    /// At the moment used for GetLocalizedText, to chain-execute Jobs
+    /// </summary>
+    public class ReturnHookJob : HookJob
+    {
+        #region Public Constructors
+
+        /// <summary>
+        /// Build a job to execute on the endscene hook
+        /// </summary>
+        /// <param name="asm">ASM to execute</param>
+        /// <param name="readReturnBytes">read the return bytes</param>
+        /// <param name="chainedJob">Job to execute after running the main Job, for example GetLocalizedText stuff</param>
+        public ReturnHookJob(string[] asm, bool readReturnBytes, HookJob chainedJob) : base(asm, readReturnBytes) { ChainedJob = chainedJob; }
+
+        #endregion Public Constructors
+
+        #region Public Properties
+
+        public HookJob ChainedJob { get; private set; }
+
+        #endregion Public Properties
     }
 }

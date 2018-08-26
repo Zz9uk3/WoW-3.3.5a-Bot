@@ -15,8 +15,13 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class MainscreenForm : Window
     {
-        private AmeisenBotManager BotManager { get; }
+        #region Private Fields
+
         private DispatcherTimer uiUpdateTimer;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public MainscreenForm(WoWExe wowExe)
         {
@@ -27,6 +32,14 @@ namespace AmeisenBotGUI
             BotManager.LoadSettingsFromFile(wowExe.characterName);
             BotManager.StartBot(wowExe);
         }
+
+        #endregion Public Constructors
+
+        #region Private Properties
+
+        private AmeisenBotManager BotManager { get; }
+
+        #endregion Private Properties
 
         // -- Window state stuff
         // Minimize, Exit, FileDialogs
@@ -59,13 +72,18 @@ namespace AmeisenBotGUI
 
         #region WindowCallbacks
 
-        private void Mainscreen_MouseDown(object sender, MouseButtonEventArgs e)
+        private void ButtonRefreshBots_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                DragMove();
-            }
-            catch { }
+            UpdateNetworkPlayers();
+        }
+
+        private void Mainscreen_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            BotManager.Settings.behaviourAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
+            BotManager.Settings.behaviourTank = (bool)checkBoxAssistPartyTank.IsChecked;
+            BotManager.Settings.behaviourHeal = (bool)checkBoxAssistPartyHeal.IsChecked;
+            BotManager.Settings.followMaster = (bool)checkBoxFollowMaster.IsChecked;
+            BotManager.SaveSettingsToFile(BotManager.GetLoadedConfigName());
         }
 
         private void Mainscreen_Loaded(object sender, RoutedEventArgs e)
@@ -89,18 +107,13 @@ namespace AmeisenBotGUI
             AmeisenBotManager.Instance.FollowGroup = BotManager.Settings.followMaster;
         }
 
-        private void Mainscreen_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Mainscreen_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            BotManager.Settings.behaviourAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
-            BotManager.Settings.behaviourTank = (bool)checkBoxAssistPartyTank.IsChecked;
-            BotManager.Settings.behaviourHeal = (bool)checkBoxAssistPartyHeal.IsChecked;
-            BotManager.Settings.followMaster = (bool)checkBoxFollowMaster.IsChecked;
-            BotManager.SaveSettingsToFile(BotManager.GetLoadedConfigName());
-        }
-
-        private void ButtonRefreshBots_Click(object sender, RoutedEventArgs e)
-        {
-            UpdateNetworkPlayers();
+            try
+            {
+                DragMove();
+            }
+            catch { }
         }
 
         #endregion WindowCallbacks
@@ -110,9 +123,9 @@ namespace AmeisenBotGUI
 
         #region BotCombatStates
 
-        private void CheckBoxAssistPartyTank_Click(object sender, RoutedEventArgs e)
+        private void CheckBoxAssistPartyAttack_Click(object sender, RoutedEventArgs e)
         {
-            BotManager.IsSupposedToTank = (bool)checkBoxAssistPartyTank.IsChecked;
+            BotManager.IsSupposedToAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
         }
 
         private void CheckBoxAssistPartyHeal_Click(object sender, RoutedEventArgs e)
@@ -120,9 +133,9 @@ namespace AmeisenBotGUI
             BotManager.IsSupposedToAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
         }
 
-        private void CheckBoxAssistPartyAttack_Click(object sender, RoutedEventArgs e)
+        private void CheckBoxAssistPartyTank_Click(object sender, RoutedEventArgs e)
         {
-            BotManager.IsSupposedToAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
+            BotManager.IsSupposedToTank = (bool)checkBoxAssistPartyTank.IsChecked;
         }
 
         #endregion BotCombatStates
@@ -132,14 +145,14 @@ namespace AmeisenBotGUI
 
         #region DebugStuff
 
-        private void ButtonMoveToTarget_Click(object sender, RoutedEventArgs e)
-        {
-            BotManager.AddActionToAIQueue(new AmeisenAction(AmeisenActionType.MOVE_TO_POSITION, null));
-        }
-
         private void ButtonMoveInteractTarget_Click(object sender, RoutedEventArgs e)
         {
             BotManager.AddActionToAIQueue(new AmeisenAction(AmeisenActionType.INTERACT_TARGET, (AmeisenActionType)comboboxInteraction.SelectedItem));
+        }
+
+        private void ButtonMoveToTarget_Click(object sender, RoutedEventArgs e)
+        {
+            BotManager.AddActionToAIQueue(new AmeisenAction(AmeisenActionType.MOVE_TO_POSITION, null));
         }
 
         #endregion DebugStuff
@@ -149,9 +162,9 @@ namespace AmeisenBotGUI
 
         #region ExternalWindows
 
-        private void ButtonSettings_Click(object sender, RoutedEventArgs e)
+        private void ButtonCobatClassEditor_Click(object sender, RoutedEventArgs e)
         {
-            new SettingsWindow().ShowDialog();
+            new CombatClassEditor().Show();
         }
 
         private void ButtonExtendedDebugUI_Click(object sender, RoutedEventArgs e)
@@ -159,9 +172,9 @@ namespace AmeisenBotGUI
             new DebugUI().Show();
         }
 
-        private void ButtonCobatClassEditor_Click(object sender, RoutedEventArgs e)
+        private void ButtonSettings_Click(object sender, RoutedEventArgs e)
         {
-            new CombatClassEditor().Show();
+            new SettingsWindow().ShowDialog();
         }
 
         #endregion ExternalWindows
@@ -175,6 +188,14 @@ namespace AmeisenBotGUI
         {
             if (BotManager.IsBotIngame())
                 UpdateUI();
+        }
+
+        private void UpdateNetworkPlayers()
+        {
+            listViewNetworkBots.Items.Clear();
+            if (BotManager.GetNetworkBots() != null)
+                foreach (Bot bot in BotManager.GetNetworkBots())
+                    listViewNetworkBots.Items.Add(bot.id + " >> " + bot.ip + " >> " + bot.name + " >> " + bot.me);
         }
 
         /// <summary>
@@ -261,19 +282,15 @@ namespace AmeisenBotGUI
             }
         }
 
-        private void UpdateNetworkPlayers()
-        {
-            listViewNetworkBots.Items.Clear();
-            if (BotManager.GetNetworkBots() != null)
-                foreach (Bot bot in BotManager.GetNetworkBots())
-                    listViewNetworkBots.Items.Add(bot.id + " >> " + bot.ip + " >> " + bot.name + " >> " + bot.me);
-        }
-
         #endregion UITimer
+
+        #region Private Methods
 
         private void CheckBoxFollowMaster_Click(object sender, RoutedEventArgs e)
         {
             AmeisenBotManager.Instance.FollowGroup = (bool)checkBoxFollowMaster.IsChecked;
         }
+
+        #endregion Private Methods
     }
 }

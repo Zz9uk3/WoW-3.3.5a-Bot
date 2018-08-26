@@ -9,24 +9,12 @@ using System.Windows.Threading;
 
 namespace AmeisenBotGUI
 {
-    internal class DataItem
-    {
-        public string Text { get; set; }
-        public Brush Background { get; set; }
-
-        public DataItem(string text, Brush background)
-        {
-            Text = text;
-            Background = background;
-        }
-    }
-
     /// <summary>
     /// Interaktionslogik für DebugUI.xaml
     /// </summary>
     public partial class DebugUI : Window
     {
-        private AmeisenBotManager BotManager { get; }
+        #region Public Constructors
 
         public DebugUI()
         {
@@ -34,10 +22,15 @@ namespace AmeisenBotGUI
             BotManager = AmeisenBotManager.Instance;
         }
 
-        private void DebugUI_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            DragMove();
-        }
+        #endregion Public Constructors
+
+        #region Private Properties
+
+        private AmeisenBotManager BotManager { get; }
+
+        #endregion Private Properties
+
+        #region Private Methods
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
@@ -55,6 +48,17 @@ namespace AmeisenBotGUI
             uiUpdateTimer.Tick += new EventHandler(ObjectUpdateTimer_Tick);
             uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 1, 0);
             uiUpdateTimer.Start();
+        }
+
+        private void DebugUI_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            DragMove();
+        }
+
+        private void ListboxObjects_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (listboxObjects.SelectedValue != null)
+                textboxSelectedItem.Text = ((DataItem)listboxObjects.SelectedValue).Text;
         }
 
         private void ObjectUpdateTimer_Tick(object sender, EventArgs e)
@@ -84,10 +88,26 @@ namespace AmeisenBotGUI
                 }
         }
 
-        private void ListboxObjects_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        #endregion Private Methods
+    }
+
+    internal class DataItem
+    {
+        #region Public Constructors
+
+        public DataItem(string text, Brush background)
         {
-            if (listboxObjects.SelectedValue != null)
-                textboxSelectedItem.Text = ((DataItem)listboxObjects.SelectedValue).Text;
+            Text = text;
+            Background = background;
         }
+
+        #endregion Public Constructors
+
+        #region Public Properties
+
+        public Brush Background { get; set; }
+        public string Text { get; set; }
+
+        #endregion Public Properties
     }
 }

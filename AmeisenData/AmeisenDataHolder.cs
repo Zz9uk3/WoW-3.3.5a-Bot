@@ -5,18 +5,23 @@ namespace AmeisenData
 {
     public class AmeisenDataHolder
     {
-        // Data to hold
-        public Me Me { get; set; }
+        #region Private Fields
 
-        public Unit Target { get; set; }
-        public List<WoWObject> ActiveWoWObjects { get; set; }
+        private static readonly object padlock = new object();
 
         private static AmeisenDataHolder instance = null;
-        private static readonly object padlock = new object();
+
+        #endregion Private Fields
+
+        #region Private Constructors
 
         private AmeisenDataHolder()
         {
         }
+
+        #endregion Private Constructors
+
+        #region Public Properties
 
         public static AmeisenDataHolder Instance
         {
@@ -30,5 +35,14 @@ namespace AmeisenData
                 }
             }
         }
+
+        public List<WoWObject> ActiveWoWObjects { get; set; }
+
+        // Data to hold
+        public Me Me { get; set; }
+
+        public Unit Target { get; set; }
+
+        #endregion Public Properties
     }
 }

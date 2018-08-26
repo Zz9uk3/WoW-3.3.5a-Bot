@@ -6,22 +6,13 @@ namespace AmeisenUtilities
 {
     public class WoWObject
     {
-        public BlackMagic BlackMagicInstance { get; set; }
-
-        public string Name { get; set; }
-
-        public UInt64 Guid { get; set; }
-
-        public uint BaseAddress { get; set; }
-
-        public uint Descriptor { get; set; }
+        #region Public Fields
 
         public Vector3 pos;
-        public float Rotation { get; set; }
-        public double Distance { get; set; }
 
-        public int MapID { get; set; }
-        public int ZoneID { get; set; }
+        #endregion Public Fields
+
+        #region Public Constructors
 
         public WoWObject(uint baseAddress, BlackMagic blackMagic)
         {
@@ -37,9 +28,24 @@ namespace AmeisenUtilities
             Update();
         }
 
-        public virtual void Update()
-        {
-        }
+        #endregion Public Constructors
+
+        #region Public Properties
+
+        public uint BaseAddress { get; set; }
+        public BlackMagic BlackMagicInstance { get; set; }
+
+        public uint Descriptor { get; set; }
+        public double Distance { get; set; }
+        public UInt64 Guid { get; set; }
+        public int MapID { get; set; }
+        public string Name { get; set; }
+        public float Rotation { get; set; }
+        public int ZoneID { get; set; }
+
+        #endregion Public Properties
+
+        #region Public Methods
 
         public override string ToString()
         {
@@ -60,5 +66,11 @@ namespace AmeisenUtilities
 
             return sb.ToString();
         }
+
+        public virtual void Update()
+        {
+        }
+
+        #endregion Public Methods
     }
 }

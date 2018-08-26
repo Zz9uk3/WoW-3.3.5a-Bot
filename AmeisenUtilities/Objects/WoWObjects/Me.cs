@@ -7,57 +7,29 @@ namespace AmeisenUtilities
 {
     public class Me : Player
     {
-        public int Exp { get; set; }
-        public int MaxExp { get; set; }
-
-        public uint PlayerBase { get; set; }
-
-        public UnitState CurrentState { get; set; }
-
-        public UInt64 TargetGUID { get; set; }
-
-        public UInt64 PartyleaderGUID { get; set; }
-        public List<UInt64> PartymemberGUIDs { get; set; }
+        #region Public Constructors
 
         public Me(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
             Update();
         }
 
-        public override void Update()
-        {
-            base.Update();
+        #endregion Public Constructors
 
-            if (PlayerBase == 0)
-            {
-                PlayerBase = BlackMagicInstance.ReadUInt(WoWOffsets.playerBase);
-                PlayerBase = BlackMagicInstance.ReadUInt(PlayerBase + 0x34);
-                PlayerBase = BlackMagicInstance.ReadUInt(PlayerBase + 0x24);
-            }
+        #region Public Properties
 
-            Name = BlackMagicInstance.ReadASCIIString(WoWOffsets.playerName, 12);
-            Exp = BlackMagicInstance.ReadInt(PlayerBase + 0x3794);
-            MaxExp = BlackMagicInstance.ReadInt(PlayerBase + 0x3798);
+        public UnitState CurrentState { get; set; }
+        public int Exp { get; set; }
+        public int MaxExp { get; set; }
 
-            // Somehow this is really sketchy, need to replace this...
-            uint castingState = BlackMagicInstance.ReadUInt((uint)BlackMagicInstance.MainModule.BaseAddress + WoWOffsets.localPlayerCharacterState);
-            castingState = BlackMagicInstance.ReadUInt(castingState + WoWOffsets.localPlayerCharacterStateOffset1);
-            castingState = BlackMagicInstance.ReadUInt(castingState + WoWOffsets.localPlayerCharacterStateOffset2);
-            CurrentState = (UnitState)BlackMagicInstance.ReadInt(castingState + WoWOffsets.localPlayerCharacterStateOffset3);
+        public UInt64 PartyleaderGUID { get; set; }
+        public List<UInt64> PartymemberGUIDs { get; set; }
+        public uint PlayerBase { get; set; }
+        public UInt64 TargetGUID { get; set; }
 
-            TargetGUID = BlackMagicInstance.ReadUInt64(Descriptor + 0x48);
+        #endregion Public Properties
 
-            PartymemberGUIDs = new List<UInt64>();
-            PartyleaderGUID = BlackMagicInstance.ReadUInt64(WoWOffsets.partyLeader);
-
-            if (PartyleaderGUID != 0)
-            {
-                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(WoWOffsets.partyPlayer1));
-                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(WoWOffsets.partyPlayer2));
-                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(WoWOffsets.partyPlayer3));
-                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(WoWOffsets.partyPlayer4));
-            }
-        }
+        #region Public Methods
 
         public override string ToString()
         {
@@ -101,5 +73,42 @@ namespace AmeisenUtilities
             }
             return sb.ToString();
         }
+
+        public override void Update()
+        {
+            base.Update();
+
+            if (PlayerBase == 0)
+            {
+                PlayerBase = BlackMagicInstance.ReadUInt(WoWOffsets.playerBase);
+                PlayerBase = BlackMagicInstance.ReadUInt(PlayerBase + 0x34);
+                PlayerBase = BlackMagicInstance.ReadUInt(PlayerBase + 0x24);
+            }
+
+            Name = BlackMagicInstance.ReadASCIIString(WoWOffsets.playerName, 12);
+            Exp = BlackMagicInstance.ReadInt(PlayerBase + 0x3794);
+            MaxExp = BlackMagicInstance.ReadInt(PlayerBase + 0x3798);
+
+            // Somehow this is really sketchy, need to replace this...
+            uint castingState = BlackMagicInstance.ReadUInt((uint)BlackMagicInstance.MainModule.BaseAddress + WoWOffsets.localPlayerCharacterState);
+            castingState = BlackMagicInstance.ReadUInt(castingState + WoWOffsets.localPlayerCharacterStateOffset1);
+            castingState = BlackMagicInstance.ReadUInt(castingState + WoWOffsets.localPlayerCharacterStateOffset2);
+            CurrentState = (UnitState)BlackMagicInstance.ReadInt(castingState + WoWOffsets.localPlayerCharacterStateOffset3);
+
+            TargetGUID = BlackMagicInstance.ReadUInt64(Descriptor + 0x48);
+
+            PartymemberGUIDs = new List<UInt64>();
+            PartyleaderGUID = BlackMagicInstance.ReadUInt64(WoWOffsets.partyLeader);
+
+            if (PartyleaderGUID != 0)
+            {
+                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(WoWOffsets.partyPlayer1));
+                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(WoWOffsets.partyPlayer2));
+                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(WoWOffsets.partyPlayer3));
+                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(WoWOffsets.partyPlayer4));
+            }
+        }
+
+        #endregion Public Methods
     }
 }

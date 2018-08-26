@@ -6,23 +6,22 @@ namespace AmeisenUtilities
 {
     public class Corpse : WoWObject
     {
-        private UInt64 Owner { get; set; }
+        #region Public Constructors
 
         public Corpse(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
             Update();
         }
 
-        public override void Update()
-        {
-            base.Update();
+        #endregion Public Constructors
 
-            pos.x = BlackMagicInstance.ReadFloat(BaseAddress + 0x24);
-            pos.y = BlackMagicInstance.ReadFloat(BaseAddress + 0x28);
-            pos.z = BlackMagicInstance.ReadFloat(BaseAddress + 0x2C);
-            Rotation = BlackMagicInstance.ReadFloat(BaseAddress + 0x20);
-            Owner = BlackMagicInstance.ReadUInt64(BaseAddress + 0x18);
-        }
+        #region Private Properties
+
+        private UInt64 Owner { get; set; }
+
+        #endregion Private Properties
+
+        #region Public Methods
 
         public override string ToString()
         {
@@ -42,5 +41,18 @@ namespace AmeisenUtilities
 
             return sb.ToString();
         }
+
+        public override void Update()
+        {
+            base.Update();
+
+            pos.x = BlackMagicInstance.ReadFloat(BaseAddress + 0x24);
+            pos.y = BlackMagicInstance.ReadFloat(BaseAddress + 0x28);
+            pos.z = BlackMagicInstance.ReadFloat(BaseAddress + 0x2C);
+            Rotation = BlackMagicInstance.ReadFloat(BaseAddress + 0x20);
+            Owner = BlackMagicInstance.ReadUInt64(BaseAddress + 0x18);
+        }
+
+        #endregion Public Methods
     }
 }

@@ -14,9 +14,14 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class CombatClassEditor : Window
     {
-        private AmeisenBotManager BotManager { get; }
+        #region Private Fields
+
         private CombatLogic loadedLogic;
         private int prio;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public CombatClassEditor()
         {
@@ -28,6 +33,205 @@ namespace AmeisenBotGUI
                 loadedLogic = CombatEngine.LoadCombatLogicFromFile(defaultCombatClass);
             else
                 loadedLogic = new CombatLogic();
+        }
+
+        #endregion Public Constructors
+
+        #region Private Properties
+
+        private AmeisenBotManager BotManager { get; }
+
+        #endregion Private Properties
+
+        #region Private Methods
+
+        private void ButtonAddCombatEntry_Click(object sender, RoutedEventArgs e)
+        {
+            listboxCombatActions.Items.Add(new CombatLogicEntry());
+            listboxCombatActions.SelectedIndex = 0;
+
+            textboxPriority.Text = prio.ToString();
+            prio++;
+        }
+
+        private void ButtonAddCondition_Click(object sender, RoutedEventArgs e)
+        {
+            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
+            {
+                AmeisenAI.Combat.Condition condition = new AmeisenAI.Combat.Condition();
+
+                ((CombatLogicEntry)listboxCombatActions.SelectedItem).Conditions.Add(condition);
+                listboxConditions.Items.Add(condition);
+
+                listboxConditions.SelectedIndex = 0;
+            }
+        }
+
+        private void ButtonExit_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void ButtonMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void ButtonNew_Click(object sender, RoutedEventArgs e)
+        {
+            loadedLogic = new CombatLogic();
+            LoadEntries();
+        }
+
+        private void ButtonOpen_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                loadedLogic.combatLogicEntries.Clear();
+                loadedLogic = CombatEngine.LoadCombatLogicFromFile(openFileDialog.FileName);
+
+                if (loadedLogic.combatLogicEntries != null)
+                {
+                    listboxCombatActions.Items.Clear();
+                    listboxConditions.Items.Clear();
+                    foreach (CombatLogicEntry action in loadedLogic.combatLogicEntries)
+                        listboxCombatActions.Items.Add(action);
+                    listboxCombatActions.SelectedIndex = 0;
+                }
+            }
+        }
+
+        private void ButtonRemoveCombatEntry_Click(object sender, RoutedEventArgs e)
+        {
+            listboxCombatActions.Items.RemoveAt(listboxCombatActions.SelectedIndex);
+        }
+
+        private void ButtonRemoveCondition_Click(object sender, RoutedEventArgs e)
+        {
+            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
+            {
+                ((CombatLogicEntry)listboxCombatActions.SelectedItem).Conditions.RemoveAt(listboxCombatActions.SelectedIndex);
+                listboxConditions.Items.RemoveAt(listboxCombatActions.SelectedIndex);
+            }
+        }
+
+        private void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            loadedLogic.combatLogicEntries.Clear();
+            foreach (CombatLogicEntry action in listboxCombatActions.Items)
+                loadedLogic.combatLogicEntries.Add(action);
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+            string defaultCombatClass = BotManager.Settings.combatClassPath;
+            if (defaultCombatClass == "none")
+                saveFileDialog.FileName = "sampleCombatClass.json";
+            else
+                saveFileDialog.FileName = defaultCombatClass + ".json";
+
+            if (saveFileDialog.ShowDialog() == true)
+                CombatEngine.SaveToFile(saveFileDialog.FileName, loadedLogic);
+        }
+
+        private void CheckboxCanCastDuringMovement_Checked(object sender, RoutedEventArgs e)
+        {
+            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
+                ((CombatLogicEntry)listboxCombatActions.SelectedItem).CanMoveDuringCast = true;
+        }
+
+        private void CheckboxCanCastDuringMovement_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
+                ((CombatLogicEntry)listboxCombatActions.SelectedItem).CanMoveDuringCast = false;
+        }
+
+        private void CheckboxCombatOnly_Checked(object sender, RoutedEventArgs e)
+        {
+            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
+                ((CombatLogicEntry)listboxCombatActions.SelectedItem).CombatOnly = true;
+        }
+
+        private void CheckboxCombatOnly_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
+                ((CombatLogicEntry)listboxCombatActions.SelectedItem).CombatOnly = false;
+        }
+
+        private void CheckboxIsBuff_Checked(object sender, RoutedEventArgs e)
+        {
+            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
+                ((CombatLogicEntry)listboxCombatActions.SelectedItem).IsBuff = true;
+            checkboxIsForParty.IsEnabled = true;
+        }
+
+        private void CheckboxIsBuff_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
+                ((CombatLogicEntry)listboxCombatActions.SelectedItem).IsBuff = false;
+            checkboxIsForParty.IsEnabled = false;
+        }
+
+        private void CheckboxIsForMySelf_Checked(object sender, RoutedEventArgs e)
+        {
+            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
+                ((CombatLogicEntry)listboxCombatActions.SelectedItem).IsForMyself = true;
+        }
+
+        private void CheckboxIsForMySelf_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
+                ((CombatLogicEntry)listboxCombatActions.SelectedItem).IsForMyself = false;
+        }
+
+        private void CheckboxIsForParty_Checked(object sender, RoutedEventArgs e)
+        {
+            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
+                ((CombatLogicEntry)listboxCombatActions.SelectedItem).IsBuffForParty = true;
+        }
+
+        private void CheckboxIsForParty_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
+                ((CombatLogicEntry)listboxCombatActions.SelectedItem).IsBuffForParty = false;
+        }
+
+        private void ComboboxAction_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
+                ((CombatLogicEntry)listboxCombatActions.SelectedItem).Action = (CombatLogicAction)comboboxAction.SelectedItem;
+        }
+
+        private void ComboboxActionType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
+                ((CombatLogicEntry)listboxCombatActions.SelectedItem).ActionType = (CombatActionType)comboboxActionType.SelectedItem;
+        }
+
+        private void ComboboxValueOne_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (listboxConditions.SelectedItem != null)
+                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionValues[0] = (CombatLogicValues)comboboxValueOne.SelectedItem;
+        }
+
+        private void ComboboxValueOperator_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (listboxConditions.SelectedItem != null)
+            {
+                CombatLogicStatement op = (CombatLogicStatement)comboboxValueOperator.SelectedItem;
+                AmeisenAI.Combat.Condition cond = ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem);
+
+                cond.statement = op;
+
+                listboxConditions.SelectedItem = cond;
+            }
+        }
+
+        private void ComboboxValueTwo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (listboxConditions.SelectedItem != null)
+                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionValues[1] = (CombatLogicValues)comboboxValueTwo.SelectedItem;
         }
 
         private void GuiCombatClassEditor_Loaded(object sender, RoutedEventArgs e)
@@ -73,54 +277,6 @@ namespace AmeisenBotGUI
             catch { }
         }
 
-        private void ButtonExit_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void ButtonMinimize_Click(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
-
-        private void ButtonOpen_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            if (openFileDialog.ShowDialog() == true)
-            {
-                loadedLogic.combatLogicEntries.Clear();
-                loadedLogic = CombatEngine.LoadCombatLogicFromFile(openFileDialog.FileName);
-
-                if (loadedLogic.combatLogicEntries != null)
-                {
-                    listboxCombatActions.Items.Clear();
-                    listboxConditions.Items.Clear();
-                    foreach (CombatLogicEntry action in loadedLogic.combatLogicEntries)
-                        listboxCombatActions.Items.Add(action);
-                    listboxCombatActions.SelectedIndex = 0;
-                }
-            }
-        }
-
-        private void ButtonSave_Click(object sender, RoutedEventArgs e)
-        {
-            loadedLogic.combatLogicEntries.Clear();
-            foreach (CombatLogicEntry action in listboxCombatActions.Items)
-                loadedLogic.combatLogicEntries.Add(action);
-
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-
-            string defaultCombatClass = BotManager.Settings.combatClassPath;
-            if (defaultCombatClass == "none")
-                saveFileDialog.FileName = "sampleCombatClass.json";
-            else
-                saveFileDialog.FileName = defaultCombatClass + ".json";
-
-            if (saveFileDialog.ShowDialog() == true)
-                CombatEngine.SaveToFile(saveFileDialog.FileName, loadedLogic);
-        }
-
         private void ListboxCombatActions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             CombatLogicEntry entry = ((CombatLogicEntry)listboxCombatActions.SelectedItem);
@@ -139,126 +295,6 @@ namespace AmeisenBotGUI
                 listboxConditions.Items.Add(c);
 
             comboboxActionType.SelectedItem = entry.ActionType;
-        }
-
-        private void ButtonAddCombatEntry_Click(object sender, RoutedEventArgs e)
-        {
-            listboxCombatActions.Items.Add(new CombatLogicEntry());
-            listboxCombatActions.SelectedIndex = 0;
-
-            textboxPriority.Text = prio.ToString();
-            prio++;
-        }
-
-        private void ButtonRemoveCombatEntry_Click(object sender, RoutedEventArgs e)
-        {
-            listboxCombatActions.Items.RemoveAt(listboxCombatActions.SelectedIndex);
-        }
-
-        private void TextboxSpellName_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
-                ((CombatLogicEntry)listboxCombatActions.SelectedItem).Parameters = textboxSpellName.Text;
-        }
-
-        private void TextboxMaxDistance_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
-                ((CombatLogicEntry)listboxCombatActions.SelectedItem).MaxSpellDistance = float.Parse(textboxMaxDistance.Text);
-        }
-
-        private void ComboboxAction_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
-                ((CombatLogicEntry)listboxCombatActions.SelectedItem).Action = (CombatLogicAction)comboboxAction.SelectedItem;
-        }
-
-        private void TextboxPriority_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
-                ((CombatLogicEntry)listboxCombatActions.SelectedItem).Priority = int.Parse(textboxPriority.Text);
-        }
-
-        private void CheckboxCombatOnly_Checked(object sender, RoutedEventArgs e)
-        {
-            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
-                ((CombatLogicEntry)listboxCombatActions.SelectedItem).CombatOnly = true;
-        }
-
-        private void CheckboxCombatOnly_Unchecked(object sender, RoutedEventArgs e)
-        {
-            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
-                ((CombatLogicEntry)listboxCombatActions.SelectedItem).CombatOnly = false;
-        }
-
-        private void CheckboxIsBuff_Checked(object sender, RoutedEventArgs e)
-        {
-            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
-                ((CombatLogicEntry)listboxCombatActions.SelectedItem).IsBuff = true;
-            checkboxIsForParty.IsEnabled = true;
-        }
-
-        private void CheckboxIsBuff_Unchecked(object sender, RoutedEventArgs e)
-        {
-            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
-                ((CombatLogicEntry)listboxCombatActions.SelectedItem).IsBuff = false;
-            checkboxIsForParty.IsEnabled = false;
-        }
-
-        private void CheckboxIsForParty_Checked(object sender, RoutedEventArgs e)
-        {
-            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
-                ((CombatLogicEntry)listboxCombatActions.SelectedItem).IsBuffForParty = true;
-        }
-
-        private void CheckboxIsForParty_Unchecked(object sender, RoutedEventArgs e)
-        {
-            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
-                ((CombatLogicEntry)listboxCombatActions.SelectedItem).IsBuffForParty = false;
-        }
-
-        private void CheckboxCanCastDuringMovement_Checked(object sender, RoutedEventArgs e)
-        {
-            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
-                ((CombatLogicEntry)listboxCombatActions.SelectedItem).CanMoveDuringCast = true;
-        }
-
-        private void CheckboxCanCastDuringMovement_Unchecked(object sender, RoutedEventArgs e)
-        {
-            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
-                ((CombatLogicEntry)listboxCombatActions.SelectedItem).CanMoveDuringCast = false;
-        }
-
-        private void CheckboxIsForMySelf_Checked(object sender, RoutedEventArgs e)
-        {
-            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
-                ((CombatLogicEntry)listboxCombatActions.SelectedItem).IsForMyself = true;
-        }
-
-        private void CheckboxIsForMySelf_Unchecked(object sender, RoutedEventArgs e)
-        {
-            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
-                ((CombatLogicEntry)listboxCombatActions.SelectedItem).IsForMyself = false;
-        }
-
-        private void RadiobuttonPreValue_Checked(object sender, RoutedEventArgs e)
-        {
-            if (textboxCustomValue != null && (AmeisenAI.Combat.Condition)listboxConditions.SelectedItem != null)
-            {
-                comboboxValueTwo.IsEnabled = true;
-                textboxCustomValue.IsEnabled = false;
-                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).customSecondValue = false;
-            }
-        }
-
-        private void RadiobuttonCustomValue_Checked(object sender, RoutedEventArgs e)
-        {
-            if (textboxCustomValue != null && (AmeisenAI.Combat.Condition)listboxConditions.SelectedItem != null)
-            {
-                comboboxValueTwo.IsEnabled = false;
-                textboxCustomValue.IsEnabled = true;
-                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).customSecondValue = true;
-            }
         }
 
         private void ListboxConditions_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -280,51 +316,32 @@ namespace AmeisenBotGUI
             }
         }
 
-        private void ButtonAddCondition_Click(object sender, RoutedEventArgs e)
+        private void LoadEntries()
         {
-            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
+            listboxCombatActions.Items.Clear();
+            foreach (CombatLogicEntry entry in loadedLogic.combatLogicEntries)
+                listboxCombatActions.Items.Add(entry);
+            prio = listboxCombatActions.Items.Count;
+        }
+
+        private void RadiobuttonCustomValue_Checked(object sender, RoutedEventArgs e)
+        {
+            if (textboxCustomValue != null && (AmeisenAI.Combat.Condition)listboxConditions.SelectedItem != null)
             {
-                AmeisenAI.Combat.Condition condition = new AmeisenAI.Combat.Condition();
-
-                ((CombatLogicEntry)listboxCombatActions.SelectedItem).Conditions.Add(condition);
-                listboxConditions.Items.Add(condition);
-
-                listboxConditions.SelectedIndex = 0;
+                comboboxValueTwo.IsEnabled = false;
+                textboxCustomValue.IsEnabled = true;
+                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).customSecondValue = true;
             }
         }
 
-        private void ButtonRemoveCondition_Click(object sender, RoutedEventArgs e)
+        private void RadiobuttonPreValue_Checked(object sender, RoutedEventArgs e)
         {
-            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
+            if (textboxCustomValue != null && (AmeisenAI.Combat.Condition)listboxConditions.SelectedItem != null)
             {
-                ((CombatLogicEntry)listboxCombatActions.SelectedItem).Conditions.RemoveAt(listboxCombatActions.SelectedIndex);
-                listboxConditions.Items.RemoveAt(listboxCombatActions.SelectedIndex);
+                comboboxValueTwo.IsEnabled = true;
+                textboxCustomValue.IsEnabled = false;
+                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).customSecondValue = false;
             }
-        }
-
-        private void ComboboxValueOne_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (listboxConditions.SelectedItem != null)
-                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionValues[0] = (CombatLogicValues)comboboxValueOne.SelectedItem;
-        }
-
-        private void ComboboxValueOperator_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (listboxConditions.SelectedItem != null)
-            {
-                CombatLogicStatement op = (CombatLogicStatement)comboboxValueOperator.SelectedItem;
-                AmeisenAI.Combat.Condition cond = ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem);
-
-                cond.statement = op;
-
-                listboxConditions.SelectedItem = cond;
-            }
-        }
-
-        private void ComboboxValueTwo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (listboxConditions.SelectedItem != null)
-                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionValues[1] = (CombatLogicValues)comboboxValueTwo.SelectedItem;
         }
 
         private void TextboxCustomValue_TextChanged(object sender, TextChangedEventArgs e)
@@ -337,24 +354,24 @@ namespace AmeisenBotGUI
             catch { }
         }
 
-        private void ButtonNew_Click(object sender, RoutedEventArgs e)
-        {
-            loadedLogic = new CombatLogic();
-            LoadEntries();
-        }
-
-        private void LoadEntries()
-        {
-            listboxCombatActions.Items.Clear();
-            foreach (CombatLogicEntry entry in loadedLogic.combatLogicEntries)
-                listboxCombatActions.Items.Add(entry);
-            prio = listboxCombatActions.Items.Count;
-        }
-
-        private void ComboboxActionType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void TextboxMaxDistance_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
-                ((CombatLogicEntry)listboxCombatActions.SelectedItem).ActionType = (CombatActionType)comboboxActionType.SelectedItem;
+                ((CombatLogicEntry)listboxCombatActions.SelectedItem).MaxSpellDistance = float.Parse(textboxMaxDistance.Text);
         }
+
+        private void TextboxPriority_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
+                ((CombatLogicEntry)listboxCombatActions.SelectedItem).Priority = int.Parse(textboxPriority.Text);
+        }
+
+        private void TextboxSpellName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
+                ((CombatLogicEntry)listboxCombatActions.SelectedItem).Parameters = textboxSpellName.Text;
+        }
+
+        #endregion Private Methods
     }
 }

@@ -12,29 +12,22 @@ namespace AmeisenManager
 {
     public class AmeisenClient
     {
-        private static AmeisenClient instance;
-        private static readonly object padlock = new object();
+        #region Private Fields
 
         private static readonly HttpClient client = new HttpClient();
+        private static readonly object padlock = new object();
+        private static AmeisenClient instance;
+        private Thread botListUpdateThread;
 
-        private Me Me
-        {
-            get { return AmeisenDataHolder.Instance.Me; }
-            set { AmeisenDataHolder.Instance.Me = value; }
-        }
-
-        public List<Bot> BotList { get; private set; }
-
-        public bool IsRegistered { get; private set; }
-        public int BotID { get; private set; }
-        public IPAddress IPAddress { get; private set; }
-        public int Port { get; private set; }
-
-        private System.Timers.Timer botUpdateTimer;
         private System.Timers.Timer botListUpdateTimer;
 
         private Thread botUpdateThread;
-        private Thread botListUpdateThread;
+
+        private System.Timers.Timer botUpdateTimer;
+
+        #endregion Private Fields
+
+        #region Private Constructors
 
         private AmeisenClient()
         {
@@ -44,6 +37,10 @@ namespace AmeisenManager
             botListUpdateTimer = new System.Timers.Timer(1000);
             botListUpdateTimer.Elapsed += UpdateBotList;
         }
+
+        #endregion Private Constructors
+
+        #region Public Properties
 
         public static AmeisenClient Instance
         {
@@ -57,6 +54,30 @@ namespace AmeisenManager
                 }
             }
         }
+
+        public int BotID { get; private set; }
+
+        public List<Bot> BotList { get; private set; }
+
+        public IPAddress IPAddress { get; private set; }
+
+        public bool IsRegistered { get; private set; }
+
+        public int Port { get; private set; }
+
+        #endregion Public Properties
+
+        #region Private Properties
+
+        private Me Me
+        {
+            get { return AmeisenDataHolder.Instance.Me; }
+            set { AmeisenDataHolder.Instance.Me = value; }
+        }
+
+        #endregion Private Properties
+
+        #region Public Methods
 
         public async void Register(Me me, IPAddress ip, int port = 16200)
         {
@@ -103,6 +124,10 @@ namespace AmeisenManager
             }
         }
 
+        #endregion Public Methods
+
+        #region Private Methods
+
         private async void UpdateBot(object source, ElapsedEventArgs e)
         {
             try
@@ -124,5 +149,7 @@ namespace AmeisenManager
             }
             catch { }
         }
+
+        #endregion Private Methods
     }
 }

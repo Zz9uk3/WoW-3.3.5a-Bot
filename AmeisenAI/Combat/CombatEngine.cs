@@ -12,6 +12,27 @@ namespace AmeisenAI
 {
     public class CombatEngine
     {
+        #region Public Fields
+
+        public CombatLogic currentCombatLogic;
+
+        #endregion Public Fields
+
+        #region Private Fields
+
+        private static readonly string combatclassesPath = AppDomain.CurrentDomain.BaseDirectory + "/combatclasses/";
+
+        private int posAt;
+
+        #endregion Private Fields
+
+        #region Private Properties
+
+        private List<WoWObject> ActiveWoWObjects
+        {
+            get { return AmeisenDataHolder.Instance.ActiveWoWObjects; }
+        }
+
         private Me Me
         {
             get { return AmeisenDataHolder.Instance.Me; }
@@ -24,15 +45,42 @@ namespace AmeisenAI
             set { AmeisenDataHolder.Instance.Target = value; }
         }
 
-        private List<WoWObject> ActiveWoWObjects
+        #endregion Private Properties
+
+        #region Public Methods
+
+        /// <summary>
+        /// Load a combatclass file.
+        /// </summary>
+        /// <param name="filepath">Filepath</param>
+        public static CombatLogic LoadCombatLogicFromFile(string filepath)
         {
-            get { return AmeisenDataHolder.Instance.ActiveWoWObjects; }
+            CombatLogic currentCombatLogic;
+
+            if (!Directory.Exists(combatclassesPath))
+                Directory.CreateDirectory(combatclassesPath);
+
+            if (File.Exists(filepath))
+            {
+                currentCombatLogic = Newtonsoft.Json.JsonConvert.DeserializeObject<CombatLogic>(File.ReadAllText(filepath));
+                currentCombatLogic.combatLogicEntries = currentCombatLogic.combatLogicEntries.OrderBy(p => p.Priority).ToList();
+                return currentCombatLogic;
+            }
+            return null;
         }
 
-        private static readonly string combatclassesPath = AppDomain.CurrentDomain.BaseDirectory + "/combatclasses/";
+        /// <summary>
+        /// Save a combatclass file to the given filepath.
+        /// </summary>
+        /// <param name="filepath">Filename without extension</param>
+        public static void SaveToFile(string filepath, CombatLogic combatLogic)
+        {
+            if (!Directory.Exists(combatclassesPath))
+                Directory.CreateDirectory(combatclassesPath);
 
-        private int posAt;
-        public CombatLogic currentCombatLogic;
+            // Serialize our object with the help of NewtosoftJSON
+            File.WriteAllText(filepath, Newtonsoft.Json.JsonConvert.SerializeObject(combatLogic));
+        }
 
         /// <summary>
         /// Work on our List of things to do in combat
@@ -52,6 +100,10 @@ namespace AmeisenAI
                 }
         }
 
+        #endregion Public Methods
+
+        #region Private Methods
+
         private void AssistParty()
         {
             int i = 1;
@@ -66,6 +118,109 @@ namespace AmeisenAI
                         }
                 i++;
             }
+        }
+
+        private bool CheckCondition(Condition condition)
+        {
+            double value1 = 0.0;
+            double value2 = 0.0;
+
+            switch (condition.conditionValues[0])
+            {
+                case CombatLogicValues.MYSELF_HP:
+                    value1 = Me.Health;
+                    break;
+
+                case CombatLogicValues.MYSELF_ENERGY:
+                    value1 = Me.Energy;
+                    break;
+
+                case CombatLogicValues.TARGET_HP:
+                    value1 = Target.Health;
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (!condition.customSecondValue)
+                switch (condition.conditionValues[1])
+                {
+                    case CombatLogicValues.MYSELF_HP:
+                        value2 = Me.Health;
+                        break;
+
+                    case CombatLogicValues.MYSELF_ENERGY:
+                        value2 = Me.Energy;
+                        break;
+
+                    case CombatLogicValues.TARGET_HP:
+                        value2 = Target.Health;
+                        break;
+
+                    default:
+                        break;
+                }
+            else if (condition.customValue.GetType() == typeof(double))
+                value2 = (double)condition.customValue;
+
+            switch (condition.statement)
+            {
+                case CombatLogicStatement.GREATER:
+                    return CompareGreater(value1, value2);
+
+                case CombatLogicStatement.GREATER_OR_EQUAL:
+                    return CompareGreaterOrEqual(value1, value2);
+
+                case CombatLogicStatement.EQUAL:
+                    return CompareEqual(value1, value2);
+
+                case CombatLogicStatement.LESS_OR_EQUAL:
+                    return CompareLessOrEqual(value1, value2);
+
+                case CombatLogicStatement.LESS:
+                    return CompareLess(value1, value2);
+
+                case CombatLogicStatement.HAS_BUFF:
+                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.target).duration > 0;
+
+                case CombatLogicStatement.NOT_HAS_BUFF:
+                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.target).duration == -1;
+
+                case CombatLogicStatement.HAS_BUFF_MYSELF:
+                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.player).duration > 0;
+
+                case CombatLogicStatement.NOT_HAS_BUFF_MYSELF:
+                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.player).duration == -1;
+
+                default:
+                    return false;
+            }
+        }
+
+        private bool CompareEqual(double a, double b)
+        {
+            return a == b ? true : false;
+        }
+
+        private bool CompareGreater(double a, double b)
+        {
+            return a > b ? true : false;
+        }
+
+        private bool CompareGreaterOrEqual(double a, double b)
+        {
+            return a >= b ? true : false;
+        }
+
+        private bool CompareLess(double a, double b)
+        {
+            return a < b ? true : false;
+        }
+
+        private bool CompareLessOrEqual(double a, double b)
+        {
+            return a <= b ? true : false;
         }
 
         /// <summary>
@@ -159,136 +314,6 @@ namespace AmeisenAI
             return true;
         }
 
-        private bool CheckCondition(Condition condition)
-        {
-            double value1 = 0.0;
-            double value2 = 0.0;
-
-            switch (condition.conditionValues[0])
-            {
-                case CombatLogicValues.MYSELF_HP:
-                    value1 = Me.Health;
-                    break;
-
-                case CombatLogicValues.MYSELF_ENERGY:
-                    value1 = Me.Energy;
-                    break;
-
-                case CombatLogicValues.TARGET_HP:
-                    value1 = Target.Health;
-                    break;
-
-                default:
-                    break;
-            }
-
-            if (!condition.customSecondValue)
-                switch (condition.conditionValues[1])
-                {
-                    case CombatLogicValues.MYSELF_HP:
-                        value2 = Me.Health;
-                        break;
-
-                    case CombatLogicValues.MYSELF_ENERGY:
-                        value2 = Me.Energy;
-                        break;
-
-                    case CombatLogicValues.TARGET_HP:
-                        value2 = Target.Health;
-                        break;
-
-                    default:
-                        break;
-                }
-            else if (condition.customValue.GetType() == typeof(double))
-                value2 = (double)condition.customValue;
-
-            switch (condition.statement)
-            {
-                case CombatLogicStatement.GREATER:
-                    return CompareGreater(value1, value2);
-
-                case CombatLogicStatement.GREATER_OR_EQUAL:
-                    return CompareGreaterOrEqual(value1, value2);
-
-                case CombatLogicStatement.EQUAL:
-                    return CompareEqual(value1, value2);
-
-                case CombatLogicStatement.LESS_OR_EQUAL:
-                    return CompareLessOrEqual(value1, value2);
-
-                case CombatLogicStatement.LESS:
-                    return CompareLess(value1, value2);
-
-                case CombatLogicStatement.HAS_BUFF:
-                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.target).duration > 0;
-
-                case CombatLogicStatement.NOT_HAS_BUFF:
-                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.target).duration == -1;
-
-                case CombatLogicStatement.HAS_BUFF_MYSELF:
-                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.player).duration > 0;
-
-                case CombatLogicStatement.NOT_HAS_BUFF_MYSELF:
-                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.player).duration == -1;
-
-                default:
-                    return false;
-            }
-        }
-
-        private bool CompareGreater(double a, double b)
-        {
-            return a > b ? true : false;
-        }
-        private bool CompareGreaterOrEqual(double a, double b)
-        {
-            return a >= b ? true : false;
-        }
-        private bool CompareEqual(double a, double b)
-        {
-            return a == b ? true : false;
-        }
-        private bool CompareLessOrEqual(double a, double b)
-        {
-            return a <= b ? true : false;
-        }
-        private bool CompareLess(double a, double b)
-        {
-            return a < b ? true : false;
-        }
-
-        /// <summary>
-        /// Save a combatclass file to the given filepath.
-        /// </summary>
-        /// <param name="filepath">Filename without extension</param>
-        public static void SaveToFile(string filepath, CombatLogic combatLogic)
-        {
-            if (!Directory.Exists(combatclassesPath))
-                Directory.CreateDirectory(combatclassesPath);
-
-            // Serialize our object with the help of NewtosoftJSON
-            File.WriteAllText(filepath, Newtonsoft.Json.JsonConvert.SerializeObject(combatLogic));
-        }
-
-        /// <summary>
-        /// Load a combatclass file.
-        /// </summary>
-        /// <param name="filepath">Filepath</param>
-        public static CombatLogic LoadCombatLogicFromFile(string filepath)
-        {
-            CombatLogic currentCombatLogic;
-
-            if (!Directory.Exists(combatclassesPath))
-                Directory.CreateDirectory(combatclassesPath);
-
-            if (File.Exists(filepath))
-            {
-                currentCombatLogic = Newtonsoft.Json.JsonConvert.DeserializeObject<CombatLogic>(File.ReadAllText(filepath));
-                currentCombatLogic.combatLogicEntries = currentCombatLogic.combatLogicEntries.OrderBy(p => p.Priority).ToList();
-                return currentCombatLogic;
-            }
-            return null;
-        }
+        #endregion Private Methods
     }
 }

@@ -1,72 +1,91 @@
-﻿using System;
-
-namespace AmeisenUtilities
+﻿namespace AmeisenUtilities
 {
     /// <summary>
-    /// Simple X,Y & Z struct
+    /// Action types, most of them should be pretty
+    /// self-explaining
     /// </summary>
-    public struct Vector3
+    public enum AmeisenActionType
     {
-        public double x;
-        public double y;
-        public double z;
+        USE_SPELL,
+        USE_SPELL_ON_ME,
+        INTERACT_TARGET,
+        MOVE_TO_POSITION,
+        MOVE_NEAR_TARGET,
+        FORCE_MOVE_TO_POSITION,
+        FORCE_MOVE_NEAR_TARGET,
+        TARGET_ENTITY
     }
 
-    public struct Credentials
+    /// <summary>
+    /// CTM Interaction types
+    /// </summary>
+    public enum Interaction
     {
-        public string charname;
-        public string username;
-        public string password;
-        public int charSlot;
+        FACETARGET = 0x1,
+        FACEDESTINATION = 0x2,
+        STOP = 0x3,
+        MOVE = 0x4,
+        INTERACT = 0x5,
+        LOOT = 0x6,
+        INTERACTOBJECT = 0x7,
+        FACEOTHER = 0x8,
+        SKIN = 0x9,
+        ATTACK = 0x10,
+        ATTACKPOS = 0xA,
+        ATTACKGUID = 0xB,
+        WALKANDROTATE = 0x13
     }
 
-    public class MeSendable
+    /// <summary>
+    ///
+    /// </summary>
+    public enum LUAUnit
     {
-        public string Name;
-        public ulong Guid;
-
-        public Vector3 Pos;
-        public float Rotation;
-
-        public int Level;
-
-        public int Health;
-        public int MaxHealth;
-
-        public int Energy;
-        public int MaxEnergy;
-
-        public int Exp;
-        public int MaxExp;
-
-        public MeSendable ConvertFromMe(Me me)
-        {
-            Name = me.Name;
-            Guid = me.Guid;
-
-            Pos = me.pos;
-            Rotation = me.Rotation;
-
-            Level = me.Level;
-
-            Health = me.Health;
-            MaxHealth = me.MaxHealth;
-
-            Energy = me.Energy;
-            MaxEnergy = me.MaxEnergy;
-
-            Exp = me.Exp;
-            MaxExp = me.MaxExp;
-            return this;
-        }
+        player,
+        target,
+        party1,
+        party2,
+        party3,
+        party4,
     }
 
-    public struct Bot
+    /// <summary>
+    /// DynamicUnitFlags
+    /// </summary>
+    public enum UnitDynamicFlags
     {
-        public int id;
-        public MeSendable me;
-        public string name;
-        public string ip;
+        NONE = 0,
+        LOOTABLE = 0x1,
+        TRACKUNIT = 0x2,
+        TAGGEDBYOTHER = 0x4,
+        TAGGEDBYME = 0x8,
+        SPECIALINFO = 0x10,
+        DEAD = 0x20,
+        REFERAFRIENDLINKED = 0x40,
+        TAPPEDBYTHREAT = 0x80,
+    }
+
+    /// <summary>
+    /// UnitFlags
+    /// </summary>
+    public enum UnitFlags : int
+    {
+        NONE = 0,
+        SITTING = 0x1,
+        TOTEM = 0x10,
+        NOT_ATTACKABLE = 0x100,
+        LOOTING = 0x400,
+        PET_IN_COMBAT = 0x800,
+        PVP_FLAGGED = 0x1000,
+        SILENCED = 0x4000,
+        COMBAT = 0x80000,
+        FLIGHTMASTER_FLIGHT = 0x100000,
+        DISARMED = 0x200000,
+        CONFUSED = 0x400000,
+        FLEEING = 0x800000,
+        SKINNABLE = 0x8000000,
+        MOUNTED = 0x4000000,
+        DAZED = 0x20000000
     }
 
     /// <summary>
@@ -106,92 +125,42 @@ namespace AmeisenUtilities
         CORPSE = 7
     }
 
-    /// <summary>
-    /// CTM Interaction types
-    /// </summary>
-    public enum Interaction
+    public struct Bot
     {
-        FACETARGET = 0x1,
-        FACEDESTINATION = 0x2,
-        STOP = 0x3,
-        MOVE = 0x4,
-        INTERACT = 0x5,
-        LOOT = 0x6,
-        INTERACTOBJECT = 0x7,
-        FACEOTHER = 0x8,
-        SKIN = 0x9,
-        ATTACK = 0x10,
-        ATTACKPOS = 0xA,
-        ATTACKGUID = 0xB,
-        WALKANDROTATE = 0x13
+        #region Public Fields
+
+        public int id;
+        public string ip;
+        public MeSendable me;
+        public string name;
+
+        #endregion Public Fields
+    }
+
+    public struct Credentials
+    {
+        #region Public Fields
+
+        public string charname;
+        public int charSlot;
+        public string password;
+        public string username;
+
+        #endregion Public Fields
     }
 
     /// <summary>
-    /// Action types, most of them should be pretty
-    /// self-explaining
+    /// Simple X,Y & Z struct
     /// </summary>
-    public enum AmeisenActionType
+    public struct Vector3
     {
-        USE_SPELL,
-        USE_SPELL_ON_ME,
-        INTERACT_TARGET,
-        MOVE_TO_POSITION,
-        MOVE_NEAR_TARGET,
-        FORCE_MOVE_TO_POSITION,
-        FORCE_MOVE_NEAR_TARGET,
-        TARGET_ENTITY
-    }
+        #region Public Fields
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public enum LUAUnit
-    {
-        player,
-        target,
-        party1,
-        party2,
-        party3,
-        party4,
-    }
+        public double x;
+        public double y;
+        public double z;
 
-    /// <summary>
-    /// UnitFlags
-    /// </summary>
-    public enum UnitFlags : int
-    {
-        NONE = 0,
-        SITTING = 0x1,
-        TOTEM = 0x10,
-        NOT_ATTACKABLE = 0x100,
-        LOOTING = 0x400,
-        PET_IN_COMBAT = 0x800,
-        PVP_FLAGGED = 0x1000,
-        SILENCED = 0x4000,
-        COMBAT = 0x80000,
-        FLIGHTMASTER_FLIGHT = 0x100000,
-        DISARMED = 0x200000,
-        CONFUSED = 0x400000,
-        FLEEING = 0x800000,
-        SKINNABLE = 0x8000000,
-        MOUNTED = 0x4000000,
-        DAZED = 0x20000000
-    }
-
-    /// <summary>
-    /// DynamicUnitFlags
-    /// </summary>
-    public enum UnitDynamicFlags
-    {
-        NONE = 0,
-        LOOTABLE = 0x1,
-        TRACKUNIT = 0x2,
-        TAGGEDBYOTHER = 0x4,
-        TAGGEDBYME = 0x8,
-        SPECIALINFO = 0x10,
-        DEAD = 0x20,
-        REFERAFRIENDLINKED = 0x40,
-        TAPPEDBYTHREAT = 0x80,
+        #endregion Public Fields
     }
 
     /// <summary>
@@ -199,10 +168,14 @@ namespace AmeisenUtilities
     /// </summary>
     public struct WoWAuraInfo
     {
-        public string name;
-        public int stacks;
+        #region Public Fields
+
         public int duration;
         public string expirationTime;
+        public string name;
+        public int stacks;
+
+        #endregion Public Fields
     }
 
     /// <summary>
@@ -210,8 +183,56 @@ namespace AmeisenUtilities
     /// </summary>
     public struct WoWSpellInfo
     {
-        public string name;
+        #region Public Fields
+
         public int castTime;
         public int cost;
+        public string name;
+
+        #endregion Public Fields
+    }
+
+    public class MeSendable
+    {
+        #region Public Fields
+
+        public int Energy;
+        public int Exp;
+        public ulong Guid;
+        public int Health;
+        public int Level;
+        public int MaxEnergy;
+        public int MaxExp;
+        public int MaxHealth;
+        public string Name;
+        public Vector3 Pos;
+        public float Rotation;
+
+        #endregion Public Fields
+
+        #region Public Methods
+
+        public MeSendable ConvertFromMe(Me me)
+        {
+            Name = me.Name;
+            Guid = me.Guid;
+
+            Pos = me.pos;
+            Rotation = me.Rotation;
+
+            Level = me.Level;
+
+            Health = me.Health;
+            MaxHealth = me.MaxHealth;
+
+            Energy = me.Energy;
+            MaxEnergy = me.MaxEnergy;
+
+            Exp = me.Exp;
+            MaxExp = me.MaxExp;
+            return this;
+        }
+
+        #endregion Public Methods
     }
 }

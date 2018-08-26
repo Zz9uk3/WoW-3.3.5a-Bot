@@ -19,35 +19,47 @@ namespace AmeisenManager
     /// </summary>
     public class AmeisenObjectManager
     {
-        private static AmeisenObjectManager instance;
-        private static readonly object padlock = new object();
+        #region Private Fields
 
-        private Me Me
-        {
-            get { return AmeisenDataHolder.Instance.Me; }
-            set { AmeisenDataHolder.Instance.Me = value; }
-        }
-        private Unit Target
-        {
-            get { return AmeisenDataHolder.Instance.Target; }
-            set { AmeisenDataHolder.Instance.Target = value; }
-        }
+        private static readonly object padlock = new object();
+        private static AmeisenObjectManager instance;
+        private Thread objectUpdateThread;
+
+        private System.Timers.Timer objectUpdateTimer;
+
+        private DateTime timestampObjects;
+
+        #endregion Private Fields
+
+        #region Private Properties
+
         private List<WoWObject> ActiveWoWObjects
         {
             get { return AmeisenDataHolder.Instance.ActiveWoWObjects; }
             set { AmeisenDataHolder.Instance.ActiveWoWObjects = value; }
         }
 
-        private DateTime timestampObjects;
+        private Me Me
+        {
+            get { return AmeisenDataHolder.Instance.Me; }
+            set { AmeisenDataHolder.Instance.Me = value; }
+        }
 
-        private System.Timers.Timer objectUpdateTimer;
-        private Thread objectUpdateThread;
+        private Unit Target
+        {
+            get { return AmeisenDataHolder.Instance.Target; }
+            set { AmeisenDataHolder.Instance.Target = value; }
+        }
+
+        #endregion Private Properties
 
         #region Singleton stuff
+
         private AmeisenObjectManager()
         {
             RefreshObjects();
         }
+
         public static AmeisenObjectManager Instance
         {
             get
@@ -60,11 +72,59 @@ namespace AmeisenManager
                 }
             }
         }
-        #endregion
 
-        private void ObjectUpdateTimer(object source, ElapsedEventArgs e)
+        #endregion Singleton stuff
+
+        #region Public Methods
+
+        /// <summary>
+        /// Get our WoWObjects in the memory
+        /// </summary>
+        /// <returns>WoWObjects in the memory</returns>
+        public List<WoWObject> GetObjects()
         {
-            RefreshObjects();
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Getting Objects", this);
+
+            if (ActiveWoWObjects == null)
+                RefreshObjectsAsync();
+
+            // need to do this only for specific objects, saving cpu usage
+            //if (needToRefresh)
+            //RefreshObjectsAsync();
+            return ActiveWoWObjects;
+        }
+
+        /// <summary>
+        /// Return a Player by the given GUID
+        /// </summary>
+        /// <param name="guid">guid of the player you want to get</param>
+        /// <returns>Player that you want to get</returns>
+        public WoWObject GetWoWObjectFromGUID(UInt64 guid)
+        {
+            foreach (WoWObject p in ActiveWoWObjects)
+                if (p.Guid == guid)
+                    return p;
+
+            return null;
+        }
+
+        /// <summary>
+        /// Refresh the Me Object
+        /// </summary>
+        public void RefreshMe()
+        {
+            Me = AmeisenCore.AmeisenCore.ReadMe(Me.BaseAddress);
+        }
+
+        /// <summary>
+        /// Refresh our bot's stats, you can get the stats by calling Me().
+        ///
+        /// This runs Async.
+        /// </summary>
+        public void RefreshMeAsync()
+        {
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Refresh Me Async", this);
+            new Thread(new ThreadStart(RefreshMe)).Start();
         }
 
         /// <summary>
@@ -87,69 +147,18 @@ namespace AmeisenManager
             objectUpdateThread.Join();
         }
 
-        private void StartTimer() { objectUpdateTimer.Start(); }
+        #endregion Public Methods
 
-        /// <summary>
-        /// Refresh our bot's stats, you can get the stats by calling Me().
-        ///
-        /// This runs Async.
-        /// </summary>
-        public void RefreshMeAsync()
+        #region Private Methods
+
+        private void AntiAFK()
         {
-            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Refresh Me Async", this);
-            new Thread(new ThreadStart(RefreshMe)).Start();
+            AmeisenCore.AmeisenCore.AntiAFK();
         }
 
-        /// <summary>
-        /// Get our WoWObjects in the memory
-        /// </summary>
-        /// <returns>WoWObjects in the memory</returns>
-        public List<WoWObject> GetObjects()
+        private void ObjectUpdateTimer(object source, ElapsedEventArgs e)
         {
-            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Getting Objects", this);
-
-            if (ActiveWoWObjects == null)
-                RefreshObjectsAsync();
-
-            // need to do this only for specific objects, saving cpu usage
-            //if (needToRefresh)
-            //RefreshObjectsAsync();
-            return ActiveWoWObjects;
-        }
-
-        /// <summary>
-        /// Refresh our bot's objectlist, you can get the stats by calling GetObjects().
-        ///
-        /// This runs Async.
-        /// </summary>
-        private void RefreshObjectsAsync()
-        {
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Refreshing Objects Async", this);
-            timestampObjects = DateTime.Now;
-
-            new Thread(new ThreadStart(RefreshObjects)).Start();
-        }
-
-        /// <summary>
-        /// Refresh the Me Object
-        /// </summary>
-        public void RefreshMe()
-        {
-            Me = AmeisenCore.AmeisenCore.ReadMe(Me.BaseAddress);
-        }
-
-        /// <summary>
-        /// Return a Player by the given GUID
-        /// </summary>
-        /// <param name="guid">guid of the player you want to get</param>
-        /// <returns>Player that you want to get</returns>
-        public WoWObject GetWoWObjectFromGUID(UInt64 guid)
-        {
-            foreach (WoWObject p in ActiveWoWObjects)
-                if (p.Guid == guid)
-                    return p;
-
-            return null;
+            RefreshObjects();
         }
 
         private void RefreshObjects()
@@ -188,6 +197,24 @@ namespace AmeisenManager
             AntiAFK();
         }
 
-        private void AntiAFK() { AmeisenCore.AmeisenCore.AntiAFK(); }
+        /// <summary>
+        /// Refresh our bot's objectlist, you can get the stats by calling GetObjects().
+        ///
+        /// This runs Async.
+        /// </summary>
+        private void RefreshObjectsAsync()
+        {
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Refreshing Objects Async", this);
+            timestampObjects = DateTime.Now;
+
+            new Thread(new ThreadStart(RefreshObjects)).Start();
+        }
+
+        private void StartTimer()
+        {
+            objectUpdateTimer.Start();
+        }
+
+        #endregion Private Methods
     }
 }

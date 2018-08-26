@@ -6,62 +6,29 @@ namespace AmeisenUtilities
 {
     public partial class Unit : WoWObject
     {
-        public int Level { get; set; }
-        public int Health { get; set; }
-        public int MaxHealth { get; set; }
-        public int Energy { get; set; }
-        public int MaxEnergy { get; set; }
-
-        public BitVector32 UFlags { get; set; }
-        public BitVector32 DynUFlags { get; set; }
-
-        public bool InCombat { get { return UFlags[(int)UnitFlags.COMBAT]; } }
+        #region Public Constructors
 
         public Unit(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
             Update();
         }
 
-        public override void Update()
-        {
-            base.Update();
+        #endregion Public Constructors
 
-            if (Name == null)
-                try { Name = GetMobNameFromBase(BaseAddress); } catch { }
+        #region Public Properties
 
-            pos.x = BlackMagicInstance.ReadFloat(BaseAddress + 0x798);
-            pos.y = BlackMagicInstance.ReadFloat(BaseAddress + 0x79C);
-            pos.z = BlackMagicInstance.ReadFloat(BaseAddress + 0x7A0);
-            Rotation = BlackMagicInstance.ReadFloat(BaseAddress + 0x7A8);
+        public BitVector32 DynUFlags { get; set; }
+        public int Energy { get; set; }
+        public int Health { get; set; }
+        public bool InCombat { get { return UFlags[(int)UnitFlags.COMBAT]; } }
+        public int Level { get; set; }
+        public int MaxEnergy { get; set; }
+        public int MaxHealth { get; set; }
+        public BitVector32 UFlags { get; set; }
 
-            // too cpu heavy
-            /*try
-            {
-                distance = Utils.GetDistance(pos, AmeisenManager.GetInstance().Me().pos);
-            }
-            catch { }*/
+        #endregion Public Properties
 
-            try
-            {
-                Level = BlackMagicInstance.ReadInt(Descriptor + 0xD8);
-                Health = BlackMagicInstance.ReadInt(Descriptor + 0x60);
-                MaxHealth = BlackMagicInstance.ReadInt(Descriptor + 0x80);
-                Energy = BlackMagicInstance.ReadInt(Descriptor + 0x64);
-                MaxEnergy = BlackMagicInstance.ReadInt(Descriptor + 0x84);
-                //CombatReach = BlackMagicInstance.ReadInt(BaseUnitFields + (0x42 * 4));
-                //ChannelSpell = BlackMagicInstance.ReadInt(BaseUnitFields + (0x16 * 4));
-                //SummonedBy = BlackMagicInstance.ReadInt(BaseUnitFields + (0xE * 4));
-                //FactionTemplate = BlackMagicInstance.ReadInt(BaseUnitFields + (0x37 * 4));
-            }
-            catch { }
-
-            try
-            {
-                UFlags = (BitVector32)BlackMagicInstance.ReadObject(Descriptor + 0xEC, typeof(BitVector32));
-                DynUFlags = (BitVector32)BlackMagicInstance.ReadObject(Descriptor + 0x13C, typeof(BitVector32));
-            }
-            catch { }
-        }
+        #region Public Methods
 
         /// <summary>
         /// Get any NPC's name by its BaseAdress
@@ -107,5 +74,48 @@ namespace AmeisenUtilities
 
             return sb.ToString();
         }
+
+        public override void Update()
+        {
+            base.Update();
+
+            if (Name == null)
+                try { Name = GetMobNameFromBase(BaseAddress); } catch { }
+
+            pos.x = BlackMagicInstance.ReadFloat(BaseAddress + 0x798);
+            pos.y = BlackMagicInstance.ReadFloat(BaseAddress + 0x79C);
+            pos.z = BlackMagicInstance.ReadFloat(BaseAddress + 0x7A0);
+            Rotation = BlackMagicInstance.ReadFloat(BaseAddress + 0x7A8);
+
+            // too cpu heavy
+            /*try
+            {
+                distance = Utils.GetDistance(pos, AmeisenManager.GetInstance().Me().pos);
+            }
+            catch { }*/
+
+            try
+            {
+                Level = BlackMagicInstance.ReadInt(Descriptor + 0xD8);
+                Health = BlackMagicInstance.ReadInt(Descriptor + 0x60);
+                MaxHealth = BlackMagicInstance.ReadInt(Descriptor + 0x80);
+                Energy = BlackMagicInstance.ReadInt(Descriptor + 0x64);
+                MaxEnergy = BlackMagicInstance.ReadInt(Descriptor + 0x84);
+                //CombatReach = BlackMagicInstance.ReadInt(BaseUnitFields + (0x42 * 4));
+                //ChannelSpell = BlackMagicInstance.ReadInt(BaseUnitFields + (0x16 * 4));
+                //SummonedBy = BlackMagicInstance.ReadInt(BaseUnitFields + (0xE * 4));
+                //FactionTemplate = BlackMagicInstance.ReadInt(BaseUnitFields + (0x37 * 4));
+            }
+            catch { }
+
+            try
+            {
+                UFlags = (BitVector32)BlackMagicInstance.ReadObject(Descriptor + 0xEC, typeof(BitVector32));
+                DynUFlags = (BitVector32)BlackMagicInstance.ReadObject(Descriptor + 0x13C, typeof(BitVector32));
+            }
+            catch { }
+        }
+
+        #endregion Public Methods
     }
 }

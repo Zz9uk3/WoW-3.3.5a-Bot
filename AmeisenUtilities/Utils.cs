@@ -5,11 +5,14 @@ namespace AmeisenUtilities
 {
     public abstract class Utils
     {
-        public static double GetDistance(Vector3 a, Vector3 b)
+        #region Public Methods
+
+        public static string ByteArrayToString(byte[] ba)
         {
-            return Math.Sqrt((a.x - b.x) * (a.x - b.x) +
-                             (a.y - b.y) * (a.y - b.y) +
-                             (a.z - b.z) * (a.z - b.z));
+            StringBuilder hex = new StringBuilder(ba.Length * 2);
+            foreach (byte b in ba)
+                hex.AppendFormat("{0:x2}", b);
+            return hex.ToString();
         }
 
         public static string GenerateRandonString(int lenght, string chars)
@@ -21,12 +24,13 @@ namespace AmeisenUtilities
             return sb.ToString();
         }
 
-        public static string ByteArrayToString(byte[] ba)
+        public static double GetDistance(Vector3 a, Vector3 b)
         {
-            StringBuilder hex = new StringBuilder(ba.Length * 2);
-            foreach (byte b in ba)
-                hex.AppendFormat("{0:x2}", b);
-            return hex.ToString();
+            return Math.Sqrt((a.x - b.x) * (a.x - b.x) +
+                             (a.y - b.y) * (a.y - b.y) +
+                             (a.z - b.z) * (a.z - b.z));
         }
+
+        #endregion Public Methods
     }
 }

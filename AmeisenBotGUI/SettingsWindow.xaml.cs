@@ -9,7 +9,7 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class SettingsWindow : Window
     {
-        private AmeisenBotManager BotManager { get; }
+        #region Public Constructors
 
         public SettingsWindow()
         {
@@ -17,14 +17,15 @@ namespace AmeisenBotGUI
             BotManager = AmeisenBotManager.Instance;
         }
 
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                DragMove();
-            }
-            catch { }
-        }
+        #endregion Public Constructors
+
+        #region Private Properties
+
+        private AmeisenBotManager BotManager { get; }
+
+        #endregion Private Properties
+
+        #region Private Methods
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
@@ -34,6 +35,41 @@ namespace AmeisenBotGUI
         private void ButtonMinimize_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if ((bool)radiobuttonRefreshSpeedLowest.IsChecked)
+                BotManager.Settings.dataRefreshRate = 1000;
+            else if ((bool)radiobuttonRefreshSpeedLow.IsChecked)
+                BotManager.Settings.dataRefreshRate = 500;
+            else if ((bool)radiobuttonRefreshSpeedMedium.IsChecked)
+                BotManager.Settings.dataRefreshRate = 250;
+            else if ((bool)radiobuttonRefreshSpeedHigh.IsChecked)
+                BotManager.Settings.dataRefreshRate = 100;
+            else if ((bool)radiobuttonRefreshSpeedHighest.IsChecked)
+                BotManager.Settings.dataRefreshRate = 0;
+            else
+            {
+                //something is wrong...
+            }
+
+            if ((bool)radiobuttonIntLowest.IsChecked)
+                BotManager.Settings.botMaxThreads = 1;
+            else if ((bool)radiobuttonIntLow.IsChecked)
+                BotManager.Settings.botMaxThreads = 2;
+            else if ((bool)radiobuttonIntMedium.IsChecked)
+                BotManager.Settings.botMaxThreads = 3;
+            else if ((bool)radiobuttonIntHigh.IsChecked)
+                BotManager.Settings.botMaxThreads = 4;
+            else if ((bool)radiobuttonIntHighest.IsChecked)
+                BotManager.Settings.botMaxThreads = 8;
+            else
+            {
+                //something is wrong...
+            }
+
+            BotManager.SaveSettingsToFile(BotManager.GetLoadedConfigName());
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -91,39 +127,15 @@ namespace AmeisenBotGUI
             }
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if ((bool)radiobuttonRefreshSpeedLowest.IsChecked)
-                BotManager.Settings.dataRefreshRate = 1000;
-            else if ((bool)radiobuttonRefreshSpeedLow.IsChecked)
-                BotManager.Settings.dataRefreshRate = 500;
-            else if ((bool)radiobuttonRefreshSpeedMedium.IsChecked)
-                BotManager.Settings.dataRefreshRate = 250;
-            else if ((bool)radiobuttonRefreshSpeedHigh.IsChecked)
-                BotManager.Settings.dataRefreshRate = 100;
-            else if ((bool)radiobuttonRefreshSpeedHighest.IsChecked)
-                BotManager.Settings.dataRefreshRate = 0;
-            else
+            try
             {
-                //something is wrong...
+                DragMove();
             }
-
-            if ((bool)radiobuttonIntLowest.IsChecked)
-                BotManager.Settings.botMaxThreads = 1;
-            else if ((bool)radiobuttonIntLow.IsChecked)
-                BotManager.Settings.botMaxThreads = 2;
-            else if ((bool)radiobuttonIntMedium.IsChecked)
-                BotManager.Settings.botMaxThreads = 3;
-            else if ((bool)radiobuttonIntHigh.IsChecked)
-                BotManager.Settings.botMaxThreads = 4;
-            else if ((bool)radiobuttonIntHighest.IsChecked)
-                BotManager.Settings.botMaxThreads = 8;
-            else
-            {
-                //something is wrong...
-            }
-
-            BotManager.SaveSettingsToFile(BotManager.GetLoadedConfigName());
+            catch { }
         }
+
+        #endregion Private Methods
     }
 }

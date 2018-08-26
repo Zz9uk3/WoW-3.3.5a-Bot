@@ -5,13 +5,17 @@ namespace AmeisenAI
 {
     public class AmeisenCombatManager
     {
-        private static AmeisenCombatManager instance;
+        #region Private Fields
+
         private static readonly object padlock = new object();
-
-        private CombatEngine combatEngine;
+        private static AmeisenCombatManager instance;
         private readonly Thread mainWorker;
-
+        private CombatEngine combatEngine;
         private bool stop = false;
+
+        #endregion Private Fields
+
+        #region Private Constructors
 
         private AmeisenCombatManager()
         {
@@ -20,6 +24,10 @@ namespace AmeisenAI
 
             ReloadCombatClass();
         }
+
+        #endregion Private Constructors
+
+        #region Public Properties
 
         /// <summary>
         /// Initialize/Get the instance of our singleton
@@ -38,28 +46,9 @@ namespace AmeisenAI
             }
         }
 
-        /// <summary>
-        /// Stop the CombatEngine
-        /// </summary>
-        public void Stop()
-        {
-            stop = true;
-            mainWorker.Abort();
-        }
+        #endregion Public Properties
 
-        /// <summary>
-        /// Start the CombatEngine
-        /// </summary>
-        public void Start() { if (mainWorker.ThreadState == ThreadState.Unstarted) mainWorker.Start(); }
-
-        private void DoWork()
-        {
-            while (!stop)
-            {
-                combatEngine.ExecuteNextStep();
-                Thread.Sleep(1000);
-            }
-        }
+        #region Public Methods
 
         /// <summary>
         /// Reload our CombatClass specified in the AmeisenSettings class
@@ -70,5 +59,34 @@ namespace AmeisenAI
             if (defaultCombatClass != "none")
                 combatEngine.currentCombatLogic = CombatEngine.LoadCombatLogicFromFile(defaultCombatClass);
         }
+
+        /// <summary>
+        /// Start the CombatEngine
+        /// </summary>
+        public void Start() { if (mainWorker.ThreadState == ThreadState.Unstarted) mainWorker.Start(); }
+
+        /// <summary>
+        /// Stop the CombatEngine
+        /// </summary>
+        public void Stop()
+        {
+            stop = true;
+            mainWorker.Abort();
+        }
+
+        #endregion Public Methods
+
+        #region Private Methods
+
+        private void DoWork()
+        {
+            while (!stop)
+            {
+                combatEngine.ExecuteNextStep();
+                Thread.Sleep(1000);
+            }
+        }
+
+        #endregion Private Methods
     }
 }

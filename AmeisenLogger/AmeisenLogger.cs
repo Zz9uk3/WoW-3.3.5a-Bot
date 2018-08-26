@@ -22,32 +22,44 @@ namespace AmeisenLogging
     /// </summary>
     public class AmeisenLogEntry
     {
-        public LogLevel loglevel;
+        #region Public Fields
+
+        public string functionName;
         public int id;
-        public string timestamp;
+        public LogLevel loglevel;
         public string msg;
         public object originClass;
-        public string functionName;
+        public string timestamp;
+
+        #endregion Public Fields
+
+        #region Public Methods
 
         public override string ToString()
         {
             return "[" + id + "][" + timestamp + "]\t[" + loglevel.ToString() + "][" + originClass.ToString() + ":" + functionName + "] - " + msg;
         }
+
+        #endregion Public Methods
     }
 
     public class AmeisenLogger
     {
-        private static AmeisenLogger instance;
+        #region Private Fields
+
         private static readonly object padlock = new object();
-
-        private readonly string logPath = AppDomain.CurrentDomain.BaseDirectory + "/logs/";
+        private static AmeisenLogger instance;
         private readonly string logName;
-
+        private readonly string logPath = AppDomain.CurrentDomain.BaseDirectory + "/logs/";
         private LogLevel activeLogLevel;
+        private ConcurrentQueue<AmeisenLogEntry> entries;
         private int logcount = 0;
         private bool loggingActive;
-        private ConcurrentQueue<AmeisenLogEntry> entries;
         private Thread loggingThread;
+
+        #endregion Private Fields
+
+        #region Private Constructors
 
         private AmeisenLogger()
         {
@@ -58,6 +70,10 @@ namespace AmeisenLogging
             loggingThread.Start();
             logName = DateTime.Now.ToString("dd-MM-yyyy") + "_" + DateTime.Now.ToString("HH-mm") + ".txt";
         }
+
+        #endregion Private Constructors
+
+        #region Public Properties
 
         /// <summary>
         /// Initialize/Get the instance of our singleton
@@ -76,16 +92,9 @@ namespace AmeisenLogging
             }
         }
 
-        /// <summary>
-        /// Set the LogLevel that is going to be saved in the logs
-        /// </summary>
-        /// <param name="logLevel">LogLevel to save to the logfile</param>
-        public void SetActiveLogLevel(LogLevel logLevel) { activeLogLevel = logLevel; }
+        #endregion Public Properties
 
-        /// <summary>
-        /// Stop the logging thread, dont forget it!
-        /// </summary>
-        public void StopLogging() { loggingActive = false; }
+        #region Public Methods
 
         /// <summary>
         /// Add an entry to the log
@@ -115,6 +124,28 @@ namespace AmeisenLogging
             return logEntry;
         }
 
+        /// <summary>
+        /// Set the LogLevel that is going to be saved in the logs
+        /// </summary>
+        /// <param name="logLevel">LogLevel to save to the logfile</param>
+        public void SetActiveLogLevel(LogLevel logLevel) { activeLogLevel = logLevel; }
+
+        /// <summary>
+        /// Stop the logging thread, dont forget it!
+        /// </summary>
+        public void StopLogging() { loggingActive = false; }
+
+        #endregion Public Methods
+
+        #region Private Methods
+
+        private void SaveLogToFile(AmeisenLogEntry entry)
+        {
+            if (!Directory.Exists(logPath))
+                Directory.CreateDirectory(logPath);
+            File.AppendAllText(logPath + logName, entry.ToString() + Environment.NewLine);
+        }
+
         private void WorkOnQueue()
         {
             while (loggingActive)
@@ -130,11 +161,6 @@ namespace AmeisenLogging
             }
         }
 
-        private void SaveLogToFile(AmeisenLogEntry entry)
-        {
-            if (!Directory.Exists(logPath))
-                Directory.CreateDirectory(logPath);
-            File.AppendAllText(logPath + logName, entry.ToString() + Environment.NewLine);
-        }
+        #endregion Private Methods
     }
 }

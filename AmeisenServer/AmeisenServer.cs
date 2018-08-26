@@ -8,8 +8,41 @@ namespace AmeisenServer
 {
     internal class AmeisenServer
     {
+        #region Private Fields
+
         private static ArrayList activeBots;
         private static int botCount;
+
+        #endregion Private Fields
+
+        #region Private Methods
+
+        /// <summary>
+        /// THIS THING IS THE SHIT...
+        /// </summary>
+        /// <param name="ip">IP-Address</param>
+        /// <param name="httpMethod"> GET, POST, PUT ...</param>
+        /// <param name="url">URL</param>
+        private static void FancyCW(string ip, string httpMethod, string url)
+        {
+            Console.Write("[");
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write(ip);
+            Console.ResetColor();
+
+            Console.Write("]{");
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(httpMethod);
+            Console.ResetColor();
+
+            Console.Write("}: ");
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write(url + "\n");
+            Console.ResetColor();
+        }
 
         private static void Main(string[] args)
         {
@@ -49,6 +82,21 @@ namespace AmeisenServer
                 if (!cmd.ToLower().Equals("stop"))
                     Console.WriteLine("unknown: " + cmd);
             }
+        }
+
+        /// <summary>
+        /// Read the body of the request we just received
+        /// </summary>
+        /// <param name="request">request to read the body of</param>
+        /// <returns>body of the request as string</returns>
+        private static string ReadBody(HttpListenerRequest request)
+        {
+            if (!request.HasEntityBody)
+                return null;
+
+            using (Stream body = request.InputStream)
+            using (StreamReader reader = new StreamReader(body, request.ContentEncoding))
+                return reader.ReadToEnd();
         }
 
         private static string SendResponse(HttpListenerRequest request)
@@ -127,46 +175,6 @@ namespace AmeisenServer
                 return "AyyLMAO";
         }
 
-        /// <summary>
-        /// Read the body of the request we just received
-        /// </summary>
-        /// <param name="request">request to read the body of</param>
-        /// <returns>body of the request as string</returns>
-        private static string ReadBody(HttpListenerRequest request)
-        {
-            if (!request.HasEntityBody)
-                return null;
-
-            using (Stream body = request.InputStream)
-            using (StreamReader reader = new StreamReader(body, request.ContentEncoding))
-                return reader.ReadToEnd();
-        }
-
-        /// <summary>
-        /// THIS THING IS THE SHIT...
-        /// </summary>
-        /// <param name="ip">IP-Address</param>
-        /// <param name="httpMethod"> GET, POST, PUT ...</param>
-        /// <param name="url">URL</param>
-        private static void FancyCW(string ip, string httpMethod, string url)
-        {
-            Console.Write("[");
-
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write(ip);
-            Console.ResetColor();
-
-            Console.Write("]{");
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(httpMethod);
-            Console.ResetColor();
-
-            Console.Write("}: ");
-
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.Write(url + "\n");
-            Console.ResetColor();
-        }
+        #endregion Private Methods
     }
 }

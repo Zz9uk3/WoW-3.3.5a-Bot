@@ -4,45 +4,9 @@ using static AmeisenAI.Combat.CombatStructures;
 
 namespace AmeisenAI.Combat
 {
-    public class Condition
-    {
-        public CombatLogicStatement statement;
-        public CombatLogicValues[] conditionValues;
-        public bool customSecondValue;
-        public object customValue;
-
-        public Condition()
-        {
-            statement = CombatLogicStatement.EQUAL;
-            conditionValues = new CombatLogicValues[2] { 0, 0 };
-            customSecondValue = false;
-            customValue = 0.0;
-        }
-
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(conditionValues[0].ToString());
-            sb.Append(" - " + statement.ToString() + " - ");
-            sb.Append(conditionValues[1].ToString());
-
-            return sb.ToString(); ;
-        }
-    }
-
     public class CombatLogicEntry
     {
-        public int Priority { get; set; }
-        public CombatLogicAction Action { get; set; }
-        public List<Condition> Conditions { get; set; }
-        public bool CombatOnly { get; set; }
-        public bool IsBuff { get; set; }
-        public bool IsBuffForParty { get; set; }
-        public bool CanMoveDuringCast { get; set; }
-        public float MaxSpellDistance { get; set; }
-        public object Parameters { get; set; }
-        public bool IsForMyself { get; set; }
-        public CombatActionType ActionType { get; set; }
+        #region Public Constructors
 
         public CombatLogicEntry(
             int priority,
@@ -78,6 +42,26 @@ namespace AmeisenAI.Combat
             Parameters = "";
         }
 
+        #endregion Public Constructors
+
+        #region Public Properties
+
+        public CombatLogicAction Action { get; set; }
+        public CombatActionType ActionType { get; set; }
+        public bool CanMoveDuringCast { get; set; }
+        public bool CombatOnly { get; set; }
+        public List<Condition> Conditions { get; set; }
+        public bool IsBuff { get; set; }
+        public bool IsBuffForParty { get; set; }
+        public bool IsForMyself { get; set; }
+        public float MaxSpellDistance { get; set; }
+        public object Parameters { get; set; }
+        public int Priority { get; set; }
+
+        #endregion Public Properties
+
+        #region Public Methods
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -87,5 +71,45 @@ namespace AmeisenAI.Combat
 
             return sb.ToString();
         }
+
+        #endregion Public Methods
+    }
+
+    public class Condition
+    {
+        #region Public Fields
+
+        public CombatLogicValues[] conditionValues;
+        public bool customSecondValue;
+        public object customValue;
+        public CombatLogicStatement statement;
+
+        #endregion Public Fields
+
+        #region Public Constructors
+
+        public Condition()
+        {
+            statement = CombatLogicStatement.EQUAL;
+            conditionValues = new CombatLogicValues[2] { 0, 0 };
+            customSecondValue = false;
+            customValue = 0.0;
+        }
+
+        #endregion Public Constructors
+
+        #region Public Methods
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(conditionValues[0].ToString());
+            sb.Append(" - " + statement.ToString() + " - ");
+            sb.Append(conditionValues[1].ToString());
+
+            return sb.ToString(); ;
+        }
+
+        #endregion Public Methods
     }
 }

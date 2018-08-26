@@ -17,12 +17,16 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private AmeisenBotManager BotManager { get; }
-        private bool loginAutoIsPossible = false;
+        #region Private Fields
 
+        private readonly string autoLoginExe = AppDomain.CurrentDomain.BaseDirectory + "/WoW-LoginAutomator.exe";
         private readonly string configPath = AppDomain.CurrentDomain.BaseDirectory + "/credentials/";
         private readonly string extension = ".json";
-        private readonly string autoLoginExe = AppDomain.CurrentDomain.BaseDirectory + "/WoW-LoginAutomator.exe";
+        private bool loginAutoIsPossible = false;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public MainWindow()
         {
@@ -39,26 +43,15 @@ namespace AmeisenBotGUI
                 loadingForm.Height = 58;
         }
 
-        private void LoadingForm_Loaded(object sender, RoutedEventArgs e)
-        {
-            AmeisenLogger.Instance.SetActiveLogLevel(LogLevel.DEBUG);
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Loaded MainWindow", this);
-            SearchForWoW();
-        }
+        #endregion Public Constructors
 
-        private void LoadingForm_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                DragMove();
-            }
-            catch { }
-        }
+        #region Private Properties
 
-        private void ButtonRefresh_Click(object sender, RoutedEventArgs e)
-        {
-            SearchForWoW();
-        }
+        private AmeisenBotManager BotManager { get; }
+
+        #endregion Private Properties
+
+        #region Private Methods
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
@@ -94,29 +87,40 @@ namespace AmeisenBotGUI
             }
         }
 
-        private void SearchForWoW(string selectByCharname = "")
+        private void ButtonGoAuto_Click(object sender, RoutedEventArgs e)
         {
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Searching for WoW's", this);
+            Credentials credentials;
 
-            comboBoxWoWs.Items.Clear();
-            List<WoWExe> wowList = BotManager.RunningWoWs;
-
-            foreach (WoWExe w in wowList)
-                comboBoxWoWs.Items.Add(w);
-
-            if (selectByCharname != "")
+            if (loginAutoIsPossible && ((WoWExe)comboBoxWoWs.SelectedItem).characterName == "")
             {
-                foreach (WoWExe i in comboBoxWoWs.Items)
-                    if (i.characterName == selectByCharname)
-                        comboBoxWoWs.SelectedItem = i;
+                if (!Directory.Exists(configPath))
+                    Directory.CreateDirectory(configPath);
+
+                string path = configPath + textboxCharactername.Text.ToLower() + extension;
+
+                credentials.charname = textboxCharactername.Text;
+                credentials.username = textboxUsername.Text;
+                credentials.password = textboxPassword.Password;
+                credentials.charSlot = Convert.ToInt32(textboxCharSlot.Text);
+
+                if (checkboxSave.IsChecked == true)
+                    File.WriteAllText(path, Newtonsoft.Json.JsonConvert.SerializeObject(credentials));
+
+                string charname = textboxCharactername.Text;
+                Process p = Process.Start(autoLoginExe, ((WoWExe)comboBoxWoWs.SelectedItem).process.Id.ToString() + " " + credentials.charSlot + " " + credentials.username + " " + credentials.password);
+                StartAutoLogin(p, charname);
             }
-            else if (comboBoxWoWs.Items.Count > 0)
-            {
-                if ((WoWExe)comboBoxWoWs.SelectedItem == null
-                || ((WoWExe)comboBoxWoWs.SelectedItem).characterName == ""
-                || ((WoWExe)comboBoxWoWs.SelectedItem).process == null)
-                    comboBoxWoWs.SelectedItem = comboBoxWoWs.Items[0];
-            }
+        }
+
+        private void ButtonRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            SearchForWoW();
+        }
+
+        private void ComboBoxAccounts_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (comboBoxAccounts.SelectedItem != null)
+                LoadAccount(comboBoxAccounts.SelectedValue.ToString().ToLower());
         }
 
         private void ComboBoxWoWs_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -125,10 +129,16 @@ namespace AmeisenBotGUI
                 LoadAccount(((WoWExe)comboBoxWoWs.SelectedItem).characterName.ToLower());
         }
 
-        private void ComboBoxAccounts_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void GetAllAcoounts()
         {
-            if (comboBoxAccounts.SelectedItem != null)
-                LoadAccount(comboBoxAccounts.SelectedValue.ToString().ToLower());
+            if (!Directory.Exists(configPath))
+                Directory.CreateDirectory(configPath);
+
+            comboBoxAccounts.Items.Clear();
+
+            foreach (string f in Directory.GetFiles(configPath))
+                if (f.Length > 0)
+                    comboBoxAccounts.Items.Add(Path.GetFileNameWithoutExtension(f));
         }
 
         private void LoadAccount(string accountName)
@@ -155,28 +165,50 @@ namespace AmeisenBotGUI
             }
         }
 
-        private void ButtonGoAuto_Click(object sender, RoutedEventArgs e)
+        private void LoadingForm_Loaded(object sender, RoutedEventArgs e)
         {
-            Credentials credentials;
+            AmeisenLogger.Instance.SetActiveLogLevel(LogLevel.DEBUG);
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Loaded MainWindow", this);
+            SearchForWoW();
+        }
 
-            if (loginAutoIsPossible && ((WoWExe)comboBoxWoWs.SelectedItem).characterName == "")
+        private void LoadingForm_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            try
             {
-                if (!Directory.Exists(configPath))
-                    Directory.CreateDirectory(configPath);
+                DragMove();
+            }
+            catch { }
+        }
 
-                string path = configPath + textboxCharactername.Text.ToLower() + extension;
+        private void OnlyNumberTextBox(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
 
-                credentials.charname = textboxCharactername.Text;
-                credentials.username = textboxUsername.Text;
-                credentials.password = textboxPassword.Password;
-                credentials.charSlot = Convert.ToInt32(textboxCharSlot.Text);
+        private void SearchForWoW(string selectByCharname = "")
+        {
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Searching for WoW's", this);
 
-                if (checkboxSave.IsChecked == true)
-                    File.WriteAllText(path, Newtonsoft.Json.JsonConvert.SerializeObject(credentials));
+            comboBoxWoWs.Items.Clear();
+            List<WoWExe> wowList = BotManager.RunningWoWs;
 
-                string charname = textboxCharactername.Text;
-                Process p = Process.Start(autoLoginExe, ((WoWExe)comboBoxWoWs.SelectedItem).process.Id.ToString() + " " + credentials.charSlot + " " + credentials.username + " " + credentials.password);
-                StartAutoLogin(p, charname);
+            foreach (WoWExe w in wowList)
+                comboBoxWoWs.Items.Add(w);
+
+            if (selectByCharname != "")
+            {
+                foreach (WoWExe i in comboBoxWoWs.Items)
+                    if (i.characterName == selectByCharname)
+                        comboBoxWoWs.SelectedItem = i;
+            }
+            else if (comboBoxWoWs.Items.Count > 0)
+            {
+                if ((WoWExe)comboBoxWoWs.SelectedItem == null
+                || ((WoWExe)comboBoxWoWs.SelectedItem).characterName == ""
+                || ((WoWExe)comboBoxWoWs.SelectedItem).process == null)
+                    comboBoxWoWs.SelectedItem = comboBoxWoWs.Items[0];
             }
         }
 
@@ -187,22 +219,6 @@ namespace AmeisenBotGUI
             ButtonGo_Click(this, null);
         }
 
-        private void OnlyNumberTextBox(object sender, TextCompositionEventArgs e)
-        {
-            Regex regex = new Regex("[^0-9]+");
-            e.Handled = regex.IsMatch(e.Text);
-        }
-
-        private void GetAllAcoounts()
-        {
-            if (!Directory.Exists(configPath))
-                Directory.CreateDirectory(configPath);
-
-            comboBoxAccounts.Items.Clear();
-
-            foreach (string f in Directory.GetFiles(configPath))
-                if (f.Length > 0)
-                    comboBoxAccounts.Items.Add(Path.GetFileNameWithoutExtension(f));
-        }
+        #endregion Private Methods
     }
 }

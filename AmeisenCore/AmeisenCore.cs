@@ -16,44 +16,26 @@ namespace AmeisenCore
     /// </summary>
     public abstract class AmeisenCore
     {
+        #region Public Properties
+
         public static BlackMagic Blackmagic { get; set; }
 
+        #endregion Public Properties
+
         #region DllImports
+
         [DllImport("user32.dll")]
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
         [DllImport("user32.dll")]
-        public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        public static extern IntPtr PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll")]
-        public static extern IntPtr PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-        #endregion
+        public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        #endregion DllImports
 
         #region Getables
-        /// <summary>
-        /// Returns the running WoW's in a WoWExe List
-        /// containing the logged in playername and Process object.
-        /// </summary>
-        /// <returns>A list containing all the runnign WoW processes</returns>
-        public static List<WoWExe> GetRunningWoWs()
-        {
-            List<WoWExe> wows = new List<WoWExe>();
-            List<Process> processList = new List<Process>(Process.GetProcessesByName("Wow"));
-
-            foreach (Process p in processList)
-            {
-                AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Found WoW Process! PID: " + p.Id, "AmeisenCore.AmeisenCore");
-
-                WoWExe wow = new WoWExe();
-                BlackMagic blackmagic = new BlackMagic(p.Id);
-
-                wow.characterName = blackmagic.ReadASCIIString(WoWOffsets.playerName, 12);
-                wow.process = p;
-                wows.Add(wow);
-            }
-
-            return wows;
-        }
 
         /// <summary>
         /// Reads all WoWObject out of WoW's ObjectManager
@@ -86,22 +68,35 @@ namespace AmeisenCore
 
             return objects;
         }
-        #endregion
+
+        /// <summary>
+        /// Returns the running WoW's in a WoWExe List
+        /// containing the logged in playername and Process object.
+        /// </summary>
+        /// <returns>A list containing all the runnign WoW processes</returns>
+        public static List<WoWExe> GetRunningWoWs()
+        {
+            List<WoWExe> wows = new List<WoWExe>();
+            List<Process> processList = new List<Process>(Process.GetProcessesByName("Wow"));
+
+            foreach (Process p in processList)
+            {
+                AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Found WoW Process! PID: " + p.Id, "AmeisenCore.AmeisenCore");
+
+                WoWExe wow = new WoWExe();
+                BlackMagic blackmagic = new BlackMagic(p.Id);
+
+                wow.characterName = blackmagic.ReadASCIIString(WoWOffsets.playerName, 12);
+                wow.process = p;
+                wows.Add(wow);
+            }
+
+            return wows;
+        }
+
+        #endregion Getables
 
         #region Movement Interaction stuff
-        /// <summary>
-        /// Move the Player to the given x, y and z coordinates.
-        /// </summary>
-        /// <param name="pos">Vector3 containing the X,y & Z coordinates</param>
-        /// <param name="action">CTM Interaction to perform</param>
-        public static void MovePlayerToXYZ(Vector3 pos, Interaction action)
-        {
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Moving to: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "]", "AmeisenCore.AmeisenCore");
-            //if (AmeisenManager.Instance.Me().pos.x != pos.x && AmeisenManager.Instance.Me().pos.y != pos.y && AmeisenManager.Instance.Me().pos.z != pos.z)
-            //{
-            WriteXYZToMemory(pos, action);
-            //}
-        }
 
         /// <summary>
         /// Move the player to the given guid npc, object or whatever and iteract with it.
@@ -114,6 +109,20 @@ namespace AmeisenCore
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Interacting: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "] GUID [" + guid + "]", "AmeisenCore.AmeisenCore");
             Blackmagic.WriteUInt64(WoWOffsets.ctmGUID, guid);
             MovePlayerToXYZ(pos, action);
+        }
+
+        /// <summary>
+        /// Move the Player to the given x, y and z coordinates.
+        /// </summary>
+        /// <param name="pos">Vector3 containing the X,y & Z coordinates</param>
+        /// <param name="action">CTM Interaction to perform</param>
+        public static void MovePlayerToXYZ(Vector3 pos, Interaction action)
+        {
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Moving to: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "]", "AmeisenCore.AmeisenCore");
+            //if (AmeisenManager.Instance.Me().pos.x != pos.x && AmeisenManager.Instance.Me().pos.y != pos.y && AmeisenManager.Instance.Me().pos.z != pos.z)
+            //{
+            WriteXYZToMemory(pos, action);
+            //}
         }
 
         /// <summary>
@@ -132,42 +141,21 @@ namespace AmeisenCore
             Blackmagic.WriteInt(WoWOffsets.ctmAction, (int)action);
             Blackmagic.WriteFloat(WoWOffsets.ctmDistance, distance);
         }
-        #endregion
+
+        #endregion Movement Interaction stuff
 
         #region Hook stuff
+
         /// <summary>
-        /// Execute the given LUA command inside WoW's MainThread
+        /// Returns the current combat state
         /// </summary>
-        /// <param name="command">lua command to run</param>
-        public static void LUADoString(string command)
+        /// <param name="onMyself">check my owm state</param>
+        /// <returns>true if unit is in combat, false if not</returns>
+        public static bool GetCombatState(LUAUnit luaUnit)
         {
-            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Doing string: Command [" + command + "]", "AmeisenCore.AmeisenCore");
-            uint argCC = Blackmagic.AllocateMemory(Encoding.UTF8.GetBytes(command).Length + 1);
-            Blackmagic.WriteBytes(argCC, Encoding.UTF8.GetBytes(command));
-
-            string[] asm = new string[]
-            {
-                "MOV EAX, " + (argCC),
-                "PUSH 0",
-                "PUSH EAX",
-                "PUSH EAX",
-                "CALL " + (WoWOffsets.luaDoString),
-                "ADD ESP, 0xC",
-                "RETN",
-            };
-
-            HookJob hookJob = new HookJob(asm,false);
-            AmeisenHook.Instance.AddHookJob(ref hookJob);
-
-            while (!hookJob.IsFinished) { Thread.Sleep(1); }
-            /*byte[] returnBytes = (byte[])hookJob.ReturnValue;
-
-            string result = "";
-            if (returnBytes != null)
-                result = Encoding.UTF8.GetString(returnBytes);*/
-
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Command returned: Command [" + command + "]", "AmeisenCore.AmeisenCore");
-            Blackmagic.FreeMemory(argCC);
+            bool isInCombat = false;
+            try { if (int.Parse(GetLocalizedText("affectingCombat = UnitAffectingCombat(\"" + luaUnit.ToString() + "\");", "affectingCombat")) == 1) isInCombat = true; else isInCombat = false; } catch { isInCombat = false; }
+            return isInCombat;
         }
 
         /// <summary>
@@ -219,6 +207,60 @@ namespace AmeisenCore
         }
 
         /// <summary>
+        /// Run through the WoWObjectManager and find the BaseAdress
+        /// corresponding to the given GUID
+        /// </summary>
+        /// <param name="guid">guid to search for</param>
+        /// <returns>BaseAdress of the WoWObject</returns>
+        public static uint GetMemLocByGUID(UInt64 guid, List<WoWObject> woWObjects)
+        {
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Reading: GUID [" + guid + "]", "AmeisenCore.AmeisenCore");
+
+            if (woWObjects != null)
+                foreach (WoWObject obj in woWObjects)
+                    if (obj != null)
+                        if (obj.Guid == guid)
+                            return obj.BaseAddress;
+
+            return 0;
+        }
+
+        /// <summary>
+        /// Execute the given LUA command inside WoW's MainThread
+        /// </summary>
+        /// <param name="command">lua command to run</param>
+        public static void LUADoString(string command)
+        {
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Doing string: Command [" + command + "]", "AmeisenCore.AmeisenCore");
+            uint argCC = Blackmagic.AllocateMemory(Encoding.UTF8.GetBytes(command).Length + 1);
+            Blackmagic.WriteBytes(argCC, Encoding.UTF8.GetBytes(command));
+
+            string[] asm = new string[]
+            {
+                "MOV EAX, " + (argCC),
+                "PUSH 0",
+                "PUSH EAX",
+                "PUSH EAX",
+                "CALL " + (WoWOffsets.luaDoString),
+                "ADD ESP, 0xC",
+                "RETN",
+            };
+
+            HookJob hookJob = new HookJob(asm, false);
+            AmeisenHook.Instance.AddHookJob(ref hookJob);
+
+            while (!hookJob.IsFinished) { Thread.Sleep(1); }
+            /*byte[] returnBytes = (byte[])hookJob.ReturnValue;
+
+            string result = "";
+            if (returnBytes != null)
+                result = Encoding.UTF8.GetString(returnBytes);*/
+
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Command returned: Command [" + command + "]", "AmeisenCore.AmeisenCore");
+            Blackmagic.FreeMemory(argCC);
+        }
+
+        /// <summary>
         /// Run the given slash-commando
         /// </summary>
         /// <param name="slashCommand">Example: /target player</param>
@@ -249,39 +291,10 @@ namespace AmeisenCore
             AmeisenHook.Instance.AddHookJob(ref hookJob);
         }
 
-        /// <summary>
-        /// Returns the current combat state
-        /// </summary>
-        /// <param name="onMyself">check my owm state</param>
-        /// <returns>true if unit is in combat, false if not</returns>
-        public static bool GetCombatState(LUAUnit luaUnit)
-        {
-            bool isInCombat = false;
-            try { if (int.Parse(GetLocalizedText("affectingCombat = UnitAffectingCombat(\"" + luaUnit.ToString() + "\");", "affectingCombat")) == 1) isInCombat = true; else isInCombat = false; } catch { isInCombat = false; }
-            return isInCombat;
-        }
-
-        /// <summary>
-        /// Run through the WoWObjectManager and find the BaseAdress
-        /// corresponding to the given GUID
-        /// </summary>
-        /// <param name="guid">guid to search for</param>
-        /// <returns>BaseAdress of the WoWObject</returns>
-        public static uint GetMemLocByGUID(UInt64 guid, List<WoWObject> woWObjects)
-        {
-            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Reading: GUID [" + guid + "]", "AmeisenCore.AmeisenCore");
-
-            if (woWObjects != null)
-                foreach (WoWObject obj in woWObjects)
-                    if (obj != null)
-                        if (obj.Guid == guid)
-                            return obj.BaseAddress;
-
-            return 0;
-        }
-        #endregion
+        #endregion Hook stuff
 
         #region Reads
+
         /// <summary>
         /// Get the current state of the bots character including its target
         /// </summary>
@@ -289,6 +302,24 @@ namespace AmeisenCore
         public static Me ReadMe(uint address)
         {
             return (Me)ReadWoWObjectFromWoW(address, WoWObjectType.PLAYER, true);
+        }
+
+        /// <summary>
+        /// Get the bot's char's GUID
+        /// </summary>
+        /// <returns>the GUID</returns>
+        public static UInt64 ReadPlayerGUID()
+        {
+            return Blackmagic.ReadUInt64(WoWOffsets.localPlayerGUID);
+        }
+
+        /// <summary>
+        /// Get the bot's char's target's GUID
+        /// </summary>
+        /// <returns>guid</returns>
+        public static UInt64 ReadTargetGUID()
+        {
+            return Blackmagic.ReadUInt64(WoWOffsets.localTargetGUID);
         }
 
         /// <summary>
@@ -338,32 +369,25 @@ namespace AmeisenCore
             return null;
         }
 
-        /// <summary>
-        /// Get the bot's char's GUID
-        /// </summary>
-        /// <returns>the GUID</returns>
-        public static UInt64 ReadPlayerGUID()
-        {
-            return Blackmagic.ReadUInt64(WoWOffsets.localPlayerGUID);
-        }
-
-        /// <summary>
-        /// Get the bot's char's target's GUID
-        /// </summary>
-        /// <returns>guid</returns>
-        public static UInt64 ReadTargetGUID()
-        {
-            return Blackmagic.ReadUInt64(WoWOffsets.localTargetGUID);
-        }
-        #endregion
+        #endregion Reads
 
         #region Misc
+
         /// <summary>
         /// AntiAFK
         /// </summary>
         public static void AntiAFK()
         {
             Blackmagic.WriteInt(WoWOffsets.tickCount, Environment.TickCount);
+        }
+
+        /// <summary>
+        /// Check if the player's world is in a loadingscreen
+        /// </summary>
+        /// <returns>true if yes, false if no</returns>
+        public static bool CheckLoadingScreen()
+        {
+            return false;
         }
 
         /// <summary>
@@ -375,17 +399,23 @@ namespace AmeisenCore
             return Blackmagic.ReadInt(WoWOffsets.worldLoaded) == 1;
         }
 
-        /// <summary>
-        /// Check if the player's world is in a loadingscreen
-        /// </summary>
-        /// <returns>true if yes, false if no</returns>
-        public static bool CheckLoadingScreen()
-        {
-            return false;
-        }
-        #endregion
+        #endregion Misc
 
         #region LUA stuff
+
+        /// <summary>
+        /// Attack our target
+        /// </summary>
+        public static void AttackTarget() { LUADoString("AttackTarget();"); }
+
+        /// <summary>
+        /// Switch shapeshift forms, use for example "WoWDruid.ShapeshiftForms.Bear"
+        /// </summary>
+        public static void CastShapeshift(int index)
+        {
+            LUADoString("CastShapeshiftForm(\"" + index + "\");");
+        }
+
         /// <summary>
         /// Cast a spell by its name
         /// </summary>
@@ -415,24 +445,6 @@ namespace AmeisenCore
         }
 
         /// <summary>
-        /// Switch shapeshift forms, use for example "WoWDruid.ShapeshiftForms.Bear"
-        /// </summary>
-        public static void CastShapeshift(int index)
-        {
-            LUADoString("CastShapeshiftForm(\"" + index + "\");");
-        }
-
-        /// <summary>
-        /// Check if the spell is on cooldown
-        /// </summary>
-        /// <param name="spell">spellname</param>
-        /// <returns>true if it is on cooldown, false if not</returns>
-        public static bool IsOnCooldown(string spell)
-        {
-            try { return int.Parse(GetLocalizedText("start, duration, enabled = GetSpellCooldown(\"" + spell + "\");", "duration")) > 0; } catch { return true; }
-        }
-
-        /// <summary>
         /// Check if the spell is on cooldown
         /// </summary>
         /// <param name="spell">spellname</param>
@@ -451,6 +463,16 @@ namespace AmeisenCore
         }
 
         /// <summary>
+        /// Check if the spell is on cooldown
+        /// </summary>
+        /// <param name="spell">spellname</param>
+        /// <returns>true if it is on cooldown, false if not</returns>
+        public static bool IsOnCooldown(string spell)
+        {
+            try { return int.Parse(GetLocalizedText("start, duration, enabled = GetSpellCooldown(\"" + spell + "\");", "duration")) > 0; } catch { return true; }
+        }
+
+        /// <summary>
         /// Returns wether the Unit is Friendly or not
         /// </summary>
         /// <returns>true if unit is friendly, false if not</returns>
@@ -461,13 +483,10 @@ namespace AmeisenCore
             return isFriendly;
         }
 
-        /// <summary>
-        /// Attack our target
-        /// </summary>
-        public static void AttackTarget() { LUADoString("AttackTarget();"); }
-        #endregion
+        #endregion LUA stuff
 
         #region KeyInteractions
+
         /// <summary>
         /// Let the bot jump by pressing the spacebar once for 20-40ms
         ///
@@ -491,6 +510,7 @@ namespace AmeisenCore
             Thread.Sleep(new Random().Next(20, 40)); // make it look more human-like :^)
             SendMessage(windowHandle, KEYUP, new IntPtr(0x20), new IntPtr(0));
         }
-        #endregion
+
+        #endregion KeyInteractions
     }
 }

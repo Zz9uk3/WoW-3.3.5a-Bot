@@ -16,18 +16,30 @@ namespace AmeisenData
     /// </summary>
     public class AmeisenSettings
     {
-        private static AmeisenSettings instance;
+        #region Public Fields
+
+        public string loadedconfName;
+
+        #endregion Public Fields
+
+        #region Private Fields
 
         private static readonly string configPath = AppDomain.CurrentDomain.BaseDirectory + "/config/";
         private static readonly string extension = ".json";
+        private static AmeisenSettings instance;
 
-        public Settings Settings { get; private set; }
-        public string loadedconfName;
+        #endregion Private Fields
+
+        #region Private Constructors
 
         private AmeisenSettings()
         {
             Settings = new Settings();
         }
+
+        #endregion Private Constructors
+
+        #region Public Properties
 
         public static AmeisenSettings Instance
         {
@@ -39,18 +51,11 @@ namespace AmeisenData
             }
         }
 
-        /// <summary>
-        /// Save a config file from ./config/ folder by its name as a JSON.
-        /// </summary>
-        /// <param name="filename">Filename without extension</param>
-        public void SaveToFile(string filename)
-        {
-            if (!Directory.Exists(configPath))
-                Directory.CreateDirectory(configPath);
+        public Settings Settings { get; private set; }
 
-            // Serialize our object with the help of NewtosoftJSON
-            File.WriteAllText(configPath + filename.ToLower() + extension, JsonConvert.SerializeObject(Settings));
-        }
+        #endregion Public Properties
+
+        #region Public Methods
 
         /// <summary>
         /// Load a config file from ./config/ folder by its name. No need to append .json to the end.
@@ -74,5 +79,20 @@ namespace AmeisenData
 
             loadedconfName = filename;
         }
+
+        /// <summary>
+        /// Save a config file from ./config/ folder by its name as a JSON.
+        /// </summary>
+        /// <param name="filename">Filename without extension</param>
+        public void SaveToFile(string filename)
+        {
+            if (!Directory.Exists(configPath))
+                Directory.CreateDirectory(configPath);
+
+            // Serialize our object with the help of NewtosoftJSON
+            File.WriteAllText(configPath + filename.ToLower() + extension, JsonConvert.SerializeObject(Settings));
+        }
+
+        #endregion Public Methods
     }
 }

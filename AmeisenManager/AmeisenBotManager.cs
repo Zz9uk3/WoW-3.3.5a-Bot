@@ -16,32 +16,37 @@ namespace AmeisenManager
     /// </summary>
     public class AmeisenBotManager
     {
-        private static AmeisenBotManager instance;
+        #region Private Fields
+
         private static readonly object padlock = new object();
+        private static AmeisenBotManager instance;
+
+        #endregion Private Fields
 
         #region Instances
-        public BlackMagic Blackmagic { get; private set; }
-        public AmeisenSettings AmeisenSettings { get; private set; }
-        public AmeisenCombatManager AmeisenCombatManager { get; private set; }
+
         public AmeisenAIManager AmeisenAIManager { get; private set; }
-        public AmeisenObjectManager AmeisenObjectManager { get; private set; }
         public AmeisenClient AmeisenClient { get; private set; }
-        public AmeisenHook AmeisenHook { get; private set; }
+        public AmeisenCombatManager AmeisenCombatManager { get; private set; }
         public AmeisenFollowManager AmeisenFollowManager { get; private set; }
-        #endregion
+        public AmeisenHook AmeisenHook { get; private set; }
+        public AmeisenObjectManager AmeisenObjectManager { get; private set; }
+        public AmeisenSettings AmeisenSettings { get; private set; }
+        public BlackMagic Blackmagic { get; private set; }
+
+        #endregion Instances
 
         #region Fields
+
+        public List<WoWObject> ActiveWoWObjects { get { return AmeisenDataHolder.Instance.ActiveWoWObjects; } }
         public Me Me { get { return AmeisenDataHolder.Instance.Me; } }
         public Unit Target { get { return AmeisenDataHolder.Instance.Target; } }
-        public List<WoWObject> ActiveWoWObjects { get { return AmeisenDataHolder.Instance.ActiveWoWObjects; } }
-
         public WoWExe WowExe { get; private set; }
         public Process WowProcess { get; private set; }
-        #endregion
+
+        #endregion Fields
 
         #region StateFields
-        public bool IsAttached { get; private set; }
-        public bool IsHooked { get; private set; }
 
         public bool IsAllowedToMove
         {
@@ -49,12 +54,16 @@ namespace AmeisenManager
             set { AmeisenAIManager.IsAllowedToMove = value; }
         }
 
+        public bool IsAttached { get; private set; }
+        public bool IsHooked { get; private set; }
         public bool IsSupposedToAttack { get; set; }
-        public bool IsSupposedToTank { get; set; }
         public bool IsSupposedToHeal { get; set; }
-        #endregion
+        public bool IsSupposedToTank { get; set; }
+
+        #endregion StateFields
 
         #region SingletonStuff
+
         private AmeisenBotManager()
         {
             IsAttached = false;
@@ -76,9 +85,36 @@ namespace AmeisenManager
                 }
             }
         }
-        #endregion
+
+        #endregion SingletonStuff
 
         #region BotActions
+
+        private bool followGroup;
+
+        public bool FollowGroup
+        {
+            get { return followGroup; }
+            set
+            {
+                followGroup = value;
+
+                if (value == true)
+                    foreach (UInt64 guid in Me.PartymemberGUIDs)
+                        AmeisenFollowManager.AddPlayerToFollow((Unit)AmeisenObjectManager.GetWoWObjectFromGUID(guid));
+                else
+                    AmeisenFollowManager.RemoveAllPlayersToFollow();
+            }
+        }
+
+        public void LoadCombatClass(string fileName)
+        {
+            AmeisenSettings.Settings.combatClassPath = fileName;
+            AmeisenSettings.SaveToFile(AmeisenSettings.loadedconfName);
+
+            AmeisenCombatManager.ReloadCombatClass();
+        }
+
         public void StartBot(WoWExe wowExe)
         {
             WowExe = wowExe;
@@ -144,33 +180,16 @@ namespace AmeisenManager
             AmeisenLogger.Instance.StopLogging();
         }
 
-        public void LoadCombatClass(string fileName)
-        {
-            AmeisenSettings.Settings.combatClassPath = fileName;
-            AmeisenSettings.SaveToFile(AmeisenSettings.loadedconfName);
-
-            AmeisenCombatManager.ReloadCombatClass();
-        }
-
-        private bool followGroup;
-        public bool FollowGroup
-        {
-            get { return followGroup; }
-            set
-            {
-                followGroup = value;
-
-                if (value == true)
-                    foreach (UInt64 guid in Me.PartymemberGUIDs)
-                        AmeisenFollowManager.AddPlayerToFollow((Unit)AmeisenObjectManager.GetWoWObjectFromGUID(guid));
-                else
-                    AmeisenFollowManager.RemoveAllPlayersToFollow();
-            }
-        }
-        #endregion
+        #endregion BotActions
 
         #region Retriveables
+
         public List<WoWExe> RunningWoWs { get { return AmeisenCore.AmeisenCore.GetRunningWoWs(); } }
+
+        public List<Bot> GetNetworkBots()
+        {
+            if (AmeisenClient.IsRegistered) return AmeisenClient.BotList; else return null;
+        }
 
         public bool IsBotIngame()
         {
@@ -178,20 +197,16 @@ namespace AmeisenManager
                && !AmeisenCore.AmeisenCore.CheckLoadingScreen();
         }
 
-        public List<Bot> GetNetworkBots()
-        {
-            if (AmeisenClient.IsRegistered) return AmeisenClient.BotList; else return null;
-        }
-        #endregion
+        #endregion Retriveables
 
         #region Objects
+
+        public List<WoWObject> WoWObjects { get { return AmeisenObjectManager.GetObjects(); } }
 
         public WoWExe GetWowExe()
         {
             return WowExe;
         }
-
-        public List<WoWObject> WoWObjects { get { return AmeisenObjectManager.GetObjects(); } }
 
         #endregion Objects
 
@@ -213,9 +228,9 @@ namespace AmeisenManager
 
         public Settings Settings { get { return AmeisenSettings.Settings; } }
 
-        public void SaveSettingsToFile(string filename)
+        public string GetLoadedConfigName()
         {
-            AmeisenSettings.SaveToFile(filename);
+            return AmeisenSettings.loadedconfName;
         }
 
         public void LoadSettingsFromFile(string filename)
@@ -223,9 +238,9 @@ namespace AmeisenManager
             AmeisenSettings.LoadFromFile(filename);
         }
 
-        public string GetLoadedConfigName()
+        public void SaveSettingsToFile(string filename)
         {
-            return AmeisenSettings.loadedconfName;
+            AmeisenSettings.SaveToFile(filename);
         }
 
         #endregion Settings

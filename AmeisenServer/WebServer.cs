@@ -8,10 +8,14 @@ namespace AmeisenServer
 {
     public class WebServer
     {
-        public bool IsRunning { get; private set; }
+        #region Private Fields
 
         private readonly HttpListener httpListener = new HttpListener();
         private readonly Func<HttpListenerRequest, string> responseFunction;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public WebServer(IReadOnlyCollection<string> prefixes, Func<HttpListenerRequest, string> responseFunction)
         {
@@ -25,6 +29,16 @@ namespace AmeisenServer
         public WebServer(Func<HttpListenerRequest, string> method, params string[] prefixes) : this(prefixes, method)
         {
         }
+
+        #endregion Public Constructors
+
+        #region Public Properties
+
+        public bool IsRunning { get; private set; }
+
+        #endregion Public Properties
+
+        #region Public Methods
 
         public void Run()
         {
@@ -73,5 +87,7 @@ namespace AmeisenServer
             httpListener.Stop();
             httpListener.Close();
         }
+
+        #endregion Public Methods
     }
 }
