@@ -16,14 +16,14 @@ namespace AmeisenUtilities
         #endregion Public Constructors
 
         #region Public Properties
-        
+
         public int Energy { get; set; }
         public int Health { get; set; }
         public bool InCombat { get { return UFlags[(int)UnitFlags.COMBAT]; } }
-        public bool NeedToRevive { get { return Health == 0; } }
         public int Level { get; set; }
         public int MaxEnergy { get; set; }
         public int MaxHealth { get; set; }
+        public bool NeedToRevive { get { return Health == 0; } }
         public BitVector32 UFlags { get; set; }
 
         #endregion Public Properties

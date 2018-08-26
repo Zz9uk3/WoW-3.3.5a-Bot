@@ -443,7 +443,7 @@ namespace AmeisenCore
         public static void RetrieveCorpse()
         {
             int corpseDelay = int.Parse(GetLocalizedText("corpseDelay = GetCorpseRecoveryDelay();", "corpseDelay"));
-            Thread.Sleep(corpseDelay + 100);
+            Thread.Sleep((corpseDelay * 1000) + 100);
             LUADoString("RetrieveCorpse();");
         }
 
