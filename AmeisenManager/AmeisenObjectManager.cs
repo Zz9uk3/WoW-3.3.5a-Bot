@@ -12,9 +12,9 @@ namespace AmeisenManager
     /// Singleton class to hold important things like
     /// - Proccess: WoW.exe we're attached to
     /// - BlackMagic: instance that is attached to WoW.exe
-    ///   - get the state by isAttached boolean
+    /// - get the state by isAttached boolean
     /// - AmeisenHook: instance that is hooked to WoW.exe's EndScene
-    ///   - get the state by isHooked boolean
+    /// - get the state by isHooked boolean
     /// - Me: all character information
     /// </summary>
     public class AmeisenObjectManager
@@ -173,26 +173,25 @@ namespace AmeisenManager
                 }
 
             foreach (WoWObject t in ActiveWoWObjects)
-                if (t != null && Me != null)
-                    if (t.Guid == Me.TargetGUID)
-                        if (t.GetType() == typeof(Player))
-                        {
-                            t.Distance = Utils.GetDistance(Me.pos, t.pos);
-                            Target = (Player)t;
-                            break;
-                        }
-                        else if (t.GetType() == typeof(Unit))
-                        {
-                            t.Distance = Utils.GetDistance(Me.pos, t.pos);
-                            Target = (Unit)t;
-                            break;
-                        }
-                        else if (t.GetType() == typeof(Me))
-                        {
-                            t.Distance = Utils.GetDistance(Me.pos, t.pos);
-                            Target = (Me)t;
-                            break;
-                        }
+                if (t.Guid == Me.TargetGUID)
+                    if (t.GetType() == typeof(Player))
+                    {
+                        t.Distance = Utils.GetDistance(Me.pos, t.pos);
+                        Target = (Player)t;
+                        break;
+                    }
+                    else if (t.GetType() == typeof(Unit))
+                    {
+                        t.Distance = Utils.GetDistance(Me.pos, t.pos);
+                        Target = (Unit)t;
+                        break;
+                    }
+                    else if (t.GetType() == typeof(Me))
+                    {
+                        t.Distance = Utils.GetDistance(Me.pos, t.pos);
+                        Target = (Me)t;
+                        break;
+                    }
             // Best place for this :^)
             AntiAFK();
         }

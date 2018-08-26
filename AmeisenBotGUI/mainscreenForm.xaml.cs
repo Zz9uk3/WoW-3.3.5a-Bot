@@ -41,8 +41,7 @@ namespace AmeisenBotGUI
 
         #endregion Private Properties
 
-        // -- Window state stuff
-        // Minimize, Exit, FileDialogs
+        // -- Window state stuff Minimize, Exit, FileDialogs
 
         #region WindowStuff
 
@@ -67,8 +66,7 @@ namespace AmeisenBotGUI
 
         #endregion WindowStuff
 
-        // -- Window Callbacks
-        // Loading, Closing, MouseDown
+        // -- Window Callbacks Loading, Closing, MouseDown
 
         #region WindowCallbacks
 
@@ -105,6 +103,20 @@ namespace AmeisenBotGUI
 
             checkBoxFollowMaster.IsChecked = BotManager.Settings.followMaster;
             AmeisenBotManager.Instance.FollowGroup = BotManager.Settings.followMaster;
+
+            comboboxInteraction.Items.Add(Interaction.FACETARGET);
+            comboboxInteraction.Items.Add(Interaction.FACEDESTINATION);
+            comboboxInteraction.Items.Add(Interaction.STOP);
+            comboboxInteraction.Items.Add(Interaction.MOVE);
+            comboboxInteraction.Items.Add(Interaction.INTERACT);
+            comboboxInteraction.Items.Add(Interaction.LOOT);
+            comboboxInteraction.Items.Add(Interaction.INTERACTOBJECT);
+            comboboxInteraction.Items.Add(Interaction.FACEOTHER);
+            comboboxInteraction.Items.Add(Interaction.SKIN);
+            comboboxInteraction.Items.Add(Interaction.ATTACK);
+            comboboxInteraction.Items.Add(Interaction.ATTACKPOS);
+            comboboxInteraction.Items.Add(Interaction.ATTACKGUID);
+            comboboxInteraction.Items.Add(Interaction.WALKANDROTATE);
         }
 
         private void Mainscreen_MouseDown(object sender, MouseButtonEventArgs e)
@@ -118,8 +130,7 @@ namespace AmeisenBotGUI
 
         #endregion WindowCallbacks
 
-        // -- Bot Combat STATES
-        // TANK, HEAL, ATTACK, checkboxes
+        // -- Bot Combat STATES TANK, HEAL, ATTACK, checkboxes
 
         #region BotCombatStates
 
@@ -140,8 +151,7 @@ namespace AmeisenBotGUI
 
         #endregion BotCombatStates
 
-        // -- Debug stuff goes here, will be removed in the future
-        // Debug stuff, buttons
+        // -- Debug stuff goes here, will be removed in the future Debug stuff, buttons
 
         #region DebugStuff
 
@@ -157,8 +167,7 @@ namespace AmeisenBotGUI
 
         #endregion DebugStuff
 
-        // -- External Windows
-        // SettingsWindow, DebugUI, CombatClass Editor
+        // -- External Windows SettingsWindow, DebugUI, CombatClass Editor
 
         #region ExternalWindows
 
@@ -179,8 +188,7 @@ namespace AmeisenBotGUI
 
         #endregion ExternalWindows
 
-        // -- UI Stuff
-        // Update the GUI
+        // -- UI Stuff Update the GUI
 
         #region UITimer
 
@@ -199,8 +207,7 @@ namespace AmeisenBotGUI
         }
 
         /// <summary>
-        /// This thing updates the UI...
-        /// Note to myself: "may need to improve this thing in the future..."
+        /// This thing updates the UI... Note to myself: "may need to improve this thing in the future..."
         /// </summary>
         private void UpdateUI()
         {
@@ -292,5 +299,10 @@ namespace AmeisenBotGUI
         }
 
         #endregion Private Methods
+
+        private void ButtonFaceTarget_Click(object sender, RoutedEventArgs e)
+        {
+            BotManager.FaceTarget();
+        }
     }
 }

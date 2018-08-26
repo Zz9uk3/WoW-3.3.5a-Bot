@@ -312,7 +312,9 @@ namespace AmeisenCore
         /// </summary>
         /// <param name="asm">ASM to execute</param>
         /// <param name="readReturnBytes">read the return bytes</param>
-        /// <param name="chainedJob">Job to execute after running the main Job, for example GetLocalizedText stuff</param>
+        /// <param name="chainedJob">
+        /// Job to execute after running the main Job, for example GetLocalizedText stuff
+        /// </param>
         public ReturnHookJob(string[] asm, bool readReturnBytes, HookJob chainedJob) : base(asm, readReturnBytes) { ChainedJob = chainedJob; }
 
         #endregion Public Constructors

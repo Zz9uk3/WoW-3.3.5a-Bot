@@ -11,8 +11,8 @@ using System.Threading;
 namespace AmeisenCore
 {
     /// <summary>
-    /// Abstract class that contains various static method's
-    /// to interact with WoW's memory and the EndScene hook.
+    /// Abstract class that contains various static method's to interact with WoW's memory and the
+    /// EndScene hook.
     /// </summary>
     public abstract class AmeisenCore
     {
@@ -53,7 +53,8 @@ namespace AmeisenCore
 
             UInt64 myGUID = ReadPlayerGUID();
 
-            // loop through the objects until an object is bigger than 7 or lower than 1, that means we got all objects
+            // loop through the objects until an object is bigger than 7 or lower than 1, that means
+            // we got all objects
             while (objType <= 7 && objType > 0)
             {
                 WoWObject wowObject = ReadWoWObjectFromWoW(activeObj, (WoWObjectType)objType);
@@ -70,8 +71,8 @@ namespace AmeisenCore
         }
 
         /// <summary>
-        /// Returns the running WoW's in a WoWExe List
-        /// containing the logged in playername and Process object.
+        /// Returns the running WoW's in a WoWExe List containing the logged in playername and
+        /// Process object.
         /// </summary>
         /// <returns>A list containing all the runnign WoW processes</returns>
         public static List<WoWExe> GetRunningWoWs()
@@ -98,12 +99,9 @@ namespace AmeisenCore
 
         #region Movement Interaction stuff
 
-        /// <summary>
-        /// Move the player to the given guid npc, object or whatever and iteract with it.
-        /// </summary>
-        /// <param name="pos">Vector3 containing the X,y & Z coordinates</param>
-        /// <param name="guid">guid of the entity</param>
-        /// <param name="action">CTM Interaction to perform</param>
+        /// <summary> Move the player to the given guid npc, object or whatever and iteract with it.
+        /// </summary> <param name="pos">Vector3 containing the X,y & Z coordinates</param> <param
+        /// name="guid">guid of the entity</param> <param name="action">CTM Interaction to perform</param>
         public static void InteractWithGUID(Vector3 pos, UInt64 guid, Interaction action)
         {
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Interacting: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "] GUID [" + guid + "]", "AmeisenCore.AmeisenCore");
@@ -111,11 +109,9 @@ namespace AmeisenCore
             MovePlayerToXYZ(pos, action);
         }
 
-        /// <summary>
-        /// Move the Player to the given x, y and z coordinates.
-        /// </summary>
-        /// <param name="pos">Vector3 containing the X,y & Z coordinates</param>
-        /// <param name="action">CTM Interaction to perform</param>
+        /// <summary> Move the Player to the given x, y and z coordinates. </summary> <param
+        /// name="pos">Vector3 containing the X,y & Z coordinates</param> <param name="action">CTM
+        /// Interaction to perform</param>
         public static void MovePlayerToXYZ(Vector3 pos, Interaction action)
         {
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Moving to: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "]", "AmeisenCore.AmeisenCore");
@@ -125,11 +121,9 @@ namespace AmeisenCore
             //}
         }
 
-        /// <summary>
-        /// Write the coordinates and action to the memory.
-        /// </summary>
-        /// <param name="pos">Vector3 containing the X,y & Z coordinates</param>
-        /// <param name="action">CTM Interaction to perform</param>
+        /// <summary> Write the coordinates and action to the memory. </summary> <param
+        /// name="pos">Vector3 containing the X,y & Z coordinates</param> <param name="action">CTM
+        /// Interaction to perform</param>
         private static void WriteXYZToMemory(Vector3 pos, Interaction action)
         {
             const float distance = 1.5f;
@@ -207,8 +201,7 @@ namespace AmeisenCore
         }
 
         /// <summary>
-        /// Run through the WoWObjectManager and find the BaseAdress
-        /// corresponding to the given GUID
+        /// Run through the WoWObjectManager and find the BaseAdress corresponding to the given GUID
         /// </summary>
         /// <param name="guid">guid to search for</param>
         /// <returns>BaseAdress of the WoWObject</returns>

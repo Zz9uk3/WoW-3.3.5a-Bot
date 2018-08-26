@@ -173,8 +173,7 @@ namespace AmeisenManager
             // Unhook the EndScene
             AmeisenHook.DisposeHooking();
 
-            // Detach BlackMagic
-            // Blackmagic.Close();
+            // Detach BlackMagic Blackmagic.Close();
 
             // Stop logging
             AmeisenLogger.Instance.StopLogging();
@@ -244,5 +243,15 @@ namespace AmeisenManager
         }
 
         #endregion Settings
+
+        #region Public Methods
+
+        public void FaceTarget()
+        {
+            AmeisenCore.AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.ATTACK);
+            AmeisenCore.AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.STOP);
+        }
+
+        #endregion Public Methods
     }
 }

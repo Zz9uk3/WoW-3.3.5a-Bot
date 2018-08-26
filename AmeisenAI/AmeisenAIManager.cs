@@ -11,8 +11,8 @@ namespace AmeisenAI
     /// <summary>
     /// Singleton to manage the bots AI.
     ///
-    /// It contains a Queue that can be filled up with AmeisenAction objects.
-    /// This Queue will be processed by the threads powering this AI.
+    /// It contains a Queue that can be filled up with AmeisenAction objects. This Queue will be
+    /// processed by the threads powering this AI.
     ///
     /// To Start / Stop the AI call:
     /// - StartAI(THREADCOUNT);
@@ -46,7 +46,7 @@ namespace AmeisenAI
         private AmeisenAIManager()
         {
             IsAllowedToMove = true;
-
+            DoFollow = true;
             actionQueue = new ConcurrentQueue<AmeisenAction>();
             aiWorkers = new List<Thread>();
         }
@@ -72,6 +72,7 @@ namespace AmeisenAI
             }
         }
 
+        public bool DoFollow { get; set; }
         public bool IsAllowedToMove { get; set; }
 
         #endregion Public Properties
@@ -193,12 +194,9 @@ namespace AmeisenAI
 
         #region Private Methods
 
-        /// <summary>
-        /// Modify our go-to-position by a small factor to provide "naturality"
-        /// </summary>
-        /// <param name="targetPos">pos you want to go to/param>
-        /// <param name="distanceToTarget">distance to keep to the target</param>
-        /// <returns>modified position</returns>
+        /// <summary> Modify our go-to-position by a small factor to provide "naturality" </summary>
+        /// <param name="targetPos">pos you want to go to/param> <param
+        /// name="distanceToTarget">distance to keep to the target</param> <returns>modified position</returns>
         private Vector3 CalculatePosToGoTo(Vector3 targetPos, int distanceToTarget)
         {
             Random rnd = new Random();
@@ -207,11 +205,26 @@ namespace AmeisenAI
             return new Vector3 { x = targetPos.x + factorX, y = targetPos.y + factorY, z = targetPos.z };
         }
 
-        private void CheckIfWeAreStuckIfYesJump(Vector3 initialPosition, Vector3 activePosition)
+        private bool CheckIfWeAreStuckIfYesJump(Vector3 initialPosition, Vector3 activePosition)
         {
             if (Utils.GetDistance(initialPosition, activePosition) < 1)
+            {
                 AmeisenCore.AmeisenCore.CharacterJumpAsync();
+                return true;
+            }
             // Here comes the Obstacle-Avoid-System in the future
+            return false;
+        }
+
+        private void FaceTarget(ref AmeisenAction currentAction)
+        {
+            if (Target == null)
+                currentAction.ActionIsDone();  // If there is no target, we can't face anyone...
+            else
+            {
+                AmeisenCore.AmeisenCore.InteractWithGUID(Target.pos, Target.Guid, Interaction.FACETARGET);
+                currentAction.ActionIsDone();
+            }
         }
 
         private void InteractWithTarget(double distance, Interaction action, ref AmeisenAction ameisenAction)
@@ -302,8 +315,8 @@ namespace AmeisenAI
         }
 
         /// <summary>
-        /// This runs on the Brain-Threads which are constantly processing
-        /// the queue of actions that the bot has to do.
+        /// This runs on the Brain-Threads which are constantly processing the queue of actions that
+        /// the bot has to do.
         /// </summary>
         /// <param name="threadID">id to identify the thread</param>
         private void WorkActions(int threadID)
@@ -326,7 +339,7 @@ namespace AmeisenAI
                                     currentAction.ActionIsDone();
                                 break;
 
-                            case AmeisenActionType.MOVE_NEAR_TARGET:
+                            case AmeisenActionType.MOVE_NEAR_POSITION:
                                 if (IsAllowedToMove)
                                     MoveNearPosition((Vector3)((object[])currentAction.GetActionParams())[0], (double)((object[])currentAction.GetActionParams())[1], ref currentAction);
                                 else
@@ -339,7 +352,11 @@ namespace AmeisenAI
                                 break;
 
                             case AmeisenActionType.FORCE_MOVE_NEAR_TARGET:
-                                MoveNearPosition((Vector3)((object[])currentAction.GetActionParams())[0], (double)((object[])currentAction.GetActionParams())[1], ref currentAction);
+                                MoveNearPosition((Vector3)((object[])currentAction.GetActionParams())[0], (double)((object[])currentAction.GetActionParams())[1], ref currentAction, true);
+                                break;
+
+                            case AmeisenActionType.FACETARGET:
+                                FaceTarget(ref currentAction);
                                 break;
 
                             case AmeisenActionType.INTERACT_TARGET:
@@ -355,12 +372,15 @@ namespace AmeisenAI
                                 break;
 
                             case AmeisenActionType.USE_SPELL:
-                                IsAllowedToMove = false;
                                 WoWSpellInfo spellInfo = AmeisenCore.AmeisenCore.GetSpellInfo((string)currentAction.GetActionParams());
                                 AmeisenCore.AmeisenCore.CastSpellByName((string)currentAction.GetActionParams(), false);
 
-                                Thread.Sleep(spellInfo.castTime + 200);
+                                Thread.Sleep(200);
+
+                                if (Me.CurrentState == UnitState.CASTING)
+                                    Thread.Sleep(spellInfo.castTime);
                                 currentAction.ActionIsDone();
+                                IsAllowedToMove = true;
                                 break;
 
                             case AmeisenActionType.USE_SPELL_ON_ME:
@@ -380,7 +400,7 @@ namespace AmeisenAI
                 }
                 else
                 {
-                    Thread.Sleep(50);
+                    Thread.Sleep(5);
                     busyThreads[threadID - 1] = false;
                 }
             }

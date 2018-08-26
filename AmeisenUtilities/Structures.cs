@@ -1,8 +1,7 @@
 ﻿namespace AmeisenUtilities
 {
     /// <summary>
-    /// Action types, most of them should be pretty
-    /// self-explaining
+    /// Action types, most of them should be pretty self-explaining
     /// </summary>
     public enum AmeisenActionType
     {
@@ -10,10 +9,11 @@
         USE_SPELL_ON_ME,
         INTERACT_TARGET,
         MOVE_TO_POSITION,
-        MOVE_NEAR_TARGET,
+        MOVE_NEAR_POSITION,
         FORCE_MOVE_TO_POSITION,
         FORCE_MOVE_NEAR_TARGET,
-        TARGET_ENTITY
+        TARGET_ENTITY,
+        FACETARGET
     }
 
     /// <summary>
@@ -37,7 +37,6 @@
     }
 
     /// <summary>
-    ///
     /// </summary>
     public enum LUAUnit
     {
@@ -89,8 +88,7 @@
     }
 
     /// <summary>
-    /// Weird values, need to investigate this crap
-    /// but hey its working...
+    /// Weird values, need to investigate this crap but hey its working...
     ///
     /// Looks like some sort of flags to be honest...
     /// </summary>
@@ -149,9 +147,7 @@
         #endregion Public Fields
     }
 
-    /// <summary>
-    /// Simple X,Y & Z struct
-    /// </summary>
+    /// <summary> Simple X,Y & Z struct </summary>
     public struct Vector3
     {
         #region Public Fields

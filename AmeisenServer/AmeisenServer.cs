@@ -21,7 +21,7 @@ namespace AmeisenServer
         /// THIS THING IS THE SHIT...
         /// </summary>
         /// <param name="ip">IP-Address</param>
-        /// <param name="httpMethod"> GET, POST, PUT ...</param>
+        /// <param name="httpMethod">GET, POST, PUT ...</param>
         /// <param name="url">URL</param>
         private static void FancyCW(string ip, string httpMethod, string url)
         {

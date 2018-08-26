@@ -8,11 +8,9 @@ namespace AmeisenData
     /// <summary>
     /// Singleton class to manage our currently loaded settings.
     ///
-    /// Load a settings file by calling LoadFromFile("EXAMPLE"),
-    /// save it by calling SaveToFile("EXAMPLE").
+    /// Load a settings file by calling LoadFromFile("EXAMPLE"), save it by calling SaveToFile("EXAMPLE").
     ///
-    /// The currently loaded settings name will be available in
-    /// the loadedconfName variable.
+    /// The currently loaded settings name will be available in the loadedconfName variable.
     /// </summary>
     public class AmeisenSettings
     {

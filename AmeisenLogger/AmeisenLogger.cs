@@ -102,7 +102,9 @@ namespace AmeisenLogging
         /// <param name="loglevel">LogLevel of this Log-Message</param>
         /// <param name="msg">...</param>
         /// <param name="self">Class that calls it / string with class name</param>
-        /// <param name="functionName">Function name that this is called by, no need to set this manually</param>
+        /// <param name="functionName">
+        /// Function name that this is called by, no need to set this manually
+        /// </param>
         /// <returns>The AmeisenLogEntry</returns>
         public AmeisenLogEntry Log(LogLevel loglevel, string msg, object self, [CallerMemberName]string functionName = "")
         {

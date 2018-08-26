@@ -77,6 +77,12 @@ namespace AmeisenAI
         {
             while (!stop)
             {
+                if (!AmeisenAIManager.Instance.DoFollow)
+                {
+                    Thread.Sleep(25);
+                    continue;
+                }
+
                 if (followUnitList.Count > 0)
                 {
                     Unit activeUnit = null;
@@ -90,10 +96,10 @@ namespace AmeisenAI
                         break;
                     }
 
-                    if (activeUnit != null)
+                    if (activeUnit != null && AmeisenAIManager.Instance.DoFollow)
                     {
                         AmeisenAction ameisenAction = new AmeisenAction(
-                            AmeisenActionType.MOVE_NEAR_TARGET,
+                            AmeisenActionType.MOVE_NEAR_POSITION,
                             new object[] {
                                 activeUnit.pos,
                                 4.0 } // Follow distance

@@ -19,13 +19,13 @@
         public static uint corpseX = 0xBD0A50;
         public static uint corpseY = corpseX + 0x4;
         public static uint corpseZ = corpseY + 0x4;
-        public static uint ctmAction = ctmBase + 0x1C;
-        public static uint ctmBase = 0xCA11D8;
-        public static uint ctmDistance = ctmBase + 0xC;
-        public static uint ctmGUID = ctmBase + 0x20;
-        public static uint ctmX = ctmBase + 0x8C;
-        public static uint ctmY = ctmBase + 0x90;
-        public static uint ctmZ = ctmBase + 0x94;
+        public static uint ctmABase = 0xCA11D8;
+        public static uint ctmAction = ctmABase + 0x1C;
+        public static uint ctmDistance = ctmABase + 0xC;
+        public static uint ctmGUID = ctmABase + 0x20;
+        public static uint ctmX = ctmABase + 0x8C;
+        public static uint ctmY = ctmABase + 0x90;
+        public static uint ctmZ = ctmABase + 0x94;
         public static uint currentClientConnection = 0xC79CE0;
         public static uint currentManagerLocalGUID = 0xC0;
         public static uint currentManagerOffset = 0x2ED0;
@@ -53,10 +53,9 @@
         public static uint localPlayerCharacterStateOffset3 = 0x90;
         public static uint localPlayerGUID = 0xCA1238;
         public static uint localTargetGUID = 0xBD07B0;
-
-        //0xAC
+        public static uint setFacing = 0x9606E0;
         public static uint luaDoString = 0x819210;
-
+        public static uint sendMovementPacket = 0x7413F0;
         public static uint luaGetLocalizedText = 0x7225E0;
         public static uint mapID = 0xAB63BC;
         public static uint nameBase = 0x1C;

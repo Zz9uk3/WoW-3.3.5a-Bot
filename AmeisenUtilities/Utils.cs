@@ -31,6 +31,18 @@ namespace AmeisenUtilities
                              (a.z - b.z) * (a.z - b.z));
         }
 
+        public static bool IsFacing(Vector3 myPosition, float rotationA, Vector3 targetPosition)
+        {
+            float f = (float)Math.Atan2(targetPosition.y - myPosition.y, targetPosition.x - myPosition.x);
+
+            if (f < 0.0f)
+                f = f + (float)Math.PI * 2.0f;
+            else if (f > (float)Math.PI * 2)
+                f = f - (float)Math.PI * 2.0f;
+
+            return f == rotationA ? true : false;
+        }
+
         #endregion Public Methods
     }
 }

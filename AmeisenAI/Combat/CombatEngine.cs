@@ -115,6 +115,7 @@ namespace AmeisenAI
                         {
                             AmeisenCore.AmeisenCore.RunSlashCommand("/assist party" + i);
                             AmeisenCore.AmeisenCore.AttackTarget();
+                            AmeisenAIManager.Instance.DoFollow = false;
                         }
                 i++;
             }
@@ -232,20 +233,34 @@ namespace AmeisenAI
             switch (entry.Action)
             {
                 case CombatLogicAction.USE_SPELL:
-                    if (!AmeisenCore.AmeisenCore.IsOnCooldown((string)entry.Parameters))
+                    if (Target != null)
                     {
-                        AmeisenAction action;
-                        if (entry.IsForMyself)
-                            action = new AmeisenAction(AmeisenActionType.USE_SPELL_ON_ME, (string)entry.Parameters);
-                        else
-                            action = new AmeisenAction(AmeisenActionType.USE_SPELL, (string)entry.Parameters);
+                        AmeisenAIManager.Instance.DoFollow = false;
+                        Me.Update();
+                        Target.Update();
 
-                        AmeisenCore.AmeisenCore.MovePlayerToXYZ(Me.pos, Interaction.FACETARGET);
+                        if (!Utils.IsFacing(Me.pos, Me.Rotation, Target.pos))
+                        {
+                            AmeisenAction action = new AmeisenAction(
+                                AmeisenActionType.FACETARGET,
+                                Interaction.FACETARGET
+                                );
+                            AmeisenAIManager.Instance.AddActionToQueue(ref action);
+                        }
 
-                        AmeisenAIManager.Instance.AddActionToQueue(ref action);
+                        if (!AmeisenCore.AmeisenCore.IsOnCooldown((string)entry.Parameters))
+                        {
+                            AmeisenAction action;
+                            if (entry.IsForMyself)
+                                action = new AmeisenAction(AmeisenActionType.USE_SPELL_ON_ME, (string)entry.Parameters);
+                            else
+                                action = new AmeisenAction(AmeisenActionType.USE_SPELL, (string)entry.Parameters);
 
-                        do Thread.Sleep(100);
-                        while (!action.IsActionDone());
+                            AmeisenAIManager.Instance.AddActionToQueue(ref action);
+
+                            do Thread.Sleep(5);
+                            while (!action.IsActionDone());
+                        }
                     }
                     break;
 
@@ -277,7 +292,15 @@ namespace AmeisenAI
             if (entry.CombatOnly)
             {
                 if (!AmeisenCore.AmeisenCore.GetCombatState(LUAUnit.player))
-                    return false;
+                {
+                    AmeisenAIManager.Instance.DoFollow = true;
+                    if (!IsPartyInCombat())
+                        return false;
+                }
+                else
+                {
+                    AmeisenAIManager.Instance.DoFollow = false;
+                }
             }
 
             bool isMeeleeSpell = entry.MaxSpellDistance < 3.2 ? true : false;
@@ -294,8 +317,8 @@ namespace AmeisenAI
                         action = new AmeisenAction(AmeisenActionType.INTERACT_TARGET, Interaction.ATTACKPOS);
                     else
                     {
-                        object[] parameters = new object[2] { Target.pos, entry.MaxSpellDistance * 0.9 };
-                        action = new AmeisenAction(AmeisenActionType.FORCE_MOVE_NEAR_TARGET, parameters); // 10% Offset
+                        object[] parameters = new object[2] { Target.pos, entry.MaxSpellDistance * 0.9 }; // 10% Offset
+                        action = new AmeisenAction(AmeisenActionType.FORCE_MOVE_NEAR_TARGET, parameters);
                     }
 
                     AmeisenAIManager.Instance.AddActionToQueue(ref action);
@@ -303,8 +326,6 @@ namespace AmeisenAI
                     do Thread.Sleep(100);
                     while (!action.IsActionDone());
                 }
-
-                //AmeisenCore.AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.FACEDESTINATION);
             }
 
             foreach (Condition c in entry.Conditions)
@@ -312,6 +333,16 @@ namespace AmeisenAI
                     return false;
 
             return true;
+        }
+
+        private bool IsPartyInCombat()
+        {
+            foreach (UInt64 guid in Me.PartymemberGUIDs)
+                foreach (WoWObject o in ActiveWoWObjects)
+                    if (o.Guid == guid)
+                        if (((Unit)o).InCombat)
+                            return true;
+            return false;
         }
 
         #endregion Private Methods
