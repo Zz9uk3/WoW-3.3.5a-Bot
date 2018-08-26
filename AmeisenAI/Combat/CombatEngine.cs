@@ -2,6 +2,7 @@
 using AmeisenData;
 using AmeisenUtilities;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -21,6 +22,11 @@ namespace AmeisenAI
         {
             get { return AmeisenDataHolder.Instance.Target; }
             set { AmeisenDataHolder.Instance.Target = value; }
+        }
+
+        private List<WoWObject> ActiveWoWObjects
+        {
+            get { return AmeisenDataHolder.Instance.ActiveWoWObjects; }
         }
 
         private static readonly string combatclassesPath = AppDomain.CurrentDomain.BaseDirectory + "/combatclasses/";
@@ -48,14 +54,18 @@ namespace AmeisenAI
 
         private void AssistParty()
         {
-            LUAUnit[] partyLuaUnits = { LUAUnit.party1, LUAUnit.party2, LUAUnit.party3, LUAUnit.party4 };
-
-            for (int i = 0; i < Me.PartymemberGUIDs.Count; i++)
-                if (AmeisenCore.AmeisenCore.GetCombatState(partyLuaUnits[i]))
-                {
-                    AmeisenCore.AmeisenCore.RunSlashCommand("/assist party" + i);
-                    AmeisenCore.AmeisenCore.AttackTarget();
-                }
+            int i = 1;
+            foreach (UInt64 guid in Me.PartymemberGUIDs)
+            {
+                foreach (WoWObject o in ActiveWoWObjects)
+                    if (o.Guid == guid)
+                        if (((Unit)o).InCombat)
+                        {
+                            AmeisenCore.AmeisenCore.RunSlashCommand("/assist party" + i);
+                            AmeisenCore.AmeisenCore.AttackTarget();
+                        }
+                i++;
+            }
         }
 
         /// <summary>
@@ -109,17 +119,6 @@ namespace AmeisenAI
             if (Me == null)
                 return false;
 
-            if (entry.CombatOnly)
-            {
-                if (!AmeisenCore.AmeisenCore.GetCombatState(LUAUnit.player))
-                {
-                    AmeisenAIManager.Instance.IsAllowedToMove = true;
-                    if (!AmeisenCore.AmeisenCore.IsTargetFriendly())
-                        return false;
-                }
-                else { AmeisenAIManager.Instance.IsAllowedToMove = false; }
-            }
-
             bool isMeeleeSpell = entry.MaxSpellDistance < 3.2 ? true : false;
 
             if (!entry.IsBuff && !entry.IsForMyself)
@@ -144,14 +143,24 @@ namespace AmeisenAI
                     while (!action.IsActionDone());
                 }
 
-                AmeisenCore.AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.FACETARGET);
+                AmeisenCore.AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.FACEDESTINATION);
             }
 
             foreach (Condition c in entry.Conditions)
                 if (!CheckCondition(c))
                     return false;
 
-            return true;
+            if (entry.CombatOnly)
+            {
+                if (Me.InCombat)
+                {
+                    return true;
+                }
+                else
+                    return false;
+            }
+            else
+                return true;
         }
 
         private bool CheckCondition(Condition condition)

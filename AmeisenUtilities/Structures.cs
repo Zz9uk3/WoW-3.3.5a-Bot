@@ -1,4 +1,6 @@
-﻿namespace AmeisenUtilities
+﻿using System;
+
+namespace AmeisenUtilities
 {
     /// <summary>
     /// Simple X,Y & Z struct
@@ -156,7 +158,7 @@
     /// <summary>
     /// UnitFlags
     /// </summary>
-    public enum UnitFlags
+    public enum UnitFlags : int
     {
         NONE = 0,
         SITTING = 0x1,
@@ -174,6 +176,22 @@
         SKINNABLE = 0x8000000,
         MOUNTED = 0x4000000,
         DAZED = 0x20000000
+    }
+
+    /// <summary>
+    /// DynamicUnitFlags
+    /// </summary>
+    public enum UnitDynamicFlags
+    {
+        NONE = 0,
+        LOOTABLE = 0x1,
+        TRACKUNIT = 0x2,
+        TAGGEDBYOTHER = 0x4,
+        TAGGEDBYME = 0x8,
+        SPECIALINFO = 0x10,
+        DEAD = 0x20,
+        REFERAFRIENDLINKED = 0x40,
+        TAPPEDBYTHREAT = 0x80,
     }
 
     /// <summary>

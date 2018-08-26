@@ -135,7 +135,7 @@ namespace AmeisenAI
                                 WoWSpellInfo spellInfo = AmeisenCore.AmeisenCore.GetSpellInfo((string)currentAction.GetActionParams());
                                 AmeisenCore.AmeisenCore.CastSpellByName((string)currentAction.GetActionParams(), false);
 
-                                Thread.Sleep(spellInfo.castTime + 500);
+                                Thread.Sleep(spellInfo.castTime + 200);
                                 currentAction.ActionIsDone();
                                 break;
 

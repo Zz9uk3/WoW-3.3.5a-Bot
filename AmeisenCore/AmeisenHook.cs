@@ -99,10 +99,10 @@ namespace AmeisenCore
                     AmeisenCore.Blackmagic.Asm.AddLine("CALL EAX");
                     AmeisenCore.Blackmagic.Asm.AddLine("MOV [" + (returnAdress) + "], EAX");
 
+                    AmeisenCore.Blackmagic.Asm.AddLine("@out:");
                     AmeisenCore.Blackmagic.Asm.AddLine("MOV EDX, 0");
                     AmeisenCore.Blackmagic.Asm.AddLine("MOV [" + (codeToExecute) + "], EDX");
 
-                    AmeisenCore.Blackmagic.Asm.AddLine("@out:");
                     AmeisenCore.Blackmagic.Asm.AddLine("POPAD");
                     AmeisenCore.Blackmagic.Asm.AddLine("POPFD");
                     int asmLenght = AmeisenCore.Blackmagic.Asm.Assemble().Length;

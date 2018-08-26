@@ -6,20 +6,16 @@ namespace AmeisenUtilities
 {
     public partial class Unit : WoWObject
     {
-        public uint BaseUnitFields { get; set; }
-
-        public int CombatReach { get; set; }
-        public int ChannelSpell { get; set; }
-        public int FactionTemplate { get; set; }
-        public int SummonedBy { get; set; }
-
         public int Level { get; set; }
         public int Health { get; set; }
         public int MaxHealth { get; set; }
         public int Energy { get; set; }
         public int MaxEnergy { get; set; }
 
-        BitVector32 UnitFlags { get; set; }
+        public BitVector32 UFlags { get; set; }
+        public BitVector32 DynUFlags { get; set; }
+
+        public bool InCombat { get { return UFlags[(int)UnitFlags.COMBAT]; } }
 
         public Unit(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
@@ -29,9 +25,6 @@ namespace AmeisenUtilities
         public override void Update()
         {
             base.Update();
-
-            if (BaseUnitFields == 0)
-                BaseUnitFields = BlackMagicInstance.ReadUInt(BaseAddress + 0x8);
 
             if (Name == null)
                 try { Name = GetMobNameFromBase(BaseAddress); } catch { }
@@ -50,19 +43,24 @@ namespace AmeisenUtilities
 
             try
             {
-                //SummonedBy = BlackMagicInstance.ReadInt(BaseUnitFields + (0xE * 4));
-                //FactionTemplate = BlackMagicInstance.ReadInt(BaseUnitFields + (0x37 * 4));
-                Level = BlackMagicInstance.ReadInt(BaseUnitFields + (0x36 * 4));
-                Health = BlackMagicInstance.ReadInt(BaseUnitFields + (0x18 * 4));
-                MaxHealth = BlackMagicInstance.ReadInt(BaseUnitFields + (0x20 * 4));
-                Energy = BlackMagicInstance.ReadInt(BaseUnitFields + (0x19 * 4));
-                MaxEnergy = BlackMagicInstance.ReadInt(BaseUnitFields + (0x21 * 4));
+                Level = BlackMagicInstance.ReadInt(Descriptor + 0xD8);
+                Health = BlackMagicInstance.ReadInt(Descriptor + 0x60);
+                MaxHealth = BlackMagicInstance.ReadInt(Descriptor + 0x80);
+                Energy = BlackMagicInstance.ReadInt(Descriptor + 0x64);
+                MaxEnergy = BlackMagicInstance.ReadInt(Descriptor + 0x84);
                 //CombatReach = BlackMagicInstance.ReadInt(BaseUnitFields + (0x42 * 4));
                 //ChannelSpell = BlackMagicInstance.ReadInt(BaseUnitFields + (0x16 * 4));
+                //SummonedBy = BlackMagicInstance.ReadInt(BaseUnitFields + (0xE * 4));
+                //FactionTemplate = BlackMagicInstance.ReadInt(BaseUnitFields + (0x37 * 4));
             }
             catch { }
-            
-            UnitFlags = (BitVector32)BlackMagicInstance.ReadObject(0xDD, typeof(BitVector32));
+
+            try
+            {
+                UFlags = (BitVector32)BlackMagicInstance.ReadObject(Descriptor + 0xEC, typeof(BitVector32));
+                DynUFlags = (BitVector32)BlackMagicInstance.ReadObject(Descriptor + 0x13C, typeof(BitVector32));
+            }
+            catch { }
         }
 
         /// <summary>
@@ -84,7 +82,8 @@ namespace AmeisenUtilities
 
             sb.Append("UNIT");
             sb.Append(" >> Address: " + BaseAddress.ToString("X"));
-            sb.Append(" >> UnitFields: " + BaseUnitFields.ToString("X"));
+            sb.Append(" >> Descriptor: " + Descriptor.ToString("X"));
+            sb.Append(" >> InCombat: " + InCombat.ToString());
             sb.Append(" >> Name: " + Name);
             sb.Append(" >> GUID: " + Guid);
             sb.Append(" >> PosX: " + pos.x);
@@ -100,9 +99,6 @@ namespace AmeisenUtilities
             else
                 sb.Append(" >> Target: null");*/
 
-            sb.Append(" >> combatReach: " + CombatReach);
-            sb.Append(" >> channelSpell: " + ChannelSpell);
-            sb.Append(" >> factionTemplate: " + FactionTemplate);
             sb.Append(" >> level: " + Level);
             sb.Append(" >> health: " + Health);
             sb.Append(" >> maxHealth: " + MaxHealth);

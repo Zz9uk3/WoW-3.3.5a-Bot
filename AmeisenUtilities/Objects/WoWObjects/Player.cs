@@ -61,7 +61,8 @@ namespace AmeisenUtilities
 
             sb.Append("PLAYER");
             sb.Append(" >> Address: " + BaseAddress.ToString("X"));
-            sb.Append(" >> UnitFields: " + BaseUnitFields.ToString("X"));
+            sb.Append(" >> Descriptor: " + Descriptor.ToString("X"));
+            sb.Append(" >> InCombat: " + InCombat.ToString());
             sb.Append(" >> Name: " + Name);
             sb.Append(" >> GUID: " + Guid);
             sb.Append(" >> PosX: " + pos.x);
@@ -76,10 +77,7 @@ namespace AmeisenUtilities
                 sb.Append(" >> Target: " + target.guid);
             else
                 sb.Append(" >> Target: null");*/
-
-            sb.Append(" >> combatReach: " + CombatReach);
-            sb.Append(" >> channelSpell: " + ChannelSpell);
-            sb.Append(" >> factionTemplate: " + FactionTemplate);
+                
             sb.Append(" >> level: " + Level);
             sb.Append(" >> health: " + Health);
             sb.Append(" >> maxHealth: " + MaxHealth);

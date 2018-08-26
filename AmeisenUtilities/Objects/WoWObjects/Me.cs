@@ -45,7 +45,7 @@ namespace AmeisenUtilities
             castingState = BlackMagicInstance.ReadUInt(castingState + WoWOffsets.localPlayerCharacterStateOffset2);
             CurrentState = (UnitState)BlackMagicInstance.ReadInt(castingState + WoWOffsets.localPlayerCharacterStateOffset3);
 
-            TargetGUID = BlackMagicInstance.ReadUInt64(BaseUnitFields + (0x12 * 4));
+            TargetGUID = BlackMagicInstance.ReadUInt64(Descriptor + 0x48);
 
             PartymemberGUIDs = new List<UInt64>();
             PartyleaderGUID = BlackMagicInstance.ReadUInt64(WoWOffsets.partyLeader);
@@ -65,7 +65,8 @@ namespace AmeisenUtilities
 
             sb.Append("ME");
             sb.Append(" >> Address: " + BaseAddress.ToString("X"));
-            sb.Append(" >> UnitFields: " + BaseUnitFields.ToString("X"));
+            sb.Append(" >> Descriptor: " + Descriptor.ToString("X"));
+            sb.Append(" >> InCombat: " + InCombat.ToString());
             sb.Append(" >> Name: " + Name);
             sb.Append(" >> GUID: " + Guid);
             sb.Append(" >> PosX: " + pos.x);
@@ -80,11 +81,7 @@ namespace AmeisenUtilities
                 sb.Append(" >> TargetGUID: " + TargetGUID.ToString());
             else
                 sb.Append(" >> Target: none");
-
-            sb.Append(" >> combatReach: " + CombatReach);
-            sb.Append(" >> channelSpell: " + ChannelSpell);
             sb.Append(" >> currentState: " + CurrentState);
-            sb.Append(" >> factionTemplate: " + FactionTemplate);
             sb.Append(" >> level: " + Level);
             sb.Append(" >> health: " + Health);
             sb.Append(" >> maxHealth: " + MaxHealth);

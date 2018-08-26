@@ -416,21 +416,6 @@ namespace AmeisenCore
         }
 
         /// <summary>
-        /// Returns the current combat state
-        /// </summary>
-        /// <param name="onMyself">check my owm state</param>
-        /// <returns>true if unit is in combat, false if not</returns>
-        public static bool GetCombatState(LUAUnit luaUnit)
-        {
-            bool isInCombat;
-
-            LUADoString("affectingCombat = UnitAffectingCombat(\"" + luaUnit.ToString() + "\");");
-
-            try { if (int.Parse(GetLocalizedText("affectingCombat")) == 1) isInCombat = true; else isInCombat = false; } catch { isInCombat = false; }
-            return isInCombat;
-        }
-
-        /// <summary>
         /// Returns wether the Unit is Friendly or not
         /// </summary>
         /// <returns>true if unit is friendly, false if not</returns>
