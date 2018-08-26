@@ -16,11 +16,11 @@ namespace AmeisenUtilities
         #endregion Public Constructors
 
         #region Public Properties
-
-        public BitVector32 DynUFlags { get; set; }
+        
         public int Energy { get; set; }
         public int Health { get; set; }
         public bool InCombat { get { return UFlags[(int)UnitFlags.COMBAT]; } }
+        public bool NeedToRevive { get { return Health == 0; } }
         public int Level { get; set; }
         public int MaxEnergy { get; set; }
         public int MaxHealth { get; set; }
@@ -111,7 +111,6 @@ namespace AmeisenUtilities
             try
             {
                 UFlags = (BitVector32)BlackMagicInstance.ReadObject(Descriptor + 0xEC, typeof(BitVector32));
-                DynUFlags = (BitVector32)BlackMagicInstance.ReadObject(Descriptor + 0x13C, typeof(BitVector32));
             }
             catch { }
         }

@@ -1,4 +1,5 @@
 ﻿using AmeisenData;
+using AmeisenUtilities;
 using System.Threading;
 
 namespace AmeisenAI
@@ -76,14 +77,34 @@ namespace AmeisenAI
 
         #endregion Public Methods
 
+        #region Private Properties
+
+        private Me Me
+        {
+            get { return AmeisenDataHolder.Instance.Me; }
+            set { AmeisenDataHolder.Instance.Me = value; }
+        }
+
+        #endregion Private Properties
+
         #region Private Methods
 
         private void DoWork()
         {
             while (!stop)
             {
+                if (AmeisenCore.AmeisenCore.IsGhost(LUAUnit.player))
+                {
+                    if (Me.NeedToRevive)
+                        if (AmeisenAIManager.Instance.IsAllowedToRevive)
+                            AmeisenCore.AmeisenCore.Revive();
+
+                    Thread.Sleep(50);
+                    continue;
+                }
+
                 combatEngine.ExecuteNextStep();
-                Thread.Sleep(1000);
+                Thread.Sleep(250);
             }
         }
 

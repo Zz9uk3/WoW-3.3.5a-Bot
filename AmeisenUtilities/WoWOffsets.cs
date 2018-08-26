@@ -16,7 +16,7 @@
         public static uint clientGameUITarget = 0x524BF0;
         public static uint clientObjectManagerGetActivePlayerObject = 0x4038F0;
         public static uint continentName = 0xCE06D0;
-        public static uint corpseX = 0xBD0A50;
+        public static uint corpseX = 0xBD0A58;
         public static uint corpseY = corpseX + 0x4;
         public static uint corpseZ = corpseY + 0x4;
         public static uint ctmABase = 0xCA11D8;
@@ -53,9 +53,7 @@
         public static uint localPlayerCharacterStateOffset3 = 0x90;
         public static uint localPlayerGUID = 0xCA1238;
         public static uint localTargetGUID = 0xBD07B0;
-        public static uint setFacing = 0x9606E0;
         public static uint luaDoString = 0x819210;
-        public static uint sendMovementPacket = 0x7413F0;
         public static uint luaGetLocalizedText = 0x7225E0;
         public static uint mapID = 0xAB63BC;
         public static uint nameBase = 0x1C;
@@ -78,6 +76,8 @@
         public static uint playerIsLoadingscreen = 0xB6AA38;
         public static uint playerName = 0xC79D18;
         public static uint realmName = 0xC79B9E;
+        public static uint sendMovementPacket = 0x7413F0;
+        public static uint setFacing = 0x9606E0;
         public static uint staticCastingstate = 0x6F5250;
         public static uint subZoneText = 0xBD0784;
         public static uint tickCount = 0xB499A4;

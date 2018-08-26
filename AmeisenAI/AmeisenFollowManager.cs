@@ -1,4 +1,5 @@
-﻿using AmeisenUtilities;
+﻿using AmeisenData;
+using AmeisenUtilities;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -42,6 +43,16 @@ namespace AmeisenAI
 
         #endregion Singleton stuff
 
+        #region Private Properties
+
+        private Me Me
+        {
+            get { return AmeisenDataHolder.Instance.Me; }
+            set { AmeisenDataHolder.Instance.Me = value; }
+        }
+
+        #endregion Private Properties
+
         #region Public Methods
 
         public void AddPlayerToFollow(Unit unit)
@@ -77,10 +88,23 @@ namespace AmeisenAI
         {
             while (!stop)
             {
-                if (!AmeisenAIManager.Instance.DoFollow)
+                if (Me.NeedToRevive || !AmeisenAIManager.Instance.DoFollow)
                 {
                     Thread.Sleep(25);
                     continue;
+                }
+
+                if (AmeisenCore.AmeisenCore.IsGhost(LUAUnit.player))
+                {
+                    //TODO: Handle death follow GO_TO_CORPSE_AND_REVIVE
+
+                    AmeisenAction ameisenAction = new AmeisenAction(
+                    AmeisenActionType.GO_TO_CORPSE_AND_REVIVE, null);
+
+                    AmeisenAIManager.Instance.AddActionToQueue(ref ameisenAction);
+
+                    while (!ameisenAction.IsActionDone())
+                        Thread.Sleep(50);
                 }
 
                 if (followUnitList.Count > 0)

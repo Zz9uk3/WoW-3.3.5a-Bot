@@ -126,7 +126,7 @@ namespace AmeisenManager
             Blackmagic = new BlackMagic(wowExe.process.Id);
             IsAttached = Blackmagic.IsProcessOpen;
             // TODO: make this better
-            AmeisenCore.AmeisenCore.Blackmagic = Blackmagic;
+            AmeisenCore.AmeisenCore.BlackMagic = Blackmagic;
 
             // Hook EndScene
             AmeisenHook = AmeisenHook.Instance;

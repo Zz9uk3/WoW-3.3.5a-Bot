@@ -310,22 +310,23 @@ namespace AmeisenAI
                 if (Me.TargetGUID == 0)
                     return false;
 
-                if (Target.Distance > entry.MaxSpellDistance)
-                {
-                    AmeisenAction action;
-                    if (isMeeleeSpell)
-                        action = new AmeisenAction(AmeisenActionType.INTERACT_TARGET, Interaction.ATTACKPOS);
-                    else
+                if (Target != null)
+                    if (Target.Distance > entry.MaxSpellDistance)
                     {
-                        object[] parameters = new object[2] { Target.pos, entry.MaxSpellDistance * 0.9 }; // 10% Offset
-                        action = new AmeisenAction(AmeisenActionType.FORCE_MOVE_NEAR_TARGET, parameters);
+                        AmeisenAction action;
+                        if (isMeeleeSpell)
+                            action = new AmeisenAction(AmeisenActionType.INTERACT_TARGET, Interaction.ATTACKPOS);
+                        else
+                        {
+                            object[] parameters = new object[2] { Target.pos, entry.MaxSpellDistance * 0.9 }; // 10% Offset
+                            action = new AmeisenAction(AmeisenActionType.FORCE_MOVE_NEAR_TARGET, parameters);
+                        }
+
+                        AmeisenAIManager.Instance.AddActionToQueue(ref action);
+
+                        do Thread.Sleep(100);
+                        while (!action.IsActionDone());
                     }
-
-                    AmeisenAIManager.Instance.AddActionToQueue(ref action);
-
-                    do Thread.Sleep(100);
-                    while (!action.IsActionDone());
-                }
             }
 
             foreach (Condition c in entry.Conditions)

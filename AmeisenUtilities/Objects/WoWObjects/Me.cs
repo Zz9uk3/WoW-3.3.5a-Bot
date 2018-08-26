@@ -21,7 +21,6 @@ namespace AmeisenUtilities
         public UnitState CurrentState { get; set; }
         public int Exp { get; set; }
         public int MaxExp { get; set; }
-
         public UInt64 PartyleaderGUID { get; set; }
         public List<UInt64> PartymemberGUIDs { get; set; }
         public uint PlayerBase { get; set; }

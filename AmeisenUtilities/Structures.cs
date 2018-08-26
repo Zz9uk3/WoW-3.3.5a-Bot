@@ -13,7 +13,24 @@
         FORCE_MOVE_TO_POSITION,
         FORCE_MOVE_NEAR_TARGET,
         TARGET_ENTITY,
-        FACETARGET
+        FACETARGET,
+        GO_TO_CORPSE_AND_REVIVE
+    }
+
+    /// <summary>
+    /// DynamicUnitFlags
+    /// </summary>
+    public enum DynamicUnitFlags
+    {
+        NONE = 0,
+        LOOTABLE = 0x1,
+        TRACKUNIT = 0x2,
+        TAGGEDBYOTHER = 0x4,
+        TAGGEDBYME = 0x8,
+        SPECIALINFO = 0x10,
+        DEAD = 0x20,
+        REFERAFRIENDLINKED = 0x40,
+        TAPPEDBYTHREAT = 0x80,
     }
 
     /// <summary>
@@ -46,22 +63,6 @@
         party2,
         party3,
         party4,
-    }
-
-    /// <summary>
-    /// DynamicUnitFlags
-    /// </summary>
-    public enum UnitDynamicFlags
-    {
-        NONE = 0,
-        LOOTABLE = 0x1,
-        TRACKUNIT = 0x2,
-        TAGGEDBYOTHER = 0x4,
-        TAGGEDBYME = 0x8,
-        SPECIALINFO = 0x10,
-        DEAD = 0x20,
-        REFERAFRIENDLINKED = 0x40,
-        TAPPEDBYTHREAT = 0x80,
     }
 
     /// <summary>

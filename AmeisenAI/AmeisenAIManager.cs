@@ -47,6 +47,7 @@ namespace AmeisenAI
         {
             IsAllowedToMove = true;
             DoFollow = true;
+            IsAllowedToRevive = true;
             actionQueue = new ConcurrentQueue<AmeisenAction>();
             aiWorkers = new List<Thread>();
         }
@@ -74,6 +75,7 @@ namespace AmeisenAI
 
         public bool DoFollow { get; set; }
         public bool IsAllowedToMove { get; set; }
+        public bool IsAllowedToRevive { get; set; }
 
         #endregion Public Properties
 
@@ -225,6 +227,22 @@ namespace AmeisenAI
                 AmeisenCore.AmeisenCore.InteractWithGUID(Target.pos, Target.Guid, Interaction.FACETARGET);
                 currentAction.ActionIsDone();
             }
+        }
+
+        private void GoToCorpseAndRevive(ref AmeisenAction currentAction)
+        {
+            Vector3 corpsePosition = AmeisenCore.AmeisenCore.GetCorpsePosition();
+
+            AmeisenAction ameisenAction = new AmeisenAction(
+                AmeisenActionType.MOVE_NEAR_POSITION,
+                new object[] { corpsePosition, 10.0 }
+                );
+            AddActionToQueue(ref ameisenAction);
+
+            while (!ameisenAction.IsActionDone()) { Thread.Sleep(250); }
+
+            AmeisenCore.AmeisenCore.RetrieveCorpse();
+            currentAction.ActionIsDone();
         }
 
         private void InteractWithTarget(double distance, Interaction action, ref AmeisenAction ameisenAction)
@@ -386,6 +404,10 @@ namespace AmeisenAI
                             case AmeisenActionType.USE_SPELL_ON_ME:
                                 AmeisenCore.AmeisenCore.CastSpellByName((string)currentAction.GetActionParams(), true);
                                 currentAction.ActionIsDone();
+                                break;
+
+                            case AmeisenActionType.GO_TO_CORPSE_AND_REVIVE:
+                                GoToCorpseAndRevive(ref currentAction);
                                 break;
 
                             default:
