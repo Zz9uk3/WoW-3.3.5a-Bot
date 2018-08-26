@@ -119,6 +119,12 @@ namespace AmeisenAI
             if (Me == null)
                 return false;
 
+            if (entry.CombatOnly)
+            {
+                if (!AmeisenCore.AmeisenCore.GetCombatState(LUAUnit.player))
+                    return false;
+            }
+
             bool isMeeleeSpell = entry.MaxSpellDistance < 3.2 ? true : false;
 
             if (!entry.IsBuff && !entry.IsForMyself)
@@ -143,24 +149,14 @@ namespace AmeisenAI
                     while (!action.IsActionDone());
                 }
 
-                AmeisenCore.AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.FACEDESTINATION);
+                //AmeisenCore.AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.FACEDESTINATION);
             }
 
             foreach (Condition c in entry.Conditions)
                 if (!CheckCondition(c))
                     return false;
 
-            if (entry.CombatOnly)
-            {
-                if (Me.InCombat)
-                {
-                    return true;
-                }
-                else
-                    return false;
-            }
-            else
-                return true;
+            return true;
         }
 
         private bool CheckCondition(Condition condition)
@@ -225,16 +221,16 @@ namespace AmeisenAI
                     return CompareLess(value1, value2);
 
                 case CombatLogicStatement.HAS_BUFF:
-                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, false).duration > 0;
+                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.target).duration > 0;
 
                 case CombatLogicStatement.NOT_HAS_BUFF:
-                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, false).duration == -1;
+                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.target).duration == -1;
 
                 case CombatLogicStatement.HAS_BUFF_MYSELF:
-                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, false).duration > 0;
+                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.player).duration > 0;
 
                 case CombatLogicStatement.NOT_HAS_BUFF_MYSELF:
-                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, true).duration == -1;
+                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.player).duration == -1;
 
                 default:
                     return false;

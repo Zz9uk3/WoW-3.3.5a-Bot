@@ -82,7 +82,7 @@
 
         public static uint devicePtr1 = 0xC5DF88;
         public static uint devicePtr2 = 0x397C;
-        public static uint endScene = 0xA8;
+        public static uint endScene = 0xA8; //0xAC
 
         public static uint clientObjectManagerGetActivePlayerObject = 0x4038F0;
         public static uint clientGameUITarget = 0x524BF0;

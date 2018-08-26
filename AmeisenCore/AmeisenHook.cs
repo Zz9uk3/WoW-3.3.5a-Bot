@@ -1,11 +1,35 @@
 ﻿using AmeisenLogging;
 using AmeisenUtilities;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
 namespace AmeisenCore
 {
+    public class HookJob
+    {
+        public string[] Asm { get; set; }
+        public bool IsFinished { get; set; }
+        public bool ReadReturnBytes { get; set; }
+        public object ReturnValue { get; set; }
+
+        public HookJob(string[] asm, bool readReturnBytes)
+        {
+            IsFinished = false;
+            Asm = asm;
+            ReadReturnBytes = readReturnBytes;
+            ReturnValue = null;
+        }
+    }
+
+    public class ReturnHookJob : HookJob
+    {
+        public HookJob ChainedJob { get; private set; }
+
+        public ReturnHookJob(string[] asm, bool readReturnBytes, HookJob chainedJob) : base(asm, readReturnBytes) { ChainedJob = chainedJob; }
+    }
+
     /// <summary>
     /// Class that manages the hooking of WoW's EndScene
     ///
@@ -29,6 +53,9 @@ namespace AmeisenCore
             }
         }
 
+        private Thread hookWorker;
+        private ConcurrentQueue<HookJob> hookJobs;
+
         public bool isHooked = false;
         public bool isInjectionUsed = false;
 
@@ -44,9 +71,40 @@ namespace AmeisenCore
         private AmeisenHook()
         {
             Hook();
+            hookJobs = new ConcurrentQueue<HookJob>();
+            hookWorker = new Thread(new ThreadStart(DoWork));
+
+            if (isHooked)
+                hookWorker.Start();
         }
 
-        public void Hook()
+        public void AddHookJob(ref HookJob hookJob) { hookJobs.Enqueue(hookJob); }
+        public void AddHookJob(ref ReturnHookJob hookJob) { hookJobs.Enqueue(hookJob); }
+
+        private void DoWork()
+        {
+            while (isHooked)
+            {
+                if (!hookJobs.IsEmpty)
+                {
+                    if (hookJobs.TryDequeue(out HookJob currentJob))
+                    {
+                        InjectAndExecute(currentJob.Asm, currentJob.ReadReturnBytes);
+
+                        if (currentJob.GetType() == typeof(ReturnHookJob))
+                            currentJob.ReturnValue = InjectAndExecute(
+                                ((ReturnHookJob)currentJob).ChainedJob.Asm,
+                                ((ReturnHookJob)currentJob).ChainedJob.ReadReturnBytes
+                                );
+
+                        currentJob.IsFinished = true;
+                    }
+                }
+                Thread.Sleep(1);
+            }
+        }
+
+        private void Hook()
         {
             if (AmeisenCore.Blackmagic.IsProcessOpen)
             {
@@ -139,12 +197,13 @@ namespace AmeisenCore
             }
 
             isHooked = false;
+            hookWorker.Join();
         }
 
-        public byte[] InjectAndExecute(string[] asm)
+        private byte[] InjectAndExecute(string[] asm, bool readReturnBytes)
         {
             while (isInjectionUsed)
-                Thread.Sleep(50);
+                Thread.Sleep(1);
 
             isInjectionUsed = true;
 
@@ -161,27 +220,32 @@ namespace AmeisenCore
             AmeisenCore.Blackmagic.Asm.Inject(codeCaveForInjection);
 
             while (AmeisenCore.Blackmagic.ReadInt(codeToExecute) > 0)
-                Thread.Sleep(50);
+                Thread.Sleep(1);
 
-            byte buffer = new Byte();
-            List<byte> returnBytes = new List<byte>();
-
-            try
+            if (readReturnBytes)
             {
-                uint dwAddress = AmeisenCore.Blackmagic.ReadUInt(returnAdress);
+                byte buffer = new Byte();
+                List<byte> returnBytes = new List<byte>();
 
-                buffer = AmeisenCore.Blackmagic.ReadByte(dwAddress);
-                while (buffer != 0)
+                try
                 {
-                    returnBytes.Add(buffer);
-                    dwAddress = dwAddress + 1;
-                    buffer = AmeisenCore.Blackmagic.ReadByte(dwAddress);
-                }
-            }
-            catch (Exception e) { AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Crash at reading returnAddress: " + e.ToString(), this); }
+                    uint dwAddress = AmeisenCore.Blackmagic.ReadUInt(returnAdress);
 
+                    buffer = AmeisenCore.Blackmagic.ReadByte(dwAddress);
+                    while (buffer != 0)
+                    {
+                        returnBytes.Add(buffer);
+                        dwAddress = dwAddress + 1;
+                        buffer = AmeisenCore.Blackmagic.ReadByte(dwAddress);
+                    }
+                }
+                catch (Exception e) { AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Crash at reading returnAddress: " + e.ToString(), this); }
+
+                isInjectionUsed = false;
+                return returnBytes.ToArray();
+            }
             isInjectionUsed = false;
-            return returnBytes.ToArray();
+            return new List<byte>().ToArray();
         }
 
         private uint GetEndScene()

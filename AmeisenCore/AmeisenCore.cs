@@ -156,10 +156,17 @@ namespace AmeisenCore
                 "RETN",
             };
 
-            byte[] returnBytes = AmeisenHook.Instance.InjectAndExecute(asm);
-            string result = Encoding.UTF8.GetString(returnBytes);
+            HookJob hookJob = new HookJob(asm,false);
+            AmeisenHook.Instance.AddHookJob(ref hookJob);
 
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Command returned: Command [" + command + "] ReturnValue: " + result + " ReturnBytes: " + returnBytes.ToString(), "AmeisenCore.AmeisenCore");
+            while (!hookJob.IsFinished) { Thread.Sleep(1); }
+            /*byte[] returnBytes = (byte[])hookJob.ReturnValue;
+
+            string result = "";
+            if (returnBytes != null)
+                result = Encoding.UTF8.GetString(returnBytes);*/
+
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Command returned: Command [" + command + "]", "AmeisenCore.AmeisenCore");
             Blackmagic.FreeMemory(argCC);
         }
 
@@ -167,13 +174,26 @@ namespace AmeisenCore
         /// Get Localized Text for command
         /// </summary>
         /// <param name="command">lua command to run</param>
-        public static string GetLocalizedText(string variable)
+        public static string GetLocalizedText(string command, string variable)
         {
-            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Getting text: Variable [" + variable + "]", "AmeisenCore.AmeisenCore");
+            uint argCCCommand = Blackmagic.AllocateMemory(Encoding.UTF8.GetBytes(command).Length + 1);
+            Blackmagic.WriteBytes(argCCCommand, Encoding.UTF8.GetBytes(command));
+
+            string[] asmDoString = new string[]
+            {
+                "MOV EAX, " + (argCCCommand),
+                "PUSH 0",
+                "PUSH EAX",
+                "PUSH EAX",
+                "CALL " + (WoWOffsets.luaDoString),
+                "ADD ESP, 0xC",
+                "RETN",
+            };
+
             uint argCC = Blackmagic.AllocateMemory(Encoding.UTF8.GetBytes(variable).Length + 1);
             Blackmagic.WriteBytes(argCC, Encoding.UTF8.GetBytes(variable));
 
-            string[] asm = new string[]
+            string[] asmLocalText = new string[]
             {
                 "CALL " + (WoWOffsets.clientObjectManagerGetActivePlayerObject),
                 "MOV ECX, EAX",
@@ -184,8 +204,16 @@ namespace AmeisenCore
                 "RETN",
             };
 
-            string result = Encoding.UTF8.GetString(AmeisenHook.Instance.InjectAndExecute(asm));
+            HookJob hookJobLocaltext = new HookJob(asmLocalText, true);
+            ReturnHookJob hookJobDoString = new ReturnHookJob(asmDoString, false, hookJobLocaltext);
+
+            AmeisenHook.Instance.AddHookJob(ref hookJobDoString);
+
+            while (!hookJobDoString.IsFinished || !hookJobDoString.IsFinished) { Thread.Sleep(1); }
+
+            string result = Encoding.UTF8.GetString((byte[])hookJobDoString.ReturnValue);
             Blackmagic.FreeMemory(argCC);
+            Blackmagic.FreeMemory(argCCCommand);
 
             return result;
         }
@@ -217,7 +245,20 @@ namespace AmeisenCore
                 "RETN",
             };
 
-            AmeisenHook.Instance.InjectAndExecute(asm);
+            HookJob hookJob = new HookJob(asm, false);
+            AmeisenHook.Instance.AddHookJob(ref hookJob);
+        }
+
+        /// <summary>
+        /// Returns the current combat state
+        /// </summary>
+        /// <param name="onMyself">check my owm state</param>
+        /// <returns>true if unit is in combat, false if not</returns>
+        public static bool GetCombatState(LUAUnit luaUnit)
+        {
+            bool isInCombat = false;
+            try { if (int.Parse(GetLocalizedText("affectingCombat = UnitAffectingCombat(\"" + luaUnit.ToString() + "\");", "affectingCombat")) == 1) isInCombat = true; else isInCombat = false; } catch { isInCombat = false; }
+            return isInCombat;
         }
 
         /// <summary>
@@ -360,18 +401,15 @@ namespace AmeisenCore
         /// Check for Auras/Buffs
         /// </summary>
         /// <returns>true if target has that aura, false if not</returns>
-        public static WoWAuraInfo GetAuraInfo(string auraname, bool onMyself)
+        public static WoWAuraInfo GetAuraInfo(string auraname, LUAUnit luaUnit)
         {
             WoWAuraInfo info = new WoWAuraInfo();
 
-            if (onMyself)
-                LUADoString("name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId = UnitAura(\"player\", \"" + auraname + "\");");
-            else
-                LUADoString("name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId = UnitAura(\"target\", \"" + auraname + "\");");
+            string cmd = "name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId = UnitAura(\"" + luaUnit.ToString() + "\", \"" + auraname + "\");";
 
-            try { info.name = GetLocalizedText("name"); } catch { info.name = ""; }
-            try { info.stacks = int.Parse(GetLocalizedText("count")); } catch { info.stacks = -1; }
-            try { info.duration = int.Parse(GetLocalizedText("duration")); } catch { info.duration = -1; }
+            try { info.name = GetLocalizedText(cmd, "name"); } catch { info.name = ""; }
+            try { info.stacks = int.Parse(GetLocalizedText(cmd, "count")); } catch { info.stacks = -1; }
+            try { info.duration = int.Parse(GetLocalizedText(cmd, "duration")); } catch { info.duration = -1; }
 
             return info;
         }
@@ -391,9 +429,7 @@ namespace AmeisenCore
         /// <returns>true if it is on cooldown, false if not</returns>
         public static bool IsOnCooldown(string spell)
         {
-            LUADoString("start, duration, enabled = GetSpellCooldown(\"" + spell + "\");");
-            Thread.Sleep(100);
-            try { return int.Parse(GetLocalizedText("duration")) > 0; } catch { return true; }
+            try { return int.Parse(GetLocalizedText("start, duration, enabled = GetSpellCooldown(\"" + spell + "\");", "duration")) > 0; } catch { return true; }
         }
 
         /// <summary>
@@ -405,12 +441,11 @@ namespace AmeisenCore
         {
             WoWSpellInfo info = new WoWSpellInfo();
 
-            LUADoString("name, rank, icon, cost, minRange, maxRange, castTime, powerType = GetSpellInfo(\"" + spell + "\");");
-            Thread.Sleep(100);
+            string cmd = "name, rank, icon, cost, minRange, maxRange, castTime, powerType = GetSpellInfo(\"" + spell + "\");";
 
             info.name = spell; //try { info.name = GetLocalizedText("name"); } catch { info.castTime = -1; }
-            try { info.castTime = int.Parse(GetLocalizedText("castTime")); } catch { info.castTime = -1; }
-            try { info.cost = int.Parse(GetLocalizedText("cost")); } catch { info.cost = -1; }
+            try { info.castTime = int.Parse(GetLocalizedText(cmd, "castTime")); } catch { info.castTime = -1; }
+            try { info.cost = int.Parse(GetLocalizedText(cmd, "cost")); } catch { info.cost = -1; }
 
             return info;
         }
@@ -422,9 +457,7 @@ namespace AmeisenCore
         public static bool IsTargetFriendly()
         {
             bool isFriendly;
-            LUADoString("isFriendly  = UnitAffectingCombat(\"player\", \"target\");");
-
-            try { if (int.Parse(GetLocalizedText("isFriendly")) == 1) isFriendly = true; else isFriendly = false; } catch { isFriendly = false; }
+            try { if (int.Parse(GetLocalizedText("isFriendly  = UnitAffectingCombat(\"player\", \"target\");", "isFriendly")) == 1) isFriendly = true; else isFriendly = false; } catch { isFriendly = false; }
             return isFriendly;
         }
 
