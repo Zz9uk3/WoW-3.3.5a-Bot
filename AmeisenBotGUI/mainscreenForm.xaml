@@ -212,7 +212,15 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button x:Name="buttonRefreshBots" Content="RefreshBots();" HorizontalAlignment="Left" Margin="479,227,0,0" VerticalAlignment="Top" Width="207" Click="ButtonRefreshBots_Click" />
-        <Button x:Name="buttonFaceTarget" Content="FaceTarget" HorizontalAlignment="Left" Margin="546,252,0,0" VerticalAlignment="Top" Width="140" Click="ButtonFaceTarget_Click" />
+        <Button x:Name="buttonRefreshBots" Content="RefreshBots();" HorizontalAlignment="Left" Margin="479,227,0,0" VerticalAlignment="Top" Width="154" Click="ButtonRefreshBots_Click" />
+        <Button x:Name="buttonFaceTarget" Content="FaceTarget" HorizontalAlignment="Left" Margin="479,252,0,0" VerticalAlignment="Top" Width="154" Click="ButtonFaceTarget_Click" />
+        <Button x:Name="buttonMap" Content="🚀" Margin="0,0,-2,110" Height="60" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="60" BorderThickness="2" Background="{x:Null}" FontSize="32" Click="ButtonMap_Click">
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
+            </Button.BorderBrush>
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Button.Foreground>
+        </Button>
     </Grid>
 </Window>

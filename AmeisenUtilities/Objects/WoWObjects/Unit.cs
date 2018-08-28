@@ -53,9 +53,9 @@ namespace AmeisenUtilities
             sb.Append(" >> InCombat: " + InCombat.ToString());
             sb.Append(" >> Name: " + Name);
             sb.Append(" >> GUID: " + Guid);
-            sb.Append(" >> PosX: " + pos.x);
-            sb.Append(" >> PosY: " + pos.y);
-            sb.Append(" >> PosZ: " + pos.z);
+            sb.Append(" >> PosX: " + pos.X);
+            sb.Append(" >> PosY: " + pos.Y);
+            sb.Append(" >> PosZ: " + pos.Z);
             sb.Append(" >> Rotation: " + Rotation);
             sb.Append(" >> Distance: " + Distance);
             sb.Append(" >> MapID: " + MapID);
@@ -82,9 +82,9 @@ namespace AmeisenUtilities
             if (Name == null)
                 try { Name = GetMobNameFromBase(BaseAddress); } catch { }
 
-            pos.x = BlackMagicInstance.ReadFloat(BaseAddress + 0x798);
-            pos.y = BlackMagicInstance.ReadFloat(BaseAddress + 0x79C);
-            pos.z = BlackMagicInstance.ReadFloat(BaseAddress + 0x7A0);
+            pos.X = BlackMagicInstance.ReadFloat(BaseAddress + 0x798);
+            pos.Y = BlackMagicInstance.ReadFloat(BaseAddress + 0x79C);
+            pos.Z = BlackMagicInstance.ReadFloat(BaseAddress + 0x7A0);
             Rotation = BlackMagicInstance.ReadFloat(BaseAddress + 0x7A8);
 
             // too cpu heavy

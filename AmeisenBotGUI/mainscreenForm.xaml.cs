@@ -304,5 +304,10 @@ namespace AmeisenBotGUI
         {
             BotManager.FaceTarget();
         }
+
+        private void ButtonMap_Click(object sender, RoutedEventArgs e)
+        {
+            new MapUI().Show();
+        }
     }
 }

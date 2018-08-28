@@ -204,7 +204,7 @@ namespace AmeisenAI
             Random rnd = new Random();
             float factorX = rnd.Next((distanceToTarget / 4) * -1, distanceToTarget / 2);
             float factorY = rnd.Next((distanceToTarget / 4) * -1, distanceToTarget / 2);
-            return new Vector3 { x = targetPos.x + factorX, y = targetPos.y + factorY, z = targetPos.z };
+            return new Vector3(targetPos.X + factorX, targetPos.Y + factorY, targetPos.Z);
         }
 
         private bool CheckIfWeAreStuckIfYesJump(Vector3 initialPosition, Vector3 activePosition)
@@ -301,7 +301,7 @@ namespace AmeisenAI
                 if (shouldStopInRange)
                 {
                     Vector3 currentPosition = AmeisenDataHolder.Instance.Me.pos;
-                    if (currentPosition.x != 0 && currentPosition.y != 0 && currentPosition.z != 0)
+                    if (currentPosition.X != 0 && currentPosition.Y != 0 && currentPosition.Z != 0)
                         AmeisenCore.AmeisenCore.MovePlayerToXYZ(currentPosition, Interaction.STOP);
                 }
 

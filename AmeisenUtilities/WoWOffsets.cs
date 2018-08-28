@@ -55,7 +55,7 @@
         public static uint localTargetGUID = 0xBD07B0;
         public static uint luaDoString = 0x819210;
         public static uint luaGetLocalizedText = 0x7225E0;
-        public static uint mapID = 0xAB63BC;
+        public static uint mapID = 0xBD0804;
         public static uint nameBase = 0x1C;
         public static uint nameMask = 0x24;
         public static uint nameStore = 0xC5D938 + 0x8;

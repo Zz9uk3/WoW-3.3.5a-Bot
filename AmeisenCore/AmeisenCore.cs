@@ -131,9 +131,11 @@ namespace AmeisenCore
 
             string cmd = "name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId = UnitAura(\"" + luaUnit.ToString() + "\", \"" + auraname + "\");";
 
-            try { info.name = GetLocalizedText(cmd, "name"); } catch { info.name = ""; }
-            try { info.stacks = int.Parse(GetLocalizedText(cmd, "count")); } catch { info.stacks = -1; }
-            try { info.duration = int.Parse(GetLocalizedText(cmd, "duration")); } catch { info.duration = -1; }
+            //try { info.name = GetLocalizedText(cmd, "name"); } catch { info.name = ""; }
+            //try { info.stacks = int.Parse(GetLocalizedText(cmd, "count")); } catch { info.stacks = -1; }
+            try { string s = GetLocalizedText(cmd, "duration"); info.duration = int.Parse(s); } catch { info.duration = -1; }
+
+            info.name = auraname;
 
             return info;
         }
@@ -153,11 +155,11 @@ namespace AmeisenCore
         public static Vector3 GetCorpsePosition()
         {
             Vector3 corpsePosition = new Vector3
-            {
-                x = BlackMagic.ReadFloat(WoWOffsets.corpseX),
-                y = BlackMagic.ReadFloat(WoWOffsets.corpseY),
-                z = BlackMagic.ReadFloat(WoWOffsets.corpseZ)
-            };
+            (
+                BlackMagic.ReadFloat(WoWOffsets.corpseX),
+                BlackMagic.ReadFloat(WoWOffsets.corpseY),
+                BlackMagic.ReadFloat(WoWOffsets.corpseZ)
+            );
             return corpsePosition;
         }
 
@@ -200,13 +202,18 @@ namespace AmeisenCore
 
             AmeisenHook.Instance.AddHookJob(ref hookJobDoString);
 
-            while (!hookJobDoString.IsFinished || !hookJobDoString.IsFinished) { Thread.Sleep(1); }
+            while (!hookJobDoString.IsFinished || !hookJobDoString.IsFinished) { Thread.Sleep(5); }
 
             string result = Encoding.UTF8.GetString((byte[])hookJobDoString.ReturnValue);
             BlackMagic.FreeMemory(argCC);
             BlackMagic.FreeMemory(argCCCommand);
 
             return result;
+        }
+
+        public static int GetMapID()
+        {
+            return BlackMagic.ReadInt(WoWOffsets.mapID);
         }
 
         /// <summary>
@@ -270,12 +277,17 @@ namespace AmeisenCore
             return info;
         }
 
+        public static int GetZoneID()
+        {
+            return BlackMagic.ReadInt(WoWOffsets.zoneID);
+        }
+
         /// <summary> Move the player to the given guid npc, object or whatever and iteract with it.
         /// </summary> <param name="pos">Vector3 containing the X,y & Z coordinates</param> <param
         /// name="guid">guid of the entity</param> <param name="action">CTM Interaction to perform</param>
         public static void InteractWithGUID(Vector3 pos, UInt64 guid, Interaction action)
         {
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Interacting: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "] GUID [" + guid + "]", "AmeisenCore.AmeisenCore");
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Interacting: X [" + pos.X + "] Y [" + pos.Y + "] Z [" + pos.Z + "] GUID [" + guid + "]", "AmeisenCore.AmeisenCore");
             BlackMagic.WriteUInt64(WoWOffsets.ctmGUID, guid);
             MovePlayerToXYZ(pos, action);
         }
@@ -356,7 +368,7 @@ namespace AmeisenCore
         /// Interaction to perform</param>
         public static void MovePlayerToXYZ(Vector3 pos, Interaction action)
         {
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Moving to: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "]", "AmeisenCore.AmeisenCore");
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Moving to: X [" + pos.X + "] Y [" + pos.Y + "] Z [" + pos.Z + "]", "AmeisenCore.AmeisenCore");
             //if (AmeisenManager.Instance.Me().pos.x != pos.x && AmeisenManager.Instance.Me().pos.y != pos.y && AmeisenManager.Instance.Me().pos.z != pos.z)
             //{
             WriteXYZToMemory(pos, action);
@@ -510,10 +522,10 @@ namespace AmeisenCore
         {
             const float distance = 1.5f;
 
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Writing: X [" + pos.x + "] Y [" + pos.y + "] Z [" + pos.z + "] Action [" + action + "] Distance [" + distance + "]", "AmeisenCore.AmeisenCore");
-            BlackMagic.WriteFloat(WoWOffsets.ctmX, (float)pos.x);
-            BlackMagic.WriteFloat(WoWOffsets.ctmY, (float)pos.y);
-            BlackMagic.WriteFloat(WoWOffsets.ctmZ, (float)pos.z);
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Writing: X [" + pos.X + "] Y [" + pos.Y + "] Z [" + pos.Z + "] Action [" + action + "] Distance [" + distance + "]", "AmeisenCore.AmeisenCore");
+            BlackMagic.WriteFloat(WoWOffsets.ctmX, (float)pos.X);
+            BlackMagic.WriteFloat(WoWOffsets.ctmY, (float)pos.Y);
+            BlackMagic.WriteFloat(WoWOffsets.ctmZ, (float)pos.Z);
             BlackMagic.WriteInt(WoWOffsets.ctmAction, (int)action);
             BlackMagic.WriteFloat(WoWOffsets.ctmDistance, distance);
         }
