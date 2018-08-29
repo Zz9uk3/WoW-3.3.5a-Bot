@@ -34,12 +34,12 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </RadioButton.Foreground>
         </RadioButton>
-        <Label x:Name="labelName" Content="Settings" HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="Bold" FontFamily="Consolas" FontSize="24" BorderBrush="White" BorderThickness="0,0,0,2">
+        <Label x:Name="labelName" Content="Settings" HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="Bold" FontFamily="Consolas" FontSize="24" BorderBrush="White" BorderThickness="0,0,0,2" Width="161">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Label Content="Data refresh rate" HorizontalAlignment="Left" Margin="0,60,0,0" VerticalAlignment="Top" BorderBrush="White" BorderThickness="0,0,0,1" Cursor="None" FontSize="16">
+        <Label Content="Data refresh rate" HorizontalAlignment="Left" Margin="0,60,0,0" VerticalAlignment="Top" BorderBrush="White" BorderThickness="0,0,0,1" Cursor="None" FontSize="16" Width="161">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
@@ -64,57 +64,57 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </RadioButton.Foreground>
         </RadioButton>
-        <Label Content="Intelligence (Threads)" HorizontalAlignment="Left" Margin="0,210,0,0" VerticalAlignment="Top" BorderBrush="White" BorderThickness="0,0,0,1" Cursor="None" FontSize="16">
+        <Label Content="Intelligence (Threads)" HorizontalAlignment="Left" Margin="0,202,0,0" VerticalAlignment="Top" BorderBrush="White" BorderThickness="0,0,0,1" Cursor="None" FontSize="16">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <RadioButton x:Name="radiobuttonIntLowest" Content="Dumb AF" HorizontalAlignment="Left" Margin="10,247,0,0" VerticalAlignment="Top" BorderBrush="Red" BorderThickness="4,0,0,0" GroupName="int">
+        <RadioButton x:Name="radiobuttonIntLowest" Content="Dumb AF" HorizontalAlignment="Left" Margin="10,239,0,0" VerticalAlignment="Top" BorderBrush="Red" BorderThickness="4,0,0,0" GroupName="int">
             <RadioButton.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </RadioButton.Foreground>
         </RadioButton>
-        <RadioButton x:Name="radiobuttonIntLow" Content="A bit" HorizontalAlignment="Left" Margin="10,267,0,0" VerticalAlignment="Top" BorderThickness="4,0,0,0" BorderBrush="#FFFFA000" GroupName="int">
+        <RadioButton x:Name="radiobuttonIntLow" Content="A bit" HorizontalAlignment="Left" Margin="10,259,0,0" VerticalAlignment="Top" BorderThickness="4,0,0,0" BorderBrush="#FFFFA000" GroupName="int">
             <RadioButton.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </RadioButton.Foreground>
         </RadioButton>
-        <RadioButton x:Name="radiobuttonIntMedium" Content="Decent" HorizontalAlignment="Left" Margin="10,287,0,0" VerticalAlignment="Top" BorderBrush="Yellow" BorderThickness="4,0,0,0" GroupName="int">
+        <RadioButton x:Name="radiobuttonIntMedium" Content="Decent" HorizontalAlignment="Left" Margin="10,279,0,0" VerticalAlignment="Top" BorderBrush="Yellow" BorderThickness="4,0,0,0" GroupName="int">
             <RadioButton.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </RadioButton.Foreground>
         </RadioButton>
-        <RadioButton x:Name="radiobuttonIntHigh" Content="High" HorizontalAlignment="Left" Margin="10,307,0,0" VerticalAlignment="Top" BorderBrush="#FFA0FF00" BorderThickness="4,0,0,0" GroupName="int">
+        <RadioButton x:Name="radiobuttonIntHigh" Content="High" HorizontalAlignment="Left" Margin="10,299,0,0" VerticalAlignment="Top" BorderBrush="#FFA0FF00" BorderThickness="4,0,0,0" GroupName="int">
             <RadioButton.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </RadioButton.Foreground>
         </RadioButton>
-        <RadioButton x:Name="radiobuttonIntHighest" Content="Legend" HorizontalAlignment="Left" Margin="10,327,0,0" VerticalAlignment="Top" BorderBrush="Magenta" BorderThickness="4,0,0,0" GroupName="int">
+        <RadioButton x:Name="radiobuttonIntHighest" Content="Legend" HorizontalAlignment="Left" Margin="10,319,0,0" VerticalAlignment="Top" BorderBrush="Magenta" BorderThickness="4,0,0,0" GroupName="int">
             <RadioButton.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </RadioButton.Foreground>
         </RadioButton>
-        <Label Content="max. 1" HorizontalAlignment="Left" Margin="117,241,0,0" VerticalAlignment="Top">
+        <Label Content="max. 1" HorizontalAlignment="Left" Margin="117,233,0,0" VerticalAlignment="Top">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Label Content="max. 2" HorizontalAlignment="Left" Margin="117,261,0,0" VerticalAlignment="Top">
+        <Label Content="max. 2" HorizontalAlignment="Left" Margin="117,253,0,0" VerticalAlignment="Top">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Label Content="max. 3" HorizontalAlignment="Left" Margin="117,281,0,0" VerticalAlignment="Top">
+        <Label Content="max. 3" HorizontalAlignment="Left" Margin="117,273,0,0" VerticalAlignment="Top">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Label Content="max. 4" HorizontalAlignment="Left" Margin="117,301,0,0" VerticalAlignment="Top">
+        <Label Content="max. 4" HorizontalAlignment="Left" Margin="117,293,0,0" VerticalAlignment="Top">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Label Content="max. 8" HorizontalAlignment="Left" Margin="117,321,0,0" VerticalAlignment="Top">
+        <Label Content="max. 8" HorizontalAlignment="Left" Margin="117,313,0,0" VerticalAlignment="Top">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
@@ -144,5 +144,26 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
+        <Label Content="Bot Picture" HorizontalAlignment="Left" Margin="0,344,0,0" VerticalAlignment="Top" BorderBrush="White" BorderThickness="0,0,0,1" Cursor="None" FontSize="16" Width="161">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Label.Foreground>
+        </Label>
+        <Label x:Name="labelSelectedPicture" Content="Picture: " HorizontalAlignment="Left" Margin="10,381,0,0" VerticalAlignment="Top" Background="{x:Null}">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Label.Foreground>
+        </Label>
+        <Button x:Name="buttonSelectPicture" Content="Select ..." HorizontalAlignment="Left" Margin="10,411,0,0" VerticalAlignment="Top" Width="77" BorderThickness="2" Click="ButtonSelectPicture_Click">
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Button.Foreground>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
+            </Button.BorderBrush>
+            <Button.Background>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
+            </Button.Background>
+        </Button>
     </Grid>
 </Window>

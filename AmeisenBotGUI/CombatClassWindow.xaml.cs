@@ -2,6 +2,7 @@
 using AmeisenAI.Combat;
 using AmeisenManager;
 using Microsoft.Win32;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -85,7 +86,12 @@ namespace AmeisenBotGUI
 
         private void ButtonOpen_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                AddExtension = true,
+                RestoreDirectory = true,
+                Filter = "CombatClass JSON|*.json"
+            };
 
             if (openFileDialog.ShowDialog() == true)
             {
@@ -123,13 +129,20 @@ namespace AmeisenBotGUI
             foreach (CombatLogicEntry action in listboxCombatActions.Items)
                 loadedLogic.combatLogicEntries.Add(action);
 
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                AddExtension = true,
+                RestoreDirectory = true,
+                Filter = "CombatClass JSON|*.json"
+            };
 
             string defaultCombatClass = BotManager.Settings.combatClassPath;
             if (defaultCombatClass == "none")
                 saveFileDialog.FileName = "sampleCombatClass.json";
-            else
+            else if (Path.GetFileNameWithoutExtension(defaultCombatClass) != "json")
                 saveFileDialog.FileName = defaultCombatClass + ".json";
+            else
+                saveFileDialog.FileName = defaultCombatClass;
 
             if (saveFileDialog.ShowDialog() == true)
                 CombatEngine.SaveToFile(saveFileDialog.FileName, loadedLogic);
@@ -279,22 +292,26 @@ namespace AmeisenBotGUI
 
         private void ListboxCombatActions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            CombatLogicEntry entry = ((CombatLogicEntry)listboxCombatActions.SelectedItem);
-            textboxPriority.Text = entry.Priority.ToString();
-            textboxMaxDistance.Text = entry.MaxSpellDistance.ToString();
-            textboxSpellName.Text = (string)entry.Parameters;
+            try
+            {
+                CombatLogicEntry entry = ((CombatLogicEntry)listboxCombatActions.SelectedItem);
+                textboxPriority.Text = entry.Priority.ToString();
+                textboxMaxDistance.Text = entry.MaxSpellDistance.ToString();
+                textboxSpellName.Text = (string)entry.Parameters;
 
-            checkboxCanCastDuringMovement.IsChecked = entry.CanMoveDuringCast;
-            checkboxCombatOnly.IsChecked = entry.CombatOnly;
-            checkboxIsBuff.IsChecked = entry.IsBuff;
-            checkboxIsForParty.IsChecked = entry.IsBuffForParty;
-            checkboxIsForMySelf.IsChecked = entry.IsForMyself;
+                checkboxCanCastDuringMovement.IsChecked = entry.CanMoveDuringCast;
+                checkboxCombatOnly.IsChecked = entry.CombatOnly;
+                checkboxIsBuff.IsChecked = entry.IsBuff;
+                checkboxIsForParty.IsChecked = entry.IsBuffForParty;
+                checkboxIsForMySelf.IsChecked = entry.IsForMyself;
 
-            listboxConditions.Items.Clear();
-            foreach (AmeisenAI.Combat.Condition c in entry.Conditions)
-                listboxConditions.Items.Add(c);
+                listboxConditions.Items.Clear();
+                foreach (AmeisenAI.Combat.Condition c in entry.Conditions)
+                    listboxConditions.Items.Add(c);
 
-            comboboxActionType.SelectedItem = entry.ActionType;
+                comboboxActionType.SelectedItem = entry.ActionType;
+            }
+            catch { }
         }
 
         private void ListboxConditions_SelectionChanged(object sender, SelectionChangedEventArgs e)

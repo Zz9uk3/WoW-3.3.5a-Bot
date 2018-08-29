@@ -119,12 +119,12 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Button.Foreground>
         </Button>
-        <ComboBox x:Name="comboboxInteraction" HorizontalAlignment="Left" Margin="493,253,0,0" Width="140" Foreground="Black" Height="20" VerticalAlignment="Top" >
+        <ComboBox x:Name="comboboxInteraction" HorizontalAlignment="Left" Margin="493,253,0,0" Width="140" Foreground="Black" Height="20" VerticalAlignment="Top">
             <ComboBox.BorderBrush>
-                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </ComboBox.BorderBrush>
             <ComboBox.Background>
-                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
             </ComboBox.Background>
         </ComboBox>
         <Button x:Name="buttonExtendedDebugUI" Content="💻" Margin="0,153,-2,0" Click="ButtonExtendedDebugUI_Click" HorizontalAlignment="Right" Width="60" BorderThickness="2" Background="{x:Null}" FontSize="32" Height="60" VerticalAlignment="Top">
@@ -214,5 +214,6 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Button.Foreground>
         </Button>
+        <Image x:Name="botPicture" HorizontalAlignment="Left" Height="130" Margin="493,8,0,0" VerticalAlignment="Top" Width="130" />
     </Grid>
 </Window>

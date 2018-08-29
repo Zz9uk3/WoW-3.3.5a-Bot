@@ -1,4 +1,7 @@
 ﻿using AmeisenManager;
+using Microsoft.Win32;
+using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 
@@ -35,6 +38,35 @@ namespace AmeisenBotGUI
         private void ButtonMinimize_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
+        }
+
+        private void ButtonSelectPicture_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                AddExtension = true,
+                RestoreDirectory = true,
+                Filter = "Images|*.png;*.jpg;*.bmp"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string configDir = AppDomain.CurrentDomain.BaseDirectory + "config/";
+                string imageDir = AppDomain.CurrentDomain.BaseDirectory + "config/img/";
+
+                if (!Directory.Exists(configDir))
+                    Directory.CreateDirectory(configDir);
+
+                if (!Directory.Exists(imageDir))
+                    Directory.CreateDirectory(imageDir);
+
+                string imagePath = AppDomain.CurrentDomain.BaseDirectory + "config/img/" + openFileDialog.SafeFileName;
+
+                File.Move(openFileDialog.FileName, imagePath);
+
+                BotManager.Settings.picturePath = imagePath;
+                labelSelectedPicture.Content = openFileDialog.SafeFileName;
+            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -74,6 +106,8 @@ namespace AmeisenBotGUI
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            labelSelectedPicture.Content = Path.GetFileName(BotManager.Settings.picturePath);
+
             switch (BotManager.Settings.dataRefreshRate)
             {
                 case 1000:

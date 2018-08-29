@@ -233,16 +233,23 @@ namespace AmeisenAI
         {
             Vector3 corpsePosition = AmeisenCoreUtils.AmeisenCore.GetCorpsePosition();
 
-            AmeisenAction ameisenAction = new AmeisenAction(
-                AmeisenActionType.MOVE_NEAR_POSITION,
-                new object[] { corpsePosition, 10.0 }
-                );
-            AddActionToQueue(ref ameisenAction);
+            if (corpsePosition.X != 0 && corpsePosition.Y != 0 && corpsePosition.Z != 0)
+            {
+                AmeisenAction ameisenAction = new AmeisenAction(
+                    AmeisenActionType.MOVE_NEAR_POSITION,
+                    new object[] { corpsePosition, 10.0 }
+                    );
+                AddActionToQueue(ref ameisenAction);
 
-            while (!ameisenAction.IsActionDone()) { Thread.Sleep(250); }
+                while (!ameisenAction.IsActionDone()) { Thread.Sleep(250); }
 
-            AmeisenCoreUtils.AmeisenCore.RetrieveCorpse();
-            currentAction.ActionIsDone();
+                AmeisenCoreUtils.AmeisenCore.RetrieveCorpse();
+            }
+
+            if (Me.Health > 1)
+            {
+                currentAction.ActionIsDone();
+            }
         }
 
         private void InteractWithTarget(double distance, Interaction action, ref AmeisenAction ameisenAction)

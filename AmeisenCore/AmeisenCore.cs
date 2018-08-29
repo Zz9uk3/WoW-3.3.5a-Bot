@@ -191,8 +191,7 @@ namespace AmeisenCoreUtils
                 "CALL " + (WoWOffsets.clientObjectManagerGetActivePlayerObject),
                 "MOV ECX, EAX",
                 "PUSH -1",
-                "MOV EDX, " + (argCC),
-                "PUSH EDX",
+                "PUSH " + (argCC),
                 "CALL " + (WoWOffsets.luaGetLocalizedText),
                 "RETN",
             };
@@ -209,6 +208,16 @@ namespace AmeisenCoreUtils
             BlackMagic.FreeMemory(argCCCommand);
 
             return result;
+        }
+
+        private static void ResumeMainthread()
+        {
+            SThread.ResumeThread(SThread.OpenThread(SThread.GetMainThread(BlackMagic.ProcessId).Id));
+        }
+
+        private static void PauseMainThread()
+        {
+            SThread.SuspendThread(SThread.OpenThread(SThread.GetMainThread(BlackMagic.ProcessId).Id));
         }
 
         public static int GetMapID()
@@ -353,12 +362,7 @@ namespace AmeisenCoreUtils
             AmeisenHook.Instance.AddHookJob(ref hookJob);
 
             while (!hookJob.IsFinished) { Thread.Sleep(1); }
-            /*byte[] returnBytes = (byte[])hookJob.ReturnValue;
-
-            string result = "";
-            if (returnBytes != null)
-                result = Encoding.UTF8.GetString(returnBytes);*/
-
+            
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Command returned: Command [" + command + "]", "AmeisenCore.AmeisenCore");
             BlackMagic.FreeMemory(argCC);
         }

@@ -21,6 +21,7 @@
         public bool followMaster = false;
         public string fontColor = "#FFFFFFFF";
         public string masterName = "";
+        public string picturePath = "";
 
         #endregion Public Fields
     }

@@ -5,8 +5,10 @@ using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Windows;
+using System.Drawing;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.Windows.Media.Imaging;
 
 namespace AmeisenBotGUI
 {
@@ -17,6 +19,7 @@ namespace AmeisenBotGUI
     {
         #region Private Fields
 
+        private string lastImgPath;
         private DispatcherTimer uiUpdateTimer;
 
         #endregion Private Fields
@@ -41,9 +44,12 @@ namespace AmeisenBotGUI
 
         #endregion Private Properties
 
-        // -- Window state stuff Minimize, Exit, FileDialogs
+        #region Private Methods
 
-        #region WindowStuff
+        private void ButtonCobatClassEditor_Click(object sender, RoutedEventArgs e)
+        {
+            new CombatClassWindow().Show();
+        }
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
@@ -51,14 +57,50 @@ namespace AmeisenBotGUI
             BotManager.StopBot();
         }
 
+        // -- External Windows SettingsWindow, DebugUI, CombatClass Editor
+        private void ButtonExtendedDebugUI_Click(object sender, RoutedEventArgs e)
+        {
+            new DebugWindow().Show();
+        }
+
+        private void ButtonFaceTarget_Click(object sender, RoutedEventArgs e)
+        {
+            BotManager.FaceTarget();
+        }
+
+        private void ButtonGroup_Click(object sender, RoutedEventArgs e)
+        {
+            new GroupWindow().Show();
+        }
+
+        private void ButtonMap_Click(object sender, RoutedEventArgs e)
+        {
+            new MapWindow().Show();
+        }
+
         private void ButtonMinimize_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
         }
 
+        private void ButtonMoveInteractTarget_Click(object sender, RoutedEventArgs e)
+        {
+            BotManager.AddActionToAIQueue(new AmeisenAction(AmeisenActionType.INTERACT_TARGET, (AmeisenActionType)comboboxInteraction.SelectedItem));
+        }
+
+        private void ButtonMoveToTarget_Click(object sender, RoutedEventArgs e)
+        {
+            BotManager.AddActionToAIQueue(new AmeisenAction(AmeisenActionType.MOVE_TO_POSITION, null));
+        }
+
         private void ButtonOpenFile_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                AddExtension = true,
+                RestoreDirectory = true,
+                Filter = "CombatClass JSON|*.json"
+            };
 
             if (openFileDialog.ShowDialog() == true)
             {
@@ -66,11 +108,30 @@ namespace AmeisenBotGUI
             }
         }
 
-        #endregion WindowStuff
+        private void ButtonSettings_Click(object sender, RoutedEventArgs e)
+        {
+            new SettingsWindow().ShowDialog();
+        }
 
-        // -- Window Callbacks Loading, Closing, MouseDown
+        private void CheckBoxAssistPartyAttack_Click(object sender, RoutedEventArgs e)
+        {
+            BotManager.IsSupposedToAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
+        }
 
-        #region WindowCallbacks
+        private void CheckBoxAssistPartyHeal_Click(object sender, RoutedEventArgs e)
+        {
+            BotManager.IsSupposedToAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
+        }
+
+        private void CheckBoxAssistPartyTank_Click(object sender, RoutedEventArgs e)
+        {
+            BotManager.IsSupposedToTank = (bool)checkBoxAssistPartyTank.IsChecked;
+        }
+
+        private void CheckBoxFollowMaster_Click(object sender, RoutedEventArgs e)
+        {
+            AmeisenBotManager.Instance.FollowGroup = (bool)checkBoxFollowMaster.IsChecked;
+        }
 
         private void Mainscreen_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -125,69 +186,7 @@ namespace AmeisenBotGUI
             catch { }
         }
 
-        #endregion WindowCallbacks
-
-        // -- Bot Combat STATES TANK, HEAL, ATTACK, checkboxes
-
-        #region BotCombatStates
-
-        private void CheckBoxAssistPartyAttack_Click(object sender, RoutedEventArgs e)
-        {
-            BotManager.IsSupposedToAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
-        }
-
-        private void CheckBoxAssistPartyHeal_Click(object sender, RoutedEventArgs e)
-        {
-            BotManager.IsSupposedToAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
-        }
-
-        private void CheckBoxAssistPartyTank_Click(object sender, RoutedEventArgs e)
-        {
-            BotManager.IsSupposedToTank = (bool)checkBoxAssistPartyTank.IsChecked;
-        }
-
-        #endregion BotCombatStates
-
-        // -- Debug stuff goes here, will be removed in the future Debug stuff, buttons
-
-        #region DebugStuff
-
-        private void ButtonMoveInteractTarget_Click(object sender, RoutedEventArgs e)
-        {
-            BotManager.AddActionToAIQueue(new AmeisenAction(AmeisenActionType.INTERACT_TARGET, (AmeisenActionType)comboboxInteraction.SelectedItem));
-        }
-
-        private void ButtonMoveToTarget_Click(object sender, RoutedEventArgs e)
-        {
-            BotManager.AddActionToAIQueue(new AmeisenAction(AmeisenActionType.MOVE_TO_POSITION, null));
-        }
-
-        #endregion DebugStuff
-
-        // -- External Windows SettingsWindow, DebugUI, CombatClass Editor
-
-        #region ExternalWindows
-
-        private void ButtonCobatClassEditor_Click(object sender, RoutedEventArgs e)
-        {
-            new CombatClassWindow().Show();
-        }
-
-        private void ButtonExtendedDebugUI_Click(object sender, RoutedEventArgs e)
-        {
-            new DebugWindow().Show();
-        }
-
-        private void ButtonSettings_Click(object sender, RoutedEventArgs e)
-        {
-            new SettingsWindow().ShowDialog();
-        }
-
-        #endregion ExternalWindows
-
         // -- UI Stuff Update the GUI
-
-        #region UITimer
 
         private void UIUpdateTimer_Tick(object sender, EventArgs e)
         {
@@ -211,6 +210,13 @@ namespace AmeisenBotGUI
             {
                 try
                 {
+                    if (BotManager.Settings.picturePath != lastImgPath)
+                        if (BotManager.Settings.picturePath.Length > 0)
+                        {
+                            botPicture.Source = new BitmapImage(new Uri(BotManager.Settings.picturePath));
+                            lastImgPath = BotManager.Settings.picturePath;
+                        }
+
                     labelName.Content = BotManager.Me.Name + " lvl." + BotManager.Me.Level;
                     //labelCasting.Content = "Casting: " + me.currentState;
 
@@ -268,7 +274,7 @@ namespace AmeisenBotGUI
 
             try
             {
-                labelThreadsActive.Content = "⚡ Threads: " + BotManager.AmeisenAIManager.GetBusyThreadCount() + 
+                labelThreadsActive.Content = "⚡ Threads: " + BotManager.AmeisenAIManager.GetBusyThreadCount() +
                                              "/" + BotManager.AmeisenAIManager.GetActiveThreadCount();
                 progressBarBusyAIThreads.Maximum = BotManager.AmeisenAIManager.GetActiveThreadCount();
                 progressBarBusyAIThreads.Value = BotManager.AmeisenAIManager.GetBusyThreadCount();
@@ -279,30 +285,6 @@ namespace AmeisenBotGUI
             }
         }
 
-        #endregion UITimer
-
-        #region Private Methods
-
-        private void CheckBoxFollowMaster_Click(object sender, RoutedEventArgs e)
-        {
-            AmeisenBotManager.Instance.FollowGroup = (bool)checkBoxFollowMaster.IsChecked;
-        }
-
         #endregion Private Methods
-
-        private void ButtonFaceTarget_Click(object sender, RoutedEventArgs e)
-        {
-            BotManager.FaceTarget();
-        }
-
-        private void ButtonMap_Click(object sender, RoutedEventArgs e)
-        {
-            new MapWindow().Show();
-        }
-
-        private void ButtonGroup_Click(object sender, RoutedEventArgs e)
-        {
-            new GroupWindow().Show();
-        }
     }
 }

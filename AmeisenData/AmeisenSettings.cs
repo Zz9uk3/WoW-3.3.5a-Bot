@@ -22,7 +22,7 @@ namespace AmeisenData
 
         #region Private Fields
 
-        private static readonly string configPath = AppDomain.CurrentDomain.BaseDirectory + "/config/";
+        private static readonly string configPath = AppDomain.CurrentDomain.BaseDirectory + "config/";
         private static readonly string extension = ".json";
         private static AmeisenSettings instance;
 

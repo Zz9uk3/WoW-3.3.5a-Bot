@@ -25,24 +25,18 @@ namespace AmeisenCoreUtils
 
         private static readonly object padlock = new object();
         private static AmeisenHook instance;
-        private uint endsceneReturnAddress;
-        private ConcurrentQueue<HookJob> hookJobs;
-        private Thread hookWorker;
-
-        #endregion Private Fields
-
-        #region Codecaves
-
         private uint codeCave;
         private uint codeCaveForInjection;
         private uint codeToExecute;
+        private uint endsceneReturnAddress;
+        private ConcurrentQueue<HookJob> hookJobs;
+        private Thread hookWorker;
+        private byte[] originalEndscene = new byte[] { 0xB8, 0x51, 0xD7, 0xCA, 0x64 };
         private uint returnAdress;
 
-        #endregion Codecaves
+        #endregion Private Fields
 
-        private byte[] originalEndscene = new byte[] { 0xB8, 0x51, 0xD7, 0xCA, 0x64 };
-
-        #region Singleton stuff
+        #region Private Constructors
 
         private AmeisenHook()
         {
@@ -55,6 +49,10 @@ namespace AmeisenCoreUtils
                 hookWorker.Start();
             }
         }
+
+        #endregion Private Constructors
+
+        #region Public Properties
 
         public static AmeisenHook Instance
         {
@@ -72,9 +70,9 @@ namespace AmeisenCoreUtils
             }
         }
 
-        #endregion Singleton stuff
+        #endregion Public Properties
 
-        #region Worker stuff
+        #region Public Methods
 
         public void AddHookJob(ref HookJob hookJob)
         {
@@ -85,6 +83,32 @@ namespace AmeisenCoreUtils
         {
             hookJobs.Enqueue(hookJob);
         }
+
+        public void DisposeHooking()
+        {
+            // Get D3D9 Endscene Pointer
+            uint endscene = GetEndScene();
+
+            uint endsceneHookOffset = 0x2;
+            endscene += endsceneHookOffset;
+
+            // Check if WoW is hooked
+            if (AmeisenCore.BlackMagic.ReadByte(endscene) == 0xE9)
+            {
+                AmeisenCore.BlackMagic.WriteBytes(endscene, originalEndscene);
+
+                AmeisenCore.BlackMagic.FreeMemory(codeCave);
+                AmeisenCore.BlackMagic.FreeMemory(codeToExecute);
+                AmeisenCore.BlackMagic.FreeMemory(codeCaveForInjection);
+            }
+
+            isHooked = false;
+            hookWorker.Join();
+        }
+
+        #endregion Public Methods
+
+        #region Private Methods
 
         private void DoWork()
         {
@@ -111,30 +135,14 @@ namespace AmeisenCoreUtils
             }
         }
 
-        #endregion Worker stuff
-
-        #region Start, stop
-
-        public void DisposeHooking()
+        private uint GetEndScene()
         {
-            // Get D3D9 Endscene Pointer
-            uint endscene = GetEndScene();
-
-            uint endsceneHookOffset = 0x2;
-            endscene += endsceneHookOffset;
-
-            // Check if WoW is hooked
-            if (AmeisenCore.BlackMagic.ReadByte(endscene) == 0xE9)
-            {
-                AmeisenCore.BlackMagic.WriteBytes(endscene, originalEndscene);
-
-                AmeisenCore.BlackMagic.FreeMemory(codeCave);
-                AmeisenCore.BlackMagic.FreeMemory(codeToExecute);
-                AmeisenCore.BlackMagic.FreeMemory(codeCaveForInjection);
-            }
-
-            isHooked = false;
-            hookWorker.Join();
+            uint pDevice = AmeisenCore.BlackMagic.ReadUInt(WoWOffsets.devicePtr1);
+            uint pEnd = AmeisenCore.BlackMagic.ReadUInt(pDevice + WoWOffsets.devicePtr2);
+            uint pScene = AmeisenCore.BlackMagic.ReadUInt(pEnd);
+            uint endscene = AmeisenCore.BlackMagic.ReadUInt(pScene + WoWOffsets.endScene);
+            string debug = endscene.ToString("X");
+            return endscene;
         }
 
         private void Hook()
@@ -151,136 +159,131 @@ namespace AmeisenCoreUtils
                     DisposeHooking();
                 }
 
-                // If WoW is now/was unhooked, hook it
-                if (AmeisenCore.BlackMagic.ReadByte(endscene) != 0xE9)
+                try
                 {
-                    uint endsceneHookOffset = 0x2;
-                    endscene += endsceneHookOffset;
+                    // If WoW is now/was unhooked, hook it
+                    if (AmeisenCore.BlackMagic.ReadByte(endscene) != 0xE9)
+                    {
+                        uint endsceneHookOffset = 0x2;
+                        endscene += endsceneHookOffset;
 
-                    endsceneReturnAddress = endscene + 0x5;
+                        endsceneReturnAddress = endscene + 0x5;
 
-                    //originalEndscene = AmeisenManager.Instance().GetBlackMagic().ReadBytes(endscene, 5);
+                        //originalEndscene = AmeisenManager.Instance().GetBlackMagic().ReadBytes(endscene, 5);
 
-                    codeToExecute = AmeisenCore.BlackMagic.AllocateMemory(4);
-                    AmeisenCore.BlackMagic.WriteInt(codeToExecute, 0);
+                        codeToExecute = AmeisenCore.BlackMagic.AllocateMemory(4);
+                        AmeisenCore.BlackMagic.WriteInt(codeToExecute, 0);
 
-                    returnAdress = AmeisenCore.BlackMagic.AllocateMemory(4);
-                    AmeisenCore.BlackMagic.WriteInt(returnAdress, 0);
+                        returnAdress = AmeisenCore.BlackMagic.AllocateMemory(4);
+                        AmeisenCore.BlackMagic.WriteInt(returnAdress, 0);
 
-                    codeCave = AmeisenCore.BlackMagic.AllocateMemory(32);
-                    codeCaveForInjection = AmeisenCore.BlackMagic.AllocateMemory(64);
+                        codeCave = AmeisenCore.BlackMagic.AllocateMemory(32);
+                        codeCaveForInjection = AmeisenCore.BlackMagic.AllocateMemory(64);
 
-                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, "EndScene at: " + endscene.ToString("X"), this);
-                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, "EndScene returning at: " + (endsceneReturnAddress).ToString("X"), this);
-                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, "CodeCave at:" + codeCave.ToString("X"), this);
-                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, "CodeCaveForInjection at:" + codeCaveForInjection.ToString("X"), this);
-                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, "CodeToExecute at:" + codeToExecute.ToString("X"), this);
-                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Original Endscene bytes: " + Utils.ByteArrayToString(originalEndscene), this);
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "EndScene at: " + endscene.ToString("X"), this);
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "EndScene returning at: " + (endsceneReturnAddress).ToString("X"), this);
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "CodeCave at:" + codeCave.ToString("X"), this);
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "CodeCaveForInjection at:" + codeCaveForInjection.ToString("X"), this);
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "CodeToExecute at:" + codeToExecute.ToString("X"), this);
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Original Endscene bytes: " + Utils.ByteArrayToString(originalEndscene), this);
 
-                    AmeisenCore.BlackMagic.WriteBytes(codeCave, originalEndscene);
+                        AmeisenCore.BlackMagic.WriteBytes(codeCave, originalEndscene);
 
-                    AmeisenCore.BlackMagic.Asm.Clear();
-                    AmeisenCore.BlackMagic.Asm.AddLine("PUSHFD");
-                    AmeisenCore.BlackMagic.Asm.AddLine("PUSHAD");
-                    AmeisenCore.BlackMagic.Asm.AddLine("MOV EAX, [" + (codeToExecute) + "]");
-                    AmeisenCore.BlackMagic.Asm.AddLine("TEST EAX, 1");
-                    AmeisenCore.BlackMagic.Asm.AddLine("JE @out");
+                        AmeisenCore.BlackMagic.Asm.Clear();
+                        AmeisenCore.BlackMagic.Asm.AddLine("PUSHFD");
+                        AmeisenCore.BlackMagic.Asm.AddLine("PUSHAD");
+                        AmeisenCore.BlackMagic.Asm.AddLine("MOV EBX, [" + (codeToExecute) + "]");
+                        AmeisenCore.BlackMagic.Asm.AddLine("TEST EBX, 1");
+                        AmeisenCore.BlackMagic.Asm.AddLine("JE @out");
 
-                    AmeisenCore.BlackMagic.Asm.AddLine("MOV EAX, " + (codeCaveForInjection));
-                    AmeisenCore.BlackMagic.Asm.AddLine("CALL EAX");
-                    AmeisenCore.BlackMagic.Asm.AddLine("MOV [" + (returnAdress) + "], EAX");
+                        AmeisenCore.BlackMagic.Asm.AddLine("MOV EDX, " + (codeCaveForInjection));
+                        AmeisenCore.BlackMagic.Asm.AddLine("CALL EDX");
+                        AmeisenCore.BlackMagic.Asm.AddLine("MOV [" + (returnAdress) + "], EAX");
 
-                    AmeisenCore.BlackMagic.Asm.AddLine("@out:");
-                    AmeisenCore.BlackMagic.Asm.AddLine("MOV EDX, 0");
-                    AmeisenCore.BlackMagic.Asm.AddLine("MOV [" + (codeToExecute) + "], EDX");
+                        AmeisenCore.BlackMagic.Asm.AddLine("@out:");
+                        AmeisenCore.BlackMagic.Asm.AddLine("MOV EDX, 0");
+                        AmeisenCore.BlackMagic.Asm.AddLine("MOV [" + (codeToExecute) + "], EDX");
 
-                    AmeisenCore.BlackMagic.Asm.AddLine("POPAD");
-                    AmeisenCore.BlackMagic.Asm.AddLine("POPFD");
-                    int asmLenght = AmeisenCore.BlackMagic.Asm.Assemble().Length;
-                    AmeisenCore.BlackMagic.Asm.Inject(codeCave + 5);
+                        AmeisenCore.BlackMagic.Asm.AddLine("POPAD");
+                        AmeisenCore.BlackMagic.Asm.AddLine("POPFD");
+                        int asmLenght = AmeisenCore.BlackMagic.Asm.Assemble().Length;
+                        AmeisenCore.BlackMagic.Asm.Inject(codeCave + 5);
 
-                    AmeisenCore.BlackMagic.Asm.Clear();
-                    AmeisenCore.BlackMagic.Asm.AddLine("JMP " + (endsceneReturnAddress));
-                    AmeisenCore.BlackMagic.Asm.Inject((codeCave + (uint)asmLenght) + 5);
+                        AmeisenCore.BlackMagic.Asm.Clear();
+                        AmeisenCore.BlackMagic.Asm.AddLine("JMP " + (endsceneReturnAddress));
+                        AmeisenCore.BlackMagic.Asm.Inject((codeCave + (uint)asmLenght) + 5);
 
-                    AmeisenCore.BlackMagic.Asm.Clear();
-                    AmeisenCore.BlackMagic.Asm.AddLine("JMP " + (codeCave));
-                    AmeisenCore.BlackMagic.Asm.Inject(endscene);
+                        AmeisenCore.BlackMagic.Asm.Clear();
+                        AmeisenCore.BlackMagic.Asm.AddLine("JMP " + (codeCave));
+                        AmeisenCore.BlackMagic.Asm.Inject(endscene);
+                    }
+                    isHooked = true;
                 }
-                isHooked = true;
+                catch { isHooked = false; }
             }
-        }
-
-        #endregion Start, stop
-
-        #region EndScene stuff
-
-        private uint GetEndScene()
-        {
-            uint pDevice = AmeisenCore.BlackMagic.ReadUInt(WoWOffsets.devicePtr1);
-            uint pEnd = AmeisenCore.BlackMagic.ReadUInt(pDevice + WoWOffsets.devicePtr2);
-            uint pScene = AmeisenCore.BlackMagic.ReadUInt(pEnd);
-            uint endscene = AmeisenCore.BlackMagic.ReadUInt(pScene + WoWOffsets.endScene);
-            return endscene;
         }
 
         private byte[] InjectAndExecute(string[] asm, bool readReturnBytes)
         {
-            while (isInjectionUsed)
+            try
             {
-                Thread.Sleep(1);
-            }
-
-            isInjectionUsed = true;
-
-            AmeisenCore.BlackMagic.WriteInt(codeToExecute, 1);
-            AmeisenCore.BlackMagic.Asm.Clear();
-
-            if (asm != null)
-            {
-                foreach (string s in asm)
+                while (isInjectionUsed)
                 {
-                    AmeisenCore.BlackMagic.Asm.AddLine(s);
+                    Thread.Sleep(1);
                 }
-            }
 
-            //AmeisenManager.Instance().GetBlackMagic().Asm.AddLine("JMP " + (endsceneReturnAddress));
+                isInjectionUsed = true;
 
-            int asmLenght = AmeisenCore.BlackMagic.Asm.Assemble().Length;
-            AmeisenCore.BlackMagic.Asm.Inject(codeCaveForInjection);
+                AmeisenCore.BlackMagic.WriteInt(codeToExecute, 1);
+                AmeisenCore.BlackMagic.Asm.Clear();
 
-            while (AmeisenCore.BlackMagic.ReadInt(codeToExecute) > 0)
-            {
-                Thread.Sleep(1);
-            }
-
-            if (readReturnBytes)
-            {
-                byte buffer = new byte();
-                List<byte> returnBytes = new List<byte>();
-
-                try
+                if (asm != null)
                 {
-                    uint dwAddress = AmeisenCore.BlackMagic.ReadUInt(returnAdress);
-
-                    buffer = AmeisenCore.BlackMagic.ReadByte(dwAddress);
-                    while (buffer != 0)
+                    foreach (string s in asm)
                     {
-                        returnBytes.Add(buffer);
-                        dwAddress = dwAddress + 1;
-                        buffer = AmeisenCore.BlackMagic.ReadByte(dwAddress);
+                        AmeisenCore.BlackMagic.Asm.AddLine(s);
                     }
                 }
-                catch (Exception e) { AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Crash at reading returnAddress: " + e.ToString(), this); }
 
-                isInjectionUsed = false;
-                return returnBytes.ToArray();
+                //AmeisenManager.Instance().GetBlackMagic().Asm.AddLine("JMP " + (endsceneReturnAddress));
+
+                int asmLenght = AmeisenCore.BlackMagic.Asm.Assemble().Length;
+                AmeisenCore.BlackMagic.Asm.Inject(codeCaveForInjection);
+
+                while (AmeisenCore.BlackMagic.ReadInt(codeToExecute) > 0)
+                {
+                    Thread.Sleep(1);
+                }
+
+                if (readReturnBytes)
+                {
+                    byte buffer = new byte();
+                    List<byte> returnBytes = new List<byte>();
+
+                    try
+                    {
+                        uint dwAddress = AmeisenCore.BlackMagic.ReadUInt(returnAdress);
+
+                        buffer = AmeisenCore.BlackMagic.ReadByte(dwAddress);
+                        while (buffer != 0)
+                        {
+                            returnBytes.Add(buffer);
+                            dwAddress = dwAddress + 1;
+                            buffer = AmeisenCore.BlackMagic.ReadByte(dwAddress);
+                        }
+                    }
+                    catch (Exception e) { AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Crash at reading returnAddress: " + e.ToString(), this); }
+
+                    isInjectionUsed = false;
+                    return returnBytes.ToArray();
+                }
             }
+            catch { }
             isInjectionUsed = false;
             return new List<byte>().ToArray();
         }
 
-        #endregion EndScene stuff
+        #endregion Private Methods
     }
 
     /// <summary>
