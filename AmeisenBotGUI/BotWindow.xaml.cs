@@ -13,7 +13,7 @@ namespace AmeisenBotGUI
     /// <summary>
     /// Interaktionslogik für mainscreenForm.xaml
     /// </summary>
-    public partial class MainscreenForm : Window
+    public partial class BotWindow : Window
     {
         #region Private Fields
 
@@ -23,7 +23,7 @@ namespace AmeisenBotGUI
 
         #region Public Constructors
 
-        public MainscreenForm(WoWExe wowExe)
+        public BotWindow(WoWExe wowExe)
         {
             InitializeComponent();
             BotManager = AmeisenBotManager.Instance;
@@ -61,7 +61,9 @@ namespace AmeisenBotGUI
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
             if (openFileDialog.ShowDialog() == true)
+            {
                 AmeisenBotManager.Instance.LoadCombatClass(openFileDialog.FileName);
+            }
         }
 
         #endregion WindowStuff
@@ -69,11 +71,6 @@ namespace AmeisenBotGUI
         // -- Window Callbacks Loading, Closing, MouseDown
 
         #region WindowCallbacks
-
-        private void ButtonRefreshBots_Click(object sender, RoutedEventArgs e)
-        {
-            UpdateNetworkPlayers();
-        }
 
         private void Mainscreen_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -173,12 +170,12 @@ namespace AmeisenBotGUI
 
         private void ButtonCobatClassEditor_Click(object sender, RoutedEventArgs e)
         {
-            new CombatClassEditor().Show();
+            new CombatClassWindow().Show();
         }
 
         private void ButtonExtendedDebugUI_Click(object sender, RoutedEventArgs e)
         {
-            new DebugUI().Show();
+            new DebugWindow().Show();
         }
 
         private void ButtonSettings_Click(object sender, RoutedEventArgs e)
@@ -195,15 +192,9 @@ namespace AmeisenBotGUI
         private void UIUpdateTimer_Tick(object sender, EventArgs e)
         {
             if (BotManager.IsBotIngame())
+            {
                 UpdateUI();
-        }
-
-        private void UpdateNetworkPlayers()
-        {
-            listViewNetworkBots.Items.Clear();
-            if (BotManager.GetNetworkBots() != null)
-                foreach (Bot bot in BotManager.GetNetworkBots())
-                    listViewNetworkBots.Items.Add(bot.id + " >> " + bot.ip + " >> " + bot.name + " >> " + bot.me);
+            }
         }
 
         /// <summary>
@@ -246,6 +237,7 @@ namespace AmeisenBotGUI
                     AmeisenLogger.Instance.Log(LogLevel.ERROR, e.ToString(), this);
                 }
                 if (BotManager.Target != null)
+                {
                     try
                     {
                         labelNameTarget.Content = BotManager.Target.Name + " lvl." + BotManager.Target.Level;
@@ -271,17 +263,15 @@ namespace AmeisenBotGUI
                     {
                         AmeisenLogger.Instance.Log(LogLevel.ERROR, e.ToString(), this);
                     }
+                }
             }
 
             try
             {
-                //labelThreadsActive.Content = "⚡ Threads: " + AmeisenAIManager.Instance.GetBusyThreadCount() + "/" + AmeisenAIManager.Instance.GetActiveThreadCount();
-                //progressBarBusyAIThreads.Maximum = AmeisenAIManager.Instance.GetActiveThreadCount();
-                //progressBarBusyAIThreads.Value = AmeisenAIManager.Instance.GetBusyThreadCount();
-
-                //listboxCurrentQueue.Items.Clear();
-                //foreach (AmeisenAction a in AmeisenAIManager.Instance.GetQueueItems())
-                //listboxCurrentQueue.Items.Add(a.GetActionType() + " [" + a.GetActionParams() + "]");
+                labelThreadsActive.Content = "⚡ Threads: " + BotManager.AmeisenAIManager.GetBusyThreadCount() + 
+                                             "/" + BotManager.AmeisenAIManager.GetActiveThreadCount();
+                progressBarBusyAIThreads.Maximum = BotManager.AmeisenAIManager.GetActiveThreadCount();
+                progressBarBusyAIThreads.Value = BotManager.AmeisenAIManager.GetBusyThreadCount();
             }
             catch (Exception e)
             {
@@ -307,7 +297,12 @@ namespace AmeisenBotGUI
 
         private void ButtonMap_Click(object sender, RoutedEventArgs e)
         {
-            new MapUI().Show();
+            new MapWindow().Show();
+        }
+
+        private void ButtonGroup_Click(object sender, RoutedEventArgs e)
+        {
+            new GroupWindow().Show();
         }
     }
 }

@@ -120,7 +120,7 @@ namespace AmeisenManager
         /// </summary>
         public void RefreshMe()
         {
-            Me = AmeisenCore.AmeisenCore.ReadMe(Me.BaseAddress);
+            Me = AmeisenCoreUtils.AmeisenCore.ReadMe(Me.BaseAddress);
         }
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace AmeisenManager
 
         private void AntiAFK()
         {
-            AmeisenCore.AmeisenCore.AntiAFK();
+            AmeisenCoreUtils.AmeisenCore.AntiAFK();
         }
 
         private void ObjectUpdateTimer(object source, ElapsedEventArgs e)
@@ -172,7 +172,7 @@ namespace AmeisenManager
 
         private void RefreshObjects()
         {
-            ActiveWoWObjects = AmeisenCore.AmeisenCore.GetAllWoWObjects();
+            ActiveWoWObjects = AmeisenCoreUtils.AmeisenCore.GetAllWoWObjects();
 
             foreach (WoWObject m in ActiveWoWObjects)
                 if (m.GetType() == typeof(Me))
@@ -229,8 +229,8 @@ namespace AmeisenManager
             Vector3 activeNode = new Vector3((int)me.pos.X, (int)me.pos.Y, (int)me.pos.Z);
             if (activeNode.X != lastNode.X && activeNode.Y != lastNode.Y && activeNode.Z != lastNode.Z)
             {
-                int zoneID = AmeisenCore.AmeisenCore.GetZoneID();
-                int mapID = AmeisenCore.AmeisenCore.GetMapID();
+                int zoneID = AmeisenCoreUtils.AmeisenCore.GetZoneID();
+                int mapID = AmeisenCoreUtils.AmeisenCore.GetMapID();
                 AmeisenDBManager.Instance.UpdateOrAddNode(new MapNode(activeNode, zoneID, mapID));
                 lastNode = activeNode;
             }

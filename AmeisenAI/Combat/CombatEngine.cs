@@ -113,8 +113,8 @@ namespace AmeisenAI
                     if (o.Guid == guid)
                         if (((Unit)o).InCombat)
                         {
-                            AmeisenCore.AmeisenCore.RunSlashCommand("/assist party" + i);
-                            AmeisenCore.AmeisenCore.AttackTarget();
+                            AmeisenCoreUtils.AmeisenCore.RunSlashCommand("/assist party" + i);
+                            AmeisenCoreUtils.AmeisenCore.AttackTarget();
                             AmeisenAIManager.Instance.DoFollow = false;
                         }
                 i++;
@@ -183,16 +183,16 @@ namespace AmeisenAI
                     return CompareLess(value1, value2);
 
                 case CombatLogicStatement.HAS_BUFF:
-                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.target).duration > 0;
+                    return AmeisenCoreUtils.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.target).duration > 0;
 
                 case CombatLogicStatement.NOT_HAS_BUFF:
-                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.target).duration == -1;
+                    return AmeisenCoreUtils.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.target).duration == -1;
 
                 case CombatLogicStatement.HAS_BUFF_MYSELF:
-                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.player).duration > 0;
+                    return AmeisenCoreUtils.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.player).duration > 0;
 
                 case CombatLogicStatement.NOT_HAS_BUFF_MYSELF:
-                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.player).duration <= 0;
+                    return AmeisenCoreUtils.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.player).duration <= 0;
 
                 default:
                     return false;
@@ -248,7 +248,7 @@ namespace AmeisenAI
                             AmeisenAIManager.Instance.AddActionToQueue(ref action);
                         }
 
-                        if (!AmeisenCore.AmeisenCore.IsOnCooldown((string)entry.Parameters))
+                        if (!AmeisenCoreUtils.AmeisenCore.IsOnCooldown((string)entry.Parameters))
                         {
                             AmeisenAction action;
                             if (entry.IsForMyself)
@@ -268,7 +268,7 @@ namespace AmeisenAI
                     break;
 
                 case CombatLogicAction.SHAPESHIFT:
-                    AmeisenCore.AmeisenCore.CastShapeshift((int)entry.Parameters);
+                    AmeisenCoreUtils.AmeisenCore.CastShapeshift((int)entry.Parameters);
                     break;
 
                 case CombatLogicAction.FLEE:
@@ -291,7 +291,7 @@ namespace AmeisenAI
 
             if (entry.CombatOnly)
             {
-                if (!AmeisenCore.AmeisenCore.GetCombatState(LUAUnit.player))
+                if (!AmeisenCoreUtils.AmeisenCore.GetCombatState(LUAUnit.player))
                 {
                     AmeisenAIManager.Instance.DoFollow = true;
                     if (!IsPartyInCombat())

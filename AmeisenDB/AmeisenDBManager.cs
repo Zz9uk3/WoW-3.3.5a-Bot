@@ -1,7 +1,6 @@
 ﻿using AmeisenMapping.objects;
 using Dapper;
 using MySql.Data.MySqlClient;
-using System;
 using System.Collections.Generic;
 
 namespace AmeisenDB
@@ -11,7 +10,6 @@ namespace AmeisenDB
         #region Public Fields
 
         public const string TABLE_NAME_NODES = "ameisenbot_map_nodes";
-        public const string TABLE_NAME_PATHS = "ameisenbot_map_paths";
         public string DBName = "ameisenbot";
 
         #endregion Public Fields
@@ -57,11 +55,16 @@ namespace AmeisenDB
 
         #region Public Methods
 
-        public bool Connect(string sqlConnectionString)
+        /// <summary>
+        /// Connect to a MySQL database
+        /// </summary>
+        /// <param name="mysqlConnectionString">mysql connection string</param>
+        /// <returns>true if connected, false if not</returns>
+        public bool ConnectToMySQL(string mysqlConnectionString)
         {
             if (!IsConnected)
             {
-                sqlConnection = new MySqlConnection(sqlConnectionString);
+                sqlConnection = new MySqlConnection(mysqlConnectionString);
 
                 try
                 {
@@ -74,6 +77,9 @@ namespace AmeisenDB
             return IsConnected;
         }
 
+        /// <summary>
+        /// Disconnect if we are connected
+        /// </summary>
         public void Disconnect()
         {
             if (IsConnected)
@@ -84,6 +90,12 @@ namespace AmeisenDB
             IsConnected = false;
         }
 
+        /// <summary>
+        /// Get all saved nodes by the zone & map id
+        /// </summary>
+        /// <param name="zoneID">zone id to get the nodes from</param>
+        /// <param name="mapID">map id to get the nodes from</param>
+        /// <returns>list containing all the MapNodes</returns>
         public List<MapNode> GetNodes(int zoneID, int mapID)
         {
             if (IsConnected)
@@ -98,9 +110,15 @@ namespace AmeisenDB
                 }
                 catch { return new List<MapNode>(); }
             }
-            else return new List<MapNode>();
+            else
+            {
+                return new List<MapNode>();
+            }
         }
 
+        /// <summary>
+        /// Initialise the database with Tables
+        /// </summary>
         public void InitDB()
         {
             if (IsConnected)
@@ -123,6 +141,11 @@ namespace AmeisenDB
             }
         }
 
+        /// <summary>
+        /// Add a MapNode to the database, duplicate nodes will be ignored
+        /// </summary>
+        /// <param name="mapNode">Node to add</param>
+        /// <returns>affected SQL rows</returns>
         public int UpdateOrAddNode(MapNode mapNode)
         {
             if (IsConnected)
@@ -137,37 +160,10 @@ namespace AmeisenDB
                 }
                 catch { return 0; }
             }
-            else return 0;
-        }
-
-        public int UpdateOrAddPath(MapPath mapPath)
-        {
-            string sqlQueryGetNodeA = "SELECT * FROM " +
-                TABLE_NAME_NODES + " " +
-                "WHERE " +
-                "x = @X AND " +
-                "y = @Y AND " +
-                "z = @Z;";
-
-            string sqlQueryGetNodeB = "SELECT * FROM " +
-                TABLE_NAME_NODES + " " +
-                "WHERE " +
-                "x = @X AND " +
-                "y = @Y AND " +
-                "z = @Z;";
-
-            var nodeA = sqlConnection.QueryFirst(sqlQueryGetNodeA, mapPath.NodeA);
-            var nodeB = sqlConnection.QueryFirst(sqlQueryGetNodeB, mapPath.NodeB);
-
-            string sqlQueryInsert =
-                "REPLACE INTO " +
-                TABLE_NAME_PATHS + " (node_a, node_b, path_quality) " +
-                "VALUES(" +
-                "'" + nodeA.id + "'," +
-                "'" + nodeB.id + "'," +
-                "'" + mapPath.Quality + "');";
-
-            return sqlConnection.Execute(sqlQueryInsert);
+            else
+            {
+                return 0;
+            }
         }
 
         #endregion Public Methods

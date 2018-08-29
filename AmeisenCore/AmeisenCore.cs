@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
-namespace AmeisenCore
+namespace AmeisenCoreUtils
 {
     /// <summary>
     /// Abstract class that contains various static method's to interact with WoW's memory and the

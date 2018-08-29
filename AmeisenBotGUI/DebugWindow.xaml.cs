@@ -12,11 +12,11 @@ namespace AmeisenBotGUI
     /// <summary>
     /// Interaktionslogik für DebugUI.xaml
     /// </summary>
-    public partial class DebugUI : Window
+    public partial class DebugWindow : Window
     {
         #region Public Constructors
 
-        public DebugUI()
+        public DebugWindow()
         {
             InitializeComponent();
             BotManager = AmeisenBotManager.Instance;
@@ -91,6 +91,10 @@ namespace AmeisenBotGUI
         #endregion Private Methods
     }
 
+    /// <summary>
+    /// Display class for the listView elements.
+    /// Used to color them corresponding to their WoWObject type.
+    /// </summary>
     internal class DataItem
     {
         #region Public Constructors

@@ -211,7 +211,7 @@ namespace AmeisenAI
         {
             if (Utils.GetDistance(initialPosition, activePosition) < 1)
             {
-                AmeisenCore.AmeisenCore.CharacterJumpAsync();
+                AmeisenCoreUtils.AmeisenCore.CharacterJumpAsync();
                 return true;
             }
             // Here comes the Obstacle-Avoid-System in the future
@@ -224,14 +224,14 @@ namespace AmeisenAI
                 currentAction.ActionIsDone();  // If there is no target, we can't face anyone...
             else
             {
-                AmeisenCore.AmeisenCore.InteractWithGUID(Target.pos, Target.Guid, Interaction.FACETARGET);
+                AmeisenCoreUtils.AmeisenCore.InteractWithGUID(Target.pos, Target.Guid, Interaction.FACETARGET);
                 currentAction.ActionIsDone();
             }
         }
 
         private void GoToCorpseAndRevive(ref AmeisenAction currentAction)
         {
-            Vector3 corpsePosition = AmeisenCore.AmeisenCore.GetCorpsePosition();
+            Vector3 corpsePosition = AmeisenCoreUtils.AmeisenCore.GetCorpsePosition();
 
             AmeisenAction ameisenAction = new AmeisenAction(
                 AmeisenActionType.MOVE_NEAR_POSITION,
@@ -241,7 +241,7 @@ namespace AmeisenAI
 
             while (!ameisenAction.IsActionDone()) { Thread.Sleep(250); }
 
-            AmeisenCore.AmeisenCore.RetrieveCorpse();
+            AmeisenCoreUtils.AmeisenCore.RetrieveCorpse();
             currentAction.ActionIsDone();
         }
 
@@ -252,7 +252,7 @@ namespace AmeisenAI
             else if (Target.Distance > 3 && Target.Distance > distance)
             {
                 Vector3 posToGoTo = CalculatePosToGoTo(Target.pos, (int)distance);
-                AmeisenCore.AmeisenCore.InteractWithGUID(posToGoTo, Target.Guid, action);
+                AmeisenCoreUtils.AmeisenCore.InteractWithGUID(posToGoTo, Target.Guid, action);
 
                 ameisenAction.ActionIsDone();
             }
@@ -261,7 +261,7 @@ namespace AmeisenAI
                 Me.Update();
                 Vector3 initialPosition = Me.pos;
                 Vector3 posToGoToToMakeSureTheInteractionGetsFired = CalculatePosToGoTo(Target.pos, 16);
-                AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoToToMakeSureTheInteractionGetsFired, Interaction.MOVE);
+                AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(posToGoToToMakeSureTheInteractionGetsFired, Interaction.MOVE);
 
                 // Let the character run
                 Thread.Sleep(2000);
@@ -286,7 +286,7 @@ namespace AmeisenAI
                 Vector3 posToGoTo = CalculatePosToGoTo(position, (int)distance);
 
                 if (IsAllowedToMove)
-                    AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoTo, Interaction.MOVE);
+                    AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(posToGoTo, Interaction.MOVE);
 
                 // Let the character run to prevent random jumping
                 Thread.Sleep(300);
@@ -302,7 +302,7 @@ namespace AmeisenAI
                 {
                     Vector3 currentPosition = AmeisenDataHolder.Instance.Me.pos;
                     if (currentPosition.X != 0 && currentPosition.Y != 0 && currentPosition.Z != 0)
-                        AmeisenCore.AmeisenCore.MovePlayerToXYZ(currentPosition, Interaction.STOP);
+                        AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(currentPosition, Interaction.STOP);
                 }
 
                 ameisenAction.ActionIsDone();
@@ -318,7 +318,7 @@ namespace AmeisenAI
                 Me.Update();
                 Vector3 initialPosition = Me.pos;
                 Vector3 posToGoTo = CalculatePosToGoTo(position, (int)distance);
-                AmeisenCore.AmeisenCore.MovePlayerToXYZ(posToGoTo, Interaction.MOVE);
+                AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(posToGoTo, Interaction.MOVE);
 
                 // Let the character run to prevent random jumping
                 Thread.Sleep(300);
@@ -385,13 +385,13 @@ namespace AmeisenAI
                                 break;
 
                             case AmeisenActionType.TARGET_ENTITY:
-                                AmeisenCore.AmeisenCore.TargetGUID((UInt64)currentAction.GetActionParams());
+                                AmeisenCoreUtils.AmeisenCore.TargetGUID((UInt64)currentAction.GetActionParams());
                                 currentAction.ActionIsDone();
                                 break;
 
                             case AmeisenActionType.USE_SPELL:
-                                WoWSpellInfo spellInfo = AmeisenCore.AmeisenCore.GetSpellInfo((string)currentAction.GetActionParams());
-                                AmeisenCore.AmeisenCore.CastSpellByName((string)currentAction.GetActionParams(), false);
+                                WoWSpellInfo spellInfo = AmeisenCoreUtils.AmeisenCore.GetSpellInfo((string)currentAction.GetActionParams());
+                                AmeisenCoreUtils.AmeisenCore.CastSpellByName((string)currentAction.GetActionParams(), false);
 
                                 Thread.Sleep(200);
 
@@ -402,7 +402,7 @@ namespace AmeisenAI
                                 break;
 
                             case AmeisenActionType.USE_SPELL_ON_ME:
-                                AmeisenCore.AmeisenCore.CastSpellByName((string)currentAction.GetActionParams(), true);
+                                AmeisenCoreUtils.AmeisenCore.CastSpellByName((string)currentAction.GetActionParams(), true);
                                 currentAction.ActionIsDone();
                                 break;
 

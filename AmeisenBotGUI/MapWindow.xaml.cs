@@ -12,11 +12,11 @@ namespace AmeisenBotGUI
     /// <summary>
     /// Interaktionslogik für Map.xaml
     /// </summary>
-    public partial class MapUI : Window
+    public partial class MapWindow : Window
     {
         #region Public Constructors
 
-        public MapUI()
+        public MapWindow()
         {
             InitializeComponent();
         }
@@ -131,7 +131,7 @@ namespace AmeisenBotGUI
 
         private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            DragMove();
+            try { DragMove(); } catch { }
         }
 
         #endregion Private Methods

@@ -93,11 +93,11 @@ namespace AmeisenAI
         {
             while (!stop)
             {
-                if (AmeisenCore.AmeisenCore.IsGhost(LUAUnit.player))
+                if (AmeisenCoreUtils.AmeisenCore.IsGhost(LUAUnit.player))
                 {
                     if (Me.NeedToRevive)
                         if (AmeisenAIManager.Instance.IsAllowedToRevive)
-                            AmeisenCore.AmeisenCore.Revive();
+                            AmeisenCoreUtils.AmeisenCore.Revive();
 
                     Thread.Sleep(500);
                     continue;

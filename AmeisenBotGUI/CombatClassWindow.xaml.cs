@@ -12,7 +12,7 @@ namespace AmeisenBotGUI
     /// <summary>
     /// Interaktionslogik für CombatClassEditor.xaml
     /// </summary>
-    public partial class CombatClassEditor : Window
+    public partial class CombatClassWindow : Window
     {
         #region Private Fields
 
@@ -23,7 +23,7 @@ namespace AmeisenBotGUI
 
         #region Public Constructors
 
-        public CombatClassEditor()
+        public CombatClassWindow()
         {
             InitializeComponent();
             BotManager = AmeisenBotManager.Instance;

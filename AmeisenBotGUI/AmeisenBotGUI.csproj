@@ -13,6 +13,7 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -25,7 +26,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -56,6 +56,9 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>AmeisenBotGUI.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -76,35 +79,42 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CombatClassEditor.xaml.cs">
-      <DependentUpon>CombatClassEditor.xaml</DependentUpon>
+    <Compile Include="CombatClassWindow.xaml.cs">
+      <DependentUpon>CombatClassWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DebugUI.xaml.cs">
-      <DependentUpon>DebugUI.xaml</DependentUpon>
+    <Compile Include="DebugWindow.xaml.cs">
+      <DependentUpon>DebugWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MapUI.xaml.cs">
-      <DependentUpon>MapUI.xaml</DependentUpon>
+    <Compile Include="GroupWindow.xaml.cs">
+      <DependentUpon>GroupWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MapWindow.xaml.cs">
+      <DependentUpon>MapWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="CombatClassEditor.xaml">
+    <Page Include="CombatClassWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DebugUI.xaml">
+    <Page Include="DebugWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainscreenForm.xaml">
+    <Page Include="BotWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MapUI.xaml">
+    <Page Include="GroupWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WoWSelectForm.xaml">
+    <Page Include="MapWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SelectWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -112,11 +122,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainscreenForm.xaml.cs">
-      <DependentUpon>MainscreenForm.xaml</DependentUpon>
+    <Compile Include="BotWindow.xaml.cs">
+      <DependentUpon>BotWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WoWSelectForm.xaml.cs">
-      <DependentUpon>WoWSelectForm.xaml</DependentUpon>
+    <Compile Include="SelectWindow.xaml.cs">
+      <DependentUpon>SelectWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="SettingsWindow.xaml">

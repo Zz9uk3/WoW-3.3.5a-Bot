@@ -55,26 +55,43 @@ namespace AmeisenAI
 
         #region Public Methods
 
+        /// <summary>
+        /// Register a unit to be followed
+        /// </summary>
+        /// <param name="unit">unit object to follow</param>
         public void AddPlayerToFollow(Unit unit)
         {
             followUnitList.Add(unit);
         }
 
+        /// <summary>
+        /// Unregister all units to be no longer followed
+        /// </summary>
         public void RemoveAllPlayersToFollow()
         {
             followUnitList.Clear();
         }
 
+        /// <summary>
+        /// Unregister a single unit to be no longer followed
+        /// </summary>
+        /// <param name="unit"></param>
         public void RemovePlayerToFollow(Unit unit)
         {
             followUnitList.Remove(unit);
         }
 
+        /// <summary>
+        /// Start the follow engine
+        /// </summary>
         public void Start()
         {
             mainWorker.Start();
         }
 
+        /// <summary>
+        /// Stop the follow engine
+        /// </summary>
         public void Stop()
         {
             stop = true; mainWorker.Join();
@@ -94,7 +111,7 @@ namespace AmeisenAI
                     continue;
                 }
 
-                if (AmeisenCore.AmeisenCore.IsGhost(LUAUnit.player))
+                if (AmeisenCoreUtils.AmeisenCore.IsGhost(LUAUnit.player))
                 {
                     //TODO: Handle death follow GO_TO_CORPSE_AND_REVIVE
 

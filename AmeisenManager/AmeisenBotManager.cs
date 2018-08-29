@@ -1,5 +1,5 @@
 ﻿using AmeisenAI;
-using AmeisenCore;
+using AmeisenCoreUtils;
 using AmeisenData;
 using AmeisenDB;
 using AmeisenLogging;
@@ -99,7 +99,7 @@ namespace AmeisenManager
         public bool IsSupposedToHeal { get; set; }
         public bool IsSupposedToTank { get; set; }
         public Me Me { get { return AmeisenDataHolder.Instance.Me; } }
-        public List<WoWExe> RunningWoWs { get { return AmeisenCore.AmeisenCore.GetRunningWoWs(); } }
+        public List<WoWExe> RunningWoWs { get { return AmeisenCoreUtils.AmeisenCore.GetRunningWoWs(); } }
         public Settings Settings { get { return AmeisenSettings.Settings; } }
         public Unit Target { get { return AmeisenDataHolder.Instance.Target; } }
         public WoWExe WowExe { get; private set; }
@@ -112,12 +112,12 @@ namespace AmeisenManager
 
         public static int GetMapID()
         {
-            return AmeisenCore.AmeisenCore.GetMapID();
+            return AmeisenCoreUtils.AmeisenCore.GetMapID();
         }
 
         public static int GetZoneID()
         {
-            return AmeisenCore.AmeisenCore.GetZoneID();
+            return AmeisenCoreUtils.AmeisenCore.GetZoneID();
         }
 
         public void AddActionToAIQueue(AmeisenAction ameisenAction)
@@ -132,8 +132,8 @@ namespace AmeisenManager
 
         public void FaceTarget()
         {
-            AmeisenCore.AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.ATTACK);
-            AmeisenCore.AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.STOP);
+            AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.ATTACK);
+            AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.STOP);
         }
 
         public string GetLoadedConfigName()
@@ -153,8 +153,8 @@ namespace AmeisenManager
 
         public bool IsBotIngame()
         {
-            return AmeisenCore.AmeisenCore.CheckWorldLoaded()
-               && !AmeisenCore.AmeisenCore.CheckLoadingScreen();
+            return AmeisenCoreUtils.AmeisenCore.CheckWorldLoaded()
+               && !AmeisenCoreUtils.AmeisenCore.CheckLoadingScreen();
         }
 
         public void LoadCombatClass(string fileName)
@@ -183,13 +183,13 @@ namespace AmeisenManager
             AmeisenSettings.LoadFromFile(wowExe.characterName);
 
             // Connect to DB
-            AmeisenDBManager.Connect(sqlConnectionString);
+            AmeisenDBManager.ConnectToMySQL(sqlConnectionString);
 
             // Attach to Proccess
             Blackmagic = new BlackMagic(wowExe.process.Id);
             IsAttached = Blackmagic.IsProcessOpen;
             // TODO: make this better
-            AmeisenCore.AmeisenCore.BlackMagic = Blackmagic;
+            AmeisenCoreUtils.AmeisenCore.BlackMagic = Blackmagic;
 
             // Hook EndScene
             AmeisenHook = AmeisenHook.Instance;

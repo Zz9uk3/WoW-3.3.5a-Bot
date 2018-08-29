@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace AmeisenCore
+namespace AmeisenCoreUtils
 {
     /// <summary>
     /// Class that manages the hooking of WoW's EndScene
@@ -51,7 +51,9 @@ namespace AmeisenCore
             hookWorker = new Thread(new ThreadStart(DoWork));
 
             if (isHooked)
+            {
                 hookWorker.Start();
+            }
         }
 
         public static AmeisenHook Instance
@@ -61,7 +63,10 @@ namespace AmeisenCore
                 lock (padlock)
                 {
                     if (instance == null)
+                    {
                         instance = new AmeisenHook();
+                    }
+
                     return instance;
                 }
             }
@@ -92,10 +97,12 @@ namespace AmeisenCore
                         InjectAndExecute(currentJob.Asm, currentJob.ReadReturnBytes);
 
                         if (currentJob.GetType() == typeof(ReturnHookJob))
+                        {
                             currentJob.ReturnValue = InjectAndExecute(
                                 ((ReturnHookJob)currentJob).ChainedJob.Asm,
                                 ((ReturnHookJob)currentJob).ChainedJob.ReadReturnBytes
                                 );
+                        }
 
                         currentJob.IsFinished = true;
                     }
@@ -220,7 +227,9 @@ namespace AmeisenCore
         private byte[] InjectAndExecute(string[] asm, bool readReturnBytes)
         {
             while (isInjectionUsed)
+            {
                 Thread.Sleep(1);
+            }
 
             isInjectionUsed = true;
 
@@ -228,8 +237,12 @@ namespace AmeisenCore
             AmeisenCore.BlackMagic.Asm.Clear();
 
             if (asm != null)
+            {
                 foreach (string s in asm)
+                {
                     AmeisenCore.BlackMagic.Asm.AddLine(s);
+                }
+            }
 
             //AmeisenManager.Instance().GetBlackMagic().Asm.AddLine("JMP " + (endsceneReturnAddress));
 
@@ -237,11 +250,13 @@ namespace AmeisenCore
             AmeisenCore.BlackMagic.Asm.Inject(codeCaveForInjection);
 
             while (AmeisenCore.BlackMagic.ReadInt(codeToExecute) > 0)
+            {
                 Thread.Sleep(1);
+            }
 
             if (readReturnBytes)
             {
-                byte buffer = new Byte();
+                byte buffer = new byte();
                 List<byte> returnBytes = new List<byte>();
 
                 try

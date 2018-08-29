@@ -15,7 +15,7 @@ namespace AmeisenBotGUI
     /// <summary>
     /// Interaktionslogik für MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class SelectWindow : Window
     {
         #region Private Fields
 
@@ -28,7 +28,7 @@ namespace AmeisenBotGUI
 
         #region Public Constructors
 
-        public MainWindow()
+        public SelectWindow()
         {
             InitializeComponent();
             BotManager = AmeisenBotManager.Instance;
@@ -81,7 +81,7 @@ namespace AmeisenBotGUI
                         , this);
 
                     // Show the Mainscreen
-                    new MainscreenForm((WoWExe)comboBoxWoWs.SelectedItem).Show();
+                    new BotWindow((WoWExe)comboBoxWoWs.SelectedItem).Show();
                     Close();
                 }
             }

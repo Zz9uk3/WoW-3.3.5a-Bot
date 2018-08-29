@@ -64,7 +64,6 @@
   <ItemGroup>
     <Compile Include="Map.cs" />
     <Compile Include="objects\MapNode.cs" />
-    <Compile Include="objects\MapPath.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
