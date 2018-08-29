@@ -23,7 +23,7 @@ namespace DBTestGUI
 
         private void ButtonConnect_Click(object sender, RoutedEventArgs e)
         {
-            labelConnected.Content = "Connected:" + AmeisenDBManager.Instance.Connect(sqlConnectionString);
+            labelConnected.Content = "Connected:" + AmeisenDBManager.Instance.ConnectToMySQL(sqlConnectionString);
         }
 
         private void ButtonDisconnect_Click(object sender, RoutedEventArgs e)

@@ -39,6 +39,9 @@ namespace AmeisenDB
             IsConnected = false;
         }
 
+        /// <summary>
+        /// Initialize the database table
+        /// </summary>
         public void InitDB()
         {
             if (IsConnected)
@@ -82,7 +85,12 @@ namespace AmeisenDB
             }
         }
 
-        public bool Connect(string sqlConnectionString)
+        /// <summary>
+        /// Connect to the database with given MySQL Connection string
+        /// </summary>
+        /// <param name="sqlConnectionString">MySQL connection string</param>
+        /// <returns>true when connected, false if not</returns>
+        public bool ConnectToMySQL(string sqlConnectionString)
         {
             if (!IsConnected)
             {
@@ -98,6 +106,9 @@ namespace AmeisenDB
             return IsConnected;
         }
 
+        /// <summary>
+        /// Disconnect from the database
+        /// </summary>
         public void Disconnect()
         {
             if (IsConnected)
@@ -108,6 +119,11 @@ namespace AmeisenDB
             IsConnected = false;
         }
 
+        /// <summary>
+        /// Log a MapNode to the database, existing nodes will be ignored
+        /// </summary>
+        /// <param name="mapNode">mapNode to log</param>
+        /// <returns>affected SQL rows</returns>
         public int UpdateOrAddNode(MapNode mapNode)
         {
             string sqlQuery =
@@ -116,36 +132,6 @@ namespace AmeisenDB
                 "VALUES(@X,@Y,@Z);";
 
             return sqlConnection.Execute(sqlQuery, mapNode);
-        }
-
-        public int UpdateOrAddPath(MapPath mapPath)
-        {
-            string sqlQueryGetNodeA = "SELECT * FROM " +
-                TABLE_NAME_NODES + " " +
-                "WHERE " +
-                "x = @X AND " +
-                "y = @Y AND " +
-                "z = @Z;";
-
-            string sqlQueryGetNodeB = "SELECT * FROM " +
-                TABLE_NAME_NODES + " " +
-                "WHERE " +
-                "x = " + mapPath.NodeB.X + " AND " +
-                "y = " + mapPath.NodeB.Y + " AND " +
-                "z = " + mapPath.NodeB.Z + ";";
-
-            var nodeA = sqlConnection.QueryFirst(sqlQueryGetNodeA);
-            var nodeB = sqlConnection.QueryFirst(sqlQueryGetNodeB);
-
-            string sqlQueryInsert =
-                "REPLACE INTO " +
-                TABLE_NAME_PATHS + " (node_a, node_b, path_quality) " +
-                "VALUES(" +
-                "'" + nodeA.id + "'," +
-                "'" + nodeB.id + "'," +
-                "'" + mapPath.Quality + "');";
-
-            return sqlConnection.Execute(sqlQueryInsert);
         }
     }
 }
