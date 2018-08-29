@@ -192,7 +192,7 @@ namespace AmeisenAI
                     return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.player).duration > 0;
 
                 case CombatLogicStatement.NOT_HAS_BUFF_MYSELF:
-                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.player).duration == -1;
+                    return AmeisenCore.AmeisenCore.GetAuraInfo((string)condition.customValue, LUAUnit.player).duration <= 0;
 
                 default:
                     return false;
@@ -338,11 +338,15 @@ namespace AmeisenAI
 
         private bool IsPartyInCombat()
         {
-            foreach (UInt64 guid in Me.PartymemberGUIDs)
-                foreach (WoWObject o in ActiveWoWObjects)
-                    if (o.Guid == guid)
-                        if (((Unit)o).InCombat)
-                            return true;
+            try
+            {
+                foreach (UInt64 guid in Me.PartymemberGUIDs)
+                    foreach (WoWObject o in ActiveWoWObjects)
+                        if (o.Guid == guid)
+                            if (((Unit)o).InCombat)
+                                return true;
+            }
+            catch { }
             return false;
         }
 

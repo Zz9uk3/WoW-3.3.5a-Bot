@@ -1,6 +1,7 @@
 ﻿using AmeisenAI;
 using AmeisenCore;
 using AmeisenData;
+using AmeisenDB;
 using AmeisenLogging;
 using AmeisenUtilities;
 using Magic;
@@ -21,48 +22,17 @@ namespace AmeisenManager
         private static readonly object padlock = new object();
         private static AmeisenBotManager instance;
 
+        private readonly string sqlConnectionString =
+                "server=localhost;" +
+                "database=ameisenbot;" +
+                "uid=ameisenbot;" +
+                "password=AmeisenPassword;";
+
+        private bool followGroup;
+
         #endregion Private Fields
 
-        #region Instances
-
-        public AmeisenAIManager AmeisenAIManager { get; private set; }
-        public AmeisenClient AmeisenClient { get; private set; }
-        public AmeisenCombatManager AmeisenCombatManager { get; private set; }
-        public AmeisenFollowManager AmeisenFollowManager { get; private set; }
-        public AmeisenHook AmeisenHook { get; private set; }
-        public AmeisenObjectManager AmeisenObjectManager { get; private set; }
-        public AmeisenSettings AmeisenSettings { get; private set; }
-        public BlackMagic Blackmagic { get; private set; }
-
-        #endregion Instances
-
-        #region Fields
-
-        public List<WoWObject> ActiveWoWObjects { get { return AmeisenDataHolder.Instance.ActiveWoWObjects; } }
-        public Me Me { get { return AmeisenDataHolder.Instance.Me; } }
-        public Unit Target { get { return AmeisenDataHolder.Instance.Target; } }
-        public WoWExe WowExe { get; private set; }
-        public Process WowProcess { get; private set; }
-
-        #endregion Fields
-
-        #region StateFields
-
-        public bool IsAllowedToMove
-        {
-            get { return AmeisenAIManager.IsAllowedToMove; }
-            set { AmeisenAIManager.IsAllowedToMove = value; }
-        }
-
-        public bool IsAttached { get; private set; }
-        public bool IsHooked { get; private set; }
-        public bool IsSupposedToAttack { get; set; }
-        public bool IsSupposedToHeal { get; set; }
-        public bool IsSupposedToTank { get; set; }
-
-        #endregion StateFields
-
-        #region SingletonStuff
+        #region Private Constructors
 
         private AmeisenBotManager()
         {
@@ -71,7 +41,12 @@ namespace AmeisenManager
 
             AmeisenSettings = AmeisenSettings.Instance;
             AmeisenClient = AmeisenClient.Instance;
+            AmeisenDBManager = AmeisenDBManager.Instance;
         }
+
+        #endregion Private Constructors
+
+        #region Public Properties
 
         public static AmeisenBotManager Instance
         {
@@ -86,11 +61,16 @@ namespace AmeisenManager
             }
         }
 
-        #endregion SingletonStuff
-
-        #region BotActions
-
-        private bool followGroup;
+        public List<WoWObject> ActiveWoWObjects { get { return AmeisenDataHolder.Instance.ActiveWoWObjects; } }
+        public AmeisenAIManager AmeisenAIManager { get; private set; }
+        public AmeisenClient AmeisenClient { get; private set; }
+        public AmeisenCombatManager AmeisenCombatManager { get; private set; }
+        public AmeisenDBManager AmeisenDBManager { get; private set; }
+        public AmeisenFollowManager AmeisenFollowManager { get; private set; }
+        public AmeisenHook AmeisenHook { get; private set; }
+        public AmeisenObjectManager AmeisenObjectManager { get; private set; }
+        public AmeisenSettings AmeisenSettings { get; private set; }
+        public BlackMagic Blackmagic { get; private set; }
 
         public bool FollowGroup
         {
@@ -107,6 +87,76 @@ namespace AmeisenManager
             }
         }
 
+        public bool IsAllowedToMove
+        {
+            get { return AmeisenAIManager.IsAllowedToMove; }
+            set { AmeisenAIManager.IsAllowedToMove = value; }
+        }
+
+        public bool IsAttached { get; private set; }
+        public bool IsHooked { get; private set; }
+        public bool IsSupposedToAttack { get; set; }
+        public bool IsSupposedToHeal { get; set; }
+        public bool IsSupposedToTank { get; set; }
+        public Me Me { get { return AmeisenDataHolder.Instance.Me; } }
+        public List<WoWExe> RunningWoWs { get { return AmeisenCore.AmeisenCore.GetRunningWoWs(); } }
+        public Settings Settings { get { return AmeisenSettings.Settings; } }
+        public Unit Target { get { return AmeisenDataHolder.Instance.Target; } }
+        public WoWExe WowExe { get; private set; }
+        public List<WoWObject> WoWObjects { get { return AmeisenObjectManager.GetObjects(); } }
+        public Process WowProcess { get; private set; }
+
+        #endregion Public Properties
+
+        #region Public Methods
+
+        public static int GetMapID()
+        {
+            return AmeisenCore.AmeisenCore.GetMapID();
+        }
+
+        public static int GetZoneID()
+        {
+            return AmeisenCore.AmeisenCore.GetZoneID();
+        }
+
+        public void AddActionToAIQueue(AmeisenAction ameisenAction)
+        {
+            AmeisenAIManager.AddActionToQueue(ameisenAction);
+        }
+
+        public void AddActionToAIQueue(ref AmeisenAction ameisenAction)
+        {
+            AmeisenAIManager.AddActionToQueue(ref ameisenAction);
+        }
+
+        public void FaceTarget()
+        {
+            AmeisenCore.AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.ATTACK);
+            AmeisenCore.AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.STOP);
+        }
+
+        public string GetLoadedConfigName()
+        {
+            return AmeisenSettings.loadedconfName;
+        }
+
+        public List<Bot> GetNetworkBots()
+        {
+            if (AmeisenClient.IsRegistered) return AmeisenClient.BotList; else return null;
+        }
+
+        public WoWExe GetWowExe()
+        {
+            return WowExe;
+        }
+
+        public bool IsBotIngame()
+        {
+            return AmeisenCore.AmeisenCore.CheckWorldLoaded()
+               && !AmeisenCore.AmeisenCore.CheckLoadingScreen();
+        }
+
         public void LoadCombatClass(string fileName)
         {
             AmeisenSettings.Settings.combatClassPath = fileName;
@@ -115,12 +165,25 @@ namespace AmeisenManager
             AmeisenCombatManager.ReloadCombatClass();
         }
 
+        public void LoadSettingsFromFile(string filename)
+        {
+            AmeisenSettings.LoadFromFile(filename);
+        }
+
+        public void SaveSettingsToFile(string filename)
+        {
+            AmeisenSettings.SaveToFile(filename);
+        }
+
         public void StartBot(WoWExe wowExe)
         {
             WowExe = wowExe;
 
             // Load Settings
             AmeisenSettings.LoadFromFile(wowExe.characterName);
+
+            // Connect to DB
+            AmeisenDBManager.Connect(sqlConnectionString);
 
             // Attach to Proccess
             Blackmagic = new BlackMagic(wowExe.process.Id);
@@ -177,79 +240,9 @@ namespace AmeisenManager
 
             // Stop logging
             AmeisenLogger.Instance.StopLogging();
-        }
 
-        #endregion BotActions
-
-        #region Retriveables
-
-        public List<WoWExe> RunningWoWs { get { return AmeisenCore.AmeisenCore.GetRunningWoWs(); } }
-
-        public List<Bot> GetNetworkBots()
-        {
-            if (AmeisenClient.IsRegistered) return AmeisenClient.BotList; else return null;
-        }
-
-        public bool IsBotIngame()
-        {
-            return AmeisenCore.AmeisenCore.CheckWorldLoaded()
-               && !AmeisenCore.AmeisenCore.CheckLoadingScreen();
-        }
-
-        #endregion Retriveables
-
-        #region Objects
-
-        public List<WoWObject> WoWObjects { get { return AmeisenObjectManager.GetObjects(); } }
-
-        public WoWExe GetWowExe()
-        {
-            return WowExe;
-        }
-
-        #endregion Objects
-
-        #region AI
-
-        public void AddActionToAIQueue(AmeisenAction ameisenAction)
-        {
-            AmeisenAIManager.AddActionToQueue(ameisenAction);
-        }
-
-        public void AddActionToAIQueue(ref AmeisenAction ameisenAction)
-        {
-            AmeisenAIManager.AddActionToQueue(ref ameisenAction);
-        }
-
-        #endregion AI
-
-        #region Settings
-
-        public Settings Settings { get { return AmeisenSettings.Settings; } }
-
-        public string GetLoadedConfigName()
-        {
-            return AmeisenSettings.loadedconfName;
-        }
-
-        public void LoadSettingsFromFile(string filename)
-        {
-            AmeisenSettings.LoadFromFile(filename);
-        }
-
-        public void SaveSettingsToFile(string filename)
-        {
-            AmeisenSettings.SaveToFile(filename);
-        }
-
-        #endregion Settings
-
-        #region Public Methods
-
-        public void FaceTarget()
-        {
-            AmeisenCore.AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.ATTACK);
-            AmeisenCore.AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.STOP);
+            //Close SQL Connection
+            AmeisenDBManager.Instance.Disconnect();
         }
 
         #endregion Public Methods

@@ -1,5 +1,7 @@
 ﻿using AmeisenData;
+using AmeisenDB;
 using AmeisenLogging;
+using AmeisenMapping.objects;
 using AmeisenUtilities;
 using System;
 using System.Collections.Generic;
@@ -23,6 +25,7 @@ namespace AmeisenManager
 
         private static readonly object padlock = new object();
         private static AmeisenObjectManager instance;
+        private static Vector3 lastNode;
         private Thread objectUpdateThread;
 
         private System.Timers.Timer objectUpdateTimer;
@@ -30,6 +33,32 @@ namespace AmeisenManager
         private DateTime timestampObjects;
 
         #endregion Private Fields
+
+        #region Private Constructors
+
+        private AmeisenObjectManager()
+        {
+            RefreshObjects();
+        }
+
+        #endregion Private Constructors
+
+        #region Public Properties
+
+        public static AmeisenObjectManager Instance
+        {
+            get
+            {
+                lock (padlock)
+                {
+                    if (instance == null)
+                        instance = new AmeisenObjectManager();
+                    return instance;
+                }
+            }
+        }
+
+        #endregion Public Properties
 
         #region Private Properties
 
@@ -52,28 +81,6 @@ namespace AmeisenManager
         }
 
         #endregion Private Properties
-
-        #region Singleton stuff
-
-        private AmeisenObjectManager()
-        {
-            RefreshObjects();
-        }
-
-        public static AmeisenObjectManager Instance
-        {
-            get
-            {
-                lock (padlock)
-                {
-                    if (instance == null)
-                        instance = new AmeisenObjectManager();
-                    return instance;
-                }
-            }
-        }
-
-        #endregion Singleton stuff
 
         #region Public Methods
 
@@ -132,10 +139,12 @@ namespace AmeisenManager
         /// </summary>
         public void Start()
         {
-            objectUpdateTimer = new System.Timers.Timer(1000);
+            objectUpdateTimer = new System.Timers.Timer(500);
             objectUpdateTimer.Elapsed += ObjectUpdateTimer;
             objectUpdateThread = new Thread(new ThreadStart(StartTimer));
             objectUpdateThread.Start();
+
+            lastNode = new Vector3(-100000, -100000, -100000);
         }
 
         /// <summary>
@@ -168,6 +177,7 @@ namespace AmeisenManager
             foreach (WoWObject m in ActiveWoWObjects)
                 if (m.GetType() == typeof(Me))
                 {
+                    new Thread(new ThreadStart(() => UpdateNodeInDB((Me)m))).Start();
                     Me = (Me)m;
                     break;
                 }
@@ -212,6 +222,18 @@ namespace AmeisenManager
         private void StartTimer()
         {
             objectUpdateTimer.Start();
+        }
+
+        private void UpdateNodeInDB(Me me)
+        {
+            Vector3 activeNode = new Vector3((int)me.pos.X, (int)me.pos.Y, (int)me.pos.Z);
+            if (activeNode.X != lastNode.X && activeNode.Y != lastNode.Y && activeNode.Z != lastNode.Z)
+            {
+                int zoneID = AmeisenCore.AmeisenCore.GetZoneID();
+                int mapID = AmeisenCore.AmeisenCore.GetMapID();
+                AmeisenDBManager.Instance.UpdateOrAddNode(new MapNode(activeNode, zoneID, mapID));
+                lastNode = activeNode;
+            }
         }
 
         #endregion Private Methods

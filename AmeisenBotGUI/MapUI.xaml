@@ -1,0 +1,34 @@
+﻿<Window x:Class="AmeisenBotGUI.MapUI"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AmeisenBotGUI"
+        mc:Ignorable="d"
+        Title="Map" Height="600" Width="600" WindowStyle="None" ResizeMode="NoResize" BorderThickness="2" MouseDown="Window_MouseDown" Loaded="Window_Loaded">
+    <Window.Background>
+        <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
+    </Window.Background>
+    <Window.BorderBrush>
+        <SolidColorBrush Color="{DynamicResource AccentColor}" />
+    </Window.BorderBrush>
+    <Grid>
+        <Canvas x:Name="mapCanvas" Margin="10" />
+        <Button x:Name="buttonExit" Content="X" VerticalAlignment="Top" FontFamily="Consolas" Click="ButtonExit_Click" FontWeight="Bold" Background="{x:Null}" BorderThickness="2" HorizontalAlignment="Right" Width="20" Margin="0,-2,-2,0">
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Button.Foreground>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
+            </Button.BorderBrush>
+        </Button>
+        <Button x:Name="buttonMinimize" Content="_" Margin="0,-2,18,0" VerticalAlignment="Top" FontFamily="Consolas" FontWeight="Bold" Background="{x:Null}" BorderThickness="2" HorizontalAlignment="Right" Width="20" Click="ButtonMinimize_Click">
+            <Button.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Button.Foreground>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
+            </Button.BorderBrush>
+        </Button>
+    </Grid>
+</Window>

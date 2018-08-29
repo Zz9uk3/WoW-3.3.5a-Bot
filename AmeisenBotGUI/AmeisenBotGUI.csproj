@@ -82,6 +82,9 @@
     <Compile Include="DebugUI.xaml.cs">
       <DependentUpon>DebugUI.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MapUI.xaml.cs">
+      <DependentUpon>MapUI.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
@@ -94,6 +97,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainscreenForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MapUI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -160,6 +167,10 @@
       <Project>{3c281530-7a81-4803-bc85-de46ed2d6e74}</Project>
       <Name>AmeisenAI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AmeisenDB\AmeisenDB.csproj">
+      <Project>{9B3F7A78-0A9B-492A-8299-9C86D2E297ED}</Project>
+      <Name>AmeisenDB</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AmeisenLogger\AmeisenLogger.csproj">
       <Project>{017a67a9-f7bd-46e3-b716-e1d601afca4b}</Project>
       <Name>AmeisenLogger</Name>
@@ -167,6 +178,10 @@
     <ProjectReference Include="..\AmeisenManager\AmeisenManager.csproj">
       <Project>{6CA2C759-3166-4B71-A56D-E9BA28E72E33}</Project>
       <Name>AmeisenManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmeisenMapping\AmeisenMapping.csproj">
+      <Project>{08DB57D7-287A-4C12-AB76-F5EE4A0F3395}</Project>
+      <Name>AmeisenMapping</Name>
     </ProjectReference>
     <ProjectReference Include="..\AmeisenUtilities\AmeisenUtilities.csproj">
       <Project>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</Project>

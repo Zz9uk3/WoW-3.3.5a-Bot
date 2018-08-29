@@ -153,11 +153,29 @@
     {
         #region Public Fields
 
-        public double x;
-        public double y;
-        public double z;
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
 
         #endregion Public Fields
+
+        #region Public Constructors
+
+        public Vector3(int x, int y, int z)
+        {
+            X = x;
+            Y = y;
+            Z = z;
+        }
+
+        public Vector3(double x, double y, double z)
+        {
+            X = x;
+            Y = y;
+            Z = z;
+        }
+
+        #endregion Public Constructors
     }
 
     /// <summary>

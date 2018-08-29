@@ -99,12 +99,12 @@ namespace AmeisenAI
                         if (AmeisenAIManager.Instance.IsAllowedToRevive)
                             AmeisenCore.AmeisenCore.Revive();
 
-                    Thread.Sleep(50);
+                    Thread.Sleep(500);
                     continue;
                 }
 
                 combatEngine.ExecuteNextStep();
-                Thread.Sleep(250);
+                Thread.Sleep(500);
             }
         }
 

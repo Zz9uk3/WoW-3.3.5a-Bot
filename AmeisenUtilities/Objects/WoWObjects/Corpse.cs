@@ -31,9 +31,9 @@ namespace AmeisenUtilities
             sb.Append(" >> Address: " + BaseAddress.ToString("X"));
             sb.Append(" >> OwnerGUID: " + Owner);
             sb.Append(" >> GUID: " + Guid);
-            sb.Append(" >> PosX: " + pos.x);
-            sb.Append(" >> PosY: " + pos.y);
-            sb.Append(" >> PosZ: " + pos.z);
+            sb.Append(" >> PosX: " + pos.X);
+            sb.Append(" >> PosY: " + pos.Y);
+            sb.Append(" >> PosZ: " + pos.Z);
             sb.Append(" >> Rotation: " + Rotation);
             sb.Append(" >> Distance: " + Distance);
             sb.Append(" >> MapID: " + MapID);
@@ -46,9 +46,9 @@ namespace AmeisenUtilities
         {
             base.Update();
 
-            pos.x = BlackMagicInstance.ReadFloat(BaseAddress + 0x24);
-            pos.y = BlackMagicInstance.ReadFloat(BaseAddress + 0x28);
-            pos.z = BlackMagicInstance.ReadFloat(BaseAddress + 0x2C);
+            pos.X = BlackMagicInstance.ReadFloat(BaseAddress + 0x24);
+            pos.Y = BlackMagicInstance.ReadFloat(BaseAddress + 0x28);
+            pos.Z = BlackMagicInstance.ReadFloat(BaseAddress + 0x2C);
             Rotation = BlackMagicInstance.ReadFloat(BaseAddress + 0x20);
             Owner = BlackMagicInstance.ReadUInt64(BaseAddress + 0x18);
         }
