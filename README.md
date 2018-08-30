@@ -1,4 +1,4 @@
-# AmeisenBot - WoW 3.3.5a Bot [![Build Status](https://jenkins.jnns.de/buildStatus/icon?job=AmeisenBot)](https://jenkins.jnns.de/job/AmeisenBot/) [![codecov](https://codecov.io/gh/Jnnshschl/WoW-3.3.5a-Bot/branch/master/graph/badge.svg)](https://codecov.io/gh/Jnnshschl/WoW-3.3.5a-Bot)
+# AmeisenBot - WoW 3.3.5a Bot [![Build Status](https://jenkins.jnns.de/buildStatus/icon?job=AmeisenBot)](https://jenkins.jnns.de/job/AmeisenBot/) [![codecov](https://codecov.io/gh/Jnnshschl/WoW-3.3.5a-Bot/branch/master/graph/badge.svg)](https://codecov.io/gh/Jnnshschl/WoW-3.3.5a-Bot) [![HitCount](http://hits.dwyl.io/jnnshschl/WoW-3.3.5a-Bot.svg)](http://hits.dwyl.io/jnnshschl/WoW-3.3.5a-Bot)
 
 
 A bot written in (at this time) C# only for World of Warcraft WotLK (3.3.5a 12340) (the best WoW :P).
