@@ -127,7 +127,7 @@ namespace AmeisenBotGUI
 
             BotManager.Settings.serverIP = textboxIP.Text;
             BotManager.Settings.serverPort = Convert.ToInt32(textboxPort.Text);
-            BotManager.Settings.autoConnect = checkboxAutoConnect.IsChecked;
+            BotManager.Settings.autoConnect = (bool)checkboxAutoConnect.IsChecked;
 
             BotManager.SaveSettingsToFile(BotManager.GetLoadedConfigName());
         }

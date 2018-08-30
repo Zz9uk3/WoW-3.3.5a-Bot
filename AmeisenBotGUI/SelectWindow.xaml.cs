@@ -107,8 +107,11 @@ namespace AmeisenBotGUI
                     File.WriteAllText(path, Newtonsoft.Json.JsonConvert.SerializeObject(credentials));
 
                 string charname = textboxCharactername.Text;
-                Process p = Process.Start(autoLoginExe, ((WoWExe)comboBoxWoWs.SelectedItem).process.Id.ToString() + " " + credentials.charSlot + " " + credentials.username + " " + credentials.password);
-                StartAutoLogin(p, charname);
+
+                WoWLoginAutomator.LoginAutomator.DoLogin(((WoWExe)comboBoxWoWs.SelectedItem).process.Id, credentials.charSlot, credentials.username, credentials.password);
+
+                ((WoWExe)comboBoxWoWs.SelectedItem).characterName = charname;
+                ButtonGo_Click(this, null);
             }
         }
 
@@ -210,13 +213,6 @@ namespace AmeisenBotGUI
                 || ((WoWExe)comboBoxWoWs.SelectedItem).process == null)
                     comboBoxWoWs.SelectedItem = comboBoxWoWs.Items[0];
             }
-        }
-
-        private void StartAutoLogin(Process p, string charname)
-        {
-            p.WaitForExit();
-            ((WoWExe)comboBoxWoWs.SelectedItem).characterName = charname;
-            ButtonGo_Click(this, null);
         }
 
         #endregion Private Methods

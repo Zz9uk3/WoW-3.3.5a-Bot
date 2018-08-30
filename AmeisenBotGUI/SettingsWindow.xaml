@@ -170,7 +170,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="275,82,0,0" TextWrapping="Wrap" Text="127.0.0.1" VerticalAlignment="Top" Width="86" BorderThickness="2">
+        <TextBox x:Name="textboxIP" HorizontalAlignment="Left" Height="23" Margin="275,82,0,0" TextWrapping="Wrap" Text="127.0.0.1" VerticalAlignment="Top" Width="86" BorderThickness="2">
             <TextBox.SelectionBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}"/>
             </TextBox.SelectionBrush>
