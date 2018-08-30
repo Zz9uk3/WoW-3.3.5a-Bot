@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenMapping", "AmeisenMa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenPathLib", "AmeisenPath\AmeisenPathLib\AmeisenPathLib.csproj", "{DA582835-AC0B-4C1D-ADD7-1A272057BDE6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WoWLoginAutomator", "WoW-LoginAutomator\WoW-LoginAutomator\WoWLoginAutomator.csproj", "{14811D57-C812-4651-85FA-7C65B974724B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -167,6 +169,18 @@ Global
 		{DA582835-AC0B-4C1D-ADD7-1A272057BDE6}.Release|x64.Build.0 = Release|Any CPU
 		{DA582835-AC0B-4C1D-ADD7-1A272057BDE6}.Release|x86.ActiveCfg = Release|Any CPU
 		{DA582835-AC0B-4C1D-ADD7-1A272057BDE6}.Release|x86.Build.0 = Release|Any CPU
+		{14811D57-C812-4651-85FA-7C65B974724B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14811D57-C812-4651-85FA-7C65B974724B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14811D57-C812-4651-85FA-7C65B974724B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{14811D57-C812-4651-85FA-7C65B974724B}.Debug|x64.Build.0 = Debug|Any CPU
+		{14811D57-C812-4651-85FA-7C65B974724B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{14811D57-C812-4651-85FA-7C65B974724B}.Debug|x86.Build.0 = Debug|Any CPU
+		{14811D57-C812-4651-85FA-7C65B974724B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14811D57-C812-4651-85FA-7C65B974724B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14811D57-C812-4651-85FA-7C65B974724B}.Release|x64.ActiveCfg = Release|Any CPU
+		{14811D57-C812-4651-85FA-7C65B974724B}.Release|x64.Build.0 = Release|Any CPU
+		{14811D57-C812-4651-85FA-7C65B974724B}.Release|x86.ActiveCfg = Release|Any CPU
+		{14811D57-C812-4651-85FA-7C65B974724B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

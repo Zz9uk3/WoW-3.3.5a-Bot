@@ -201,6 +201,10 @@
       <Project>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</Project>
       <Name>AmeisenUtilities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WoW-LoginAutomator\WoW-LoginAutomator\WoWLoginAutomator.csproj">
+      <Project>{14811d57-c812-4651-85fa-7c65b974724b}</Project>
+      <Name>WoWLoginAutomator</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
