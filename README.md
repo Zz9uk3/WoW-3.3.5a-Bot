@@ -70,6 +70,10 @@ To use this piece of turd, junk, trash, don't know how to call this thing, Open 
 
 ![alt text](https://github.com/Jnnshschl/WoW-3.3.5a-Bot/blob/master/images/settings.PNG?raw=true "Settings")
 
+### Map
+
+![alt text](https://github.com/Jnnshschl/WoW-3.3.5a-Bot/blob/master/images/map.PNG?raw=true "Map")
+
 ### Debug UI
 
 ![alt text](https://github.com/Jnnshschl/WoW-3.3.5a-Bot/blob/master/images/debug.PNG?raw=true "Debug GUI")
