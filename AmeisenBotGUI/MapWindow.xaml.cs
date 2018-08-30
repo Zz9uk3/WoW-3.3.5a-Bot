@@ -1,11 +1,14 @@
 ﻿using AmeisenDB;
 using AmeisenManager;
 using AmeisenMapping;
+using AmeisenMapping.objects;
+using AmeisenUtilities;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace AmeisenBotGUI
 {
@@ -14,6 +17,9 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class MapWindow : Window
     {
+        private Map currentMap;
+        private DispatcherTimer uiUpdateTimer;
+        private DispatcherTimer mapUpdateTimer;
         #region Public Constructors
 
         public MapWindow()
@@ -112,6 +118,30 @@ namespace AmeisenBotGUI
 
         private void DrawMap(Map map)
         {
+            mapCanvas.Children.Clear();
+            Vector3 myPos = AmeisenBotManager.Instance.Me.pos;
+            Vector3 myCanvasMiddle = new Vector3
+            {
+                X = Width / 2,
+                Y = Height / 2
+            };
+
+            foreach (MapNode node in map.Nodes)
+            {
+                Vector3 tempPos = NodePosToCanvasPos(new Vector3(node.X, node.Y, node.Z), myPos);
+                int newX = (int)(myCanvasMiddle.X + tempPos.X);
+                int newY = (int)(myCanvasMiddle.Y + tempPos.Y);
+
+                if (!(newX >= Width - 40)
+                    && !(newX <= (Width - 40) * -1)
+                    && !(newY >= Height - 40)
+                    && !(newY <= (Height - 40) * -1))
+                {
+                    DrawRectangle(newX - 2, newY - 2, 4, 4, Colors.Lime, mapCanvas);
+                }
+            }
+
+            DrawRectangle((int)myCanvasMiddle.X, (int)myCanvasMiddle.Y, 4, 4, Colors.Cyan, mapCanvas);
         }
 
         private Map LoadMap()
@@ -124,9 +154,36 @@ namespace AmeisenBotGUI
                        );
         }
 
+        private Vector3 NodePosToCanvasPos(Vector3 canvasPos, Vector3 myPos)
+        {
+            canvasPos.X -= myPos.X;
+            canvasPos.Y -= myPos.Y;
+            return canvasPos;
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            DrawMap(LoadMap());
+            currentMap = LoadMap();
+
+            uiUpdateTimer = new DispatcherTimer();
+            uiUpdateTimer.Tick += new EventHandler(UIUpdateTimer_Tick);
+            uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, AmeisenBotManager.Instance.Settings.dataRefreshRate);
+            uiUpdateTimer.Start();
+
+            mapUpdateTimer = new DispatcherTimer();
+            mapUpdateTimer.Tick += new EventHandler(MapUpdateTimer_Tick);
+            mapUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, AmeisenBotManager.Instance.Settings.dataRefreshRate * 10);
+            mapUpdateTimer.Start();
+        }
+
+        private void UIUpdateTimer_Tick(object sender, EventArgs e)
+        {
+            DrawMap(currentMap);
+        }
+
+        private void MapUpdateTimer_Tick(object sender, EventArgs e)
+        {
+            currentMap = LoadMap();
         }
 
         private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -135,5 +192,11 @@ namespace AmeisenBotGUI
         }
 
         #endregion Private Methods
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            uiUpdateTimer.Stop();
+            mapUpdateTimer.Stop();
+        }
     }
 }

@@ -19,10 +19,10 @@ namespace AmeisenBotGUI
     {
         #region Private Fields
 
-        private readonly string autoLoginExe = AppDomain.CurrentDomain.BaseDirectory + "/WoW-LoginAutomator.exe";
+        private readonly string autoLoginExe = AppDomain.CurrentDomain.BaseDirectory + "/WoWLoginAutomator.exe";
         private readonly string configPath = AppDomain.CurrentDomain.BaseDirectory + "/credentials/";
         private readonly string extension = ".json";
-        private bool loginAutoIsPossible = false;
+        private bool autologinIsPossible = false;
 
         #endregion Private Fields
 
@@ -37,7 +37,7 @@ namespace AmeisenBotGUI
             {
                 GetAllAcoounts();
                 loadingForm.Height = 150;
-                loginAutoIsPossible = true;
+                autologinIsPossible = true;
             }
             else
                 loadingForm.Height = 58;
@@ -91,7 +91,7 @@ namespace AmeisenBotGUI
         {
             Credentials credentials;
 
-            if (loginAutoIsPossible && ((WoWExe)comboBoxWoWs.SelectedItem).characterName == "")
+            if (autologinIsPossible && ((WoWExe)comboBoxWoWs.SelectedItem).characterName == "")
             {
                 if (!Directory.Exists(configPath))
                     Directory.CreateDirectory(configPath);
@@ -146,7 +146,7 @@ namespace AmeisenBotGUI
 
         private void LoadAccount(string accountName)
         {
-            if (loginAutoIsPossible)
+            if (autologinIsPossible)
             {
                 if (!Directory.Exists(configPath))
                     Directory.CreateDirectory(configPath);

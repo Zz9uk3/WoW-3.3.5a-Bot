@@ -23,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenDB", "AmeisenDB\Amei
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenMapping", "AmeisenMapping\AmeisenMapping.csproj", "{08DB57D7-287A-4C12-AB76-F5EE4A0F3395}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WoW-LoginAutomator", "WoW-LoginAutomator\WoW-LoginAutomator\WoW-LoginAutomator.csproj", "{14811D57-C812-4651-85FA-7C65B974724B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WoWLoginAutomator", "WoW-LoginAutomator\WoW-LoginAutomator\WoWLoginAutomator.csproj", "{14811D57-C812-4651-85FA-7C65B974724B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenPathLib", "AmeisenPath\AmeisenPathLib\AmeisenPathLib.csproj", "{DA582835-AC0B-4C1D-ADD7-1A272057BDE6}"
 EndProject

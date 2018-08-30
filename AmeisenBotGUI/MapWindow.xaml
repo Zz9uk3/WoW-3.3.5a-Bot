@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AmeisenBotGUI"
         mc:Ignorable="d"
-        Title="Map" Height="600" Width="600" WindowStyle="None" ResizeMode="NoResize" BorderThickness="2" MouseDown="Window_MouseDown" Loaded="Window_Loaded" Icon="Icon.ico">
+        Title="Map" Height="600" Width="600" WindowStyle="None" ResizeMode="NoResize" BorderThickness="2" MouseDown="Window_MouseDown" Loaded="Window_Loaded" Icon="Icon.ico" Closing="Window_Closing">
     <Window.Background>
         <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
     </Window.Background>
@@ -30,5 +30,17 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Button.BorderBrush>
         </Button>
+        <Label Content="Me:" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Label.Foreground>
+        </Label>
+        <Rectangle Fill="Cyan" HorizontalAlignment="Left" Height="8" Margin="40,10,0,0" Stroke="Black" VerticalAlignment="Top" Width="8"/>
+        <Label Content="WalkableNode:" HorizontalAlignment="Left" Margin="53,0,0,0" VerticalAlignment="Top">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Label.Foreground>
+        </Label>
+        <Rectangle Fill="#FF46FF00" HorizontalAlignment="Left" Height="8" Margin="148,10,0,0" Stroke="Black" VerticalAlignment="Top" Width="8"/>
     </Grid>
 </Window>
