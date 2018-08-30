@@ -55,10 +55,14 @@ namespace AmeisenBotGUI
                 string imageDir = AppDomain.CurrentDomain.BaseDirectory + "config/img/";
 
                 if (!Directory.Exists(configDir))
+                {
                     Directory.CreateDirectory(configDir);
+                }
 
                 if (!Directory.Exists(imageDir))
+                {
                     Directory.CreateDirectory(imageDir);
+                }
 
                 string imagePath = AppDomain.CurrentDomain.BaseDirectory + "config/img/" + openFileDialog.SafeFileName;
 
@@ -72,34 +76,58 @@ namespace AmeisenBotGUI
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if ((bool)radiobuttonRefreshSpeedLowest.IsChecked)
+            {
                 BotManager.Settings.dataRefreshRate = 1000;
+            }
             else if ((bool)radiobuttonRefreshSpeedLow.IsChecked)
+            {
                 BotManager.Settings.dataRefreshRate = 500;
+            }
             else if ((bool)radiobuttonRefreshSpeedMedium.IsChecked)
+            {
                 BotManager.Settings.dataRefreshRate = 250;
+            }
             else if ((bool)radiobuttonRefreshSpeedHigh.IsChecked)
+            {
                 BotManager.Settings.dataRefreshRate = 100;
+            }
             else if ((bool)radiobuttonRefreshSpeedHighest.IsChecked)
+            {
                 BotManager.Settings.dataRefreshRate = 0;
+            }
             else
             {
                 //something is wrong...
             }
 
             if ((bool)radiobuttonIntLowest.IsChecked)
+            {
                 BotManager.Settings.botMaxThreads = 1;
+            }
             else if ((bool)radiobuttonIntLow.IsChecked)
+            {
                 BotManager.Settings.botMaxThreads = 2;
+            }
             else if ((bool)radiobuttonIntMedium.IsChecked)
+            {
                 BotManager.Settings.botMaxThreads = 3;
+            }
             else if ((bool)radiobuttonIntHigh.IsChecked)
+            {
                 BotManager.Settings.botMaxThreads = 4;
+            }
             else if ((bool)radiobuttonIntHighest.IsChecked)
+            {
                 BotManager.Settings.botMaxThreads = 8;
+            }
             else
             {
                 //something is wrong...
             }
+
+            BotManager.Settings.serverIP = textboxIP.Text;
+            BotManager.Settings.serverPort = Convert.ToInt32(textboxPort.Text);
+            BotManager.Settings.autoConnect = checkboxAutoConnect.IsChecked;
 
             BotManager.SaveSettingsToFile(BotManager.GetLoadedConfigName());
         }
@@ -159,6 +187,10 @@ namespace AmeisenBotGUI
                 default:
                     break;
             }
+
+            textboxIP.Text = BotManager.Settings.serverIP;
+            textboxPort.Text = BotManager.Settings.serverPort.ToString();
+            checkboxAutoConnect.IsChecked = (bool)BotManager.Settings.autoConnect;
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)

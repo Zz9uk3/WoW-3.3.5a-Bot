@@ -22,6 +22,9 @@
         public string fontColor = "#FFFFFFFF";
         public string masterName = "";
         public string picturePath = "";
+        public string serverIP = "127.0.0.1";
+        public int serverPort = 16200;
+        public bool autoConnect = false;
 
         #endregion Public Fields
     }

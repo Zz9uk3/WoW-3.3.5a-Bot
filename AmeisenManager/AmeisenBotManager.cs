@@ -5,7 +5,6 @@ using AmeisenDB;
 using AmeisenLogging;
 using AmeisenUtilities;
 using Magic;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
@@ -55,7 +54,10 @@ namespace AmeisenManager
                 lock (padlock)
                 {
                     if (instance == null)
+                    {
                         instance = new AmeisenBotManager();
+                    }
+
                     return instance;
                 }
             }
@@ -80,10 +82,16 @@ namespace AmeisenManager
                 followGroup = value;
 
                 if (value == true)
-                    foreach (UInt64 guid in Me.PartymemberGUIDs)
+                {
+                    foreach (ulong guid in Me.PartymemberGUIDs)
+                    {
                         AmeisenFollowManager.AddPlayerToFollow((Unit)AmeisenObjectManager.GetWoWObjectFromGUID(guid));
+                    }
+                }
                 else
+                {
                     AmeisenFollowManager.RemoveAllPlayersToFollow();
+                }
             }
         }
 
@@ -143,7 +151,14 @@ namespace AmeisenManager
 
         public List<Bot> GetNetworkBots()
         {
-            if (AmeisenClient.IsRegistered) return AmeisenClient.BotList; else return null;
+            if (AmeisenClient.IsRegistered)
+            {
+                return AmeisenClient.BotList;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public WoWExe GetWowExe()
@@ -213,13 +228,19 @@ namespace AmeisenManager
 
             // Connect to Server
             // TODO: Move into settings
-            AmeisenClient.Register(Me, IPAddress.Parse("127.0.0.1"));
+            if (Settings.autoConnect)
+            {
+                AmeisenClient.Register(Me, IPAddress.Parse("127.0.0.1"));
+            }
         }
 
         public void StopBot()
         {
             // Disconnect from Server
-            AmeisenClient.Unregister();
+            if (AmeisenClient.IsRegistered)
+            {
+                AmeisenClient.Unregister();
+            }
 
             // Stop object updates
             AmeisenObjectManager.Stop();
