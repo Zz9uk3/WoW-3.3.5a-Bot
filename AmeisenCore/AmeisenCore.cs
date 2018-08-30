@@ -51,9 +51,9 @@ namespace AmeisenCoreUtils
         public static void CastSpellByName(string spellname, bool onMyself)
         {
             if (onMyself)
-                LUADoString("CastSpellByName(\"" + spellname + "\");");
-            else
                 LUADoString("CastSpellByName(\"" + spellname + "\", true);");
+            else
+                LUADoString("CastSpellByName(\"" + spellname + "\");");
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace AmeisenCoreUtils
 
             //try { info.name = GetLocalizedText(cmd, "name"); } catch { info.name = ""; }
             //try { info.stacks = int.Parse(GetLocalizedText(cmd, "count")); } catch { info.stacks = -1; }
-            try { string s = GetLocalizedText(cmd, "duration"); info.duration = int.Parse(s); } catch { info.duration = -1; }
+            try { info.duration = int.Parse(GetLocalizedText(cmd, "duration")); } catch { info.duration = -1; }
 
             info.name = auraname;
 
@@ -169,11 +169,13 @@ namespace AmeisenCoreUtils
         /// <param name="command">lua command to run</param>
         public static string GetLocalizedText(string command, string variable)
         {
-            uint argCCCommand = BlackMagic.AllocateMemory(Encoding.UTF8.GetBytes(command).Length + 1);
-            BlackMagic.WriteBytes(argCCCommand, Encoding.UTF8.GetBytes(command));
-
-            string[] asmDoString = new string[]
+            if (command.Length > 0 && variable.Length > 0)
             {
+                uint argCCCommand = BlackMagic.AllocateMemory(Encoding.UTF8.GetBytes(command).Length + 1);
+                BlackMagic.WriteBytes(argCCCommand, Encoding.UTF8.GetBytes(command));
+
+                string[] asmDoString = new string[]
+                {
                 "MOV EAX, " + (argCCCommand),
                 "PUSH 0",
                 "PUSH EAX",
@@ -181,33 +183,43 @@ namespace AmeisenCoreUtils
                 "CALL " + (WoWOffsets.luaDoString),
                 "ADD ESP, 0xC",
                 "RETN",
-            };
+                };
 
-            uint argCC = BlackMagic.AllocateMemory(Encoding.UTF8.GetBytes(variable).Length + 1);
-            BlackMagic.WriteBytes(argCC, Encoding.UTF8.GetBytes(variable));
+                uint argCC = BlackMagic.AllocateMemory(Encoding.UTF8.GetBytes(variable).Length + 1);
+                BlackMagic.WriteBytes(argCC, Encoding.UTF8.GetBytes(variable));
 
-            string[] asmLocalText = new string[]
-            {
-                "CALL " + (WoWOffsets.clientObjectManagerGetActivePlayerObject),
-                "MOV ECX, EAX",
+                uint playerBase = BlackMagic.ReadUInt(WoWOffsets.playerBase);
+                playerBase = BlackMagic.ReadUInt(playerBase + 0x34);
+                playerBase = BlackMagic.ReadUInt(playerBase + 0x24);
+
+                AmeisenLogger.Instance.Log(LogLevel.WARNING, "Variable CodeCave: " +
+                    Encoding.UTF8.GetString(BlackMagic.ReadBytes(argCC, Encoding.UTF8.GetBytes(variable).Length)) +
+                    " | " + variable, "AmeisenCore.AmeisenCore");
+
+                string[] asmLocalText = new string[]
+                {
+                //"CALL " + (WoWOffsets.clientObjectManagerGetActivePlayerObject),
+                "MOV ECX, "+(playerBase),
                 "PUSH -1",
                 "PUSH " + (argCC),
                 "CALL " + (WoWOffsets.luaGetLocalizedText),
                 "RETN",
-            };
+                };
 
-            HookJob hookJobLocaltext = new HookJob(asmLocalText, true);
-            ReturnHookJob hookJobDoString = new ReturnHookJob(asmDoString, false, hookJobLocaltext);
+                HookJob hookJobLocaltext = new HookJob(asmLocalText, true);
+                ReturnHookJob hookJobDoString = new ReturnHookJob(asmDoString, false, hookJobLocaltext);
 
-            AmeisenHook.Instance.AddHookJob(ref hookJobDoString);
+                AmeisenHook.Instance.AddHookJob(ref hookJobDoString);
 
-            while (!hookJobDoString.IsFinished || !hookJobDoString.IsFinished) { Thread.Sleep(5); }
+                while (!hookJobDoString.IsFinished || !hookJobDoString.IsFinished) { Thread.Sleep(5); }
 
-            string result = Encoding.UTF8.GetString((byte[])hookJobDoString.ReturnValue);
-            BlackMagic.FreeMemory(argCC);
-            BlackMagic.FreeMemory(argCCCommand);
+                string result = Encoding.UTF8.GetString((byte[])hookJobDoString.ReturnValue);
 
-            return result;
+                BlackMagic.FreeMemory(argCCCommand);
+                BlackMagic.FreeMemory(argCC);
+                return result;
+            }
+            return "";
         }
 
         private static void ResumeMainthread()
@@ -362,7 +374,7 @@ namespace AmeisenCoreUtils
             AmeisenHook.Instance.AddHookJob(ref hookJob);
 
             while (!hookJob.IsFinished) { Thread.Sleep(1); }
-            
+
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Command returned: Command [" + command + "]", "AmeisenCore.AmeisenCore");
             BlackMagic.FreeMemory(argCC);
         }

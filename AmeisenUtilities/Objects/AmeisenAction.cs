@@ -1,4 +1,6 @@
-﻿namespace AmeisenUtilities
+﻿using System.Text;
+
+namespace AmeisenUtilities
 {
     /// <summary>
     /// Class that stores an action for the bot to perform as soon as possible
@@ -53,6 +55,16 @@
         /// </summary>
         /// <returns>true when its done, false when there is still stuff to do</returns>
         public bool IsActionDone() { return isDone; }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Type: " + actionType + ", ");
+            if (actionParams != null)
+                sb.Append("ActionParams: " + actionParams.ToString() + ", ");
+            sb.Append("IsDone: " + isDone.ToString());
+            return sb.ToString();
+        }
 
         #endregion Public Methods
     }

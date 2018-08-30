@@ -193,6 +193,10 @@
       <Project>{08DB57D7-287A-4C12-AB76-F5EE4A0F3395}</Project>
       <Name>AmeisenMapping</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AmeisenServer\AmeisenServer.csproj">
+      <Project>{0f5350c6-755b-4d32-8dfd-4057c925ef0d}</Project>
+      <Name>AmeisenServer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AmeisenUtilities\AmeisenUtilities.csproj">
       <Project>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</Project>
       <Name>AmeisenUtilities</Name>

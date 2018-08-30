@@ -93,13 +93,9 @@ namespace AmeisenAI
         {
             while (!stop)
             {
-                if (AmeisenCoreUtils.AmeisenCore.IsGhost(LUAUnit.player))
+                if (Me.Health <= 1)
                 {
-                    if (Me.NeedToRevive)
-                        if (AmeisenAIManager.Instance.IsAllowedToRevive)
-                            AmeisenCoreUtils.AmeisenCore.Revive();
-
-                    Thread.Sleep(500);
+                    Thread.Sleep(1000);
                     continue;
                 }
 

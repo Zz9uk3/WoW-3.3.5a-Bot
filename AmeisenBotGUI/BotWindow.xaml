@@ -198,7 +198,7 @@
                 <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
             </Button.Background>
         </Button>
-        <Button x:Name="buttonMap" Content="🚀" Margin="0,218,-2,0" HorizontalAlignment="Right" Width="60" BorderThickness="2" Background="{x:Null}" FontSize="32" Click="ButtonMap_Click" Height="60" VerticalAlignment="Top">
+        <Button x:Name="buttonMap" Content="🏝️" Margin="0,218,-2,0" HorizontalAlignment="Right" Width="60" BorderThickness="2" Background="{x:Null}" FontSize="32" Click="ButtonMap_Click" Height="60" VerticalAlignment="Top">
             <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Button.BorderBrush>

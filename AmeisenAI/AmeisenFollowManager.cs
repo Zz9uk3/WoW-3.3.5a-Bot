@@ -1,4 +1,6 @@
-﻿using AmeisenData;
+﻿using AmeisenCoreUtils;
+using AmeisenData;
+using AmeisenLogging;
 using AmeisenUtilities;
 using System.Collections.Generic;
 using System.Threading;
@@ -105,23 +107,31 @@ namespace AmeisenAI
         {
             while (!stop)
             {
-                if (Me.NeedToRevive || !AmeisenAIManager.Instance.DoFollow)
+                if (Me.Health == 0)
                 {
-                    Thread.Sleep(25);
+                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Need to revive myself", this);
+
+                    if (AmeisenCore.IsDead(LUAUnit.player))
+                    {
+                        if (AmeisenAIManager.Instance.IsAllowedToRevive)
+                            AmeisenCore.Revive();
+                    }
+
+                    if (AmeisenCore.IsGhost(LUAUnit.player))
+                    {
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "I'm a ghost", this);
+
+                        AmeisenAction ameisenAction = new AmeisenAction(
+                        AmeisenActionType.GO_TO_CORPSE_AND_REVIVE, null);
+
+                        AmeisenAIManager.Instance.AddActionToQueue(ref ameisenAction);
+
+                        while (!ameisenAction.IsActionDone())
+                            Thread.Sleep(50);
+                    }
+
+                    Thread.Sleep(2000);
                     continue;
-                }
-
-                if (AmeisenCoreUtils.AmeisenCore.IsGhost(LUAUnit.player))
-                {
-                    //TODO: Handle death follow GO_TO_CORPSE_AND_REVIVE
-
-                    AmeisenAction ameisenAction = new AmeisenAction(
-                    AmeisenActionType.GO_TO_CORPSE_AND_REVIVE, null);
-
-                    AmeisenAIManager.Instance.AddActionToQueue(ref ameisenAction);
-
-                    while (!ameisenAction.IsActionDone())
-                        Thread.Sleep(50);
                 }
 
                 if (followUnitList.Count > 0)

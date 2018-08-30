@@ -250,6 +250,8 @@ namespace AmeisenAI
             {
                 currentAction.ActionIsDone();
             }
+            else
+                Thread.Sleep(1000);
         }
 
         private void InteractWithTarget(double distance, Interaction action, ref AmeisenAction ameisenAction)
@@ -346,7 +348,7 @@ namespace AmeisenAI
         /// <param name="threadID">id to identify the thread</param>
         private void WorkActions(int threadID)
         {
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "AI-Thread up: " + threadID, this);
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "AI-Thread up", this);
             while (aiActive)
             {
                 if (!actionQueue.IsEmpty)

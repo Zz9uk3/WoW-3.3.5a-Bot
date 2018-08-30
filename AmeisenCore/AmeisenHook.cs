@@ -182,9 +182,9 @@ namespace AmeisenCoreUtils
 
                         AmeisenLogger.Instance.Log(LogLevel.DEBUG, "EndScene at: " + endscene.ToString("X"), this);
                         AmeisenLogger.Instance.Log(LogLevel.DEBUG, "EndScene returning at: " + (endsceneReturnAddress).ToString("X"), this);
-                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "CodeCave at:" + codeCave.ToString("X"), this);
-                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "CodeCaveForInjection at:" + codeCaveForInjection.ToString("X"), this);
-                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "CodeToExecute at:" + codeToExecute.ToString("X"), this);
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "CodeCave at: " + codeCave.ToString("X"), this);
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "CodeCaveForInjection at: " + codeCaveForInjection.ToString("X"), this);
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "CodeToExecute at: " + codeToExecute.ToString("X"), this);
                         AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Original Endscene bytes: " + Utils.ByteArrayToString(originalEndscene), this);
 
                         AmeisenCore.BlackMagic.WriteBytes(codeCave, originalEndscene);
