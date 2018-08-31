@@ -137,11 +137,15 @@ namespace AmeisenBotGUI
                     && !(newY >= Height - 40)
                     && !(newY <= (Height - 40) * -1))
                 {
-                    DrawRectangle(newX - 2, newY - 2, 4, 4, Colors.Lime, mapCanvas);
+                    DrawRectangle(newX - 2, newY - 2, 4, 4, 
+                    (Color)ColorConverter.ConvertFromString((string)Application.Current.Resources["WalkableNodeColor"]),
+                    mapCanvas);
                 }
             }
 
-            DrawRectangle((int)myCanvasMiddle.X, (int)myCanvasMiddle.Y, 4, 4, Colors.Cyan, mapCanvas);
+            DrawRectangle((int)myCanvasMiddle.X, (int)myCanvasMiddle.Y, 4, 4,
+                (Color)ColorConverter.ConvertFromString((string)Application.Current.Resources["MeNodeColor"]),
+                mapCanvas);
         }
 
         private Map LoadMap()

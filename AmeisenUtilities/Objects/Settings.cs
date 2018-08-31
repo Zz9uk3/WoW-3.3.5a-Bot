@@ -24,7 +24,15 @@
         public string picturePath = "";
         public string serverIP = "127.0.0.1";
         public int serverPort = 16200;
-        public bool autoConnect = false;
+        public bool serverAutoConnect = false;
+        public string databaseIP = "127.0.0.1";
+        public int databasePort = 3306;
+        public string databaseName = "ameisenbot";
+        public string databaseUsername = "ameisenbot";
+        public string databasePasswort = "AmeisenPassword";
+        public bool databaseAutoConnect = false;
+        public string walkableNodeColor = "#FFA0FF00";
+        public string meNodeColor = "#FF00FFFF";
 
         #endregion Public Fields
     }

@@ -127,7 +127,20 @@ namespace AmeisenBotGUI
 
             BotManager.Settings.serverIP = textboxIP.Text;
             BotManager.Settings.serverPort = Convert.ToInt32(textboxPort.Text);
-            BotManager.Settings.autoConnect = (bool)checkboxAutoConnect.IsChecked;
+            BotManager.Settings.serverAutoConnect = (bool)checkboxAutoConnect.IsChecked;
+
+            BotManager.Settings.databaseIP = textboxDBIP.Text;
+            BotManager.Settings.databasePort = Convert.ToInt32(textboxDBPort.Text);
+            BotManager.Settings.databaseName = textboxDBDatabase.Text;
+            BotManager.Settings.databaseUsername = textboxDBUsername.Text;
+            BotManager.Settings.databasePasswort = textboxDBPassword.Password;
+            BotManager.Settings.databaseAutoConnect = (bool)checkboxDBAutoConnect.IsChecked;
+
+            BotManager.Settings.backgroundColor = (string)Application.Current.Resources["AccentColor"];
+            BotManager.Settings.accentColor = (string)Application.Current.Resources["BackgroundColor"];
+            BotManager.Settings.fontColor = (string)Application.Current.Resources["TextColor"];
+            BotManager.Settings.walkableNodeColor = (string)Application.Current.Resources["WalkableNodeColor"];
+            BotManager.Settings.meNodeColor = (string)Application.Current.Resources["MeNodeColor"];
 
             BotManager.SaveSettingsToFile(BotManager.GetLoadedConfigName());
         }
@@ -190,7 +203,14 @@ namespace AmeisenBotGUI
 
             textboxIP.Text = BotManager.Settings.serverIP;
             textboxPort.Text = BotManager.Settings.serverPort.ToString();
-            checkboxAutoConnect.IsChecked = (bool)BotManager.Settings.autoConnect;
+            checkboxAutoConnect.IsChecked = BotManager.Settings.serverAutoConnect;
+
+            textboxDBIP.Text = BotManager.Settings.databaseIP;
+            textboxDBPort.Text = BotManager.Settings.databasePort.ToString();
+            textboxDBDatabase.Text = BotManager.Settings.databaseName;
+            textboxDBUsername.Text = BotManager.Settings.databaseUsername;
+            textboxDBPassword.Password = BotManager.Settings.databasePasswort;
+            checkboxDBAutoConnect.IsChecked = BotManager.Settings.databaseAutoConnect;
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)

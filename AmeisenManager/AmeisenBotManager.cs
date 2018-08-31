@@ -22,10 +22,11 @@ namespace AmeisenManager
         private static AmeisenBotManager instance;
 
         private readonly string sqlConnectionString =
-                "server=localhost;" +
-                "database=ameisenbot;" +
-                "uid=ameisenbot;" +
-                "password=AmeisenPassword;";
+                "server={0};" +
+                "port={1};" +
+                "database={2};" +
+                "uid={3};" +
+                "password={4};";
 
         private bool followGroup;
 
@@ -107,7 +108,7 @@ namespace AmeisenManager
         public bool IsSupposedToHeal { get; set; }
         public bool IsSupposedToTank { get; set; }
         public Me Me { get { return AmeisenDataHolder.Instance.Me; } }
-        public List<WoWExe> RunningWoWs { get { return AmeisenCoreUtils.AmeisenCore.GetRunningWoWs(); } }
+        public List<WoWExe> RunningWoWs { get { return AmeisenCore.GetRunningWoWs(); } }
         public Settings Settings { get { return AmeisenSettings.Settings; } }
         public Unit Target { get { return AmeisenDataHolder.Instance.Target; } }
         public WoWExe WowExe { get; private set; }
@@ -120,12 +121,12 @@ namespace AmeisenManager
 
         public static int GetMapID()
         {
-            return AmeisenCoreUtils.AmeisenCore.GetMapID();
+            return AmeisenCore.GetMapID();
         }
 
         public static int GetZoneID()
         {
-            return AmeisenCoreUtils.AmeisenCore.GetZoneID();
+            return AmeisenCore.GetZoneID();
         }
 
         public void AddActionToAIQueue(AmeisenAction ameisenAction)
@@ -140,8 +141,8 @@ namespace AmeisenManager
 
         public void FaceTarget()
         {
-            AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.ATTACK);
-            AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.STOP);
+            AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.ATTACK);
+            AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.STOP);
         }
 
         public string GetLoadedConfigName()
@@ -168,8 +169,8 @@ namespace AmeisenManager
 
         public bool IsBotIngame()
         {
-            return AmeisenCoreUtils.AmeisenCore.CheckWorldLoaded()
-               && !AmeisenCoreUtils.AmeisenCore.CheckLoadingScreen();
+            return AmeisenCore.CheckWorldLoaded()
+               && !AmeisenCore.CheckLoadingScreen();
         }
 
         public void LoadCombatClass(string fileName)
@@ -198,13 +199,23 @@ namespace AmeisenManager
             AmeisenSettings.LoadFromFile(wowExe.characterName);
 
             // Connect to DB
-            AmeisenDBManager.ConnectToMySQL(sqlConnectionString);
+            if (AmeisenSettings.Settings.databaseAutoConnect)
+            {
+                AmeisenDBManager.ConnectToMySQL(
+                string.Format(sqlConnectionString,
+                    AmeisenSettings.Settings.databaseIP,
+                    AmeisenSettings.Settings.databasePort,
+                    AmeisenSettings.Settings.databaseName,
+                    AmeisenSettings.Settings.databaseUsername,
+                    AmeisenSettings.Settings.databasePasswort)
+                );
+            }
 
             // Attach to Proccess
             Blackmagic = new BlackMagic(wowExe.process.Id);
             IsAttached = Blackmagic.IsProcessOpen;
             // TODO: make this better
-            AmeisenCoreUtils.AmeisenCore.BlackMagic = Blackmagic;
+            AmeisenCore.BlackMagic = Blackmagic;
 
             // Hook EndScene
             AmeisenHook = AmeisenHook.Instance;
@@ -228,9 +239,12 @@ namespace AmeisenManager
 
             // Connect to Server
             // TODO: Move into settings
-            if (Settings.autoConnect)
+            if (Settings.serverAutoConnect)
             {
-                AmeisenClient.Register(Me, IPAddress.Parse("127.0.0.1"));
+                AmeisenClient.Register(
+                    Me,
+                    IPAddress.Parse(AmeisenSettings.Settings.ameisenServerIP),
+                    AmeisenSettings.Settings.serverPort);
             }
         }
 
