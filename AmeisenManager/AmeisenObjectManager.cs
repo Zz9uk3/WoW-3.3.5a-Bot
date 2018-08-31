@@ -177,7 +177,6 @@ namespace AmeisenManager
             foreach (WoWObject m in ActiveWoWObjects)
                 if (m.GetType() == typeof(Me))
                 {
-                    new Thread(new ThreadStart(() => UpdateNodeInDB((Me)m))).Start();
                     Me = (Me)m;
                     break;
                 }
@@ -204,6 +203,7 @@ namespace AmeisenManager
                     }
             // Best place for this :^)
             AntiAFK();
+            new Thread(new ThreadStart(() => UpdateNodeInDB(Me))).Start();
         }
 
         /// <summary>
@@ -227,13 +227,13 @@ namespace AmeisenManager
         private void UpdateNodeInDB(Me me)
         {
             Vector3 activeNode = new Vector3((int)me.pos.X, (int)me.pos.Y, (int)me.pos.Z);
-            if (activeNode.X != lastNode.X && activeNode.Y != lastNode.Y && activeNode.Z != lastNode.Z)
-            {
+            //if (activeNode.X != lastNode.X && activeNode.Y != lastNode.Y && activeNode.Z != lastNode.Z)
+            //{
                 int zoneID = AmeisenCoreUtils.AmeisenCore.GetZoneID();
                 int mapID = AmeisenCoreUtils.AmeisenCore.GetMapID();
                 AmeisenDBManager.Instance.UpdateOrAddNode(new MapNode(activeNode, zoneID, mapID));
-                lastNode = activeNode;
-            }
+            //}
+            //lastNode = activeNode;
         }
 
         #endregion Private Methods

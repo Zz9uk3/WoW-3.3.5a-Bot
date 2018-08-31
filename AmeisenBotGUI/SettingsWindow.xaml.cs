@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace AmeisenBotGUI
 {
@@ -136,11 +137,11 @@ namespace AmeisenBotGUI
             BotManager.Settings.databasePasswort = textboxDBPassword.Password;
             BotManager.Settings.databaseAutoConnect = (bool)checkboxDBAutoConnect.IsChecked;
 
-            BotManager.Settings.backgroundColor = (string)Application.Current.Resources["AccentColor"];
-            BotManager.Settings.accentColor = (string)Application.Current.Resources["BackgroundColor"];
-            BotManager.Settings.fontColor = (string)Application.Current.Resources["TextColor"];
-            BotManager.Settings.walkableNodeColor = (string)Application.Current.Resources["WalkableNodeColor"];
-            BotManager.Settings.meNodeColor = (string)Application.Current.Resources["MeNodeColor"];
+            BotManager.Settings.backgroundColor = ((Color)Application.Current.Resources["AccentColor"]).ToString();
+            BotManager.Settings.accentColor = ((Color)Application.Current.Resources["BackgroundColor"]).ToString();
+            BotManager.Settings.fontColor = ((Color)Application.Current.Resources["TextColor"]).ToString();
+            BotManager.Settings.walkableNodeColor = ((Color)Application.Current.Resources["WalkableNodeColor"]).ToString();
+            BotManager.Settings.meNodeColor = ((Color)Application.Current.Resources["MeNodeColor"]).ToString();
 
             BotManager.SaveSettingsToFile(BotManager.GetLoadedConfigName());
         }
