@@ -75,9 +75,12 @@ namespace AmeisenManager
 
         public bool IsAttached { get; private set; }
         public bool IsHooked { get; private set; }
-        public bool IsSupposedToAttack { get; set; }
-        public bool IsSupposedToHeal { get; set; }
-        public bool IsSupposedToTank { get; set; }
+
+        public bool IsAllowedToBuff { get { return AmeisenDataHolder.Instance.IsAllowedToBuff; } set { AmeisenDataHolder.Instance.IsAllowedToBuff = value; } }
+        public bool IsAllowedToHeal { get { return AmeisenDataHolder.Instance.IsAllowedToHeal; } set { AmeisenDataHolder.Instance.IsAllowedToHeal = value; } }
+        public bool IsAllowedToTank { get { return AmeisenDataHolder.Instance.IsAllowedToTank; } set { AmeisenDataHolder.Instance.IsAllowedToTank = value; } }
+        public bool IsAllowedToAttack { get { return AmeisenDataHolder.Instance.IsAllowedToAttack; } set { AmeisenDataHolder.Instance.IsAllowedToAttack = value; } }
+
         public Me Me { get { return AmeisenDataHolder.Instance.Me; } }
         public List<WoWExe> RunningWoWs { get { return AmeisenCore.GetRunningWoWs(); } }
         public Settings Settings { get { return AmeisenSettings.Settings; } }

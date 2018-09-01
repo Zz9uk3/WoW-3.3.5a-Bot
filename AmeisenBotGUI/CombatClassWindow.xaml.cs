@@ -38,6 +38,9 @@ namespace AmeisenBotGUI
 
             textboxPriority.Text = prio.ToString();
             prio++;
+
+            buttonAddCondition.IsEnabled = true;
+            buttonRemoveCondition.IsEnabled = true;
         }
 
         private void ButtonAddCondition_Click(object sender, RoutedEventArgs e)
@@ -50,6 +53,15 @@ namespace AmeisenBotGUI
                 listboxConditions.Items.Add(condition);
 
                 listboxConditions.SelectedIndex = 0;
+                
+                comboboxLuaUnitOne.IsEnabled = true;
+                comboboxLuaUnitTwo.IsEnabled = true;
+                comboboxValueOne.IsEnabled = true;
+                comboboxValueTwo.IsEnabled = true;
+                comboboxValueOperator.IsEnabled = true;
+                textboxCustomValue.IsEnabled = true;
+                radiobuttonCustomValue.IsEnabled = true;
+                radiobuttonPreValue.IsEnabled = true;
             }
         }
 
@@ -239,15 +251,12 @@ namespace AmeisenBotGUI
             comboboxAction.Items.Add(CombatLogicAction.SHAPESHIFT);
             comboboxAction.Items.Add(CombatLogicAction.FLEE);
 
-            comboboxValueOne.Items.Add(CombatLogicValues.MYSELF_HP);
-            comboboxValueOne.Items.Add(CombatLogicValues.MYSELF_ENERGY);
-            comboboxValueOne.Items.Add(CombatLogicValues.TARGET_HP);
+            comboboxValueOne.Items.Add(CombatLogicValues.HP);
+            comboboxValueOne.Items.Add(CombatLogicValues.ENERGY);
             //comboboxValueOne.Items.Add(CombatLogicValues.TARGET_IS_CASTING);
 
-            comboboxValueTwo.Items.Add(CombatLogicValues.MYSELF_HP);
-            comboboxValueTwo.Items.Add(CombatLogicValues.MYSELF_ENERGY);
-            comboboxValueTwo.Items.Add(CombatLogicValues.TARGET_HP);
-            //comboboxValueTwo.Items.Add(CombatLogicValues.TARGET_IS_CASTING);
+            comboboxValueTwo.Items.Add(CombatLogicValues.HP);
+            comboboxValueTwo.Items.Add(CombatLogicValues.ENERGY);
 
             comboboxValueOperator.Items.Add(CombatLogicStatement.GREATER);
             comboboxValueOperator.Items.Add(CombatLogicStatement.GREATER_OR_EQUAL);
@@ -255,13 +264,26 @@ namespace AmeisenBotGUI
             comboboxValueOperator.Items.Add(CombatLogicStatement.LESS_OR_EQUAL);
             comboboxValueOperator.Items.Add(CombatLogicStatement.LESS);
             comboboxValueOperator.Items.Add(CombatLogicStatement.HAS_BUFF);
-            comboboxValueOperator.Items.Add(CombatLogicStatement.HAS_BUFF_MYSELF);
             comboboxValueOperator.Items.Add(CombatLogicStatement.NOT_HAS_BUFF);
-            comboboxValueOperator.Items.Add(CombatLogicStatement.NOT_HAS_BUFF_MYSELF);
 
             comboboxActionType.Items.Add(CombatActionType.ATTACK);
             comboboxActionType.Items.Add(CombatActionType.HEAL);
             comboboxActionType.Items.Add(CombatActionType.TANK);
+            comboboxActionType.Items.Add(CombatActionType.BUFF);
+
+            comboboxLuaUnitOne.Items.Add(LuaUnit.player);
+            comboboxLuaUnitOne.Items.Add(LuaUnit.target);
+            comboboxLuaUnitOne.Items.Add(LuaUnit.party1);
+            comboboxLuaUnitOne.Items.Add(LuaUnit.party2);
+            comboboxLuaUnitOne.Items.Add(LuaUnit.party3);
+            comboboxLuaUnitOne.Items.Add(LuaUnit.party4);
+
+            comboboxLuaUnitTwo.Items.Add(LuaUnit.player);
+            comboboxLuaUnitTwo.Items.Add(LuaUnit.target);
+            comboboxLuaUnitTwo.Items.Add(LuaUnit.party1);
+            comboboxLuaUnitTwo.Items.Add(LuaUnit.party2);
+            comboboxLuaUnitTwo.Items.Add(LuaUnit.party3);
+            comboboxLuaUnitTwo.Items.Add(LuaUnit.party4);
 
             LoadEntries();
         }
@@ -295,6 +317,18 @@ namespace AmeisenBotGUI
                     listboxConditions.Items.Add(c);
 
                 comboboxActionType.SelectedItem = entry.ActionType;
+
+                if (listboxConditions.Items.Count > 0)
+                {
+                    comboboxLuaUnitOne.IsEnabled = true;
+                    comboboxLuaUnitTwo.IsEnabled = true;
+                    comboboxValueOne.IsEnabled = true;
+                    comboboxValueTwo.IsEnabled = true;
+                    comboboxValueOperator.IsEnabled = true;
+                    textboxCustomValue.IsEnabled = true;
+                    radiobuttonCustomValue.IsEnabled = true;
+                    radiobuttonPreValue.IsEnabled = true;
+                }
             }
             catch { }
         }
@@ -308,12 +342,15 @@ namespace AmeisenBotGUI
                     radiobuttonCustomValue.IsChecked = ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).customSecondValue;
 
                     if (radiobuttonCustomValue.IsChecked == true)
-                        textboxCustomValue.Text = ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionValues[1].ToString();
+                        textboxCustomValue.Text = ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).customValue.ToString();
                     else
-                        comboboxValueOne.SelectedItem = ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionValues[0];
+                        comboboxValueTwo.SelectedItem = ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionValues[1];
 
-                    comboboxValueTwo.SelectedItem = ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionValues[1];
+                    comboboxValueOne.SelectedItem = ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionValues[0];
                     comboboxValueOperator.SelectedItem = ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).statement;
+
+                    comboboxLuaUnitOne.SelectedItem = ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionLuaUnits[0];
+                    comboboxLuaUnitTwo.SelectedItem = ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionLuaUnits[1];
                 }
             }
         }
@@ -324,6 +361,12 @@ namespace AmeisenBotGUI
             foreach (CombatLogicEntry entry in loadedLogic.combatLogicEntries)
                 listboxCombatActions.Items.Add(entry);
             prio = listboxCombatActions.Items.Count;
+
+            if(listboxCombatActions.Items.Count > 0)
+            {
+                buttonAddCondition.IsEnabled = true;
+                buttonRemoveCondition.IsEnabled = true;
+            }
         }
 
         private void RadiobuttonCustomValue_Checked(object sender, RoutedEventArgs e)
@@ -331,6 +374,7 @@ namespace AmeisenBotGUI
             if (textboxCustomValue != null && (AmeisenAI.Combat.Condition)listboxConditions.SelectedItem != null)
             {
                 comboboxValueTwo.IsEnabled = false;
+                comboboxLuaUnitTwo.IsEnabled = false;
                 textboxCustomValue.IsEnabled = true;
                 ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).customSecondValue = true;
             }
@@ -341,6 +385,7 @@ namespace AmeisenBotGUI
             if (textboxCustomValue != null && (AmeisenAI.Combat.Condition)listboxConditions.SelectedItem != null)
             {
                 comboboxValueTwo.IsEnabled = true;
+                comboboxLuaUnitTwo.IsEnabled = true;
                 textboxCustomValue.IsEnabled = false;
                 ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).customSecondValue = false;
             }
@@ -348,12 +393,8 @@ namespace AmeisenBotGUI
 
         private void TextboxCustomValue_TextChanged(object sender, TextChangedEventArgs e)
         {
-            try
-            {
-                if (listboxConditions.SelectedItem != null && textboxCustomValue.Text.Length > 0)
-                    ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).customValue = double.Parse(textboxCustomValue.Text);
-            }
-            catch { }
+            if (listboxConditions.SelectedItem != null && textboxCustomValue.Text.Length > 0)
+                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).customValue = textboxCustomValue.Text;
         }
 
         private void TextboxMaxDistance_TextChanged(object sender, TextChangedEventArgs e)
@@ -372,6 +413,18 @@ namespace AmeisenBotGUI
         {
             if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
                 ((CombatLogicEntry)listboxCombatActions.SelectedItem).Parameters = textboxSpellName.Text;
+        }
+
+        private void ComboboxLuaUnitOne_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (listboxConditions.SelectedItem != null)
+                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionLuaUnits[0] = (LuaUnit)comboboxLuaUnitOne.SelectedItem;
+        }
+
+        private void ComboboxLuaUnitTwo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (listboxConditions.SelectedItem != null)
+                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionLuaUnits[1] = (LuaUnit)comboboxLuaUnitTwo.SelectedItem;
         }
     }
 }

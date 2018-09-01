@@ -126,7 +126,7 @@ namespace AmeisenCoreUtils
 
             string cmd = "name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId = UnitAura(\"" + LuaUnit.ToString() + "\", \"" + auraname + "\");";
 
-            //try { info.name = GetLocalizedText(cmd, "name"); } catch { info.name = ""; }
+            try { info.name = GetLocalizedText(cmd, "name"); } catch { info.name = ""; }
             //try { info.stacks = int.Parse(GetLocalizedText(cmd, "count")); } catch { info.stacks = -1; }
             try { info.duration = int.Parse(GetLocalizedText(cmd, "duration")); } catch { info.duration = -1; }
 

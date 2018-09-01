@@ -206,10 +206,13 @@
                 <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
             </Rectangle.Fill>
         </Rectangle>
-        <ComboBox x:Name="comboboxValueOne" HorizontalAlignment="Left" Margin="375,165,0,0" VerticalAlignment="Top" Width="205" SelectionChanged="ComboboxValueOne_SelectionChanged" />
-        <ComboBox x:Name="comboboxValueOperator" HorizontalAlignment="Left" Margin="375,192,0,0" VerticalAlignment="Top" Width="205" SelectionChanged="ComboboxValueOperator_SelectionChanged" />
-        <ComboBox x:Name="comboboxValueTwo" HorizontalAlignment="Left" Margin="375,237,0,0" VerticalAlignment="Top" Width="205" SelectionChanged="ComboboxValueTwo_SelectionChanged" />
-        <Button x:Name="buttonAddCondition" Content="+" HorizontalAlignment="Left" Margin="585,0,0,287" Width="85" Background="{x:Null}" BorderThickness="2" Height="48" VerticalAlignment="Bottom" FontSize="24" Click="ButtonAddCondition_Click">
+        <ComboBox x:Name="comboboxValueOne" HorizontalAlignment="Left" Margin="480,165,0,0" VerticalAlignment="Top" Width="100" SelectionChanged="ComboboxValueOne_SelectionChanged" IsEnabled="False" />
+        <ComboBox x:Name="comboboxValueOperator" HorizontalAlignment="Left" Margin="375,192,0,0" VerticalAlignment="Top" Width="205" SelectionChanged="ComboboxValueOperator_SelectionChanged" IsEnabled="False" />
+        <ComboBox x:Name="comboboxValueTwo" HorizontalAlignment="Left" Margin="480,237,0,0" VerticalAlignment="Top" Width="100" SelectionChanged="ComboboxValueTwo_SelectionChanged" IsEnabled="False" />
+        <Button x:Name="buttonAddCondition" Content="+" HorizontalAlignment="Left" Margin="585,0,0,287" Width="85" BorderThickness="2" Height="48" VerticalAlignment="Bottom" FontSize="24" Click="ButtonAddCondition_Click" IsEnabled="False">
+            <Button.Background>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+            </Button.Background>
             <Button.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Button.Foreground>
@@ -217,7 +220,10 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Button.BorderBrush>
         </Button>
-        <Button x:Name="buttonRemoveCondition" Content="🗑" HorizontalAlignment="Left" Margin="675,0,0,287" Width="49" Background="{x:Null}" BorderThickness="2" Height="48" VerticalAlignment="Bottom" FontSize="16" Click="ButtonRemoveCondition_Click">
+        <Button x:Name="buttonRemoveCondition" Content="🗑" HorizontalAlignment="Left" Margin="675,0,0,287" Width="49" BorderThickness="2" Height="48" VerticalAlignment="Bottom" FontSize="16" Click="ButtonRemoveCondition_Click" IsEnabled="False">
+            <Button.Background>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+            </Button.Background>
             <Button.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Button.Foreground>
@@ -230,7 +236,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <RadioButton x:Name="radiobuttonPreValue" Content="Preset:" HorizontalAlignment="Left" Margin="377,218,0,0" VerticalAlignment="Top" GroupName="custompre" IsChecked="True" Checked="RadiobuttonPreValue_Checked">
+        <RadioButton x:Name="radiobuttonPreValue" Content="Preset:" HorizontalAlignment="Left" Margin="375,218,0,0" VerticalAlignment="Top" GroupName="custompre" IsChecked="True" Checked="RadiobuttonPreValue_Checked" IsEnabled="False">
             <RadioButton.Background>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </RadioButton.Background>
@@ -241,7 +247,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </RadioButton.Foreground>
         </RadioButton>
-        <RadioButton x:Name="radiobuttonCustomValue" Content="Custom:" HorizontalAlignment="Left" Margin="585,218,0,0" VerticalAlignment="Top" GroupName="custompre" Checked="RadiobuttonCustomValue_Checked">
+        <RadioButton x:Name="radiobuttonCustomValue" Content="Custom:" HorizontalAlignment="Left" Margin="585,218,0,0" VerticalAlignment="Top" GroupName="custompre" Checked="RadiobuttonCustomValue_Checked" IsEnabled="False">
             <RadioButton.Background>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </RadioButton.Background>
@@ -252,7 +258,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </RadioButton.Foreground>
         </RadioButton>
-        <TextBox x:Name="textboxCustomValue" HorizontalAlignment="Left" Height="22" Margin="585,237,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="130" BorderThickness="2" IsEnabled="False" TextChanged="TextboxCustomValue_TextChanged">
+        <TextBox x:Name="textboxCustomValue" HorizontalAlignment="Left" Height="22" Margin="585,237,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="130" BorderThickness="2" TextChanged="TextboxCustomValue_TextChanged" IsEnabled="False">
             <TextBox.Background>
                 <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
             </TextBox.Background>
@@ -307,5 +313,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
+        <ComboBox x:Name="comboboxLuaUnitOne" HorizontalAlignment="Left" Margin="375,165,0,0" VerticalAlignment="Top" Width="100" IsEnabled="False" SelectionChanged="ComboboxLuaUnitOne_SelectionChanged"/>
+        <ComboBox x:Name="comboboxLuaUnitTwo" HorizontalAlignment="Left" Margin="375,237,0,0" VerticalAlignment="Top" Width="100" IsEnabled="False" SelectionChanged="ComboboxLuaUnitTwo_SelectionChanged"/>
     </Grid>
 </Window>

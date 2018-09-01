@@ -36,7 +36,7 @@ namespace AmeisenAI
         /// <summary>
         /// Start the CombatEngine
         /// </summary>
-        public void Start() { if (mainWorker.ThreadState == ThreadState.Unstarted) mainWorker.Start(); }
+        public void Start() { mainWorker.Start(); }
 
         /// <summary>
         /// Stop the CombatEngine
@@ -52,7 +52,7 @@ namespace AmeisenAI
         private readonly Thread mainWorker;
         private CombatEngine combatEngine;
         private bool stop = false;
-
+        
         private AmeisenCombatManager()
         {
             mainWorker = new Thread(new ThreadStart(DoWork));
@@ -78,7 +78,7 @@ namespace AmeisenAI
                 }
 
                 combatEngine.ExecuteNextStep();
-                Thread.Sleep(500);
+                Thread.Sleep(200);
             }
         }
     }

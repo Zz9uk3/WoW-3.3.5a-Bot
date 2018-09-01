@@ -66,6 +66,7 @@ namespace AmeisenAI.Combat
     public class Condition
     {
         public CombatLogicValues[] conditionValues;
+        public LuaUnit[] conditionLuaUnits;
         public bool customSecondValue;
         public object customValue;
         public CombatLogicStatement statement;
@@ -74,6 +75,7 @@ namespace AmeisenAI.Combat
         {
             statement = CombatLogicStatement.EQUAL;
             conditionValues = new CombatLogicValues[2] { 0, 0 };
+            conditionLuaUnits = new LuaUnit[2] { 0, 0 };
             customSecondValue = false;
             customValue = 0.0;
         }
@@ -81,9 +83,18 @@ namespace AmeisenAI.Combat
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(conditionValues[0].ToString());
-            sb.Append(" - " + statement.ToString() + " - ");
-            sb.Append(conditionValues[1].ToString());
+            sb.Append(conditionLuaUnits[0].ToString());
+            sb.Append(" " + conditionValues[0].ToString());
+            sb.Append(" ? " + statement.ToString());
+            if (customSecondValue)
+            {
+                sb.Append(" ? " + conditionLuaUnits[1].ToString());
+                sb.Append(" " + conditionValues[1].ToString());
+            }
+            else
+            {
+                sb.Append(" ? " + customValue);
+            }
 
             return sb.ToString(); ;
         }

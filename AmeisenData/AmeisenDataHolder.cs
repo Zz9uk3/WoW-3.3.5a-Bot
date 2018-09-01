@@ -24,8 +24,14 @@ namespace AmeisenData
 
         // Data to hold
         public Me Me { get; set; }
-
         public Unit Target { get; set; }
+
+        public bool IsAllowedToBuff { get; set; }
+        public bool IsAllowedToHeal { get; set; }
+        public bool IsAllowedToTank { get; set; }
+        public bool IsAllowedToAttack { get; set; }
+
+
         private static readonly object padlock = new object();
 
         private static AmeisenDataHolder instance = null;

@@ -120,17 +120,22 @@ namespace AmeisenBotGUI
 
         private void CheckBoxAssistPartyAttack_Click(object sender, RoutedEventArgs e)
         {
-            BotManager.IsSupposedToAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
+           BotManager.IsAllowedToAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
         }
 
         private void CheckBoxAssistPartyHeal_Click(object sender, RoutedEventArgs e)
         {
-            BotManager.IsSupposedToAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
+            BotManager.IsAllowedToHeal = (bool)checkBoxAssistPartyAttack.IsChecked;
         }
 
         private void CheckBoxAssistPartyTank_Click(object sender, RoutedEventArgs e)
         {
-            BotManager.IsSupposedToTank = (bool)checkBoxAssistPartyTank.IsChecked;
+            BotManager.IsAllowedToTank = (bool)checkBoxAssistPartyTank.IsChecked;
+        }
+
+        private void CheckBoxAssistPartyBuff_Click(object sender, RoutedEventArgs e)
+        {
+            BotManager.IsAllowedToBuff = (bool)checkBoxAssistPartyBuff.IsChecked;
         }
 
         private void CheckBoxFollowMaster_Click(object sender, RoutedEventArgs e)
@@ -143,6 +148,7 @@ namespace AmeisenBotGUI
             BotManager.Settings.behaviourAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
             BotManager.Settings.behaviourTank = (bool)checkBoxAssistPartyTank.IsChecked;
             BotManager.Settings.behaviourHeal = (bool)checkBoxAssistPartyHeal.IsChecked;
+            BotManager.Settings.behaviourBuff = (bool)checkBoxAssistPartyBuff.IsChecked;
             BotManager.Settings.followMaster = (bool)checkBoxFollowMaster.IsChecked;
             BotManager.SaveSettingsToFile(BotManager.GetLoadedConfigName());
         }

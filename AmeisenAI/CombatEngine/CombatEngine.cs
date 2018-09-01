@@ -1,4 +1,5 @@
 ﻿using AmeisenAI.Combat;
+using AmeisenCoreUtils;
 using AmeisenData;
 using AmeisenUtilities;
 using System;
@@ -59,8 +60,14 @@ namespace AmeisenAI
                     if (posAt == currentCombatLogic.combatLogicEntries.Count)
                         posAt = 0;
                     if (ExecuteLogic(currentCombatLogic.combatLogicEntries[posAt]))
+                    {
                         ExecuteAction(currentCombatLogic.combatLogicEntries[posAt]);
-                    posAt++;
+                        posAt = 0;
+                    }
+                    else
+                    {
+                        posAt++;
+                    }
                 }
         }
 
@@ -87,18 +94,21 @@ namespace AmeisenAI
 
         private void AssistParty()
         {
-            int i = 1;
-            foreach (UInt64 guid in Me.PartymemberGUIDs)
+            if (Target == null)
             {
-                foreach (WoWObject o in ActiveWoWObjects)
-                    if (o.Guid == guid)
-                        if (((Unit)o).InCombat)
-                        {
-                            AmeisenCoreUtils.AmeisenCore.RunSlashCommand("/assist party" + i);
-                            AmeisenCoreUtils.AmeisenCore.AttackTarget();
-                            AmeisenAIManager.Instance.DoFollow = false;
-                        }
-                i++;
+                int i = 1;
+                foreach (UInt64 guid in Me.PartymemberGUIDs)
+                {
+                    foreach (WoWObject o in ActiveWoWObjects)
+                        if (o.Guid == guid)
+                            if (((Unit)o).InCombat)
+                            {
+                                AmeisenCore.RunSlashCommand("/assist party" + i);
+                                AmeisenCore.AttackTarget();
+                                AmeisenAIManager.Instance.DoFollow = false;
+                            }
+                    i++;
+                }
             }
         }
 
@@ -150,22 +160,12 @@ namespace AmeisenAI
                 case CombatLogicStatement.HAS_BUFF:
                     return AmeisenCoreUtils.AmeisenCore.GetAuraInfo(
                         (string)condition.customValue,
-                        LuaUnit.target).duration > 0;
+                        condition.conditionLuaUnits[0]).duration > 0;
 
                 case CombatLogicStatement.NOT_HAS_BUFF:
                     return AmeisenCoreUtils.AmeisenCore.GetAuraInfo(
                         (string)condition.customValue,
-                        LuaUnit.target).duration <= 0;
-
-                case CombatLogicStatement.HAS_BUFF_MYSELF:
-                    return AmeisenCoreUtils.AmeisenCore.GetAuraInfo(
-                        (string)condition.customValue,
-                        LuaUnit.player).duration > 0;
-
-                case CombatLogicStatement.NOT_HAS_BUFF_MYSELF:
-                    return AmeisenCoreUtils.AmeisenCore.GetAuraInfo(
-                        (string)condition.customValue,
-                        LuaUnit.player).duration <= 0;
+                        condition.conditionLuaUnits[0]).duration <= 0;
             }
             return false;
         }
@@ -182,7 +182,7 @@ namespace AmeisenAI
             }
         }
 
-        private void CheckOnCooldown(CombatLogicEntry entry)
+        private void CheckOnCooldownAndUseSpell(CombatLogicEntry entry)
         {
             if (!AmeisenCoreUtils.AmeisenCore.IsOnCooldown((string)entry.Parameters))
             {
@@ -194,29 +194,30 @@ namespace AmeisenAI
 
                 AmeisenAIManager.Instance.AddActionToQueue(ref action);
 
-                do Thread.Sleep(5);
+                do Thread.Sleep(50);
                 while (!action.IsActionDone());
             }
         }
 
         private void CheckTargetDistance(CombatLogicEntry entry, bool isMeeleeSpell)
         {
-            if (Target.Distance > entry.MaxSpellDistance)
-            {
-                AmeisenAction action;
-                if (isMeeleeSpell)
-                    action = new AmeisenAction(AmeisenActionType.INTERACT_TARGET, InteractionType.ATTACKPOS);
-                else
+            if (entry.MaxSpellDistance > 0)
+                if (Target.Distance > entry.MaxSpellDistance)
                 {
-                    object[] parameters = new object[2] { Target.pos, entry.MaxSpellDistance * 0.9 }; // 10% Offset
-                    action = new AmeisenAction(AmeisenActionType.FORCE_MOVE_NEAR_TARGET, parameters);
+                    AmeisenAction action;
+                    if (isMeeleeSpell)
+                        action = new AmeisenAction(AmeisenActionType.INTERACT_TARGET, InteractionType.ATTACKPOS);
+                    else
+                    {
+                        object[] parameters = new object[2] { Target.pos, entry.MaxSpellDistance * 0.9 }; // 10% Offset
+                        action = new AmeisenAction(AmeisenActionType.FORCE_MOVE_NEAR_TARGET, parameters);
+                    }
+
+                    AmeisenAIManager.Instance.AddActionToQueue(ref action);
+
+                    do Thread.Sleep(100);
+                    while (!action.IsActionDone());
                 }
-
-                AmeisenAIManager.Instance.AddActionToQueue(ref action);
-
-                do Thread.Sleep(100);
-                while (!action.IsActionDone());
-            }
         }
 
         private bool CompareEqual(double a, double b)
@@ -253,14 +254,18 @@ namespace AmeisenAI
             switch (entry.Action)
             {
                 case CombatLogicAction.USE_SPELL:
-                    if (Target != null)
+                    if (entry.IsForMyself)
+                    {
+                        CheckOnCooldownAndUseSpell(entry);
+                    }
+                    else if (Target != null)
                     {
                         AmeisenAIManager.Instance.DoFollow = false;
                         Me.Update();
                         Target.Update();
 
                         CheckFacingTarget();
-                        CheckOnCooldown(entry);
+                        CheckOnCooldownAndUseSpell(entry);
                     }
                     break;
 
@@ -289,6 +294,22 @@ namespace AmeisenAI
             if (Me == null)
                 return false;
 
+            if (entry.ActionType == CombatActionType.ATTACK)
+                if (!AmeisenDataHolder.Instance.IsAllowedToAttack)
+                    return false;
+
+            if (entry.ActionType == CombatActionType.TANK)
+                if (!AmeisenDataHolder.Instance.IsAllowedToTank)
+                    return false;
+
+            if (entry.ActionType == CombatActionType.HEAL)
+                if (!AmeisenDataHolder.Instance.IsAllowedToHeal)
+                    return false;
+
+            if (entry.ActionType == CombatActionType.BUFF)
+                if (!AmeisenDataHolder.Instance.IsAllowedToBuff)
+                    return false;
+
             if (CheckCombatStuff(entry))
                 return false;
 
@@ -314,14 +335,19 @@ namespace AmeisenAI
         {
             switch (condition.conditionValues[0])
             {
-                case CombatLogicValues.MYSELF_HP:
-                    return Me.Health;
+                case CombatLogicValues.HP:
+                    if (condition.conditionLuaUnits[0] == LuaUnit.player)
+                        return Me.Health;
+                    else if (condition.conditionLuaUnits[0] == LuaUnit.target)
+                        return Target.Health;
+                    break;
 
-                case CombatLogicValues.MYSELF_ENERGY:
-                    return Me.Energy;
-
-                case CombatLogicValues.TARGET_HP:
-                    return Target.Health;
+                case CombatLogicValues.ENERGY:
+                    if (condition.conditionLuaUnits[0] == LuaUnit.player)
+                        return Me.Energy;
+                    else if (condition.conditionLuaUnits[0] == LuaUnit.target)
+                        return Target.Energy;
+                    break;
             }
             return -1;
         }
@@ -331,14 +357,19 @@ namespace AmeisenAI
             if (!condition.customSecondValue)
                 switch (condition.conditionValues[1])
                 {
-                    case CombatLogicValues.MYSELF_HP:
-                        return Me.Health;
+                    case CombatLogicValues.HP:
+                        if (condition.conditionLuaUnits[1] == LuaUnit.player)
+                            return Me.Health;
+                        else if (condition.conditionLuaUnits[1] == LuaUnit.target)
+                            return Target.Health;
+                        break;
 
-                    case CombatLogicValues.MYSELF_ENERGY:
-                        return Me.Energy;
-
-                    case CombatLogicValues.TARGET_HP:
-                        return Target.Health;
+                    case CombatLogicValues.ENERGY:
+                        if (condition.conditionLuaUnits[1] == LuaUnit.player)
+                            return Me.Energy;
+                        else if (condition.conditionLuaUnits[1] == LuaUnit.target)
+                            return Target.Energy;
+                        break;
                 }
             else if (condition.customValue.GetType() == typeof(double))
                 return (double)condition.customValue;

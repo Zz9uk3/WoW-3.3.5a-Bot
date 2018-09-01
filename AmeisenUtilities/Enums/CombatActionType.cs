@@ -5,5 +5,6 @@
         ATTACK,
         TANK,
         HEAL,
+        BUFF,
     }
 }

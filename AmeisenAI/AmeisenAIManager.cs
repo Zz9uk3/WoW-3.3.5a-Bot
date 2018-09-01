@@ -404,12 +404,14 @@ namespace AmeisenAI
         private void ProcessActionUseSpell(ref AmeisenAction currentAction, bool onMyself = false)
         {
             WowSpellInfo spellInfo = AmeisenCoreUtils.AmeisenCore.GetSpellInfo((string)currentAction.GetActionParams());
+            IsAllowedToMove = false;
             AmeisenCoreUtils.AmeisenCore.CastSpellByName((string)currentAction.GetActionParams(), onMyself);
 
             Thread.Sleep(200);
 
-            if (Me.CurrentState == UnitState.CASTING)
-                Thread.Sleep(spellInfo.castTime);
+            while (Me.CurrentState == UnitState.CASTING)
+                Thread.Sleep(200);
+
             currentAction.ActionIsDone();
             IsAllowedToMove = true;
         }
