@@ -224,7 +224,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Label x:Name="labelLoadedCombatClass" Content="CombatClass: " HorizontalAlignment="Left" Margin="314,150,0,0" FontSize="10" Width="155" Height="26" VerticalAlignment="Top">
+        <Label x:Name="labelLoadedCombatClass" Content="CombatClass: " HorizontalAlignment="Left" Margin="314,148,0,0" FontSize="9" Width="155" Height="26" VerticalAlignment="Top">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
@@ -256,46 +256,46 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Button.Foreground>
         </Button>
-        <Image x:Name="botPicture" HorizontalAlignment="Left" Height="150" VerticalAlignment="Top" Width="150" Margin="6,6,0,0" />
+        <Image x:Name="botPicture" HorizontalAlignment="Left" Height="137" VerticalAlignment="Top" Width="137" Margin="6,6,0,0" />
         <Slider x:Name="sliderDistance" HorizontalAlignment="Left" Margin="179,150,0,0" VerticalAlignment="Top" Width="120" Minimum="3" Maximum="12" Value="2" ValueChanged="SliderDistance_ValueChanged">
             <Slider.BorderBrush>
-                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Slider.BorderBrush>
             <Slider.Background>
-                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
             </Slider.Background>
             <Slider.Foreground>
-                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
             </Slider.Foreground>
         </Slider>
         <Label x:Name="labelDistance" Content="Follow Distance: 3m" HorizontalAlignment="Left" Margin="174,126,0,0" VerticalAlignment="Top" Width="140">
             <Label.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
         <Label x:Name="labelHP" Content="" HorizontalAlignment="Left" Margin="8,179,0,0" VerticalAlignment="Top">
             <Label.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
         <Label x:Name="labelEnergy" Content="" HorizontalAlignment="Left" Margin="8,199,0,0" VerticalAlignment="Top">
             <Label.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
         <Label x:Name="labelExp" Content="" HorizontalAlignment="Left" Margin="8,220,0,0" VerticalAlignment="Top">
             <Label.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
         <Label x:Name="labelTargetHP" Content="" HorizontalAlignment="Left" Margin="224,178,0,0" VerticalAlignment="Top">
             <Label.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
         <Label x:Name="labelTargetEnergy" Content="" HorizontalAlignment="Left" Margin="224,199,0,0" VerticalAlignment="Top">
             <Label.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
     </Grid>

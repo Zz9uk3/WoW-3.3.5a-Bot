@@ -7,7 +7,6 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace AmeisenBotGUI
 {
@@ -37,23 +36,6 @@ namespace AmeisenBotGUI
         private bool autologinIsPossible = false;
         private AmeisenBotManager BotManager { get; }
 
-        private void ApplyConfigColors()
-        {
-            Application.Current.Resources["AccentColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.accentColor);
-            Application.Current.Resources["BackgroundColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.backgroundColor);
-            Application.Current.Resources["TextColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.fontColor);
-
-            Application.Current.Resources["MeNodeColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.meNodeColor);
-            Application.Current.Resources["WalkableNodeColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.walkableNodeColor);
-
-            Application.Current.Resources["healthColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.healthColor);
-            Application.Current.Resources["energyColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.energyColor);
-            Application.Current.Resources["expColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.expColor);
-            Application.Current.Resources["targetHealthColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.targetHealthColor);
-            Application.Current.Resources["targetEnergyColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.targetEnergyColor);
-            Application.Current.Resources["threadsColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.threadsColor);
-        }
-
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
             Close();
@@ -69,8 +51,6 @@ namespace AmeisenBotGUI
                 else
                 {
                     AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Selected WoW: " + ((WoWExe)comboBoxWoWs.SelectedItem).ToString(), this);
-
-                    ApplyConfigColors();
 
                     // Show the Mainscreen
                     new BotWindow((WoWExe)comboBoxWoWs.SelectedItem).Show();

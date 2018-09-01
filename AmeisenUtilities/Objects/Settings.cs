@@ -9,7 +9,7 @@
         public string ameisenServerIP = "127.0.0.1";
         public string ameisenServerName = Utils.GenerateRandonString(12, "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
         public int ameisenServerPort = 16200;
-        public string backgroundColor = "#FF303030";
+        public string backgroundColor = "#FF323232";
         public bool behaviourAttack = false;
         public bool behaviourHeal = false;
         public bool behaviourTank = false;
@@ -24,8 +24,9 @@
         public int dataRefreshRate = 250;
         public string energyColor = "#FFFFA160";
         public string expColor = "#FFD4A0FF";
+        public double followDistance = 3.0;
         public bool followMaster = false;
-        public string fontColor = "#FFFFFFFF";
+        public string textColor = "#FFFFFFFF";
         public string healthColor = "#FFFF6060";
         public string masterName = "";
         public string meNodeColor = "#FF00FFFF";
@@ -35,6 +36,5 @@
         public string targetHealthColor = "#FFFF6060";
         public string threadsColor = "#FFFFFF60";
         public string walkableNodeColor = "#FFA0FF00";
-        public double followDistance = 3.0;
     }
 }

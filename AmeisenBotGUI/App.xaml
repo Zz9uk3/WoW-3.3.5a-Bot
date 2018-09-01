@@ -4,7 +4,6 @@
              xmlns:local="clr-namespace:AmeisenBotGUI"
              StartupUri="SelectWindow.xaml">
     <Application.Resources>
-
         <Color x:Key="AccentColor">#FFAAAAAA</Color>
         <Color x:Key="BackgroundColor">#FF323232</Color>
         <Color x:Key="TextColor">#FFFFFFFF</Color>

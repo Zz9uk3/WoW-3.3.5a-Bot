@@ -127,9 +127,9 @@ namespace AmeisenBotGUI
             BotManager.Settings.databasePasswort = textboxDBPassword.Password;
             BotManager.Settings.databaseAutoConnect = (bool)checkboxDBAutoConnect.IsChecked;
 
-            BotManager.Settings.backgroundColor = ((Color)Application.Current.Resources["AccentColor"]).ToString();
-            BotManager.Settings.accentColor = ((Color)Application.Current.Resources["BackgroundColor"]).ToString();
-            BotManager.Settings.fontColor = ((Color)Application.Current.Resources["TextColor"]).ToString();
+            BotManager.Settings.accentColor = ((Color)Application.Current.Resources["AccentColor"]).ToString();
+            BotManager.Settings.backgroundColor = ((Color)Application.Current.Resources["BackgroundColor"]).ToString();
+            BotManager.Settings.textColor = ((Color)Application.Current.Resources["TextColor"]).ToString();
             BotManager.Settings.walkableNodeColor = ((Color)Application.Current.Resources["WalkableNodeColor"]).ToString();
             BotManager.Settings.meNodeColor = ((Color)Application.Current.Resources["MeNodeColor"]).ToString();
 
