@@ -444,16 +444,16 @@ namespace AmeisenCoreUtils
             return null;
         }
 
+        public static void ReleaseSpirit()
+        {
+            LUADoString("RepopMe();");
+        }
+
         public static void RetrieveCorpse()
         {
             int corpseDelay = int.Parse(GetLocalizedText("corpseDelay = GetCorpseRecoveryDelay();", "corpseDelay"));
             Thread.Sleep((corpseDelay * 1000) + 100);
             LUADoString("RetrieveCorpse();");
-        }
-
-        public static void ReleaseSpirit()
-        {
-            LUADoString("RepopMe();");
         }
 
         /// <summary>

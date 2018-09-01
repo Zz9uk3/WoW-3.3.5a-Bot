@@ -220,19 +220,6 @@ namespace AmeisenAI
                 Thread.Sleep(1000);
         }
 
-        private void MoveNearCorpseAndRevive(Vector3 corpsePosition)
-        {
-            AmeisenAction ameisenAction = new AmeisenAction(
-                       AmeisenActionType.MOVE_NEAR_POSITION,
-                       new object[] { corpsePosition, 10.0 }
-                       );
-            AddActionToQueue(ref ameisenAction);
-
-            while (!ameisenAction.IsActionDone()) { Thread.Sleep(250); }
-
-            AmeisenCoreUtils.AmeisenCore.RetrieveCorpse();
-        }
-
         private void InteractWithTarget(double distance, InteractionType action, ref AmeisenAction ameisenAction)
         {
             if (Target == null)
@@ -261,6 +248,19 @@ namespace AmeisenAI
             }
             else
                 ameisenAction.ActionIsDone();
+        }
+
+        private void MoveNearCorpseAndRevive(Vector3 corpsePosition)
+        {
+            AmeisenAction ameisenAction = new AmeisenAction(
+                       AmeisenActionType.MOVE_NEAR_POSITION,
+                       new object[] { corpsePosition, 10.0 }
+                       );
+            AddActionToQueue(ref ameisenAction);
+
+            while (!ameisenAction.IsActionDone()) { Thread.Sleep(250); }
+
+            AmeisenCoreUtils.AmeisenCore.RetrieveCorpse();
         }
 
         private void MoveNearPosition(Vector3 position, double distance, ref AmeisenAction ameisenAction, bool shouldStopInRange = false)
@@ -320,36 +320,6 @@ namespace AmeisenAI
                 ameisenAction.ActionIsDone();
         }
 
-        /// <summary>
-        /// This runs on the Brain-Threads which are constantly processing the queue of actions that
-        /// the bot has to do.
-        /// </summary>
-        /// <param name="threadID">id to identify the thread</param>
-        private void WorkActions(int threadID)
-        {
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "AI-Thread up", this);
-            while (aiActive)
-            {
-                if (!actionQueue.IsEmpty)
-                {
-                    busyThreads[threadID - 1] = true;
-                    if (actionQueue.TryDequeue(out AmeisenAction currentAction))
-                    {
-                        ProcessAction(ref currentAction);
-
-                        // Reque the unfinished AmeisenAction
-                        if (!currentAction.IsActionDone())
-                            actionQueue.Enqueue(currentAction);
-                    }
-                }
-                else
-                {
-                    Thread.Sleep(5);
-                    busyThreads[threadID - 1] = false;
-                }
-            }
-        }
-
         private void ProcessAction(ref AmeisenAction currentAction)
         {
             switch (currentAction.GetActionType())
@@ -400,26 +370,6 @@ namespace AmeisenAI
             }
         }
 
-        private void ProcessActionTargetEntity(ref AmeisenAction currentAction)
-        {
-            AmeisenCoreUtils.AmeisenCore.TargetGUID(
-                (UInt64)currentAction.GetActionParams());
-            currentAction.ActionIsDone();
-        }
-
-        private void ProcessActionUseSpell(ref AmeisenAction currentAction, bool onMyself = false)
-        {
-            WowSpellInfo spellInfo = AmeisenCoreUtils.AmeisenCore.GetSpellInfo((string)currentAction.GetActionParams());
-            AmeisenCoreUtils.AmeisenCore.CastSpellByName((string)currentAction.GetActionParams(), onMyself);
-
-            Thread.Sleep(200);
-
-            if (Me.CurrentState == UnitState.CASTING)
-                Thread.Sleep(spellInfo.castTime);
-            currentAction.ActionIsDone();
-            IsAllowedToMove = true;
-        }
-
         private void ProcessActionInteractWithTarget(ref AmeisenAction currentAction)
         {
             if (IsAllowedToMove)
@@ -442,6 +392,56 @@ namespace AmeisenAI
                 MoveToPosition((Vector3)currentAction.GetActionParams(), 3.0, ref currentAction);
             else
                 currentAction.ActionIsDone();
+        }
+
+        private void ProcessActionTargetEntity(ref AmeisenAction currentAction)
+        {
+            AmeisenCoreUtils.AmeisenCore.TargetGUID(
+                (UInt64)currentAction.GetActionParams());
+            currentAction.ActionIsDone();
+        }
+
+        private void ProcessActionUseSpell(ref AmeisenAction currentAction, bool onMyself = false)
+        {
+            WowSpellInfo spellInfo = AmeisenCoreUtils.AmeisenCore.GetSpellInfo((string)currentAction.GetActionParams());
+            AmeisenCoreUtils.AmeisenCore.CastSpellByName((string)currentAction.GetActionParams(), onMyself);
+
+            Thread.Sleep(200);
+
+            if (Me.CurrentState == UnitState.CASTING)
+                Thread.Sleep(spellInfo.castTime);
+            currentAction.ActionIsDone();
+            IsAllowedToMove = true;
+        }
+
+        /// <summary>
+        /// This runs on the Brain-Threads which are constantly processing the queue of actions that
+        /// the bot has to do.
+        /// </summary>
+        /// <param name="threadID">id to identify the thread</param>
+        private void WorkActions(int threadID)
+        {
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "AI-Thread up", this);
+            while (aiActive)
+            {
+                if (!actionQueue.IsEmpty)
+                {
+                    busyThreads[threadID - 1] = true;
+                    if (actionQueue.TryDequeue(out AmeisenAction currentAction))
+                    {
+                        ProcessAction(ref currentAction);
+
+                        // Reque the unfinished AmeisenAction
+                        if (!currentAction.IsActionDone())
+                            actionQueue.Enqueue(currentAction);
+                    }
+                }
+                else
+                {
+                    Thread.Sleep(5);
+                    busyThreads[threadID - 1] = false;
+                }
+            }
         }
     }
 }
