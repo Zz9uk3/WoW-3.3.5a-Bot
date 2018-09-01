@@ -13,14 +13,14 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class GroupWindow : Window
     {
-        private List<BotView> botViews;
-        private DispatcherTimer uiUpdateTimer;
-
         public GroupWindow()
         {
             InitializeComponent();
             botViews = new List<BotView>();
         }
+
+        private List<BotView> botViews;
+        private DispatcherTimer uiUpdateTimer;
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {

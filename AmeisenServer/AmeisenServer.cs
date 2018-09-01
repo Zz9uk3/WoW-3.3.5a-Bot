@@ -17,7 +17,7 @@ namespace AmeisenServer
         private static NetworkBot ConvertRegisterDataToBot(HttpListenerRequest request)
         {
             string bodyContent = ReadBody(request);
-            RegisterData registerData = JsonConvert.DeserializeObject<RegisterData>(bodyContent);
+            NetworkRegData registerData = JsonConvert.DeserializeObject<NetworkRegData>(bodyContent);
 
             NetworkBot convertedBot = new NetworkBot
             {
@@ -202,7 +202,7 @@ namespace AmeisenServer
             int idToUpdate = Convert.ToInt32(bodyContent.Split(']')[0].Replace("]", ""));
             string botContent = bodyContent.Split(']')[1];
 
-            MeSendable meSendable = JsonConvert.DeserializeObject<MeSendable>(botContent);
+            SendableMe meSendable = JsonConvert.DeserializeObject<SendableMe>(botContent);
 
             NetworkBot convertedBot = new NetworkBot
             {

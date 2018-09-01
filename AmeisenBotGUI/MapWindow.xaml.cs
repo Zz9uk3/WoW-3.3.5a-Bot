@@ -17,12 +17,6 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class MapWindow : Window
     {
-        private Map currentMap;
-        private DispatcherTimer mapUpdateTimer;
-        private int newX;
-        private int newY;
-        private DispatcherTimer uiUpdateTimer;
-
         public MapWindow()
         {
             InitializeComponent();
@@ -55,6 +49,12 @@ namespace AmeisenBotGUI
 
             return Color.FromArgb(255, (byte)r, (byte)g, (byte)b);
         }
+
+        private Map currentMap;
+        private DispatcherTimer mapUpdateTimer;
+        private int newX;
+        private int newY;
+        private DispatcherTimer uiUpdateTimer;
 
         private static void DrawLine(int startX, int startY, int endX, int endY, int thickness, Color color, Canvas canvas)
         {

@@ -13,26 +13,6 @@ namespace AmeisenManager
 {
     public class AmeisenClient
     {
-        private static readonly HttpClient client = new HttpClient();
-        private static readonly object padlock = new object();
-        private static AmeisenClient instance;
-        private Thread botListUpdateThread;
-
-        private System.Timers.Timer botListUpdateTimer;
-
-        private Thread botUpdateThread;
-
-        private System.Timers.Timer botUpdateTimer;
-
-        private AmeisenClient()
-        {
-            botUpdateTimer = new System.Timers.Timer(1000);
-            botUpdateTimer.Elapsed += UpdateBot;
-
-            botListUpdateTimer = new System.Timers.Timer(1000);
-            botListUpdateTimer.Elapsed += UpdateBotList;
-        }
-
         public static AmeisenClient Instance
         {
             get
@@ -47,20 +27,10 @@ namespace AmeisenManager
         }
 
         public int BotID { get; private set; }
-
         public List<NetworkBot> BotList { get; private set; }
-
         public IPAddress IPAddress { get; private set; }
-
         public bool IsRegistered { get; private set; }
-
         public int Port { get; private set; }
-
-        private Me Me
-        {
-            get { return AmeisenDataHolder.Instance.Me; }
-            set { AmeisenDataHolder.Instance.Me = value; }
-        }
 
         public async void Register(Me me, IPAddress ip, int port = 16200)
         {
@@ -77,8 +47,8 @@ namespace AmeisenManager
                                 )
                             );
 
-                MeSendable meSendable = new MeSendable().ConvertFromMe(me);
-                string content = JsonConvert.SerializeObject(new RegisterData(base64Image, meSendable));
+                SendableMe meSendable = new SendableMe().ConvertFromMe(me);
+                string content = JsonConvert.SerializeObject(new NetworkRegData(base64Image, meSendable));
 
                 HttpContent contentToSend = new StringContent(content);
                 HttpResponseMessage response = await client.PostAsync("http://" + ip + ":" + port + "/botRegister/", contentToSend);
@@ -118,12 +88,38 @@ namespace AmeisenManager
             }
         }
 
+        private static readonly HttpClient client = new HttpClient();
+        private static readonly object padlock = new object();
+        private static AmeisenClient instance;
+        private Thread botListUpdateThread;
+
+        private System.Timers.Timer botListUpdateTimer;
+
+        private Thread botUpdateThread;
+
+        private System.Timers.Timer botUpdateTimer;
+
+        private AmeisenClient()
+        {
+            botUpdateTimer = new System.Timers.Timer(1000);
+            botUpdateTimer.Elapsed += UpdateBot;
+
+            botListUpdateTimer = new System.Timers.Timer(1000);
+            botListUpdateTimer.Elapsed += UpdateBotList;
+        }
+
+        private Me Me
+        {
+            get { return AmeisenDataHolder.Instance.Me; }
+            set { AmeisenDataHolder.Instance.Me = value; }
+        }
+
         private async void UpdateBot(object source, ElapsedEventArgs e)
         {
             try
             {
                 HttpContent contentToSend = new StringContent(BotID + "]" + JsonConvert.SerializeObject(
-                    new MeSendable().ConvertFromMe(Me)));
+                    new SendableMe().ConvertFromMe(Me)));
                 HttpResponseMessage response = await client.PostAsync("http://" + IPAddress + ":" + Port + "/botUpdate/" + BotID + "/", contentToSend);
                 string responseString = await response.Content.ReadAsStringAsync();
             }

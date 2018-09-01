@@ -7,8 +7,8 @@
     <ProjectGuid>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AmeisenOffsets</RootNamespace>
-    <AssemblyName>AmeisenOffsets</AssemblyName>
+    <RootNamespace>AmeisenUtilities</RootNamespace>
+    <AssemblyName>AmeisenUtilities</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -50,7 +50,20 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\AmeisenActionType.cs" />
+    <Compile Include="Enums\CombatActionType.cs" />
+    <Compile Include="Enums\CombatLogicActions.cs" />
+    <Compile Include="Enums\CombatLogicStatement.cs" />
+    <Compile Include="Enums\CombatLogicValues.cs" />
+    <Compile Include="Enums\DynamicUnitFlags.cs" />
+    <Compile Include="Enums\InteractionType.cs" />
+    <Compile Include="Enums\LuaUnit.cs" />
+    <Compile Include="Enums\UnitFlags.cs" />
+    <Compile Include="Enums\UnitState.cs" />
+    <Compile Include="Enums\WowObjectType.cs" />
     <Compile Include="Objects\AmeisenAction.cs" />
+    <Compile Include="Objects\NetworkRegData.cs" />
+    <Compile Include="Objects\SendableMe.cs" />
     <Compile Include="Objects\Settings.cs" />
     <Compile Include="Objects\WoWClass.cs" />
     <Compile Include="Objects\WoWExe.cs" />
@@ -63,9 +76,13 @@
     <Compile Include="Objects\WoWObjects\Player.cs" />
     <Compile Include="Objects\WoWObjects\Unit.cs" />
     <Compile Include="Objects\WoWObjects\WoWObject.cs" />
-    <Compile Include="Structures.cs" />
+    <Compile Include="Structs\Credentials.cs" />
+    <Compile Include="Structs\NetworkBot.cs" />
+    <Compile Include="Structs\Vector3.cs" />
+    <Compile Include="Structs\WowAuraInfo.cs" />
+    <Compile Include="Structs\WowSpellInfo.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="WoWOffsets.cs" />
+    <Compile Include="Offsets.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

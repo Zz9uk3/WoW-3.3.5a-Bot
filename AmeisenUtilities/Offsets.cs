@@ -3,7 +3,7 @@
     /// <summary>
     /// Abstract class that contains all the offsets
     /// </summary>
-    public abstract class WoWOffsets
+    public abstract class Offsets
     {
         public static uint arenaPlayer1 = 0xBE9F48;
         public static uint arenaPlayer2 = arenaPlayer1 + 0x8;

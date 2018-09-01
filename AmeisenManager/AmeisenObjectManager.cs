@@ -1,4 +1,5 @@
-﻿using AmeisenData;
+﻿using AmeisenCoreUtils;
+using AmeisenData;
 using AmeisenDB;
 using AmeisenLogging;
 using AmeisenMapping.objects;
@@ -21,19 +22,6 @@ namespace AmeisenManager
     /// </summary>
     public class AmeisenObjectManager
     {
-        private static readonly object padlock = new object();
-        private static AmeisenObjectManager instance;
-        private Thread objectUpdateThread;
-
-        private System.Timers.Timer objectUpdateTimer;
-
-        private DateTime timestampObjects;
-
-        private AmeisenObjectManager()
-        {
-            RefreshObjects();
-        }
-
         public static AmeisenObjectManager Instance
         {
             get
@@ -45,24 +33,6 @@ namespace AmeisenManager
                     return instance;
                 }
             }
-        }
-
-        private List<WoWObject> ActiveWoWObjects
-        {
-            get { return AmeisenDataHolder.Instance.ActiveWoWObjects; }
-            set { AmeisenDataHolder.Instance.ActiveWoWObjects = value; }
-        }
-
-        private Me Me
-        {
-            get { return AmeisenDataHolder.Instance.Me; }
-            set { AmeisenDataHolder.Instance.Me = value; }
-        }
-
-        private Unit Target
-        {
-            get { return AmeisenDataHolder.Instance.Target; }
-            set { AmeisenDataHolder.Instance.Target = value; }
         }
 
         /// <summary>
@@ -101,7 +71,7 @@ namespace AmeisenManager
         /// </summary>
         public void Start()
         {
-            ActiveWoWObjects = AmeisenCoreUtils.AmeisenCore.GetAllWoWObjects(false);
+            ActiveWoWObjects = AmeisenCore.GetAllWoWObjects(false);
 
             foreach (WoWObject t in ActiveWoWObjects)
                 if (t.GetType() == typeof(Me))
@@ -123,6 +93,37 @@ namespace AmeisenManager
         {
             objectUpdateTimer.Stop();
             objectUpdateThread.Join();
+        }
+
+        private static readonly object padlock = new object();
+        private static AmeisenObjectManager instance;
+        private Thread objectUpdateThread;
+
+        private System.Timers.Timer objectUpdateTimer;
+
+        private DateTime timestampObjects;
+
+        private AmeisenObjectManager()
+        {
+            RefreshObjects();
+        }
+
+        private List<WoWObject> ActiveWoWObjects
+        {
+            get { return AmeisenDataHolder.Instance.ActiveWoWObjects; }
+            set { AmeisenDataHolder.Instance.ActiveWoWObjects = value; }
+        }
+
+        private Me Me
+        {
+            get { return AmeisenDataHolder.Instance.Me; }
+            set { AmeisenDataHolder.Instance.Me = value; }
+        }
+
+        private Unit Target
+        {
+            get { return AmeisenDataHolder.Instance.Target; }
+            set { AmeisenDataHolder.Instance.Target = value; }
         }
 
         private void AntiAFK()

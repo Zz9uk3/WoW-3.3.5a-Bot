@@ -30,22 +30,6 @@ namespace AmeisenAI
     /// </summary>
     public class AmeisenAIManager
     {
-        private static readonly object padlock = new object();
-        private static AmeisenAIManager instance;
-        private ConcurrentQueue<AmeisenAction> actionQueue;
-        private bool aiActive;
-        private List<Thread> aiWorkers;
-        private bool[] busyThreads;
-
-        private AmeisenAIManager()
-        {
-            IsAllowedToMove = true;
-            DoFollow = true;
-            IsAllowedToRevive = true;
-            actionQueue = new ConcurrentQueue<AmeisenAction>();
-            aiWorkers = new List<Thread>();
-        }
-
         /// <summary>
         /// Initialize/Get the instance of our singleton
         /// </summary>
@@ -66,18 +50,6 @@ namespace AmeisenAI
         public bool DoFollow { get; set; }
         public bool IsAllowedToMove { get; set; }
         public bool IsAllowedToRevive { get; set; }
-
-        private Me Me
-        {
-            get { return AmeisenDataHolder.Instance.Me; }
-            set { AmeisenDataHolder.Instance.Me = value; }
-        }
-
-        private Unit Target
-        {
-            get { return AmeisenDataHolder.Instance.Target; }
-            set { AmeisenDataHolder.Instance.Target = value; }
-        }
 
         /// <summary>
         /// Add an action for the bot to do.
@@ -174,6 +146,34 @@ namespace AmeisenAI
             }
         }
 
+        private static readonly object padlock = new object();
+        private static AmeisenAIManager instance;
+        private ConcurrentQueue<AmeisenAction> actionQueue;
+        private bool aiActive;
+        private List<Thread> aiWorkers;
+        private bool[] busyThreads;
+
+        private AmeisenAIManager()
+        {
+            IsAllowedToMove = true;
+            DoFollow = true;
+            IsAllowedToRevive = true;
+            actionQueue = new ConcurrentQueue<AmeisenAction>();
+            aiWorkers = new List<Thread>();
+        }
+
+        private Me Me
+        {
+            get { return AmeisenDataHolder.Instance.Me; }
+            set { AmeisenDataHolder.Instance.Me = value; }
+        }
+
+        private Unit Target
+        {
+            get { return AmeisenDataHolder.Instance.Target; }
+            set { AmeisenDataHolder.Instance.Target = value; }
+        }
+
         /// <summary> Modify our go-to-position by a small factor to provide "naturality" </summary>
         /// <param name="targetPos">pos you want to go to/param> <param
         /// name="distanceToTarget">distance to keep to the target</param> <returns>modified position</returns>
@@ -202,7 +202,7 @@ namespace AmeisenAI
                 currentAction.ActionIsDone();  // If there is no target, we can't face anyone...
             else
             {
-                AmeisenCoreUtils.AmeisenCore.InteractWithGUID(Target.pos, Target.Guid, Interaction.FACETARGET);
+                AmeisenCoreUtils.AmeisenCore.InteractWithGUID(Target.pos, Target.Guid, InteractionType.FACETARGET);
                 currentAction.ActionIsDone();
             }
         }
@@ -212,27 +212,28 @@ namespace AmeisenAI
             Vector3 corpsePosition = AmeisenCoreUtils.AmeisenCore.GetCorpsePosition();
 
             if (corpsePosition.X != 0 && corpsePosition.Y != 0 && corpsePosition.Z != 0)
-            {
-                AmeisenAction ameisenAction = new AmeisenAction(
-                    AmeisenActionType.MOVE_NEAR_POSITION,
-                    new object[] { corpsePosition, 10.0 }
-                    );
-                AddActionToQueue(ref ameisenAction);
-
-                while (!ameisenAction.IsActionDone()) { Thread.Sleep(250); }
-
-                AmeisenCoreUtils.AmeisenCore.RetrieveCorpse();
-            }
+                MoveNearCorpseAndRevive(corpsePosition);
 
             if (Me.Health > 1)
-            {
                 currentAction.ActionIsDone();
-            }
             else
                 Thread.Sleep(1000);
         }
 
-        private void InteractWithTarget(double distance, Interaction action, ref AmeisenAction ameisenAction)
+        private void MoveNearCorpseAndRevive(Vector3 corpsePosition)
+        {
+            AmeisenAction ameisenAction = new AmeisenAction(
+                       AmeisenActionType.MOVE_NEAR_POSITION,
+                       new object[] { corpsePosition, 10.0 }
+                       );
+            AddActionToQueue(ref ameisenAction);
+
+            while (!ameisenAction.IsActionDone()) { Thread.Sleep(250); }
+
+            AmeisenCoreUtils.AmeisenCore.RetrieveCorpse();
+        }
+
+        private void InteractWithTarget(double distance, InteractionType action, ref AmeisenAction ameisenAction)
         {
             if (Target == null)
                 ameisenAction.ActionIsDone();  // If there is no target, we can't interact with anyone...
@@ -248,7 +249,7 @@ namespace AmeisenAI
                 Me.Update();
                 Vector3 initialPosition = Me.pos;
                 Vector3 posToGoToToMakeSureTheInteractionGetsFired = CalculatePosToGoTo(Target.pos, 16);
-                AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(posToGoToToMakeSureTheInteractionGetsFired, Interaction.MOVE);
+                AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(posToGoToToMakeSureTheInteractionGetsFired, InteractionType.MOVE);
 
                 // Let the character run
                 Thread.Sleep(2000);
@@ -273,7 +274,7 @@ namespace AmeisenAI
                 Vector3 posToGoTo = CalculatePosToGoTo(position, (int)distance);
 
                 if (IsAllowedToMove)
-                    AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(posToGoTo, Interaction.MOVE);
+                    AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(posToGoTo, InteractionType.MOVE);
 
                 // Let the character run to prevent random jumping
                 Thread.Sleep(300);
@@ -289,7 +290,7 @@ namespace AmeisenAI
                 {
                     Vector3 currentPosition = AmeisenDataHolder.Instance.Me.pos;
                     if (currentPosition.X != 0 && currentPosition.Y != 0 && currentPosition.Z != 0)
-                        AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(currentPosition, Interaction.STOP);
+                        AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(currentPosition, InteractionType.STOP);
                 }
 
                 ameisenAction.ActionIsDone();
@@ -305,7 +306,7 @@ namespace AmeisenAI
                 Me.Update();
                 Vector3 initialPosition = Me.pos;
                 Vector3 posToGoTo = CalculatePosToGoTo(position, (int)distance);
-                AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(posToGoTo, Interaction.MOVE);
+                AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(posToGoTo, InteractionType.MOVE);
 
                 // Let the character run to prevent random jumping
                 Thread.Sleep(300);
@@ -332,75 +333,9 @@ namespace AmeisenAI
                 if (!actionQueue.IsEmpty)
                 {
                     busyThreads[threadID - 1] = true;
-                    if (actionQueue.TryDequeue(out AmeisenAction currentAction))
+                    if (actionQueue.TryDequeue(out ref AmeisenAction currentAction))
                     {
-                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Processing Action: " + currentAction.ToString(), this);
-                        switch (currentAction.GetActionType())
-                        {
-                            case AmeisenActionType.MOVE_TO_POSITION:
-                                if (IsAllowedToMove)
-                                    MoveToPosition((Vector3)currentAction.GetActionParams(), 3.0, ref currentAction);
-                                else
-                                    currentAction.ActionIsDone();
-                                break;
-
-                            case AmeisenActionType.MOVE_NEAR_POSITION:
-                                if (IsAllowedToMove)
-                                    MoveNearPosition((Vector3)((object[])currentAction.GetActionParams())[0], (double)((object[])currentAction.GetActionParams())[1], ref currentAction);
-                                else
-                                    currentAction.ActionIsDone();
-                                break;
-
-                            case AmeisenActionType.FORCE_MOVE_TO_POSITION:
-                                MoveToPosition((Vector3)currentAction.GetActionParams(), 3.0, ref currentAction);
-                                currentAction.ActionIsDone();
-                                break;
-
-                            case AmeisenActionType.FORCE_MOVE_NEAR_TARGET:
-                                MoveNearPosition((Vector3)((object[])currentAction.GetActionParams())[0], (double)((object[])currentAction.GetActionParams())[1], ref currentAction, true);
-                                break;
-
-                            case AmeisenActionType.FACETARGET:
-                                FaceTarget(ref currentAction);
-                                break;
-
-                            case AmeisenActionType.INTERACT_TARGET:
-                                if (IsAllowedToMove)
-                                    InteractWithTarget(3.0, (Interaction)currentAction.GetActionParams(), ref currentAction);
-                                else
-                                    currentAction.ActionIsDone();
-                                break;
-
-                            case AmeisenActionType.TARGET_ENTITY:
-                                AmeisenCoreUtils.AmeisenCore.TargetGUID((UInt64)currentAction.GetActionParams());
-                                currentAction.ActionIsDone();
-                                break;
-
-                            case AmeisenActionType.USE_SPELL:
-                                WoWSpellInfo spellInfo = AmeisenCoreUtils.AmeisenCore.GetSpellInfo((string)currentAction.GetActionParams());
-                                AmeisenCoreUtils.AmeisenCore.CastSpellByName((string)currentAction.GetActionParams(), false);
-
-                                Thread.Sleep(200);
-
-                                if (Me.CurrentState == UnitState.CASTING)
-                                    Thread.Sleep(spellInfo.castTime);
-                                currentAction.ActionIsDone();
-                                IsAllowedToMove = true;
-                                break;
-
-                            case AmeisenActionType.USE_SPELL_ON_ME:
-                                AmeisenCoreUtils.AmeisenCore.CastSpellByName((string)currentAction.GetActionParams(), true);
-                                currentAction.ActionIsDone();
-                                break;
-
-                            case AmeisenActionType.GO_TO_CORPSE_AND_REVIVE:
-                                GoToCorpseAndRevive(ref currentAction);
-                                break;
-
-                            default:
-                                currentAction.ActionIsDone();
-                                break;
-                        }
+                        ProcessAction(ref currentAction);
 
                         // Reque the unfinished AmeisenAction
                         if (!currentAction.IsActionDone())
@@ -413,6 +348,100 @@ namespace AmeisenAI
                     busyThreads[threadID - 1] = false;
                 }
             }
+        }
+
+        private void ProcessAction(ref AmeisenAction currentAction)
+        {
+            switch (currentAction.GetActionType())
+            {
+                case AmeisenActionType.MOVE_TO_POSITION:
+                    ProcessActionMoveToPosition(ref currentAction);
+                    break;
+
+                case AmeisenActionType.MOVE_NEAR_POSITION:
+                    ProcessActionMoveNearPosition(ref currentAction);
+                    break;
+
+                case AmeisenActionType.FORCE_MOVE_TO_POSITION:
+                    ProcessActionMoveToPosition(ref currentAction, true);
+                    break;
+
+                case AmeisenActionType.FORCE_MOVE_NEAR_TARGET:
+                    ProcessActionMoveNearPosition(ref currentAction, true);
+                    break;
+
+                case AmeisenActionType.FACETARGET:
+                    FaceTarget(ref currentAction);
+                    break;
+
+                case AmeisenActionType.INTERACT_TARGET:
+                    ProcessActionInteractWithTarget(ref currentAction);
+                    break;
+
+                case AmeisenActionType.TARGET_ENTITY:
+                    ProcessActionTargetEntity(ref currentAction);
+                    break;
+
+                case AmeisenActionType.USE_SPELL:
+                    ProcessActionUseSpell(ref currentAction);
+                    break;
+
+                case AmeisenActionType.USE_SPELL_ON_ME:
+                    ProcessActionUseSpell(ref currentAction, true);
+                    break;
+
+                case AmeisenActionType.GO_TO_CORPSE_AND_REVIVE:
+                    GoToCorpseAndRevive(ref currentAction);
+                    break;
+
+                default:
+                    currentAction.ActionIsDone();
+                    break;
+            }
+        }
+
+        private void ProcessActionTargetEntity(ref AmeisenAction currentAction)
+        {
+            AmeisenCoreUtils.AmeisenCore.TargetGUID(
+                (UInt64)currentAction.GetActionParams());
+            currentAction.ActionIsDone();
+        }
+
+        private void ProcessActionUseSpell(ref AmeisenAction currentAction, bool onMyself = false)
+        {
+            WowSpellInfo spellInfo = AmeisenCoreUtils.AmeisenCore.GetSpellInfo((string)currentAction.GetActionParams());
+            AmeisenCoreUtils.AmeisenCore.CastSpellByName((string)currentAction.GetActionParams(), onMyself);
+
+            Thread.Sleep(200);
+
+            if (Me.CurrentState == UnitState.CASTING)
+                Thread.Sleep(spellInfo.castTime);
+            currentAction.ActionIsDone();
+            IsAllowedToMove = true;
+        }
+
+        private void ProcessActionInteractWithTarget(ref AmeisenAction currentAction)
+        {
+            if (IsAllowedToMove)
+                InteractWithTarget(3.0, (InteractionType)currentAction.GetActionParams(), ref currentAction);
+            else
+                currentAction.ActionIsDone();
+        }
+
+        private void ProcessActionMoveNearPosition(ref AmeisenAction currentAction, bool force = false)
+        {
+            if (IsAllowedToMove || force)
+                MoveNearPosition((Vector3)((object[])currentAction.GetActionParams())[0], (double)((object[])currentAction.GetActionParams())[1], ref currentAction);
+            else
+                currentAction.ActionIsDone();
+        }
+
+        private void ProcessActionMoveToPosition(ref AmeisenAction currentAction, bool force = false)
+        {
+            if (IsAllowedToMove || force)
+                MoveToPosition((Vector3)currentAction.GetActionParams(), 3.0, ref currentAction);
+            else
+                currentAction.ActionIsDone();
         }
     }
 }

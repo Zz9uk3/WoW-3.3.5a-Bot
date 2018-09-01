@@ -16,28 +16,6 @@ namespace AmeisenManager
     /// </summary>
     public class AmeisenBotManager
     {
-        private static readonly object padlock = new object();
-        private static AmeisenBotManager instance;
-
-        private readonly string sqlConnectionString =
-                "server={0};" +
-                "port={1};" +
-                "database={2};" +
-                "uid={3};" +
-                "password={4};";
-
-        private bool followGroup;
-
-        private AmeisenBotManager()
-        {
-            IsAttached = false;
-            IsHooked = false;
-
-            AmeisenSettings = AmeisenSettings.Instance;
-            AmeisenClient = AmeisenClient.Instance;
-            AmeisenDBManager = AmeisenDBManager.Instance;
-        }
-
         public static AmeisenBotManager Instance
         {
             get
@@ -67,7 +45,10 @@ namespace AmeisenManager
 
         public bool FollowGroup
         {
-            get { return followGroup; }
+            get
+            {
+                return followGroup;
+            }
             set
             {
                 followGroup = value;
@@ -127,8 +108,8 @@ namespace AmeisenManager
 
         public void FaceTarget()
         {
-            AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.ATTACK);
-            AmeisenCore.MovePlayerToXYZ(Target.pos, Interaction.STOP);
+            AmeisenCore.MovePlayerToXYZ(Target.pos, InteractionType.ATTACK);
+            AmeisenCore.MovePlayerToXYZ(Target.pos, InteractionType.STOP);
         }
 
         public string GetLoadedConfigName()
@@ -263,6 +244,28 @@ namespace AmeisenManager
 
             //Close SQL Connection
             AmeisenDBManager.Instance.Disconnect();
+        }
+
+        private static readonly object padlock = new object();
+        private static AmeisenBotManager instance;
+
+        private readonly string sqlConnectionString =
+                "server={0};" +
+                "port={1};" +
+                "database={2};" +
+                "uid={3};" +
+                "password={4};";
+
+        private bool followGroup;
+
+        private AmeisenBotManager()
+        {
+            IsAttached = false;
+            IsHooked = false;
+
+            AmeisenSettings = AmeisenSettings.Instance;
+            AmeisenClient = AmeisenClient.Instance;
+            AmeisenDBManager = AmeisenDBManager.Instance;
         }
     }
 }

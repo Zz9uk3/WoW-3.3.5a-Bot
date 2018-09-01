@@ -16,8 +16,8 @@ namespace AmeisenUtilities
             Descriptor = BlackMagicInstance.ReadUInt(BaseAddress + 0x8);
 
             Guid = BlackMagicInstance.ReadUInt64(BaseAddress + 0x30);
-            MapID = BlackMagicInstance.ReadInt(WoWOffsets.mapID);
-            ZoneID = BlackMagicInstance.ReadInt(WoWOffsets.zoneID);
+            MapID = BlackMagicInstance.ReadInt(Offsets.mapID);
+            ZoneID = BlackMagicInstance.ReadInt(Offsets.zoneID);
 
             Update();
         }

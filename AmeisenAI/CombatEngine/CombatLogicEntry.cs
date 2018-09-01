@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using AmeisenUtilities;
+using System.Collections.Generic;
 using System.Text;
-using static AmeisenAI.Combat.CombatStructures;
 
 namespace AmeisenAI.Combat
 {

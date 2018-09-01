@@ -16,9 +16,6 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class BotWindow : Window
     {
-        private string lastImgPath;
-        private DispatcherTimer uiUpdateTimer;
-
         public BotWindow(WoWExe wowExe)
         {
             InitializeComponent();
@@ -29,6 +26,8 @@ namespace AmeisenBotGUI
             BotManager.StartBot(wowExe);
         }
 
+        private string lastImgPath;
+        private DispatcherTimer uiUpdateTimer;
         private AmeisenBotManager BotManager { get; }
 
         private void ButtonCobatClassEditor_Click(object sender, RoutedEventArgs e)
@@ -147,19 +146,19 @@ namespace AmeisenBotGUI
             checkBoxFollowMaster.IsChecked = BotManager.Settings.followMaster;
             AmeisenBotManager.Instance.FollowGroup = BotManager.Settings.followMaster;
 
-            comboboxInteraction.Items.Add(Interaction.FACETARGET);
-            comboboxInteraction.Items.Add(Interaction.FACEDESTINATION);
-            comboboxInteraction.Items.Add(Interaction.STOP);
-            comboboxInteraction.Items.Add(Interaction.MOVE);
-            comboboxInteraction.Items.Add(Interaction.INTERACT);
-            comboboxInteraction.Items.Add(Interaction.LOOT);
-            comboboxInteraction.Items.Add(Interaction.INTERACTOBJECT);
-            comboboxInteraction.Items.Add(Interaction.FACEOTHER);
-            comboboxInteraction.Items.Add(Interaction.SKIN);
-            comboboxInteraction.Items.Add(Interaction.ATTACK);
-            comboboxInteraction.Items.Add(Interaction.ATTACKPOS);
-            comboboxInteraction.Items.Add(Interaction.ATTACKGUID);
-            comboboxInteraction.Items.Add(Interaction.WALKANDROTATE);
+            comboboxInteraction.Items.Add(InteractionType.FACETARGET);
+            comboboxInteraction.Items.Add(InteractionType.FACEDESTINATION);
+            comboboxInteraction.Items.Add(InteractionType.STOP);
+            comboboxInteraction.Items.Add(InteractionType.MOVE);
+            comboboxInteraction.Items.Add(InteractionType.INTERACT);
+            comboboxInteraction.Items.Add(InteractionType.LOOT);
+            comboboxInteraction.Items.Add(InteractionType.INTERACTOBJECT);
+            comboboxInteraction.Items.Add(InteractionType.FACEOTHER);
+            comboboxInteraction.Items.Add(InteractionType.SKIN);
+            comboboxInteraction.Items.Add(InteractionType.ATTACK);
+            comboboxInteraction.Items.Add(InteractionType.ATTACKPOS);
+            comboboxInteraction.Items.Add(InteractionType.ATTACKGUID);
+            comboboxInteraction.Items.Add(InteractionType.WALKANDROTATE);
         }
 
         private void Mainscreen_MouseDown(object sender, MouseButtonEventArgs e)

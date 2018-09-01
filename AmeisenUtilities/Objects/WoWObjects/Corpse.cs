@@ -11,8 +11,6 @@ namespace AmeisenUtilities
             Update();
         }
 
-        private UInt64 Owner { get; set; }
-
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -42,5 +40,7 @@ namespace AmeisenUtilities
             Rotation = BlackMagicInstance.ReadFloat(BaseAddress + 0x20);
             Owner = BlackMagicInstance.ReadUInt64(BaseAddress + 0x18);
         }
+
+        private UInt64 Owner { get; set; }
     }
 }

@@ -17,29 +17,6 @@ namespace AmeisenCoreUtils
         public bool isHooked = false;
         public bool isInjectionUsed = false;
 
-        private static readonly object padlock = new object();
-        private static AmeisenHook instance;
-        private uint codeCave;
-        private uint codeCaveForInjection;
-        private uint codeToExecute;
-        private uint endsceneReturnAddress;
-        private ConcurrentQueue<HookJob> hookJobs;
-        private Thread hookWorker;
-        private byte[] originalEndscene = new byte[] { 0xB8, 0x51, 0xD7, 0xCA, 0x64 };
-        private uint returnAdress;
-
-        private AmeisenHook()
-        {
-            Hook();
-            hookJobs = new ConcurrentQueue<HookJob>();
-            hookWorker = new Thread(new ThreadStart(DoWork));
-
-            if (isHooked)
-            {
-                hookWorker.Start();
-            }
-        }
-
         public static AmeisenHook Instance
         {
             get
@@ -88,6 +65,29 @@ namespace AmeisenCoreUtils
             hookWorker.Join();
         }
 
+        private static readonly object padlock = new object();
+        private static AmeisenHook instance;
+        private uint codeCave;
+        private uint codeCaveForInjection;
+        private uint codeToExecute;
+        private uint endsceneReturnAddress;
+        private ConcurrentQueue<HookJob> hookJobs;
+        private Thread hookWorker;
+        private byte[] originalEndscene = new byte[] { 0xB8, 0x51, 0xD7, 0xCA, 0x64 };
+        private uint returnAdress;
+
+        private AmeisenHook()
+        {
+            Hook();
+            hookJobs = new ConcurrentQueue<HookJob>();
+            hookWorker = new Thread(new ThreadStart(DoWork));
+
+            if (isHooked)
+            {
+                hookWorker.Start();
+            }
+        }
+
         private void DoWork()
         {
             while (isHooked)
@@ -115,10 +115,10 @@ namespace AmeisenCoreUtils
 
         private uint GetEndScene()
         {
-            uint pDevice = AmeisenCore.BlackMagic.ReadUInt(WoWOffsets.devicePtr1);
-            uint pEnd = AmeisenCore.BlackMagic.ReadUInt(pDevice + WoWOffsets.devicePtr2);
+            uint pDevice = AmeisenCore.BlackMagic.ReadUInt(Offsets.devicePtr1);
+            uint pEnd = AmeisenCore.BlackMagic.ReadUInt(pDevice + Offsets.devicePtr2);
             uint pScene = AmeisenCore.BlackMagic.ReadUInt(pEnd);
-            uint endscene = AmeisenCore.BlackMagic.ReadUInt(pScene + WoWOffsets.endScene);
+            uint endscene = AmeisenCore.BlackMagic.ReadUInt(pScene + Offsets.endScene);
             string debug = endscene.ToString("X");
             return endscene;
         }

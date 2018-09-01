@@ -20,8 +20,8 @@ namespace AmeisenUtilities
         {
             uint playerMask, playerBase, shortGUID, testGUID, offset, current;
 
-            playerMask = BlackMagicInstance.ReadUInt((WoWOffsets.nameStore + WoWOffsets.nameMask));
-            playerBase = BlackMagicInstance.ReadUInt((WoWOffsets.nameStore + WoWOffsets.nameBase));
+            playerMask = BlackMagicInstance.ReadUInt((Offsets.nameStore + Offsets.nameMask));
+            playerBase = BlackMagicInstance.ReadUInt((Offsets.nameStore + Offsets.nameBase));
 
             // Shorten the GUID
             shortGUID = (uint)guid & 0xfffffff;
@@ -44,7 +44,7 @@ namespace AmeisenUtilities
                 testGUID = BlackMagicInstance.ReadUInt(current);
             }
 
-            return BlackMagicInstance.ReadASCIIString(current + WoWOffsets.nameString, 12);
+            return BlackMagicInstance.ReadASCIIString(current + Offsets.nameString, 12);
         }
 
         public override string ToString()

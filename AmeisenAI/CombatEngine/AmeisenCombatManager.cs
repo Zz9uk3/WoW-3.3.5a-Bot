@@ -6,20 +6,6 @@ namespace AmeisenAI
 {
     public class AmeisenCombatManager
     {
-        private static readonly object padlock = new object();
-        private static AmeisenCombatManager instance;
-        private readonly Thread mainWorker;
-        private CombatEngine combatEngine;
-        private bool stop = false;
-
-        private AmeisenCombatManager()
-        {
-            mainWorker = new Thread(new ThreadStart(DoWork));
-            combatEngine = new CombatEngine();
-
-            ReloadCombatClass();
-        }
-
         /// <summary>
         /// Initialize/Get the instance of our singleton
         /// </summary>
@@ -35,12 +21,6 @@ namespace AmeisenAI
                     return instance;
                 }
             }
-        }
-
-        private Me Me
-        {
-            get { return AmeisenDataHolder.Instance.Me; }
-            set { AmeisenDataHolder.Instance.Me = value; }
         }
 
         /// <summary>
@@ -65,6 +45,26 @@ namespace AmeisenAI
         {
             stop = true;
             mainWorker.Abort();
+        }
+
+        private static readonly object padlock = new object();
+        private static AmeisenCombatManager instance;
+        private readonly Thread mainWorker;
+        private CombatEngine combatEngine;
+        private bool stop = false;
+
+        private AmeisenCombatManager()
+        {
+            mainWorker = new Thread(new ThreadStart(DoWork));
+            combatEngine = new CombatEngine();
+
+            ReloadCombatClass();
+        }
+
+        private Me Me
+        {
+            get { return AmeisenDataHolder.Instance.Me; }
+            set { AmeisenDataHolder.Instance.Me = value; }
         }
 
         private void DoWork()

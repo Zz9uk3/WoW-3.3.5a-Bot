@@ -1,12 +1,12 @@
 ﻿using AmeisenAI;
 using AmeisenAI.Combat;
 using AmeisenManager;
+using AmeisenUtilities;
 using Microsoft.Win32;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using static AmeisenAI.Combat.CombatStructures;
 
 namespace AmeisenBotGUI
 {
@@ -15,9 +15,6 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class CombatClassWindow : Window
     {
-        private CombatLogic loadedLogic;
-        private int prio;
-
         public CombatClassWindow()
         {
             InitializeComponent();
@@ -30,6 +27,8 @@ namespace AmeisenBotGUI
                 loadedLogic = new CombatLogic();
         }
 
+        private CombatLogic loadedLogic;
+        private int prio;
         private AmeisenBotManager BotManager { get; }
 
         private void ButtonAddCombatEntry_Click(object sender, RoutedEventArgs e)

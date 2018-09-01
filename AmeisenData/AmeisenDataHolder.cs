@@ -5,14 +5,6 @@ namespace AmeisenData
 {
     public class AmeisenDataHolder
     {
-        private static readonly object padlock = new object();
-
-        private static AmeisenDataHolder instance = null;
-
-        private AmeisenDataHolder()
-        {
-        }
-
         public static AmeisenDataHolder Instance
         {
             get
@@ -32,5 +24,12 @@ namespace AmeisenData
         public Me Me { get; set; }
 
         public Unit Target { get; set; }
+        private static readonly object padlock = new object();
+
+        private static AmeisenDataHolder instance = null;
+
+        private AmeisenDataHolder()
+        {
+        }
     }
 }

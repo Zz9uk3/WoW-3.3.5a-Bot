@@ -7,10 +7,6 @@ namespace AmeisenUtilities
     /// </summary>
     public class AmeisenAction
     {
-        private readonly object actionParams;
-        private readonly AmeisenActionType actionType;
-        private bool isDone;
-
         /// <summary>
         /// Class to describe an action for the Brain-Threads to process
         /// </summary>
@@ -55,5 +51,9 @@ namespace AmeisenUtilities
             sb.Append("IsDone: " + isDone.ToString());
             return sb.ToString();
         }
+
+        private readonly object actionParams;
+        private readonly AmeisenActionType actionType;
+        private bool isDone;
     }
 }

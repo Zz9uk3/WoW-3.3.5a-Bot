@@ -23,7 +23,7 @@ namespace AmeisenCoreUtils
         /// </summary>
         public static void AntiAFK()
         {
-            BlackMagic.WriteInt(WoWOffsets.tickCount, Environment.TickCount);
+            BlackMagic.WriteInt(Offsets.tickCount, Environment.TickCount);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace AmeisenCoreUtils
         /// <returns>true if yes, false if no</returns>
         public static bool CheckWorldLoaded()
         {
-            return BlackMagic.ReadInt(WoWOffsets.worldLoaded) == 1;
+            return BlackMagic.ReadInt(Offsets.worldLoaded) == 1;
         }
 
         [DllImport("user32.dll")]
@@ -90,11 +90,11 @@ namespace AmeisenCoreUtils
         {
             List<WoWObject> objects = new List<WoWObject>();
 
-            uint currentObjectManager = BlackMagic.ReadUInt(WoWOffsets.currentClientConnection);
-            currentObjectManager = BlackMagic.ReadUInt(currentObjectManager + WoWOffsets.currentManagerOffset);
+            uint currentObjectManager = BlackMagic.ReadUInt(Offsets.currentClientConnection);
+            currentObjectManager = BlackMagic.ReadUInt(currentObjectManager + Offsets.currentManagerOffset);
 
-            uint activeObj = BlackMagic.ReadUInt(currentObjectManager + WoWOffsets.firstObjectOffset);
-            uint objType = BlackMagic.ReadUInt(activeObj + WoWOffsets.gameobjectTypeOffset);
+            uint activeObj = BlackMagic.ReadUInt(currentObjectManager + Offsets.firstObjectOffset);
+            uint objType = BlackMagic.ReadUInt(activeObj + Offsets.gameobjectTypeOffset);
 
             UInt64 myGUID = ReadPlayerGUID();
 
@@ -105,12 +105,12 @@ namespace AmeisenCoreUtils
                 //if (!(refreshOnlyUnits
                 //    && (objType == (int)WoWObjectType.UNIT || objType == (int)WoWObjectType.PLAYER)))
                 //{
-                WoWObject wowObject = ReadWoWObjectFromWoW(activeObj, (WoWObjectType)objType);
+                WoWObject wowObject = ReadWoWObjectFromWoW(activeObj, (WowObjectType)objType);
                 objects.Add(wowObject);
                 //}
 
-                activeObj = BlackMagic.ReadUInt(activeObj + WoWOffsets.nextObjectOffset);
-                objType = BlackMagic.ReadUInt(activeObj + WoWOffsets.gameobjectTypeOffset);
+                activeObj = BlackMagic.ReadUInt(activeObj + Offsets.nextObjectOffset);
+                objType = BlackMagic.ReadUInt(activeObj + Offsets.gameobjectTypeOffset);
             }
 
             return objects;
@@ -120,11 +120,11 @@ namespace AmeisenCoreUtils
         /// Check for Auras/Buffs
         /// </summary>
         /// <returns>true if target has that aura, false if not</returns>
-        public static WoWAuraInfo GetAuraInfo(string auraname, LUAUnit luaUnit)
+        public static WowAuraInfo GetAuraInfo(string auraname, LuaUnit LuaUnit)
         {
-            WoWAuraInfo info = new WoWAuraInfo();
+            WowAuraInfo info = new WowAuraInfo();
 
-            string cmd = "name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId = UnitAura(\"" + luaUnit.ToString() + "\", \"" + auraname + "\");";
+            string cmd = "name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId = UnitAura(\"" + LuaUnit.ToString() + "\", \"" + auraname + "\");";
 
             //try { info.name = GetLocalizedText(cmd, "name"); } catch { info.name = ""; }
             //try { info.stacks = int.Parse(GetLocalizedText(cmd, "count")); } catch { info.stacks = -1; }
@@ -140,10 +140,10 @@ namespace AmeisenCoreUtils
         /// </summary>
         /// <param name="onMyself">check my owm state</param>
         /// <returns>true if unit is in combat, false if not</returns>
-        public static bool GetCombatState(LUAUnit luaUnit)
+        public static bool GetCombatState(LuaUnit LuaUnit)
         {
             bool isInCombat = false;
-            try { if (int.Parse(GetLocalizedText("affectingCombat = UnitAffectingCombat(\"" + luaUnit.ToString() + "\");", "affectingCombat")) == 1) isInCombat = true; else isInCombat = false; } catch { isInCombat = false; }
+            try { if (int.Parse(GetLocalizedText("affectingCombat = UnitAffectingCombat(\"" + LuaUnit.ToString() + "\");", "affectingCombat")) == 1) isInCombat = true; else isInCombat = false; } catch { isInCombat = false; }
             return isInCombat;
         }
 
@@ -151,9 +151,9 @@ namespace AmeisenCoreUtils
         {
             Vector3 corpsePosition = new Vector3
             (
-                BlackMagic.ReadFloat(WoWOffsets.corpseX),
-                BlackMagic.ReadFloat(WoWOffsets.corpseY),
-                BlackMagic.ReadFloat(WoWOffsets.corpseZ)
+                BlackMagic.ReadFloat(Offsets.corpseX),
+                BlackMagic.ReadFloat(Offsets.corpseY),
+                BlackMagic.ReadFloat(Offsets.corpseZ)
             );
             return corpsePosition;
         }
@@ -175,7 +175,7 @@ namespace AmeisenCoreUtils
                 "PUSH 0",
                 "PUSH EAX",
                 "PUSH EAX",
-                "CALL " + (WoWOffsets.luaDoString),
+                "CALL " + (Offsets.luaDoString),
                 "ADD ESP, 0xC",
                 "RETN",
                 };
@@ -183,7 +183,7 @@ namespace AmeisenCoreUtils
                 uint argCC = BlackMagic.AllocateMemory(Encoding.UTF8.GetBytes(variable).Length + 1);
                 BlackMagic.WriteBytes(argCC, Encoding.UTF8.GetBytes(variable));
 
-                uint playerBase = BlackMagic.ReadUInt(WoWOffsets.playerBase);
+                uint playerBase = BlackMagic.ReadUInt(Offsets.playerBase);
                 playerBase = BlackMagic.ReadUInt(playerBase + 0x34);
                 playerBase = BlackMagic.ReadUInt(playerBase + 0x24);
 
@@ -197,7 +197,7 @@ namespace AmeisenCoreUtils
                 "MOV ECX, "+(playerBase),
                 "PUSH -1",
                 "PUSH " + (argCC),
-                "CALL " + (WoWOffsets.luaGetLocalizedText),
+                "CALL " + (Offsets.luaGetLocalizedText),
                 "RETN",
                 };
 
@@ -219,7 +219,7 @@ namespace AmeisenCoreUtils
 
         public static int GetMapID()
         {
-            return BlackMagic.ReadInt(WoWOffsets.mapID);
+            return BlackMagic.ReadInt(Offsets.mapID);
         }
 
         /// <summary>
@@ -257,7 +257,7 @@ namespace AmeisenCoreUtils
                 WoWExe wow = new WoWExe();
                 BlackMagic blackmagic = new BlackMagic(p.Id);
 
-                wow.characterName = blackmagic.ReadASCIIString(WoWOffsets.playerName, 12);
+                wow.characterName = blackmagic.ReadASCIIString(Offsets.playerName, 12);
                 wow.process = p;
                 wows.Add(wow);
             }
@@ -270,9 +270,9 @@ namespace AmeisenCoreUtils
         /// </summary>
         /// <param name="spell">spellname</param>
         /// <returns>true if it is on cooldown, false if not</returns>
-        public static WoWSpellInfo GetSpellInfo(string spell)
+        public static WowSpellInfo GetSpellInfo(string spell)
         {
-            WoWSpellInfo info = new WoWSpellInfo();
+            WowSpellInfo info = new WowSpellInfo();
 
             string cmd = "name, rank, icon, cost, minRange, maxRange, castTime, powerType = GetSpellInfo(\"" + spell + "\");";
 
@@ -285,32 +285,32 @@ namespace AmeisenCoreUtils
 
         public static int GetZoneID()
         {
-            return BlackMagic.ReadInt(WoWOffsets.zoneID);
+            return BlackMagic.ReadInt(Offsets.zoneID);
         }
 
         /// <summary> Move the player to the given guid npc, object or whatever and iteract with it.
         /// </summary> <param name="pos">Vector3 containing the X,y & Z coordinates</param> <param
         /// name="guid">guid of the entity</param> <param name="action">CTM Interaction to perform</param>
-        public static void InteractWithGUID(Vector3 pos, UInt64 guid, Interaction action)
+        public static void InteractWithGUID(Vector3 pos, UInt64 guid, InteractionType action)
         {
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Interacting: X [" + pos.X + "] Y [" + pos.Y + "] Z [" + pos.Z + "] GUID [" + guid + "]", "AmeisenCore.AmeisenCore");
-            BlackMagic.WriteUInt64(WoWOffsets.ctmGUID, guid);
+            BlackMagic.WriteUInt64(Offsets.ctmGUID, guid);
             MovePlayerToXYZ(pos, action);
         }
 
-        public static bool IsDead(LUAUnit luaUnit)
+        public static bool IsDead(LuaUnit LuaUnit)
         {
-            try { return int.Parse(GetLocalizedText("isDead = UnitIsDead(\"" + luaUnit.ToString() + "\");", "isDead")) > 0; } catch { return false; }
+            try { return int.Parse(GetLocalizedText("isDead = UnitIsDead(\"" + LuaUnit.ToString() + "\");", "isDead")) > 0; } catch { return false; }
         }
 
-        public static bool IsDeadOrGhost(LUAUnit luaUnit)
+        public static bool IsDeadOrGhost(LuaUnit LuaUnit)
         {
-            try { return int.Parse(GetLocalizedText("isDeadOrGhost = UnitIsDeadOrGhost(\"" + luaUnit.ToString() + "\");", "isDeadOrGhost")) > 0; } catch { return false; }
+            try { return int.Parse(GetLocalizedText("isDeadOrGhost = UnitIsDeadOrGhost(\"" + LuaUnit.ToString() + "\");", "isDeadOrGhost")) > 0; } catch { return false; }
         }
 
-        public static bool IsGhost(LUAUnit luaUnit)
+        public static bool IsGhost(LuaUnit LuaUnit)
         {
-            try { return int.Parse(GetLocalizedText("isGhost = UnitIsDeadOrGhost(\"" + luaUnit.ToString() + "\");", "isGhost")) > 0; } catch { return false; }
+            try { return int.Parse(GetLocalizedText("isGhost = UnitIsDeadOrGhost(\"" + LuaUnit.ToString() + "\");", "isGhost")) > 0; } catch { return false; }
         }
 
         /// <summary>
@@ -350,7 +350,7 @@ namespace AmeisenCoreUtils
                 "PUSH 0",
                 "PUSH EAX",
                 "PUSH EAX",
-                "CALL " + (WoWOffsets.luaDoString),
+                "CALL " + (Offsets.luaDoString),
                 "ADD ESP, 0xC",
                 "RETN",
             };
@@ -367,7 +367,7 @@ namespace AmeisenCoreUtils
         /// <summary> Move the Player to the given x, y and z coordinates. </summary> <param
         /// name="pos">Vector3 containing the X,y & Z coordinates</param> <param name="action">CTM
         /// Interaction to perform</param>
-        public static void MovePlayerToXYZ(Vector3 pos, Interaction action)
+        public static void MovePlayerToXYZ(Vector3 pos, InteractionType action)
         {
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Moving to: X [" + pos.X + "] Y [" + pos.Y + "] Z [" + pos.Z + "]", "AmeisenCore.AmeisenCore");
             //if (AmeisenManager.Instance.Me().pos.x != pos.x && AmeisenManager.Instance.Me().pos.y != pos.y && AmeisenManager.Instance.Me().pos.z != pos.z)
@@ -385,7 +385,7 @@ namespace AmeisenCoreUtils
         /// <returns>the GUID</returns>
         public static UInt64 ReadPlayerGUID()
         {
-            return BlackMagic.ReadUInt64(WoWOffsets.localPlayerGUID);
+            return BlackMagic.ReadUInt64(Offsets.localPlayerGUID);
         }
 
         /// <summary>
@@ -394,7 +394,7 @@ namespace AmeisenCoreUtils
         /// <returns>guid</returns>
         public static UInt64 ReadTargetGUID()
         {
-            return BlackMagic.ReadUInt64(WoWOffsets.localTargetGUID);
+            return BlackMagic.ReadUInt64(Offsets.localTargetGUID);
         }
 
         /// <summary>
@@ -403,7 +403,7 @@ namespace AmeisenCoreUtils
         /// <param name="guid">guid of the object</param>
         /// <param name="baseAddress">baseAddress of the object</param>
         /// <returns>the WoWObject</returns>
-        public static WoWObject ReadWoWObjectFromWoW(uint baseAddress, WoWObjectType woWObjectType, bool isMe = false)
+        public static WoWObject ReadWoWObjectFromWoW(uint baseAddress, WowObjectType woWObjectType, bool isMe = false)
         {
             AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Reading: baseAddress [" + baseAddress + "]", "AmeisenCore.AmeisenCore");
 
@@ -412,22 +412,22 @@ namespace AmeisenCoreUtils
 
             switch (woWObjectType)
             {
-                case WoWObjectType.CONTAINER:
+                case WowObjectType.CONTAINER:
                     return new Container(baseAddress, BlackMagic);
 
-                case WoWObjectType.ITEM:
+                case WowObjectType.ITEM:
                     return new Item(baseAddress, BlackMagic);
 
-                case WoWObjectType.GAMEOBJECT:
+                case WowObjectType.GAMEOBJECT:
                     return new GameObject(baseAddress, BlackMagic);
 
-                case WoWObjectType.DYNOBJECT:
+                case WowObjectType.DYNOBJECT:
                     return new DynObject(baseAddress, BlackMagic);
 
-                case WoWObjectType.CORPSE:
+                case WowObjectType.CORPSE:
                     return new Corpse(baseAddress, BlackMagic);
 
-                case WoWObjectType.PLAYER:
+                case WowObjectType.PLAYER:
                     Player obj = new Player(baseAddress, BlackMagic);
 
                     if (obj.Guid == ReadPlayerGUID())
@@ -435,7 +435,7 @@ namespace AmeisenCoreUtils
 
                     return obj;
 
-                case WoWObjectType.UNIT:
+                case WowObjectType.UNIT:
                     return new Unit(baseAddress, BlackMagic);
 
                 default:
@@ -451,7 +451,7 @@ namespace AmeisenCoreUtils
             LUADoString("RetrieveCorpse();");
         }
 
-        public static void Revive()
+        public static void ReleaseSpirit()
         {
             LUADoString("RepopMe();");
         }
@@ -482,7 +482,7 @@ namespace AmeisenCoreUtils
             {
                 "PUSH " + BitConverter.ToInt32(guidBytes, 4),
                 "PUSH " + BitConverter.ToInt32(guidBytes, 0),
-                "CALL " + (WoWOffsets.clientGameUITarget),
+                "CALL " + (Offsets.clientGameUITarget),
                 "RETN",
             };
 
@@ -516,16 +516,16 @@ namespace AmeisenCoreUtils
         /// <summary> Write the coordinates and action to the memory. </summary> <param
         /// name="pos">Vector3 containing the X,y & Z coordinates</param> <param name="action">CTM
         /// Interaction to perform</param>
-        private static void WriteXYZToMemory(Vector3 pos, Interaction action)
+        private static void WriteXYZToMemory(Vector3 pos, InteractionType action)
         {
             const float distance = 1.5f;
 
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Writing: X [" + pos.X + "] Y [" + pos.Y + "] Z [" + pos.Z + "] Action [" + action + "] Distance [" + distance + "]", "AmeisenCore.AmeisenCore");
-            BlackMagic.WriteFloat(WoWOffsets.ctmX, (float)pos.X);
-            BlackMagic.WriteFloat(WoWOffsets.ctmY, (float)pos.Y);
-            BlackMagic.WriteFloat(WoWOffsets.ctmZ, (float)pos.Z);
-            BlackMagic.WriteInt(WoWOffsets.ctmAction, (int)action);
-            BlackMagic.WriteFloat(WoWOffsets.ctmDistance, distance);
+            BlackMagic.WriteFloat(Offsets.ctmX, (float)pos.X);
+            BlackMagic.WriteFloat(Offsets.ctmY, (float)pos.Y);
+            BlackMagic.WriteFloat(Offsets.ctmZ, (float)pos.Z);
+            BlackMagic.WriteInt(Offsets.ctmAction, (int)action);
+            BlackMagic.WriteFloat(Offsets.ctmDistance, distance);
         }
     }
 }

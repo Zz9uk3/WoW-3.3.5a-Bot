@@ -11,15 +11,6 @@ namespace AmeisenDB
         public const string TABLE_NAME_NODES = "ameisenbot_map_nodes";
         public string DBName = "ameisenbot";
 
-        private static readonly object padlock = new object();
-        private static AmeisenDBManager instance = null;
-        private MySqlConnection sqlConnection;
-
-        private AmeisenDBManager()
-        {
-            IsConnected = false;
-        }
-
         public static AmeisenDBManager Instance
         {
             get
@@ -155,6 +146,15 @@ namespace AmeisenDB
             {
                 return 0;
             }
+        }
+
+        private static readonly object padlock = new object();
+        private static AmeisenDBManager instance = null;
+        private MySqlConnection sqlConnection;
+
+        private AmeisenDBManager()
+        {
+            IsConnected = false;
         }
     }
 }

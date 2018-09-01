@@ -8,9 +8,6 @@ namespace AmeisenServer
 {
     public class WebServer
     {
-        private readonly HttpListener httpListener = new HttpListener();
-        private readonly Func<HttpListenerRequest, string> responseFunction;
-
         public WebServer(IReadOnlyCollection<string> prefixes, Func<HttpListenerRequest, string> responseFunction)
         {
             foreach (var s in prefixes)
@@ -73,5 +70,8 @@ namespace AmeisenServer
             httpListener.Stop();
             httpListener.Close();
         }
+
+        private readonly HttpListener httpListener = new HttpListener();
+        private readonly Func<HttpListenerRequest, string> responseFunction;
     }
 }

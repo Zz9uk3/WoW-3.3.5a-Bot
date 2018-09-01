@@ -69,32 +69,32 @@ namespace AmeisenUtilities
 
             if (PlayerBase == 0)
             {
-                PlayerBase = BlackMagicInstance.ReadUInt(WoWOffsets.playerBase);
+                PlayerBase = BlackMagicInstance.ReadUInt(Offsets.playerBase);
                 PlayerBase = BlackMagicInstance.ReadUInt(PlayerBase + 0x34);
                 PlayerBase = BlackMagicInstance.ReadUInt(PlayerBase + 0x24);
             }
 
-            Name = BlackMagicInstance.ReadASCIIString(WoWOffsets.playerName, 12);
+            Name = BlackMagicInstance.ReadASCIIString(Offsets.playerName, 12);
             Exp = BlackMagicInstance.ReadInt(PlayerBase + 0x3794);
             MaxExp = BlackMagicInstance.ReadInt(PlayerBase + 0x3798);
 
             // Somehow this is really sketchy, need to replace this...
-            uint castingState = BlackMagicInstance.ReadUInt((uint)BlackMagicInstance.MainModule.BaseAddress + WoWOffsets.localPlayerCharacterState);
-            castingState = BlackMagicInstance.ReadUInt(castingState + WoWOffsets.localPlayerCharacterStateOffset1);
-            castingState = BlackMagicInstance.ReadUInt(castingState + WoWOffsets.localPlayerCharacterStateOffset2);
-            CurrentState = (UnitState)BlackMagicInstance.ReadInt(castingState + WoWOffsets.localPlayerCharacterStateOffset3);
+            uint castingState = BlackMagicInstance.ReadUInt((uint)BlackMagicInstance.MainModule.BaseAddress + Offsets.localPlayerCharacterState);
+            castingState = BlackMagicInstance.ReadUInt(castingState + Offsets.localPlayerCharacterStateOffset1);
+            castingState = BlackMagicInstance.ReadUInt(castingState + Offsets.localPlayerCharacterStateOffset2);
+            CurrentState = (UnitState)BlackMagicInstance.ReadInt(castingState + Offsets.localPlayerCharacterStateOffset3);
 
             TargetGUID = BlackMagicInstance.ReadUInt64(Descriptor + 0x48);
 
             PartymemberGUIDs = new List<UInt64>();
-            PartyleaderGUID = BlackMagicInstance.ReadUInt64(WoWOffsets.partyLeader);
+            PartyleaderGUID = BlackMagicInstance.ReadUInt64(Offsets.partyLeader);
 
             if (PartyleaderGUID != 0)
             {
-                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(WoWOffsets.partyPlayer1));
-                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(WoWOffsets.partyPlayer2));
-                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(WoWOffsets.partyPlayer3));
-                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(WoWOffsets.partyPlayer4));
+                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer1));
+                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer2));
+                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer3));
+                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer4));
             }
         }
     }

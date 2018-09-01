@@ -16,11 +16,6 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class SelectWindow : Window
     {
-        private readonly string autoLoginExe = AppDomain.CurrentDomain.BaseDirectory + "/WoWLoginAutomator.exe";
-        private readonly string configPath = AppDomain.CurrentDomain.BaseDirectory + "/credentials/";
-        private readonly string extension = ".json";
-        private bool autologinIsPossible = false;
-
         public SelectWindow()
         {
             InitializeComponent();
@@ -36,6 +31,10 @@ namespace AmeisenBotGUI
                 loadingForm.Height = 58;
         }
 
+        private readonly string autoLoginExe = AppDomain.CurrentDomain.BaseDirectory + "/WoWLoginAutomator.exe";
+        private readonly string configPath = AppDomain.CurrentDomain.BaseDirectory + "/credentials/";
+        private readonly string extension = ".json";
+        private bool autologinIsPossible = false;
         private AmeisenBotManager BotManager { get; }
 
         private void ApplyConfigColors()
