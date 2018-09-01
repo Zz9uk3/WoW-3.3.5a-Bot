@@ -333,7 +333,7 @@ namespace AmeisenAI
                 if (!actionQueue.IsEmpty)
                 {
                     busyThreads[threadID - 1] = true;
-                    if (actionQueue.TryDequeue(out ref AmeisenAction currentAction))
+                    if (actionQueue.TryDequeue(out AmeisenAction currentAction))
                     {
                         ProcessAction(ref currentAction);
 
