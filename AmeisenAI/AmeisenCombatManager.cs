@@ -6,17 +6,11 @@ namespace AmeisenAI
 {
     public class AmeisenCombatManager
     {
-        #region Private Fields
-
         private static readonly object padlock = new object();
         private static AmeisenCombatManager instance;
         private readonly Thread mainWorker;
         private CombatEngine combatEngine;
         private bool stop = false;
-
-        #endregion Private Fields
-
-        #region Private Constructors
 
         private AmeisenCombatManager()
         {
@@ -25,10 +19,6 @@ namespace AmeisenAI
 
             ReloadCombatClass();
         }
-
-        #endregion Private Constructors
-
-        #region Public Properties
 
         /// <summary>
         /// Initialize/Get the instance of our singleton
@@ -47,9 +37,11 @@ namespace AmeisenAI
             }
         }
 
-        #endregion Public Properties
-
-        #region Public Methods
+        private Me Me
+        {
+            get { return AmeisenDataHolder.Instance.Me; }
+            set { AmeisenDataHolder.Instance.Me = value; }
+        }
 
         /// <summary>
         /// Reload our CombatClass specified in the AmeisenSettings class
@@ -75,20 +67,6 @@ namespace AmeisenAI
             mainWorker.Abort();
         }
 
-        #endregion Public Methods
-
-        #region Private Properties
-
-        private Me Me
-        {
-            get { return AmeisenDataHolder.Instance.Me; }
-            set { AmeisenDataHolder.Instance.Me = value; }
-        }
-
-        #endregion Private Properties
-
-        #region Private Methods
-
         private void DoWork()
         {
             while (!stop)
@@ -103,7 +81,5 @@ namespace AmeisenAI
                 Thread.Sleep(500);
             }
         }
-
-        #endregion Private Methods
     }
 }

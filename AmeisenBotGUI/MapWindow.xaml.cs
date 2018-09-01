@@ -18,20 +18,15 @@ namespace AmeisenBotGUI
     public partial class MapWindow : Window
     {
         private Map currentMap;
-        private DispatcherTimer uiUpdateTimer;
         private DispatcherTimer mapUpdateTimer;
         private int newX;
         private int newY;
-        #region Public Constructors
+        private DispatcherTimer uiUpdateTimer;
 
         public MapWindow()
         {
             InitializeComponent();
         }
-
-        #endregion Public Constructors
-
-        #region Public Methods
 
         public static Color Interpolate(Color[] colors, double factor)
         {
@@ -60,10 +55,6 @@ namespace AmeisenBotGUI
 
             return Color.FromArgb(255, (byte)r, (byte)g, (byte)b);
         }
-
-        #endregion Public Methods
-
-        #region Private Methods
 
         private static void DrawLine(int startX, int startY, int endX, int endY, int thickness, Color color, Canvas canvas)
         {
@@ -159,11 +150,27 @@ namespace AmeisenBotGUI
                        );
         }
 
+        private void MapUpdateTimer_Tick(object sender, EventArgs e)
+        {
+            currentMap = LoadMap();
+        }
+
         private Vector3 NodePosToCanvasPos(Vector3 canvasPos, Vector3 myPos)
         {
             canvasPos.X -= myPos.X;
             canvasPos.Y -= myPos.Y;
             return canvasPos;
+        }
+
+        private void UIUpdateTimer_Tick(object sender, EventArgs e)
+        {
+            DrawMap(currentMap);
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            uiUpdateTimer.Stop();
+            mapUpdateTimer.Stop();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -181,27 +188,9 @@ namespace AmeisenBotGUI
             mapUpdateTimer.Start();
         }
 
-        private void UIUpdateTimer_Tick(object sender, EventArgs e)
-        {
-            DrawMap(currentMap);
-        }
-
-        private void MapUpdateTimer_Tick(object sender, EventArgs e)
-        {
-            currentMap = LoadMap();
-        }
-
         private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             try { DragMove(); } catch { }
-        }
-
-        #endregion Private Methods
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            uiUpdateTimer.Stop();
-            mapUpdateTimer.Stop();
         }
     }
 }

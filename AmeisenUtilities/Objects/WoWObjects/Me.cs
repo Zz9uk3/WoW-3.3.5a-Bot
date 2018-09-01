@@ -7,16 +7,10 @@ namespace AmeisenUtilities
 {
     public class Me : Player
     {
-        #region Public Constructors
-
         public Me(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
             Update();
         }
-
-        #endregion Public Constructors
-
-        #region Public Properties
 
         public UnitState CurrentState { get; set; }
         public int Exp { get; set; }
@@ -25,10 +19,6 @@ namespace AmeisenUtilities
         public List<UInt64> PartymemberGUIDs { get; set; }
         public uint PlayerBase { get; set; }
         public UInt64 TargetGUID { get; set; }
-
-        #endregion Public Properties
-
-        #region Public Methods
 
         public override string ToString()
         {
@@ -107,7 +97,5 @@ namespace AmeisenUtilities
                 PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(WoWOffsets.partyPlayer4));
             }
         }
-
-        #endregion Public Methods
     }
 }

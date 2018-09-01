@@ -1,5 +1,5 @@
-﻿using System.Resources;
 using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
 using System.Windows;
 
@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Jannis H.")]
 [assembly: AssemblyProduct("AmeisenBot")]
-[assembly: AssemblyCopyright("Copyright © 2018, Jannis H.")]
+[assembly: AssemblyCopyright("Copyright © 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -43,7 +43,7 @@ using System.Windows;
 //
 // Sie können alle Werte angeben oder Standardwerte für die Build- und Revisionsnummern verwenden,
 // übernehmen, indem Sie "*" eingeben: [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.6.0.0")]
-[assembly: AssemblyFileVersion("0.6.0.0")]
+[assembly: AssemblyVersion("1.2.6819.24993")]
+[assembly: AssemblyFileVersion("1.2.6819.24993")]
 [assembly: NeutralResourcesLanguage("en")]
-
+[assembly: AssemblyInformationalVersion("1.2.6819.24993")]

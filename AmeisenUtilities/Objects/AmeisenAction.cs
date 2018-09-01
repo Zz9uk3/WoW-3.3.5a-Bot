@@ -7,15 +7,9 @@ namespace AmeisenUtilities
     /// </summary>
     public class AmeisenAction
     {
-        #region Private Fields
-
         private readonly object actionParams;
         private readonly AmeisenActionType actionType;
         private bool isDone;
-
-        #endregion Private Fields
-
-        #region Public Constructors
 
         /// <summary>
         /// Class to describe an action for the Brain-Threads to process
@@ -28,10 +22,6 @@ namespace AmeisenUtilities
             this.actionParams = actionParams;
             isDone = false;
         }
-
-        #endregion Public Constructors
-
-        #region Public Methods
 
         /// <summary>
         /// Flag the AmeisenAction as done, this allows it to be removed from the queue
@@ -65,7 +55,5 @@ namespace AmeisenUtilities
             sb.Append("IsDone: " + isDone.ToString());
             return sb.ToString();
         }
-
-        #endregion Public Methods
     }
 }

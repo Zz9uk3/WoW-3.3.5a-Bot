@@ -22,8 +22,6 @@ namespace AmeisenLogging
     /// </summary>
     public class AmeisenLogEntry
     {
-        #region Public Fields
-
         public string functionName;
         public int id;
         public LogLevel loglevel;
@@ -31,22 +29,14 @@ namespace AmeisenLogging
         public object originClass;
         public string timestamp;
 
-        #endregion Public Fields
-
-        #region Public Methods
-
         public override string ToString()
         {
             return "[" + id + "][" + timestamp + "]\t[" + loglevel.ToString() + "][" + originClass.ToString() + ":" + functionName + "] - " + msg;
         }
-
-        #endregion Public Methods
     }
 
     public class AmeisenLogger
     {
-        #region Private Fields
-
         private static readonly object padlock = new object();
         private static AmeisenLogger instance;
         private readonly string logName;
@@ -57,10 +47,6 @@ namespace AmeisenLogging
         private bool loggingActive;
         private Thread loggingThread;
 
-        #endregion Private Fields
-
-        #region Private Constructors
-
         private AmeisenLogger()
         {
             activeLogLevel = LogLevel.WARNING; // Default to avoid spam
@@ -70,10 +56,6 @@ namespace AmeisenLogging
             loggingThread.Start();
             logName = DateTime.Now.ToString("dd-MM-yyyy") + "_" + DateTime.Now.ToString("HH-mm") + ".txt";
         }
-
-        #endregion Private Constructors
-
-        #region Public Properties
 
         /// <summary>
         /// Initialize/Get the instance of our singleton
@@ -91,10 +73,6 @@ namespace AmeisenLogging
                 }
             }
         }
-
-        #endregion Public Properties
-
-        #region Public Methods
 
         /// <summary>
         /// Add an entry to the log
@@ -137,10 +115,6 @@ namespace AmeisenLogging
         /// </summary>
         public void StopLogging() { loggingActive = false; }
 
-        #endregion Public Methods
-
-        #region Private Methods
-
         private void SaveLogToFile(AmeisenLogEntry entry)
         {
             if (!Directory.Exists(logPath))
@@ -162,7 +136,5 @@ namespace AmeisenLogging
                 Thread.Sleep(100);
             }
         }
-
-        #endregion Private Methods
     }
 }

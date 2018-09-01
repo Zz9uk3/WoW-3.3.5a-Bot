@@ -5,10 +5,9 @@ using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Windows;
-using System.Drawing;
 using System.Windows.Input;
-using System.Windows.Threading;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace AmeisenBotGUI
 {
@@ -17,14 +16,8 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class BotWindow : Window
     {
-        #region Private Fields
-
         private string lastImgPath;
         private DispatcherTimer uiUpdateTimer;
-
-        #endregion Private Fields
-
-        #region Public Constructors
 
         public BotWindow(WoWExe wowExe)
         {
@@ -36,15 +29,7 @@ namespace AmeisenBotGUI
             BotManager.StartBot(wowExe);
         }
 
-        #endregion Public Constructors
-
-        #region Private Properties
-
         private AmeisenBotManager BotManager { get; }
-
-        #endregion Private Properties
-
-        #region Private Methods
 
         private void ButtonCobatClassEditor_Click(object sender, RoutedEventArgs e)
         {
@@ -284,7 +269,5 @@ namespace AmeisenBotGUI
                 AmeisenLogger.Instance.Log(LogLevel.ERROR, e.ToString(), this);
             }
         }
-
-        #endregion Private Methods
     }
 }

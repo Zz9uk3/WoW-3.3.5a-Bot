@@ -16,13 +16,7 @@ namespace AmeisenCoreUtils
     /// </summary>
     public abstract class AmeisenCore
     {
-        #region Public Properties
-
         public static BlackMagic BlackMagic { get; set; }
-
-        #endregion Public Properties
-
-        #region Public Methods
 
         /// <summary>
         /// AntiAFK
@@ -104,7 +98,8 @@ namespace AmeisenCoreUtils
 
             UInt64 myGUID = ReadPlayerGUID();
 
-            // loop through the objects until an object is bigger than 7 or lower than 1 to get all Objects from manager
+            // loop through the objects until an object is bigger than 7 or lower than 1 to get all
+            // Objects from manager
             while (objType <= 7 && objType > 0)
             {
                 //if (!(refreshOnlyUnits
@@ -220,16 +215,6 @@ namespace AmeisenCoreUtils
                 return result;
             }
             return "";
-        }
-
-        private static void ResumeMainthread()
-        {
-            SThread.ResumeThread(SThread.OpenThread(SThread.GetMainThread(BlackMagic.ProcessId).Id));
-        }
-
-        private static void PauseMainThread()
-        {
-            SThread.SuspendThread(SThread.OpenThread(SThread.GetMainThread(BlackMagic.ProcessId).Id));
         }
 
         public static int GetMapID()
@@ -505,10 +490,6 @@ namespace AmeisenCoreUtils
             AmeisenHook.Instance.AddHookJob(ref hookJob);
         }
 
-        #endregion Public Methods
-
-        #region Private Methods
-
         private static void CharacterJump()
         {
             const uint KEYDOWN = 0x100;
@@ -520,6 +501,16 @@ namespace AmeisenCoreUtils
             SendMessage(windowHandle, KEYDOWN, new IntPtr(0x20), new IntPtr(0));
             Thread.Sleep(new Random().Next(20, 40)); // make it look more human-like :^)
             SendMessage(windowHandle, KEYUP, new IntPtr(0x20), new IntPtr(0));
+        }
+
+        private static void PauseMainThread()
+        {
+            SThread.SuspendThread(SThread.OpenThread(SThread.GetMainThread(BlackMagic.ProcessId).Id));
+        }
+
+        private static void ResumeMainthread()
+        {
+            SThread.ResumeThread(SThread.OpenThread(SThread.GetMainThread(BlackMagic.ProcessId).Id));
         }
 
         /// <summary> Write the coordinates and action to the memory. </summary> <param
@@ -536,7 +527,5 @@ namespace AmeisenCoreUtils
             BlackMagic.WriteInt(WoWOffsets.ctmAction, (int)action);
             BlackMagic.WriteFloat(WoWOffsets.ctmDistance, distance);
         }
-
-        #endregion Private Methods
     }
 }

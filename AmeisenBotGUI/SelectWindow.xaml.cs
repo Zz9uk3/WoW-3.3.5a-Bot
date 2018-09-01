@@ -3,7 +3,6 @@ using AmeisenManager;
 using AmeisenUtilities;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -17,16 +16,10 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class SelectWindow : Window
     {
-        #region Private Fields
-
         private readonly string autoLoginExe = AppDomain.CurrentDomain.BaseDirectory + "/WoWLoginAutomator.exe";
         private readonly string configPath = AppDomain.CurrentDomain.BaseDirectory + "/credentials/";
         private readonly string extension = ".json";
         private bool autologinIsPossible = false;
-
-        #endregion Private Fields
-
-        #region Public Constructors
 
         public SelectWindow()
         {
@@ -43,15 +36,24 @@ namespace AmeisenBotGUI
                 loadingForm.Height = 58;
         }
 
-        #endregion Public Constructors
-
-        #region Private Properties
-
         private AmeisenBotManager BotManager { get; }
 
-        #endregion Private Properties
+        private void ApplyConfigColors()
+        {
+            Application.Current.Resources["AccentColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.accentColor);
+            Application.Current.Resources["BackgroundColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.backgroundColor);
+            Application.Current.Resources["TextColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.fontColor);
 
-        #region Private Methods
+            Application.Current.Resources["MeNodeColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.meNodeColor);
+            Application.Current.Resources["WalkableNodeColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.walkableNodeColor);
+
+            Application.Current.Resources["healthColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.healthColor);
+            Application.Current.Resources["energyColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.energyColor);
+            Application.Current.Resources["expColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.expColor);
+            Application.Current.Resources["targetHealthColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.targetHealthColor);
+            Application.Current.Resources["targetEnergyColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.targetEnergyColor);
+            Application.Current.Resources["threadsColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.threadsColor);
+        }
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
@@ -76,16 +78,6 @@ namespace AmeisenBotGUI
                     Close();
                 }
             }
-        }
-
-        private void ApplyConfigColors()
-        {
-            Application.Current.Resources["AccentColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.accentColor);
-            Application.Current.Resources["BackgroundColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.backgroundColor);
-            Application.Current.Resources["TextColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.fontColor);
-
-            Application.Current.Resources["MeNodeColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.meNodeColor);
-            Application.Current.Resources["WalkableNodeColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.walkableNodeColor);
         }
 
         private void ButtonGoAuto_Click(object sender, RoutedEventArgs e)
@@ -218,7 +210,5 @@ namespace AmeisenBotGUI
                     comboBoxWoWs.SelectedItem = comboBoxWoWs.Items[0];
             }
         }
-
-        #endregion Private Methods
     }
 }

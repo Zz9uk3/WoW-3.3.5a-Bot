@@ -29,22 +29,34 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </ProgressBar.BorderBrush>
         </ProgressBar>
-        <ProgressBar x:Name="progressBarEnergyTarget" HorizontalAlignment="Left" Height="10" Margin="57,124,0,0" VerticalAlignment="Top" Width="100" Foreground="#FFFFA160" Background="{x:Null}" FontFamily="Consolas" BorderThickness="2">
+        <ProgressBar x:Name="progressBarEnergyTarget" HorizontalAlignment="Left" Height="10" Margin="57,124,0,0" VerticalAlignment="Top" Width="100" Background="{x:Null}" FontFamily="Consolas" BorderThickness="2">
+            <ProgressBar.Foreground>
+                <SolidColorBrush Color="{DynamicResource TargetEnergyColor}" />
+            </ProgressBar.Foreground>
             <ProgressBar.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </ProgressBar.BorderBrush>
         </ProgressBar>
-        <ProgressBar x:Name="progressBarHP" HorizontalAlignment="Left" Height="10" Margin="57,26,0,0" VerticalAlignment="Top" Width="100" Foreground="#FFFF6060" FontFamily="Consolas" Background="{x:Null}" BorderThickness="2">
+        <ProgressBar x:Name="progressBarHP" HorizontalAlignment="Left" Height="10" Margin="57,26,0,0" VerticalAlignment="Top" Width="100" FontFamily="Consolas" Background="{x:Null}" BorderThickness="2">
+            <ProgressBar.Foreground>
+                <SolidColorBrush Color="{DynamicResource HealthColor}" />
+            </ProgressBar.Foreground>
             <ProgressBar.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </ProgressBar.BorderBrush>
         </ProgressBar>
-        <ProgressBar x:Name="progressBarEnergy" HorizontalAlignment="Left" Height="10" Margin="57,41,0,0" VerticalAlignment="Top" Width="100" Foreground="#FFFFA160" Background="{x:Null}" FontFamily="Consolas" BorderThickness="2">
+        <ProgressBar x:Name="progressBarEnergy" HorizontalAlignment="Left" Height="10" Margin="57,41,0,0" VerticalAlignment="Top" Width="100" Background="{x:Null}" FontFamily="Consolas" BorderThickness="2">
+            <ProgressBar.Foreground>
+                <SolidColorBrush Color="{DynamicResource EnergyColor}" />
+            </ProgressBar.Foreground>
             <ProgressBar.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </ProgressBar.BorderBrush>
         </ProgressBar>
-        <ProgressBar x:Name="progressBarXP" HorizontalAlignment="Left" Height="10" Margin="7,56,0,0" VerticalAlignment="Top" Width="150" Foreground="#FFD4A0FF" Background="{x:Null}" FontFamily="Consolas" BorderThickness="2">
+        <ProgressBar x:Name="progressBarXP" HorizontalAlignment="Left" Height="10" Margin="7,56,0,0" VerticalAlignment="Top" Width="150" Background="{x:Null}" FontFamily="Consolas" BorderThickness="2">
+            <ProgressBar.Foreground>
+                <SolidColorBrush Color="{DynamicResource EXPColor}" />
+            </ProgressBar.Foreground>
             <ProgressBar.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </ProgressBar.BorderBrush>
@@ -90,7 +102,10 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <ProgressBar x:Name="progressBarBusyAIThreads" HorizontalAlignment="Left" Margin="97,80,0,0" Width="60" Background="{x:Null}" BorderThickness="2" Foreground="#FFFFFF60" Height="10" VerticalAlignment="Top">
+        <ProgressBar x:Name="progressBarBusyAIThreads" HorizontalAlignment="Left" Margin="97,80,0,0" Width="60" Background="{x:Null}" BorderThickness="2" Height="10" VerticalAlignment="Top">
+            <ProgressBar.Foreground>
+                <SolidColorBrush Color="{DynamicResource ThreadsColor}" />
+            </ProgressBar.Foreground>
             <ProgressBar.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </ProgressBar.BorderBrush>

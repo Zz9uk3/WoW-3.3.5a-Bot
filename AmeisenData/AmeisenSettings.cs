@@ -14,30 +14,16 @@ namespace AmeisenData
     /// </summary>
     public class AmeisenSettings
     {
-        #region Public Fields
-
         public string loadedconfName;
-
-        #endregion Public Fields
-
-        #region Private Fields
 
         private static readonly string configPath = AppDomain.CurrentDomain.BaseDirectory + "config/";
         private static readonly string extension = ".json";
         private static AmeisenSettings instance;
 
-        #endregion Private Fields
-
-        #region Private Constructors
-
         private AmeisenSettings()
         {
             Settings = new Settings();
         }
-
-        #endregion Private Constructors
-
-        #region Public Properties
 
         public static AmeisenSettings Instance
         {
@@ -50,10 +36,6 @@ namespace AmeisenData
         }
 
         public Settings Settings { get; private set; }
-
-        #endregion Public Properties
-
-        #region Public Methods
 
         /// <summary>
         /// Load a config file from ./config/ folder by its name. No need to append .json to the end.
@@ -90,7 +72,5 @@ namespace AmeisenData
             // Serialize our object with the help of NewtosoftJSON
             File.WriteAllText(configPath + filename.ToLower() + extension, JsonConvert.SerializeObject(Settings));
         }
-
-        #endregion Public Methods
     }
 }

@@ -5,16 +5,10 @@ namespace AmeisenUtilities
 {
     public class GameObject : WoWObject
     {
-        #region Public Constructors
-
         public GameObject(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
             Update();
         }
-
-        #endregion Public Constructors
-
-        #region Public Methods
 
         public override string ToString()
         {
@@ -51,7 +45,5 @@ namespace AmeisenUtilities
             }
             catch { }*/
         }
-
-        #endregion Public Methods
     }
 }

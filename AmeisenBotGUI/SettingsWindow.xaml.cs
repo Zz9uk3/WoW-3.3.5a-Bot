@@ -13,23 +13,13 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class SettingsWindow : Window
     {
-        #region Public Constructors
-
         public SettingsWindow()
         {
             InitializeComponent();
             BotManager = AmeisenBotManager.Instance;
         }
 
-        #endregion Public Constructors
-
-        #region Private Properties
-
         private AmeisenBotManager BotManager { get; }
-
-        #endregion Private Properties
-
-        #region Private Methods
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
@@ -67,7 +57,7 @@ namespace AmeisenBotGUI
 
                 string imagePath = AppDomain.CurrentDomain.BaseDirectory + "config/img/" + openFileDialog.SafeFileName;
 
-                File.Move(openFileDialog.FileName, imagePath);
+                File.Copy(openFileDialog.FileName, imagePath);
 
                 BotManager.Settings.picturePath = imagePath;
                 labelSelectedPicture.Content = openFileDialog.SafeFileName;
@@ -126,8 +116,8 @@ namespace AmeisenBotGUI
                 //something is wrong...
             }
 
-            BotManager.Settings.serverIP = textboxIP.Text;
-            BotManager.Settings.serverPort = Convert.ToInt32(textboxPort.Text);
+            BotManager.Settings.ameisenServerIP = textboxIP.Text;
+            BotManager.Settings.ameisenServerPort = Convert.ToInt32(textboxPort.Text);
             BotManager.Settings.serverAutoConnect = (bool)checkboxAutoConnect.IsChecked;
 
             BotManager.Settings.databaseIP = textboxDBIP.Text;
@@ -142,6 +132,13 @@ namespace AmeisenBotGUI
             BotManager.Settings.fontColor = ((Color)Application.Current.Resources["TextColor"]).ToString();
             BotManager.Settings.walkableNodeColor = ((Color)Application.Current.Resources["WalkableNodeColor"]).ToString();
             BotManager.Settings.meNodeColor = ((Color)Application.Current.Resources["MeNodeColor"]).ToString();
+
+            BotManager.Settings.healthColor = ((Color)Application.Current.Resources["healthColor"]).ToString();
+            BotManager.Settings.energyColor = ((Color)Application.Current.Resources["energyColor"]).ToString();
+            BotManager.Settings.expColor = ((Color)Application.Current.Resources["expColor"]).ToString();
+            BotManager.Settings.targetHealthColor = ((Color)Application.Current.Resources["targetHealthColor"]).ToString();
+            BotManager.Settings.targetEnergyColor = ((Color)Application.Current.Resources["targetEnergyColor"]).ToString();
+            BotManager.Settings.threadsColor = ((Color)Application.Current.Resources["threadsColor"]).ToString();
 
             BotManager.SaveSettingsToFile(BotManager.GetLoadedConfigName());
         }
@@ -202,8 +199,8 @@ namespace AmeisenBotGUI
                     break;
             }
 
-            textboxIP.Text = BotManager.Settings.serverIP;
-            textboxPort.Text = BotManager.Settings.serverPort.ToString();
+            textboxIP.Text = BotManager.Settings.ameisenServerIP;
+            textboxPort.Text = BotManager.Settings.ameisenServerPort.ToString();
             checkboxAutoConnect.IsChecked = BotManager.Settings.serverAutoConnect;
 
             textboxDBIP.Text = BotManager.Settings.databaseIP;
@@ -222,7 +219,5 @@ namespace AmeisenBotGUI
             }
             catch { }
         }
-
-        #endregion Private Methods
     }
 }

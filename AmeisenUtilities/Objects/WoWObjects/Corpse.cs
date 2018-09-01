@@ -6,22 +6,12 @@ namespace AmeisenUtilities
 {
     public class Corpse : WoWObject
     {
-        #region Public Constructors
-
         public Corpse(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
             Update();
         }
 
-        #endregion Public Constructors
-
-        #region Private Properties
-
         private UInt64 Owner { get; set; }
-
-        #endregion Private Properties
-
-        #region Public Methods
 
         public override string ToString()
         {
@@ -52,7 +42,5 @@ namespace AmeisenUtilities
             Rotation = BlackMagicInstance.ReadFloat(BaseAddress + 0x20);
             Owner = BlackMagicInstance.ReadUInt64(BaseAddress + 0x18);
         }
-
-        #endregion Public Methods
     }
 }

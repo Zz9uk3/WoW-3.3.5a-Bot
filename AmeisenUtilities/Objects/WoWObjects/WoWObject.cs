@@ -6,13 +6,7 @@ namespace AmeisenUtilities
 {
     public class WoWObject
     {
-        #region Public Fields
-
         public Vector3 pos;
-
-        #endregion Public Fields
-
-        #region Public Constructors
 
         public WoWObject(uint baseAddress, BlackMagic blackMagic)
         {
@@ -28,10 +22,6 @@ namespace AmeisenUtilities
             Update();
         }
 
-        #endregion Public Constructors
-
-        #region Public Properties
-
         public uint BaseAddress { get; set; }
         public BlackMagic BlackMagicInstance { get; set; }
 
@@ -42,10 +32,6 @@ namespace AmeisenUtilities
         public string Name { get; set; }
         public float Rotation { get; set; }
         public int ZoneID { get; set; }
-
-        #endregion Public Properties
-
-        #region Public Methods
 
         public override string ToString()
         {
@@ -70,7 +56,5 @@ namespace AmeisenUtilities
         public virtual void Update()
         {
         }
-
-        #endregion Public Methods
     }
 }

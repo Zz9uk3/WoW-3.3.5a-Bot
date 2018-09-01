@@ -1,11 +1,27 @@
 ﻿using System;
+using System.Drawing;
+using System.IO;
 using System.Text;
+using System.Windows.Media.Imaging;
 
 namespace AmeisenUtilities
 {
     public abstract class Utils
     {
-        #region Public Methods
+        public static BitmapImage Base64ToBitmapImage(string base64String)
+        {
+            byte[] imageBytes = Convert.FromBase64String(base64String);
+            using (var stream = new MemoryStream(imageBytes))
+            {
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.StreamSource = stream;
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.EndInit();
+                bitmap.Freeze();
+                return bitmap;
+            }
+        }
 
         public static string ByteArrayToString(byte[] ba)
         {
@@ -31,6 +47,12 @@ namespace AmeisenUtilities
                              (a.Z - b.Z) * (a.Z - b.Z));
         }
 
+        public static byte[] ImageToByte(Image img)
+        {
+            ImageConverter converter = new ImageConverter();
+            return (byte[])converter.ConvertTo(img, typeof(byte[]));
+        }
+
         public static bool IsFacing(Vector3 myPosition, float rotationA, Vector3 targetPosition)
         {
             float f = (float)Math.Atan2(targetPosition.Y - myPosition.Y, targetPosition.X - myPosition.X);
@@ -42,7 +64,5 @@ namespace AmeisenUtilities
 
             return f == rotationA ? true : false;
         }
-
-        #endregion Public Methods
     }
 }

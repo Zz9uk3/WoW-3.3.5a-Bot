@@ -35,22 +35,22 @@
         </Button>
         <Label Content="Me:" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top">
             <Label.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
         <Rectangle HorizontalAlignment="Left" Height="8" Margin="40,10,0,0" Stroke="Black" VerticalAlignment="Top" Width="8">
             <Rectangle.Fill>
-                <SolidColorBrush Color="{DynamicResource MeNodeColor}"/>
+                <SolidColorBrush Color="{DynamicResource MeNodeColor}" />
             </Rectangle.Fill>
         </Rectangle>
         <Label Content="WalkableNode:" HorizontalAlignment="Left" Margin="53,0,0,0" VerticalAlignment="Top">
             <Label.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
         <Rectangle HorizontalAlignment="Left" Height="8" Margin="148,10,0,0" Stroke="Black" VerticalAlignment="Top" Width="8">
             <Rectangle.Fill>
-                <SolidColorBrush Color="{DynamicResource WalkableNodeColor}"/>
+                <SolidColorBrush Color="{DynamicResource WalkableNodeColor}" />
             </Rectangle.Fill>
         </Rectangle>
     </Grid>

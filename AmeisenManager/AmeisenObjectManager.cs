@@ -21,8 +21,6 @@ namespace AmeisenManager
     /// </summary>
     public class AmeisenObjectManager
     {
-        #region Private Fields
-
         private static readonly object padlock = new object();
         private static AmeisenObjectManager instance;
         private Thread objectUpdateThread;
@@ -31,18 +29,10 @@ namespace AmeisenManager
 
         private DateTime timestampObjects;
 
-        #endregion Private Fields
-
-        #region Private Constructors
-
         private AmeisenObjectManager()
         {
             RefreshObjects();
         }
-
-        #endregion Private Constructors
-
-        #region Public Properties
 
         public static AmeisenObjectManager Instance
         {
@@ -56,10 +46,6 @@ namespace AmeisenManager
                 }
             }
         }
-
-        #endregion Public Properties
-
-        #region Private Properties
 
         private List<WoWObject> ActiveWoWObjects
         {
@@ -78,10 +64,6 @@ namespace AmeisenManager
             get { return AmeisenDataHolder.Instance.Target; }
             set { AmeisenDataHolder.Instance.Target = value; }
         }
-
-        #endregion Private Properties
-
-        #region Public Methods
 
         /// <summary>
         /// Get our WoWObjects in the memory
@@ -142,10 +124,6 @@ namespace AmeisenManager
             objectUpdateTimer.Stop();
             objectUpdateThread.Join();
         }
-
-        #endregion Public Methods
-
-        #region Private Methods
 
         private void AntiAFK()
         {
@@ -220,7 +198,5 @@ namespace AmeisenManager
             //}
             //lastNode = activeNode;
         }
-
-        #endregion Private Methods
     }
 }

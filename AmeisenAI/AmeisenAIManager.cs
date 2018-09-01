@@ -30,18 +30,12 @@ namespace AmeisenAI
     /// </summary>
     public class AmeisenAIManager
     {
-        #region Private Fields
-
         private static readonly object padlock = new object();
         private static AmeisenAIManager instance;
         private ConcurrentQueue<AmeisenAction> actionQueue;
         private bool aiActive;
         private List<Thread> aiWorkers;
         private bool[] busyThreads;
-
-        #endregion Private Fields
-
-        #region Private Constructors
 
         private AmeisenAIManager()
         {
@@ -51,10 +45,6 @@ namespace AmeisenAI
             actionQueue = new ConcurrentQueue<AmeisenAction>();
             aiWorkers = new List<Thread>();
         }
-
-        #endregion Private Constructors
-
-        #region Public Properties
 
         /// <summary>
         /// Initialize/Get the instance of our singleton
@@ -77,10 +67,6 @@ namespace AmeisenAI
         public bool IsAllowedToMove { get; set; }
         public bool IsAllowedToRevive { get; set; }
 
-        #endregion Public Properties
-
-        #region Private Properties
-
         private Me Me
         {
             get { return AmeisenDataHolder.Instance.Me; }
@@ -92,10 +78,6 @@ namespace AmeisenAI
             get { return AmeisenDataHolder.Instance.Target; }
             set { AmeisenDataHolder.Instance.Target = value; }
         }
-
-        #endregion Private Properties
-
-        #region Public Methods
 
         /// <summary>
         /// Add an action for the bot to do.
@@ -191,10 +173,6 @@ namespace AmeisenAI
                 AmeisenLogger.Instance.Log(LogLevel.DEBUG, "AI stopped", this);
             }
         }
-
-        #endregion Public Methods
-
-        #region Private Methods
 
         /// <summary> Modify our go-to-position by a small factor to provide "naturality" </summary>
         /// <param name="targetPos">pos you want to go to/param> <param
@@ -436,7 +414,5 @@ namespace AmeisenAI
                 }
             }
         }
-
-        #endregion Private Methods
     }
 }

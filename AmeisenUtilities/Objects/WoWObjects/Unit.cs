@@ -6,16 +6,10 @@ namespace AmeisenUtilities
 {
     public partial class Unit : WoWObject
     {
-        #region Public Constructors
-
         public Unit(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
             Update();
         }
-
-        #endregion Public Constructors
-
-        #region Public Properties
 
         public int Energy { get; set; }
         public int Health { get; set; }
@@ -25,10 +19,6 @@ namespace AmeisenUtilities
         public int MaxHealth { get; set; }
         public bool NeedToRevive { get { return Health == 0; } }
         public BitVector32 UFlags { get; set; }
-
-        #endregion Public Properties
-
-        #region Public Methods
 
         /// <summary>
         /// Get any NPC's name by its BaseAdress
@@ -114,7 +104,5 @@ namespace AmeisenUtilities
             }
             catch { }
         }
-
-        #endregion Public Methods
     }
 }

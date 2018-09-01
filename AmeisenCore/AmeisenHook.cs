@@ -14,14 +14,8 @@ namespace AmeisenCoreUtils
     /// </summary>
     public class AmeisenHook
     {
-        #region Public Fields
-
         public bool isHooked = false;
         public bool isInjectionUsed = false;
-
-        #endregion Public Fields
-
-        #region Private Fields
 
         private static readonly object padlock = new object();
         private static AmeisenHook instance;
@@ -34,10 +28,6 @@ namespace AmeisenCoreUtils
         private byte[] originalEndscene = new byte[] { 0xB8, 0x51, 0xD7, 0xCA, 0x64 };
         private uint returnAdress;
 
-        #endregion Private Fields
-
-        #region Private Constructors
-
         private AmeisenHook()
         {
             Hook();
@@ -49,10 +39,6 @@ namespace AmeisenCoreUtils
                 hookWorker.Start();
             }
         }
-
-        #endregion Private Constructors
-
-        #region Public Properties
 
         public static AmeisenHook Instance
         {
@@ -69,10 +55,6 @@ namespace AmeisenCoreUtils
                 }
             }
         }
-
-        #endregion Public Properties
-
-        #region Public Methods
 
         public void AddHookJob(ref HookJob hookJob)
         {
@@ -105,10 +87,6 @@ namespace AmeisenCoreUtils
             isHooked = false;
             hookWorker.Join();
         }
-
-        #endregion Public Methods
-
-        #region Private Methods
 
         private void DoWork()
         {
@@ -282,8 +260,6 @@ namespace AmeisenCoreUtils
             isInjectionUsed = false;
             return new List<byte>().ToArray();
         }
-
-        #endregion Private Methods
     }
 
     /// <summary>
@@ -291,8 +267,6 @@ namespace AmeisenCoreUtils
     /// </summary>
     public class HookJob
     {
-        #region Public Constructors
-
         /// <summary>
         /// Build a job to execute on the endscene hook
         /// </summary>
@@ -306,16 +280,10 @@ namespace AmeisenCoreUtils
             ReturnValue = null;
         }
 
-        #endregion Public Constructors
-
-        #region Public Properties
-
         public string[] Asm { get; set; }
         public bool IsFinished { get; set; }
         public bool ReadReturnBytes { get; set; }
         public object ReturnValue { get; set; }
-
-        #endregion Public Properties
     }
 
     /// <summary>
@@ -323,8 +291,6 @@ namespace AmeisenCoreUtils
     /// </summary>
     public class ReturnHookJob : HookJob
     {
-        #region Public Constructors
-
         /// <summary>
         /// Build a job to execute on the endscene hook
         /// </summary>
@@ -335,12 +301,6 @@ namespace AmeisenCoreUtils
         /// </param>
         public ReturnHookJob(string[] asm, bool readReturnBytes, HookJob chainedJob) : base(asm, readReturnBytes) { ChainedJob = chainedJob; }
 
-        #endregion Public Constructors
-
-        #region Public Properties
-
         public HookJob ChainedJob { get; private set; }
-
-        #endregion Public Properties
     }
 }

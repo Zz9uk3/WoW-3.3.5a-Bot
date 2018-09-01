@@ -5,8 +5,6 @@
     /// </summary>
     public abstract class WoWOffsets
     {
-        #region Public Fields
-
         public static uint arenaPlayer1 = 0xBE9F48;
         public static uint arenaPlayer2 = arenaPlayer1 + 0x8;
         public static uint arenaPlayer3 = arenaPlayer2 + 0x8;
@@ -87,7 +85,5 @@
         public static uint wowChatNextMsg = 0x17C0;
         public static uint zoneID = 0xBD080C;
         public static uint zoneText = 0xBD0788;
-
-        #endregion Public Fields
     }
 }

@@ -6,16 +6,10 @@ namespace AmeisenUtilities
 {
     public class Player : Unit
     {
-        #region Public Constructors
-
         public Player(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
             Update();
         }
-
-        #endregion Public Constructors
-
-        #region Public Methods
 
         /// <summary>
         /// Get a player's name from its GUID
@@ -92,7 +86,5 @@ namespace AmeisenUtilities
             if (Name == null)
                 try { Name = GetPlayerNameFromGuid(Guid); } catch { }
         }
-
-        #endregion Public Methods
     }
 }

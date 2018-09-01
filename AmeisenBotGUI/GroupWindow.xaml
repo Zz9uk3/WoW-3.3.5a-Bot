@@ -8,14 +8,15 @@
         WindowStyle="None"
         AllowsTransparency="True"
         ResizeMode="CanResizeWithGrip"
-        Title="GroupWindow" Height="450" Width="800" BorderThickness="2" Icon="Icon.ico" MouseDown="Window_MouseDown" Loaded="Window_Loaded">
+        Title="GroupWindow" Width="124" BorderThickness="2" Icon="Icon.ico" MouseDown="Window_MouseDown" Loaded="Window_Loaded" Closing="Window_Closing" Height="240" MinHeight="239" MinWidth="244">
     <Window.BorderBrush>
-        <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+        <SolidColorBrush Color="{DynamicResource AccentColor}" />
     </Window.BorderBrush>
     <Window.Background>
-        <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+        <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
     </Window.Background>
     <Grid>
+        <StackPanel x:Name="botViewPanel" Orientation="Horizontal" />
         <Button x:Name="buttonExit" Content="X" VerticalAlignment="Top" FontFamily="Consolas" Click="ButtonExit_Click" FontWeight="Bold" Background="{x:Null}" BorderThickness="2" HorizontalAlignment="Right" Width="20" Margin="0,-2,-2,0">
             <Button.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
@@ -32,6 +33,5 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Button.BorderBrush>
         </Button>
-
     </Grid>
 </Window>

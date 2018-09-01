@@ -9,17 +9,11 @@ namespace AmeisenAI
 {
     public class AmeisenFollowManager
     {
-        #region Private Fields
-
         private static readonly object padlock = new object();
         private static AmeisenFollowManager instance;
         private readonly Thread mainWorker;
         private List<Unit> followUnitList = new List<Unit>();
         private bool stop = false;
-
-        #endregion Private Fields
-
-        #region Singleton stuff
 
         private AmeisenFollowManager()
         {
@@ -43,19 +37,11 @@ namespace AmeisenAI
             }
         }
 
-        #endregion Singleton stuff
-
-        #region Private Properties
-
         private Me Me
         {
             get { return AmeisenDataHolder.Instance.Me; }
             set { AmeisenDataHolder.Instance.Me = value; }
         }
-
-        #endregion Private Properties
-
-        #region Public Methods
 
         /// <summary>
         /// Register a unit to be followed
@@ -98,10 +84,6 @@ namespace AmeisenAI
         {
             stop = true; mainWorker.Join();
         }
-
-        #endregion Public Methods
-
-        #region Private Methods
 
         private void DoWork()
         {
@@ -166,7 +148,5 @@ namespace AmeisenAI
                 Thread.Sleep(50);
             }
         }
-
-        #endregion Private Methods
     }
 }

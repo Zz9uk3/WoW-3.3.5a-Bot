@@ -16,8 +16,6 @@ namespace AmeisenManager
     /// </summary>
     public class AmeisenBotManager
     {
-        #region Private Fields
-
         private static readonly object padlock = new object();
         private static AmeisenBotManager instance;
 
@@ -30,10 +28,6 @@ namespace AmeisenManager
 
         private bool followGroup;
 
-        #endregion Private Fields
-
-        #region Private Constructors
-
         private AmeisenBotManager()
         {
             IsAttached = false;
@@ -43,10 +37,6 @@ namespace AmeisenManager
             AmeisenClient = AmeisenClient.Instance;
             AmeisenDBManager = AmeisenDBManager.Instance;
         }
-
-        #endregion Private Constructors
-
-        #region Public Properties
 
         public static AmeisenBotManager Instance
         {
@@ -115,10 +105,6 @@ namespace AmeisenManager
         public List<WoWObject> WoWObjects { get { return AmeisenObjectManager.GetObjects(); } }
         public Process WowProcess { get; private set; }
 
-        #endregion Public Properties
-
-        #region Public Methods
-
         public static int GetMapID()
         {
             return AmeisenCore.GetMapID();
@@ -150,7 +136,7 @@ namespace AmeisenManager
             return AmeisenSettings.loadedconfName;
         }
 
-        public List<Bot> GetNetworkBots()
+        public List<NetworkBot> GetNetworkBots()
         {
             if (AmeisenClient.IsRegistered)
             {
@@ -238,7 +224,6 @@ namespace AmeisenManager
             AmeisenFollowManager.Start();
 
             // Connect to Server
-            // TODO: Move into settings
             if (Settings.serverAutoConnect)
             {
                 AmeisenClient.Register(
@@ -279,7 +264,5 @@ namespace AmeisenManager
             //Close SQL Connection
             AmeisenDBManager.Instance.Disconnect();
         }
-
-        #endregion Public Methods
     }
 }

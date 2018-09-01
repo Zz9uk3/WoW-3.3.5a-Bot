@@ -8,14 +8,8 @@ namespace AmeisenServer
 {
     public class WebServer
     {
-        #region Private Fields
-
         private readonly HttpListener httpListener = new HttpListener();
         private readonly Func<HttpListenerRequest, string> responseFunction;
-
-        #endregion Private Fields
-
-        #region Public Constructors
 
         public WebServer(IReadOnlyCollection<string> prefixes, Func<HttpListenerRequest, string> responseFunction)
         {
@@ -30,15 +24,7 @@ namespace AmeisenServer
         {
         }
 
-        #endregion Public Constructors
-
-        #region Public Properties
-
         public bool IsRunning { get; private set; }
-
-        #endregion Public Properties
-
-        #region Public Methods
 
         public void Run()
         {
@@ -65,7 +51,7 @@ namespace AmeisenServer
                                 listenerContext.Response.ContentLength64 = buffer.Length;
                                 listenerContext.Response.OutputStream.Write(buffer, 0, buffer.Length);
                             }
-                            catch { }
+                            catch (Exception e) { Console.WriteLine(e.ToString()); }
                             finally
                             {
                                 try
@@ -73,11 +59,11 @@ namespace AmeisenServer
                                     if (listenerContext != null)
                                         listenerContext.Response.OutputStream.Close();
                                 }
-                                catch { }
+                                catch (Exception e) { Console.WriteLine(e.ToString()); }
                             }
                         }, httpListener.GetContext());
                 }
-                catch { }
+                catch (Exception e) { Console.WriteLine(e.ToString()); }
             });
         }
 
@@ -87,7 +73,5 @@ namespace AmeisenServer
             httpListener.Stop();
             httpListener.Close();
         }
-
-        #endregion Public Methods
     }
 }

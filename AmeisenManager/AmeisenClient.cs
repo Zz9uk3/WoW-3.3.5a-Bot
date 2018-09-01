@@ -3,6 +3,7 @@ using AmeisenUtilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -12,8 +13,6 @@ namespace AmeisenManager
 {
     public class AmeisenClient
     {
-        #region Private Fields
-
         private static readonly HttpClient client = new HttpClient();
         private static readonly object padlock = new object();
         private static AmeisenClient instance;
@@ -25,10 +24,6 @@ namespace AmeisenManager
 
         private System.Timers.Timer botUpdateTimer;
 
-        #endregion Private Fields
-
-        #region Private Constructors
-
         private AmeisenClient()
         {
             botUpdateTimer = new System.Timers.Timer(1000);
@@ -37,10 +32,6 @@ namespace AmeisenManager
             botListUpdateTimer = new System.Timers.Timer(1000);
             botListUpdateTimer.Elapsed += UpdateBotList;
         }
-
-        #endregion Private Constructors
-
-        #region Public Properties
 
         public static AmeisenClient Instance
         {
@@ -57,7 +48,7 @@ namespace AmeisenManager
 
         public int BotID { get; private set; }
 
-        public List<Bot> BotList { get; private set; }
+        public List<NetworkBot> BotList { get; private set; }
 
         public IPAddress IPAddress { get; private set; }
 
@@ -65,19 +56,11 @@ namespace AmeisenManager
 
         public int Port { get; private set; }
 
-        #endregion Public Properties
-
-        #region Private Properties
-
         private Me Me
         {
             get { return AmeisenDataHolder.Instance.Me; }
             set { AmeisenDataHolder.Instance.Me = value; }
         }
-
-        #endregion Private Properties
-
-        #region Public Methods
 
         public async void Register(Me me, IPAddress ip, int port = 16200)
         {
@@ -86,7 +69,18 @@ namespace AmeisenManager
                 IPAddress = ip;
                 Port = port;
 
-                HttpContent contentToSend = new StringContent(JsonConvert.SerializeObject(new MeSendable().ConvertFromMe(me)));
+                string base64Image = "";
+                if (AmeisenBotManager.Instance.Settings.picturePath.Length > 0)
+                    base64Image = Convert.ToBase64String(
+                            Utils.ImageToByte(
+                                new Bitmap(AmeisenBotManager.Instance.Settings.picturePath)
+                                )
+                            );
+
+                MeSendable meSendable = new MeSendable().ConvertFromMe(me);
+                string content = JsonConvert.SerializeObject(new RegisterData(base64Image, meSendable));
+
+                HttpContent contentToSend = new StringContent(content);
                 HttpResponseMessage response = await client.PostAsync("http://" + ip + ":" + port + "/botRegister/", contentToSend);
                 string responseString = await response.Content.ReadAsStringAsync();
 
@@ -124,15 +118,12 @@ namespace AmeisenManager
             }
         }
 
-        #endregion Public Methods
-
-        #region Private Methods
-
         private async void UpdateBot(object source, ElapsedEventArgs e)
         {
             try
             {
-                HttpContent contentToSend = new StringContent(BotID + "]" + JsonConvert.SerializeObject(new MeSendable().ConvertFromMe(Me)));
+                HttpContent contentToSend = new StringContent(BotID + "]" + JsonConvert.SerializeObject(
+                    new MeSendable().ConvertFromMe(Me)));
                 HttpResponseMessage response = await client.PostAsync("http://" + IPAddress + ":" + Port + "/botUpdate/" + BotID + "/", contentToSend);
                 string responseString = await response.Content.ReadAsStringAsync();
             }
@@ -145,11 +136,9 @@ namespace AmeisenManager
             {
                 HttpResponseMessage response = await client.GetAsync("http://" + IPAddress + ":" + Port + "/activeBots/");
                 string responseString = await response.Content.ReadAsStringAsync();
-                BotList = JsonConvert.DeserializeObject<List<Bot>>(responseString);
+                BotList = JsonConvert.DeserializeObject<List<NetworkBot>>(responseString);
             }
             catch { }
         }
-
-        #endregion Private Methods
     }
 }

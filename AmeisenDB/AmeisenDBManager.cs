@@ -8,31 +8,17 @@ namespace AmeisenDB
 {
     public class AmeisenDBManager
     {
-        #region Public Fields
-
         public const string TABLE_NAME_NODES = "ameisenbot_map_nodes";
         public string DBName = "ameisenbot";
-
-        #endregion Public Fields
-
-        #region Private Fields
 
         private static readonly object padlock = new object();
         private static AmeisenDBManager instance = null;
         private MySqlConnection sqlConnection;
 
-        #endregion Private Fields
-
-        #region Private Constructors
-
         private AmeisenDBManager()
         {
             IsConnected = false;
         }
-
-        #endregion Private Constructors
-
-        #region Public Properties
 
         public static AmeisenDBManager Instance
         {
@@ -51,10 +37,6 @@ namespace AmeisenDB
         }
 
         public bool IsConnected { get; private set; }
-
-        #endregion Public Properties
-
-        #region Public Methods
 
         /// <summary>
         /// Connect to a MySQL database
@@ -91,11 +73,8 @@ namespace AmeisenDB
             IsConnected = false;
         }
 
-        /// <summary>
-        /// Get all saved nodes by the zone & map id
-        /// </summary>
-        /// <param name="zoneID">zone id to get the nodes from</param>
-        /// <param name="mapID">map id to get the nodes from</param>
+        /// <summary> Get all saved nodes by the zone & map id </summary> <param name="zoneID">zone
+        /// id to get the nodes from</param> <param name="mapID">map id to get the nodes from</param>
         /// <returns>list containing all the MapNodes</returns>
         public List<MapNode> GetNodes(int zoneID, int mapID, int maxX = 0, int minX = 0, int maxY = 0, int minY = 0)
         {
@@ -177,7 +156,5 @@ namespace AmeisenDB
                 return 0;
             }
         }
-
-        #endregion Public Methods
     }
 }

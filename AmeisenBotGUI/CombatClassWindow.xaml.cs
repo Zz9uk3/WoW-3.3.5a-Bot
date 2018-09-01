@@ -15,14 +15,8 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class CombatClassWindow : Window
     {
-        #region Private Fields
-
         private CombatLogic loadedLogic;
         private int prio;
-
-        #endregion Private Fields
-
-        #region Public Constructors
 
         public CombatClassWindow()
         {
@@ -36,15 +30,7 @@ namespace AmeisenBotGUI
                 loadedLogic = new CombatLogic();
         }
 
-        #endregion Public Constructors
-
-        #region Private Properties
-
         private AmeisenBotManager BotManager { get; }
-
-        #endregion Private Properties
-
-        #region Private Methods
 
         private void ButtonAddCombatEntry_Click(object sender, RoutedEventArgs e)
         {
@@ -388,7 +374,5 @@ namespace AmeisenBotGUI
             if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
                 ((CombatLogicEntry)listboxCombatActions.SelectedItem).Parameters = textboxSpellName.Text;
         }
-
-        #endregion Private Methods
     }
 }

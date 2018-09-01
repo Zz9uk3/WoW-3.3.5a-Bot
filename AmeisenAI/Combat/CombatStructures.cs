@@ -2,8 +2,6 @@
 {
     public abstract class CombatStructures
     {
-        #region Public Enums
-
         public enum CombatActionType
         {
             ATTACK,
@@ -43,7 +41,5 @@
             //TARGET_STUNNED,
             //TARGET_IS_CASTING,
         }
-
-        #endregion Public Enums
     }
 }

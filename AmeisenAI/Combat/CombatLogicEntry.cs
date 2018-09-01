@@ -6,8 +6,6 @@ namespace AmeisenAI.Combat
 {
     public class CombatLogicEntry
     {
-        #region Public Constructors
-
         public CombatLogicEntry(
             int priority,
             CombatLogicAction action,
@@ -42,10 +40,6 @@ namespace AmeisenAI.Combat
             Parameters = "";
         }
 
-        #endregion Public Constructors
-
-        #region Public Properties
-
         public CombatLogicAction Action { get; set; }
         public CombatActionType ActionType { get; set; }
         public bool CanMoveDuringCast { get; set; }
@@ -58,10 +52,6 @@ namespace AmeisenAI.Combat
         public object Parameters { get; set; }
         public int Priority { get; set; }
 
-        #endregion Public Properties
-
-        #region Public Methods
-
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -71,22 +61,14 @@ namespace AmeisenAI.Combat
 
             return sb.ToString();
         }
-
-        #endregion Public Methods
     }
 
     public class Condition
     {
-        #region Public Fields
-
         public CombatLogicValues[] conditionValues;
         public bool customSecondValue;
         public object customValue;
         public CombatLogicStatement statement;
-
-        #endregion Public Fields
-
-        #region Public Constructors
 
         public Condition()
         {
@@ -95,10 +77,6 @@ namespace AmeisenAI.Combat
             customSecondValue = false;
             customValue = 0.0;
         }
-
-        #endregion Public Constructors
-
-        #region Public Methods
 
         public override string ToString()
         {
@@ -109,7 +87,5 @@ namespace AmeisenAI.Combat
 
             return sb.ToString(); ;
         }
-
-        #endregion Public Methods
     }
 }

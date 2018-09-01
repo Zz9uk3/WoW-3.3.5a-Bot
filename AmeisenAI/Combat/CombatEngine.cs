@@ -12,21 +12,11 @@ namespace AmeisenAI
 {
     public class CombatEngine
     {
-        #region Public Fields
-
         public CombatLogic currentCombatLogic;
-
-        #endregion Public Fields
-
-        #region Private Fields
 
         private static readonly string combatclassesPath = AppDomain.CurrentDomain.BaseDirectory + "/combatclasses/";
 
         private int posAt;
-
-        #endregion Private Fields
-
-        #region Private Properties
 
         private List<WoWObject> ActiveWoWObjects
         {
@@ -44,10 +34,6 @@ namespace AmeisenAI
             get { return AmeisenDataHolder.Instance.Target; }
             set { AmeisenDataHolder.Instance.Target = value; }
         }
-
-        #endregion Private Properties
-
-        #region Public Methods
 
         /// <summary>
         /// Load a combatclass file.
@@ -99,10 +85,6 @@ namespace AmeisenAI
                     posAt++;
                 }
         }
-
-        #endregion Public Methods
-
-        #region Private Methods
 
         private void AssistParty()
         {
@@ -349,7 +331,5 @@ namespace AmeisenAI
             catch { }
             return false;
         }
-
-        #endregion Private Methods
     }
 }

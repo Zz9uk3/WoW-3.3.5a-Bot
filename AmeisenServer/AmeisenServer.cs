@@ -4,19 +4,33 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Net;
+using System.Timers;
 
 namespace AmeisenServer
 {
     internal class AmeisenServer
     {
-        #region Private Fields
-
         private static ArrayList activeBots;
-        private static int botCount;
+        private static int botID;
+        private static Timer timeoutTimer;
 
-        #endregion Private Fields
+        private static NetworkBot ConvertRegisterDataToBot(HttpListenerRequest request)
+        {
+            string bodyContent = ReadBody(request);
+            RegisterData registerData = JsonConvert.DeserializeObject<RegisterData>(bodyContent);
 
-        #region Private Methods
+            NetworkBot convertedBot = new NetworkBot
+            {
+                id = botID,
+                me = registerData.Me,
+                ip = request.RemoteEndPoint.Address.ToString(),
+                base64Image = registerData.Base64Image,
+                lastUpdate = DateTimeOffset.Now.ToUnixTimeMilliseconds()
+            };
+            convertedBot.name = convertedBot.me.Name;
+
+            return convertedBot;
+        }
 
         /// <summary>
         /// THIS THING IS THE SHIT...
@@ -45,12 +59,24 @@ namespace AmeisenServer
             Console.ResetColor();
         }
 
+        private static int GetBotPositionByID(int botID)
+        {
+            int count = 0;
+            foreach (NetworkBot b in activeBots)
+            {
+                if (b.id == botID)
+                    return count;
+                count++;
+            }
+            return -1;
+        }
+
         private static void Main(string[] args)
         {
             Console.Title = "AmeisenServer";
 
             activeBots = new ArrayList();
-            botCount = 0;
+            botID = 0;
 
             WebServer webServer = new WebServer(SendResponse, "http://+:16200/");
             string serverRunning = "#+        Starting AmeisenServer [0.0.0.0:16200]        +#";
@@ -72,6 +98,10 @@ namespace AmeisenServer
 
             webServer.Run();
 
+            timeoutTimer = new Timer(1000);
+            timeoutTimer.Elapsed += TimeoutCheck;
+            timeoutTimer.Start();
+
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("+- Webserver started...");
             Console.ResetColor();
@@ -83,6 +113,7 @@ namespace AmeisenServer
                 if (!cmd.ToLower().Equals("stop"))
                     Console.WriteLine("unknown: " + cmd);
             }
+            timeoutTimer.Stop();
         }
 
         /// <summary>
@@ -100,75 +131,57 @@ namespace AmeisenServer
                 return reader.ReadToEnd();
         }
 
+        private static int RemoveBot(HttpListenerRequest request)
+        {
+            string bodyContent = ReadBody(request);
+            int idToRemove = Convert.ToInt32(bodyContent.Split('[')[1].Replace("]", ""));
+            RemoveBotByID(idToRemove);
+            return idToRemove;
+        }
+
+        private static void RemoveBotByID(int idToRemove)
+        {
+            foreach (NetworkBot b in activeBots)
+                if (b.id == idToRemove)
+                {
+                    activeBots.Remove(b);
+                    break;
+                }
+        }
+
         private static string SendResponse(HttpListenerRequest request)
         {
-            FancyCW(request.RemoteEndPoint.Address.ToString(), request.HttpMethod.ToString(), request.Url.ToString());
-
+            // Bot GET ACTIVE BOTS
             if (request.HttpMethod == "GET")
             {
                 if (request.Url.ToString().Contains("activeBots"))
-                    return JsonConvert.SerializeObject(activeBots);
+                {
+                    ArrayList copyOfBotList = (ArrayList)activeBots.Clone();
+                    return JsonConvert.SerializeObject(copyOfBotList);
+                }
                 else
                     return string.Format("Go to the ./web/ folder and open index.html for a webview lmao, this kind of \"shit\" will never get through here >:)");
             }
+            // Bot REGISTER
             else if (request.HttpMethod == "POST")
             {
                 if (request.Url.ToString().Contains("botRegister"))
                 {
-                    string bodyContent = ReadBody(request);
-
-                    MeSendable meSendable = JsonConvert.DeserializeObject<MeSendable>(bodyContent);
-
-                    Bot botToAdd = new Bot
-                    {
-                        id = botCount,
-                        me = meSendable,
-                        ip = request.RemoteEndPoint.Address.ToString()
-                    };
-                    botToAdd.name = botToAdd.me.Name;
-
-                    activeBots.Add(botToAdd);
-                    FancyCW(request.RemoteEndPoint.Address.ToString(), request.HttpMethod.ToString(), "ACTIVEBOTS: " + JsonConvert.SerializeObject(activeBots));
-
-                    botCount++;
-                    return "addedBot:[" + (botCount - 1) + "]";
+                    activeBots.Add(ConvertRegisterDataToBot(request));
+                    botID++;
+                    return "addedBot:[" + (botID - 1) + "]";
                 }
+                // Bot UNREGISTER
                 else if (request.Url.ToString().Contains("botUnregister"))
                 {
-                    string bodyContent = ReadBody(request);
-
-                    int idToRemove = Convert.ToInt32(bodyContent.Split('[')[1].Replace("]", ""));
-
-                    foreach (Bot b in activeBots)
-                        if (b.id == idToRemove)
-                        {
-                            activeBots.Remove(b);
-                            break;
-                        }
-
-                    return "removedBot:[" + idToRemove + "]";
+                    return "removedBot:[" + RemoveBot(request) + "]";
                 }
+                // Bot UPDATE
                 else if (request.Url.ToString().Contains("botUpdate"))
                 {
-                    string bodyContent = ReadBody(request);
-
-                    int idToUpdate = Convert.ToInt32(bodyContent.Split(']')[0].Replace("]", ""));
-                    string botContent = bodyContent.Split(']')[1];
-
-                    MeSendable meSendable = JsonConvert.DeserializeObject<MeSendable>(botContent);
-
-                    Bot botToUpdate = new Bot
-                    {
-                        id = idToUpdate,
-                        me = meSendable,
-                        ip = request.RemoteEndPoint.Address.ToString()
-                    };
-                    botToUpdate.name = botToUpdate.me.Name;
-
-                    activeBots[idToUpdate] = botToUpdate;
-
-                    return "updatedBot:[" + idToUpdate + "]";
+                    return "updatedBot:[" + UpdateBot(request) + "]";
                 }
+                // UNKNOWN
                 else
                     return "unknown command";
             }
@@ -176,6 +189,34 @@ namespace AmeisenServer
                 return "AyyLMAO";
         }
 
-        #endregion Private Methods
+        private static void TimeoutCheck(object sender, ElapsedEventArgs e)
+        {
+            foreach (NetworkBot bot in activeBots)
+                if (DateTimeOffset.Now.ToUnixTimeMilliseconds() - bot.lastUpdate > 5000)
+                    RemoveBotByID(bot.id);
+        }
+
+        private static int UpdateBot(HttpListenerRequest request)
+        {
+            string bodyContent = ReadBody(request);
+            int idToUpdate = Convert.ToInt32(bodyContent.Split(']')[0].Replace("]", ""));
+            string botContent = bodyContent.Split(']')[1];
+
+            MeSendable meSendable = JsonConvert.DeserializeObject<MeSendable>(botContent);
+
+            NetworkBot convertedBot = new NetworkBot
+            {
+                id = idToUpdate,
+                me = meSendable,
+                ip = request.RemoteEndPoint.Address.ToString(),
+                base64Image = ((NetworkBot)activeBots[GetBotPositionByID(idToUpdate)]).base64Image,
+                lastUpdate = DateTimeOffset.Now.ToUnixTimeMilliseconds()
+            };
+
+            convertedBot.name = convertedBot.me.Name;
+            activeBots[GetBotPositionByID(idToUpdate)] = convertedBot;
+
+            return idToUpdate;
+        }
     }
 }

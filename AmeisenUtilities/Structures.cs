@@ -124,43 +124,27 @@
         CORPSE = 7
     }
 
-    public struct Bot
-    {
-        #region Public Fields
-
-        public int id;
-        public string ip;
-        public MeSendable me;
-        public string name;
-
-        #endregion Public Fields
-    }
-
     public struct Credentials
     {
-        #region Public Fields
-
         public string charname;
         public int charSlot;
         public string password;
         public string username;
+    }
 
-        #endregion Public Fields
+    public struct NetworkBot
+    {
+        public string base64Image;
+        public int id;
+        public string ip;
+        public long lastUpdate;
+        public MeSendable me;
+        public string name;
     }
 
     /// <summary> Simple X,Y & Z struct </summary>
     public struct Vector3
     {
-        #region Public Fields
-
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Z { get; set; }
-
-        #endregion Public Fields
-
-        #region Public Constructors
-
         public Vector3(int x, int y, int z)
         {
             X = x;
@@ -175,7 +159,9 @@
             Z = z;
         }
 
-        #endregion Public Constructors
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
     }
 
     /// <summary>
@@ -183,14 +169,10 @@
     /// </summary>
     public struct WoWAuraInfo
     {
-        #region Public Fields
-
         public int duration;
         public string expirationTime;
         public string name;
         public int stacks;
-
-        #endregion Public Fields
     }
 
     /// <summary>
@@ -198,34 +180,24 @@
     /// </summary>
     public struct WoWSpellInfo
     {
-        #region Public Fields
-
         public int castTime;
         public int cost;
         public string name;
-
-        #endregion Public Fields
     }
 
     public class MeSendable
     {
-        #region Public Fields
-
-        public int Energy;
-        public int Exp;
-        public ulong Guid;
-        public int Health;
-        public int Level;
-        public int MaxEnergy;
-        public int MaxExp;
-        public int MaxHealth;
-        public string Name;
-        public Vector3 Pos;
-        public float Rotation;
-
-        #endregion Public Fields
-
-        #region Public Methods
+        public int Energy { get; set; }
+        public int Exp { get; set; }
+        public ulong Guid { get; set; }
+        public int Health { get; set; }
+        public int Level { get; set; }
+        public int MaxEnergy { get; set; }
+        public int MaxExp { get; set; }
+        public int MaxHealth { get; set; }
+        public string Name { get; set; }
+        public Vector3 Pos { get; set; }
+        public float Rotation { get; set; }
 
         public MeSendable ConvertFromMe(Me me)
         {
@@ -247,7 +219,17 @@
             MaxExp = me.MaxExp;
             return this;
         }
+    }
 
-        #endregion Public Methods
+    public class RegisterData
+    {
+        public RegisterData(string base64Image, MeSendable me)
+        {
+            Me = me;
+            Base64Image = base64Image;
+        }
+
+        public string Base64Image { get; set; }
+        public MeSendable Me { get; set; }
     }
 }

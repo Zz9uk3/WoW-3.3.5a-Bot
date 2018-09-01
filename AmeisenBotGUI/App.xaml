@@ -21,5 +21,11 @@
         <Color x:Key="WalkableNodeColor">#FFA0FF00</Color>
         <Color x:Key="MeNodeColor">#FF00FFFF</Color>
 
+        <Color x:Key="HealthColor">#FFFF6060</Color>
+        <Color x:Key="EnergyColor">#FFFFA160</Color>
+        <Color x:Key="EXPColor">#FFD4A0FF</Color>
+        <Color x:Key="TargetHealthColor">#FFFF6060</Color>
+        <Color x:Key="TargetEnergyColor">#FFFFA160</Color>
+        <Color x:Key="ThreadsColor">#FFFFFF60</Color>
     </Application.Resources>
 </Application>

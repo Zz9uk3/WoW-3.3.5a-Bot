@@ -4,8 +4,6 @@ namespace AmeisenMapping.objects
 {
     public class MapNode
     {
-        #region Public Constructors
-
         public MapNode()
         {
         }
@@ -28,16 +26,10 @@ namespace AmeisenMapping.objects
             MapID = mapID;
         }
 
-        #endregion Public Constructors
-
-        #region Public Properties
-
         public int MapID { get; private set; }
         public int X { get; private set; }
         public int Y { get; private set; }
         public int Z { get; private set; }
         public int ZoneID { get; private set; }
-
-        #endregion Public Properties
     }
 }

@@ -14,23 +14,13 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class DebugWindow : Window
     {
-        #region Public Constructors
-
         public DebugWindow()
         {
             InitializeComponent();
             BotManager = AmeisenBotManager.Instance;
         }
 
-        #endregion Public Constructors
-
-        #region Private Properties
-
         private AmeisenBotManager BotManager { get; }
-
-        #endregion Private Properties
-
-        #region Private Methods
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
@@ -87,31 +77,20 @@ namespace AmeisenBotGUI
                         listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["MeColor"])));
                 }
         }
-
-        #endregion Private Methods
     }
 
     /// <summary>
-    /// Display class for the listView elements.
-    /// Used to color them corresponding to their WoWObject type.
+    /// Display class for the listView elements. Used to color them corresponding to their WoWObject type.
     /// </summary>
     internal class DataItem
     {
-        #region Public Constructors
-
         public DataItem(string text, Brush background)
         {
             Text = text;
             Background = background;
         }
 
-        #endregion Public Constructors
-
-        #region Public Properties
-
         public Brush Background { get; set; }
         public string Text { get; set; }
-
-        #endregion Public Properties
     }
 }
