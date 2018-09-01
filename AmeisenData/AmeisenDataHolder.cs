@@ -24,6 +24,8 @@ namespace AmeisenData
         public Me Me { get; set; }
 
         public Unit Target { get; set; }
+        public double FollowDistance { get; set; }
+
         private static readonly object padlock = new object();
 
         private static AmeisenDataHolder instance = null;

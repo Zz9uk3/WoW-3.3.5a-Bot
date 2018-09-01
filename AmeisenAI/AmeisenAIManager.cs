@@ -373,7 +373,7 @@ namespace AmeisenAI
         private void ProcessActionInteractWithTarget(ref AmeisenAction currentAction)
         {
             if (IsAllowedToMove)
-                InteractWithTarget(3.0, (InteractionType)currentAction.GetActionParams(), ref currentAction);
+                InteractWithTarget(AmeisenSettings.Instance.Settings.followDistance, (InteractionType)currentAction.GetActionParams(), ref currentAction);
             else
                 currentAction.ActionIsDone();
         }
@@ -389,7 +389,7 @@ namespace AmeisenAI
         private void ProcessActionMoveToPosition(ref AmeisenAction currentAction, bool force = false)
         {
             if (IsAllowedToMove || force)
-                MoveToPosition((Vector3)currentAction.GetActionParams(), 3.0, ref currentAction);
+                MoveToPosition((Vector3)currentAction.GetActionParams(), AmeisenSettings.Instance.Settings.followDistance, ref currentAction);
             else
                 currentAction.ActionIsDone();
         }

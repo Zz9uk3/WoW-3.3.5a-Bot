@@ -184,6 +184,10 @@
       <Project>{3c281530-7a81-4803-bc85-de46ed2d6e74}</Project>
       <Name>AmeisenAI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AmeisenData\AmeisenData.csproj">
+      <Project>{4B6AB536-AF35-4970-89FB-B45BC495F8BE}</Project>
+      <Name>AmeisenData</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AmeisenDB\AmeisenDB.csproj">
       <Project>{9B3F7A78-0A9B-492A-8299-9C86D2E297ED}</Project>
       <Name>AmeisenDB</Name>

@@ -35,5 +35,6 @@
         public string targetHealthColor = "#FFFF6060";
         public string threadsColor = "#FFFFFF60";
         public string walkableNodeColor = "#FFA0FF00";
+        public double followDistance = 3.0;
     }
 }

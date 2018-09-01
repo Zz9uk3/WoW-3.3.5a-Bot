@@ -1,4 +1,5 @@
-﻿using AmeisenLogging;
+﻿using AmeisenData;
+using AmeisenLogging;
 using AmeisenManager;
 using AmeisenUtilities;
 using Microsoft.Win32;
@@ -146,6 +147,8 @@ namespace AmeisenBotGUI
             checkBoxFollowMaster.IsChecked = BotManager.Settings.followMaster;
             AmeisenBotManager.Instance.FollowGroup = BotManager.Settings.followMaster;
 
+            sliderDistance.Value = BotManager.Settings.followDistance;
+
             comboboxInteraction.Items.Add(InteractionType.FACETARGET);
             comboboxInteraction.Items.Add(InteractionType.FACEDESTINATION);
             comboboxInteraction.Items.Add(InteractionType.STOP);
@@ -204,15 +207,15 @@ namespace AmeisenBotGUI
                     labelName.Content = BotManager.Me.Name + " lvl." + BotManager.Me.Level;
                     //labelCasting.Content = "Casting: " + me.currentState;
 
-                    //labelHP.Content = "HP [" + me.health + "/" + me.maxHealth + "]";
+                    labelHP.Content = "Health " + BotManager.Me.Health + " / " + BotManager.Me.MaxHealth + "";
                     progressBarHP.Maximum = BotManager.Me.MaxHealth;
                     progressBarHP.Value = BotManager.Me.Health;
 
-                    //labelEnergy.Content = "Energy [" + me.energy + "/" + me.maxEnergy + "]";
+                    labelEnergy.Content = "Energy " + BotManager.Me.Energy + " / " + BotManager.Me.MaxEnergy + "";
                     progressBarEnergy.Maximum = BotManager.Me.MaxEnergy;
                     progressBarEnergy.Value = BotManager.Me.Energy;
 
-                    //labelXP.Content = "XP [" + me.exp + "/" + me.maxExp + "]";
+                    labelExp.Content = "Exp " + BotManager.Me.Exp + " / " + BotManager.Me.MaxExp + "";
                     progressBarXP.Maximum = BotManager.Me.MaxExp;
                     progressBarXP.Value = BotManager.Me.Exp;
 
@@ -233,11 +236,11 @@ namespace AmeisenBotGUI
                         labelNameTarget.Content = BotManager.Target.Name + " lvl." + BotManager.Target.Level;
                         //labelCastingTarget.Content = "Current state: " + me.target.currentState;
 
-                        //labelHPTarget.Content = "HP [" + me.target.health + "/" + me.target.maxHealth + "]";
+                        labelTargetHP.Content = "Health " + BotManager.Target.Health + " / " + BotManager.Target.MaxHealth + "";
                         progressBarHPTarget.Maximum = BotManager.Target.MaxHealth;
                         progressBarHPTarget.Value = BotManager.Target.Health;
 
-                        //labelEnergyTarget.Content = "Energy [" + me.target.energy + "/" + me.target.maxEnergy + "]";
+                        labelTargetEnergy.Content = "Energy " + BotManager.Target.Energy + " / " + BotManager.Target.MaxEnergy + "";
                         progressBarEnergyTarget.Maximum = BotManager.Target.MaxEnergy;
                         progressBarEnergyTarget.Value = BotManager.Target.Energy;
 
@@ -267,6 +270,16 @@ namespace AmeisenBotGUI
             {
                 AmeisenLogger.Instance.Log(LogLevel.ERROR, e.ToString(), this);
             }
+        }
+
+        private void SliderDistance_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            try
+            {
+                labelDistance.Content = "Follow Distance: " + Math.Round(sliderDistance.Value, 2) + "m";
+                BotManager.AmeisenSettings.Settings.followDistance = Math.Round(sliderDistance.Value, 2);
+            }
+            catch { }
         }
     }
 }
