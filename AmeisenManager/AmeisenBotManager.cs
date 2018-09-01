@@ -229,7 +229,7 @@ namespace AmeisenManager
                 AmeisenClient.Register(
                     Me,
                     IPAddress.Parse(AmeisenSettings.Settings.ameisenServerIP),
-                    AmeisenSettings.Settings.serverPort);
+                    AmeisenSettings.Settings.ameisenServerPort);
             }
         }
 
