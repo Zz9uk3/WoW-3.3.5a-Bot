@@ -69,22 +69,23 @@ namespace AmeisenBotGUI
                 {
                     AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Selected WoW: " + ((WoWExe)comboBoxWoWs.SelectedItem).ToString(), this);
 
-                    // Apply our colors defined in the config file
-                    Application.Current.Resources["AccentColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.accentColor);
-                    Application.Current.Resources["BackgroundColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.backgroundColor);
-                    Application.Current.Resources["TextColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.fontColor);
-
-                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Loaded colors ["
-                        + Application.Current.Resources["AccentColor"] + "]["
-                        + Application.Current.Resources["BackgroundColor"] + "]["
-                        + Application.Current.Resources["TextColor"] + "]"
-                        , this);
+                    ApplyConfigColors();
 
                     // Show the Mainscreen
                     new BotWindow((WoWExe)comboBoxWoWs.SelectedItem).Show();
                     Close();
                 }
             }
+        }
+
+        private void ApplyConfigColors()
+        {
+            Application.Current.Resources["AccentColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.accentColor);
+            Application.Current.Resources["BackgroundColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.backgroundColor);
+            Application.Current.Resources["TextColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.fontColor);
+
+            Application.Current.Resources["MeNodeColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.meNodeColor);
+            Application.Current.Resources["WalkableNodeColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.walkableNodeColor);
         }
 
         private void ButtonGoAuto_Click(object sender, RoutedEventArgs e)
@@ -141,7 +142,10 @@ namespace AmeisenBotGUI
 
             foreach (string f in Directory.GetFiles(configPath))
                 if (f.Length > 0)
+                {
+                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Adding Account: " + f + " [" + f.Length + "]", this);
                     comboBoxAccounts.Items.Add(Path.GetFileNameWithoutExtension(f));
+                }
         }
 
         private void LoadAccount(string accountName)

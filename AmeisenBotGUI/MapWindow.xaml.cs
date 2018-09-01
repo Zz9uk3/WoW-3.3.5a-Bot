@@ -20,6 +20,8 @@ namespace AmeisenBotGUI
         private Map currentMap;
         private DispatcherTimer uiUpdateTimer;
         private DispatcherTimer mapUpdateTimer;
+        private int newX;
+        private int newY;
         #region Public Constructors
 
         public MapWindow()
@@ -129,18 +131,12 @@ namespace AmeisenBotGUI
             foreach (MapNode node in map.Nodes)
             {
                 Vector3 tempPos = NodePosToCanvasPos(new Vector3(node.X, node.Y, node.Z), myPos);
-                int newX = (int)(myCanvasMiddle.X + tempPos.X);
-                int newY = (int)(myCanvasMiddle.Y + tempPos.Y);
+                newX = (int)(myCanvasMiddle.X + tempPos.X);
+                newY = (int)(myCanvasMiddle.Y + tempPos.Y);
 
-                if (!(newX >= Width - 40)
-                    && !(newX <= (Width - 40) * -1)
-                    && !(newY >= Height - 40)
-                    && !(newY <= (Height - 40) * -1))
-                {
-                    DrawRectangle(newX - 2, newY - 2, 4, 4, 
-                    (Color)Application.Current.Resources["WalkableNodeColor"],
-                    mapCanvas);
-                }
+                DrawRectangle(newX - 2, newY - 2, 4, 4,
+                (Color)Application.Current.Resources["WalkableNodeColor"],
+                mapCanvas);
             }
 
             DrawRectangle((int)myCanvasMiddle.X, (int)myCanvasMiddle.Y, 4, 4,
@@ -150,10 +146,15 @@ namespace AmeisenBotGUI
 
         private Map LoadMap()
         {
+            Vector3 myPos = AmeisenBotManager.Instance.Me.pos;
             return new Map(
                        AmeisenDBManager.Instance.GetNodes(
                            AmeisenBotManager.GetZoneID(),
-                           AmeisenBotManager.GetMapID()
+                           AmeisenBotManager.GetMapID(),
+                           (int)(myPos.X + ((Width / 2) - 20)),
+                           (int)(myPos.X - ((Width / 2) + 20)),
+                           (int)(myPos.Y + ((Height / 2) - 20)),
+                           (int)(myPos.Y - ((Height / 2) + 20))
                            )
                        );
         }
@@ -171,7 +172,7 @@ namespace AmeisenBotGUI
 
             uiUpdateTimer = new DispatcherTimer();
             uiUpdateTimer.Tick += new EventHandler(UIUpdateTimer_Tick);
-            uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, AmeisenBotManager.Instance.Settings.dataRefreshRate);
+            uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 1000);
             uiUpdateTimer.Start();
 
             mapUpdateTimer = new DispatcherTimer();

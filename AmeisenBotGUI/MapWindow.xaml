@@ -5,7 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AmeisenBotGUI"
         mc:Ignorable="d"
-        Title="Map" Height="600" Width="600" WindowStyle="None" ResizeMode="NoResize" BorderThickness="2" MouseDown="Window_MouseDown" Loaded="Window_Loaded" Icon="Icon.ico" Closing="Window_Closing">
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip"
+        Title="Map" Height="600" Width="600" BorderThickness="2" MouseDown="Window_MouseDown" Loaded="Window_Loaded" Icon="Icon.ico" Closing="Window_Closing">
     <Window.Background>
         <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
     </Window.Background>

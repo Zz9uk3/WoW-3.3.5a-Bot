@@ -92,7 +92,7 @@ namespace AmeisenCoreUtils
         /// Reads all WoWObject out of WoW's ObjectManager
         /// </summary>
         /// <returns>all WoWObjects in WoW Manager</returns>
-        public static List<WoWObject> GetAllWoWObjects()
+        public static List<WoWObject> GetAllWoWObjects(bool refreshOnlyUnits = false)
         {
             List<WoWObject> objects = new List<WoWObject>();
 
@@ -104,15 +104,15 @@ namespace AmeisenCoreUtils
 
             UInt64 myGUID = ReadPlayerGUID();
 
-            // loop through the objects until an object is bigger than 7 or lower than 1, that means
-            // we got all objects
+            // loop through the objects until an object is bigger than 7 or lower than 1 to get all Objects from manager
             while (objType <= 7 && objType > 0)
             {
+                //if (!(refreshOnlyUnits
+                //    && (objType == (int)WoWObjectType.UNIT || objType == (int)WoWObjectType.PLAYER)))
+                //{
                 WoWObject wowObject = ReadWoWObjectFromWoW(activeObj, (WoWObjectType)objType);
-
-                wowObject.Update();
-
                 objects.Add(wowObject);
+                //}
 
                 activeObj = BlackMagic.ReadUInt(activeObj + WoWOffsets.nextObjectOffset);
                 objType = BlackMagic.ReadUInt(activeObj + WoWOffsets.gameobjectTypeOffset);
@@ -393,15 +393,6 @@ namespace AmeisenCoreUtils
 
         [DllImport("user32.dll")]
         public static extern IntPtr PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-
-        /// <summary>
-        /// Get the current state of the bots character including its target
-        /// </summary>
-        /// <returns>the bots character information</returns>
-        public static Me ReadMe(uint address)
-        {
-            return (Me)ReadWoWObjectFromWoW(address, WoWObjectType.PLAYER, true);
-        }
 
         /// <summary>
         /// Get the bot's char's GUID

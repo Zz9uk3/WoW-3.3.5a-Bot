@@ -2,6 +2,7 @@
 using Dapper;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
+using System.Text;
 
 namespace AmeisenDB
 {
@@ -96,17 +97,28 @@ namespace AmeisenDB
         /// <param name="zoneID">zone id to get the nodes from</param>
         /// <param name="mapID">map id to get the nodes from</param>
         /// <returns>list containing all the MapNodes</returns>
-        public List<MapNode> GetNodes(int zoneID, int mapID)
+        public List<MapNode> GetNodes(int zoneID, int mapID, int maxX = 0, int minX = 0, int maxY = 0, int minY = 0)
         {
             if (IsConnected)
             {
-                string sqlQuery =
-                    "SELECT * FROM " + TABLE_NAME_NODES + " " +
-                    "WHERE zone_id = " + zoneID + " AND " +
-                    "map_id = " + mapID + ";";
+                StringBuilder sqlQuery = new StringBuilder();
+                sqlQuery.Append("SELECT * FROM " + TABLE_NAME_NODES + " ");
+                sqlQuery.Append("WHERE zone_id = " + zoneID + " AND ");
+                sqlQuery.Append("map_id = " + mapID);
+
+                if (maxX != 0)
+                    sqlQuery.Append(" AND x < " + maxX);
+                if (maxY != 0)
+                    sqlQuery.Append(" AND y < " + maxY);
+                if (minX != 0)
+                    sqlQuery.Append(" AND x > " + minX);
+                if (minY != 0)
+                    sqlQuery.Append(" AND y > " + minY);
+
+                sqlQuery.Append(";");
                 try
                 {
-                    return sqlConnection.Query<MapNode>(sqlQuery).AsList();
+                    return sqlConnection.Query<MapNode>(sqlQuery.ToString()).AsList();
                 }
                 catch { return new List<MapNode>(); }
             }
@@ -126,7 +138,7 @@ namespace AmeisenDB
                 string dbInit =
                 "CREATE DATABASE IF NOT EXISTS `" + sqlConnection.Database + "` /*!40100 DEFAULT CHARACTER SET utf8 */;" +
                 "USE `" + sqlConnection.Database + "`;" +
-                "CREATE TABLE IF NOT EXISTS `ameisenbot_map_nodes` (" +
+                "CREATE TABLE IF NOT EXISTS `" + TABLE_NAME_NODES + "` (" +
                 "`id` int(11) NOT NULL AUTO_INCREMENT, " +
                 "`x` int(11) DEFAULT NULL, " +
                 "`y` int(11) DEFAULT NULL, " +

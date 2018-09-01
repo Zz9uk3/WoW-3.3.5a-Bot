@@ -5,7 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AmeisenBotGUI"
         mc:Ignorable="d"
-        Title="GroupWindow" Height="450" Width="800" BorderThickness="2" Icon="Icon.ico" WindowStyle="None" MouseDown="Window_MouseDown">
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip"
+        Title="GroupWindow" Height="450" Width="800" BorderThickness="2" Icon="Icon.ico" MouseDown="Window_MouseDown" Loaded="Window_Loaded">
     <Window.BorderBrush>
         <SolidColorBrush Color="{DynamicResource AccentColor}"/>
     </Window.BorderBrush>

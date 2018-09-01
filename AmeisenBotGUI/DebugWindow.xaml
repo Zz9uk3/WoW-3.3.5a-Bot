@@ -5,7 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AmeisenBotGUI"
         mc:Ignorable="d"
-        Title="DebugUI" Height="600" Width="800" BorderThickness="2" WindowStyle="None" MouseDown="DebugUI_MouseDown" Loaded="DebugUI_Loaded" ResizeMode="NoResize" Icon="Icon.ico">
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip"
+        Title="DebugUI" Height="600" Width="800" BorderThickness="2" MouseDown="DebugUI_MouseDown" Loaded="DebugUI_Loaded" Icon="Icon.ico">
     <Window.BorderBrush>
         <SolidColorBrush Color="{DynamicResource AccentColor}" />
     </Window.BorderBrush>
@@ -16,7 +19,7 @@
         <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
     </Window.Background>
     <Grid>
-        <ListBox x:Name="listboxObjects" HorizontalAlignment="Left" Height="496" Margin="10,90,0,0" VerticalAlignment="Top" Width="776" SelectionChanged="ListboxObjects_SelectionChanged">
+        <ListBox x:Name="listboxObjects" Margin="10,90,10,10" SelectionChanged="ListboxObjects_SelectionChanged">
             <ListBox.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </ListBox.BorderBrush>
@@ -99,7 +102,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </CheckBox.Foreground>
         </CheckBox>
-        <TextBox x:Name="textboxSelectedItem" HorizontalAlignment="Left" Height="20" Margin="10,65,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="776" />
+        <TextBox x:Name="textboxSelectedItem" Height="20" Margin="10,65,10,0" TextWrapping="Wrap" VerticalAlignment="Top" />
         <CheckBox x:Name="checkboxFilterCORPSE" Content="CORPSE" HorizontalAlignment="Left" Margin="300,36,0,0" VerticalAlignment="Top" BorderThickness="2" IsChecked="True">
             <CheckBox.Background>
                 <SolidColorBrush Color="{DynamicResource CorpseColor}" />

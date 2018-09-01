@@ -25,7 +25,6 @@ namespace AmeisenManager
 
         private static readonly object padlock = new object();
         private static AmeisenObjectManager instance;
-        private static Vector3 lastNode;
         private Thread objectUpdateThread;
 
         private System.Timers.Timer objectUpdateTimer;
@@ -116,35 +115,23 @@ namespace AmeisenManager
         }
 
         /// <summary>
-        /// Refresh the Me Object
-        /// </summary>
-        public void RefreshMe()
-        {
-            Me = AmeisenCoreUtils.AmeisenCore.ReadMe(Me.BaseAddress);
-        }
-
-        /// <summary>
-        /// Refresh our bot's stats, you can get the stats by calling Me().
-        ///
-        /// This runs Async.
-        /// </summary>
-        public void RefreshMeAsync()
-        {
-            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Refresh Me Async", this);
-            new Thread(new ThreadStart(RefreshMe)).Start();
-        }
-
-        /// <summary>
         /// Starts the ObjectUpdates
         /// </summary>
         public void Start()
         {
-            objectUpdateTimer = new System.Timers.Timer(500);
+            ActiveWoWObjects = AmeisenCoreUtils.AmeisenCore.GetAllWoWObjects(false);
+
+            foreach (WoWObject t in ActiveWoWObjects)
+                if (t.GetType() == typeof(Me))
+                {
+                    Me = (Me)t;
+                    break;
+                }
+
+            objectUpdateTimer = new System.Timers.Timer(AmeisenSettings.Instance.Settings.dataRefreshRate);
             objectUpdateTimer.Elapsed += ObjectUpdateTimer;
             objectUpdateThread = new Thread(new ThreadStart(StartTimer));
             objectUpdateThread.Start();
-
-            lastNode = new Vector3(-100000, -100000, -100000);
         }
 
         /// <summary>
@@ -172,17 +159,13 @@ namespace AmeisenManager
 
         private void RefreshObjects()
         {
-            ActiveWoWObjects = AmeisenCoreUtils.AmeisenCore.GetAllWoWObjects();
-
-            foreach (WoWObject m in ActiveWoWObjects)
-                if (m.GetType() == typeof(Me))
-                {
-                    Me = (Me)m;
-                    break;
-                }
+            ActiveWoWObjects = AmeisenCoreUtils.AmeisenCore.GetAllWoWObjects(false);
 
             foreach (WoWObject t in ActiveWoWObjects)
-                if (t.Guid == Me.TargetGUID)
+            {
+                if (t.GetType() == typeof(Me))
+                    Me = (Me)t;
+                if (Me != null && t.Guid == Me.TargetGUID)
                     if (t.GetType() == typeof(Player))
                     {
                         t.Distance = Utils.GetDistance(Me.pos, t.pos);
@@ -197,13 +180,15 @@ namespace AmeisenManager
                     }
                     else if (t.GetType() == typeof(Me))
                     {
-                        t.Distance = Utils.GetDistance(Me.pos, t.pos);
                         Target = (Me)t;
                         break;
                     }
+            }
+
             // Best place for this :^)
             AntiAFK();
-            new Thread(new ThreadStart(() => UpdateNodeInDB(Me))).Start();
+            if (Me != null)
+                new Thread(new ThreadStart(() => UpdateNodeInDB(Me))).Start();
         }
 
         /// <summary>
@@ -229,9 +214,9 @@ namespace AmeisenManager
             Vector3 activeNode = new Vector3((int)me.pos.X, (int)me.pos.Y, (int)me.pos.Z);
             //if (activeNode.X != lastNode.X && activeNode.Y != lastNode.Y && activeNode.Z != lastNode.Z)
             //{
-                int zoneID = AmeisenCoreUtils.AmeisenCore.GetZoneID();
-                int mapID = AmeisenCoreUtils.AmeisenCore.GetMapID();
-                AmeisenDBManager.Instance.UpdateOrAddNode(new MapNode(activeNode, zoneID, mapID));
+            int zoneID = AmeisenCoreUtils.AmeisenCore.GetZoneID();
+            int mapID = AmeisenCoreUtils.AmeisenCore.GetMapID();
+            AmeisenDBManager.Instance.UpdateOrAddNode(new MapNode(activeNode, zoneID, mapID));
             //}
             //lastNode = activeNode;
         }
