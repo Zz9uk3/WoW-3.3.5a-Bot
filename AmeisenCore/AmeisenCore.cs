@@ -121,7 +121,7 @@ namespace AmeisenCoreUtils
                 uint activeObj = BlackMagic.ReadUInt(currentObjectManager + Offsets.firstObjectOffset);
                 uint objType = BlackMagic.ReadUInt(activeObj + Offsets.gameobjectTypeOffset);
 
-                UInt64 myGUID = ReadPlayerGUID();
+                ulong myGUID = ReadPlayerGUID();
 
                 // loop through the objects until an object is bigger than 7 or lower than 1 to get
                 // all Objects from manager
@@ -286,7 +286,7 @@ namespace AmeisenCoreUtils
         /// </summary>
         /// <param name="guid">guid to search for</param>
         /// <returns>BaseAdress of the WoWObject</returns>
-        public static uint GetMemLocByGUID(UInt64 guid, List<WoWObject> woWObjects)
+        public static uint GetMemLocByGUID(ulong guid, List<WoWObject> woWObjects)
         {
             AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Reading: GUID [" + guid + "]", "AmeisenCore");
 
@@ -365,7 +365,7 @@ namespace AmeisenCoreUtils
         /// <summary> Move the player to the given guid npc, object or whatever and iteract with it.
         /// </summary> <param name="pos">Vector3 containing the X,y & Z coordinates</param> <param
         /// name="guid">guid of the entity</param> <param name="action">CTM Interaction to perform</param>
-        public static void InteractWithGUID(Vector3 pos, UInt64 guid, InteractionType action)
+        public static void InteractWithGUID(Vector3 pos, ulong guid, InteractionType action)
         {
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Interacting: X [" + pos.X + "] Y [" + pos.Y + "] Z [" + pos.Z + "] GUID [" + guid + "]", "AmeisenCore");
             BlackMagic.WriteUInt64(Offsets.ctmGUID, guid);
@@ -457,7 +457,7 @@ namespace AmeisenCoreUtils
         /// Get the bot's char's GUID
         /// </summary>
         /// <returns>the GUID</returns>
-        public static UInt64 ReadPlayerGUID()
+        public static ulong ReadPlayerGUID()
         {
             return BlackMagic.ReadUInt64(Offsets.localPlayerGUID);
         }
@@ -466,7 +466,7 @@ namespace AmeisenCoreUtils
         /// Get the bot's char's target's GUID
         /// </summary>
         /// <returns>guid</returns>
-        public static UInt64 ReadTargetGUID()
+        public static ulong ReadTargetGUID()
         {
             return BlackMagic.ReadUInt64(Offsets.localTargetGUID);
         }
@@ -546,10 +546,9 @@ namespace AmeisenCoreUtils
         /// Target a GUID
         /// </summary>
         /// <param name="guid">guid to target</param>
-        public static void TargetGUID(UInt64 guid)
+        public static void TargetGUID(ulong guid)
         {
-            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "TargetGUID: " + guid, "AmeisenCore");
-
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "TargetGUID: " + guid, "AmeisenCore");
             byte[] guidBytes = BitConverter.GetBytes(guid);
 
             string[] asm = new string[]

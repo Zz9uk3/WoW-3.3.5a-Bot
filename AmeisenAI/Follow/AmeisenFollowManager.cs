@@ -119,8 +119,7 @@ namespace AmeisenAI.Follow
                 if (activeUnit != null)
                 {
                     Me.Update();
-                    if (AmeisenAIManager.Instance.IsNotInCombat
-                        && !Me.InCombat
+                    if (!Me.InCombat
                         && arrivedAtUnit)
                         FollowUnit(activeUnit);
                 }
@@ -134,15 +133,15 @@ namespace AmeisenAI.Follow
                 if (AmIDeadOrGhost())
                     continue;
 
-                if (Me.InCombat)
+                if (Me.IsCasting || Me.InCombat)
                 {
-                    Thread.Sleep(500);
+                    Thread.Sleep(1000);
                     continue;
                 }
 
                 CheckForUnitsToFollow();
 
-                Thread.Sleep(500);
+                Thread.Sleep(200);
             }
         }
 
@@ -152,6 +151,7 @@ namespace AmeisenAI.Follow
             activeUnit.Update();
             if (Utils.GetDistance(Me.pos, activeUnit.pos) > AmeisenSettings.Instance.Settings.followDistance)
             {
+                arrivedAtUnit = false;
                 AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Following Unit: " + activeUnit.Name, this);
                 AmeisenAction ameisenAction = new AmeisenAction(
                                     AmeisenActionType.MOVE_NEAR_POSITION,
@@ -162,7 +162,9 @@ namespace AmeisenAI.Follow
                                    );
 
                 AmeisenAIManager.Instance.AddActionToQueue(ref ameisenAction);
-                arrivedAtUnit = false;
+
+                // Slow follow, falling behind the master quite fast
+                //while (!ameisenAction.IsDone) { Thread.Sleep(50); }
             }
         }
 

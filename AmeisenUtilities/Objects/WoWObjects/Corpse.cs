@@ -40,6 +40,6 @@ namespace AmeisenUtilities
             Owner = BlackMagicInstance.ReadUInt64(BaseAddress + 0x18);
         }
 
-        private UInt64 Owner { get; set; }
+        private ulong Owner { get; set; }
     }
 }

@@ -57,7 +57,7 @@ namespace AmeisenManager
 
                 if (value == true)
                 {
-                    foreach (ulong guid in Me.PartymemberGUIDs)
+                    foreach (ulong guid in Me.PartymemberGuids)
                     {
                         AmeisenFollowManager.AddPlayerToFollow((Unit)AmeisenObjectManager.GetWoWObjectFromGUID(guid));
                     }

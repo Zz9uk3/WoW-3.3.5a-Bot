@@ -15,7 +15,7 @@ namespace AmeisenUtilities
         /// </summary>
         /// <param name="guid">player's GUID</param>
         /// <returns>name of the player</returns>
-        public string GetPlayerNameFromGuid(UInt64 guid)
+        public string GetPlayerNameFromGuid(ulong guid)
         {
             uint playerMask, playerBase, shortGUID, testGUID, offset, current;
 

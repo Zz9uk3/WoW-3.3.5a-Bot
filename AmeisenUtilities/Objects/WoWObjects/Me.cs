@@ -15,10 +15,9 @@ namespace AmeisenUtilities
         public UnitState CurrentState { get; set; }
         public int Exp { get; set; }
         public int MaxExp { get; set; }
-        public UInt64 PartyleaderGUID { get; set; }
-        public List<UInt64> PartymemberGUIDs { get; set; }
+        public ulong PartyleaderGUID { get; set; }
+        public List<ulong> PartymemberGuids { get; set; }
         public uint PlayerBase { get; set; }
-        public UInt64 TargetGUID { get; set; }
 
         public override string ToString()
         {
@@ -38,8 +37,8 @@ namespace AmeisenUtilities
             sb.Append(" >> MapID: " + MapID);
             sb.Append(" >> ZoneID: " + ZoneID);
 
-            if (TargetGUID != 0)
-                sb.Append(" >> TargetGUID: " + TargetGUID.ToString());
+            if (TargetGuid != 0)
+                sb.Append(" >> TargetGUID: " + TargetGuid.ToString());
             else
                 sb.Append(" >> Target: none");
             sb.Append(" >> currentState: " + CurrentState);
@@ -55,7 +54,7 @@ namespace AmeisenUtilities
             sb.Append(" >> partyLeader: " + PartyleaderGUID);
 
             int count = 1;
-            foreach (UInt64 guid in PartymemberGUIDs)
+            foreach (ulong guid in PartymemberGuids)
             {
                 sb.Append(" >> partymember" + count + ": " + guid);
                 count++;
@@ -84,17 +83,17 @@ namespace AmeisenUtilities
             castingState = BlackMagicInstance.ReadUInt(castingState + Offsets.localPlayerCharacterStateOffset2);
             CurrentState = (UnitState)BlackMagicInstance.ReadInt(castingState + Offsets.localPlayerCharacterStateOffset3);
 
-            TargetGUID = BlackMagicInstance.ReadUInt64(Descriptor + 0x48);
+            TargetGuid = BlackMagicInstance.ReadUInt64(Descriptor + 0x48);
 
-            PartymemberGUIDs = new List<UInt64>();
+            PartymemberGuids = new List<ulong>();
             PartyleaderGUID = BlackMagicInstance.ReadUInt64(Offsets.partyLeader);
 
             if (PartyleaderGUID != 0)
             {
-                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer1));
-                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer2));
-                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer3));
-                PartymemberGUIDs.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer4));
+                PartymemberGuids.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer1));
+                PartymemberGuids.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer2));
+                PartymemberGuids.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer3));
+                PartymemberGuids.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer4));
             }
         }
     }

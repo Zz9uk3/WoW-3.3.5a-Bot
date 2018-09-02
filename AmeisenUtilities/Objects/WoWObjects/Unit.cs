@@ -13,11 +13,13 @@ namespace AmeisenUtilities
         public int Energy { get; set; }
         public int Health { get; set; }
         public bool InCombat { get { return UFlags[(int)UnitFlags.COMBAT]; } }
+        public bool IsCasting { get; set; }
         public int Level { get; set; }
         public int MaxEnergy { get; set; }
         public int MaxHealth { get; set; }
         public bool NeedToRevive { get { return Health == 0; } }
         public BitVector32 UFlags { get; set; }
+        public ulong TargetGuid { get; set; }
 
         /// <summary>
         /// Get any NPC's name by its BaseAdress
@@ -75,6 +77,18 @@ namespace AmeisenUtilities
             pos.Y = BlackMagicInstance.ReadFloat(BaseAddress + 0x79C);
             pos.Z = BlackMagicInstance.ReadFloat(BaseAddress + 0x7A0);
             Rotation = BlackMagicInstance.ReadFloat(BaseAddress + 0x7A8);
+
+            TargetGuid = BlackMagicInstance.ReadUInt64(Descriptor + 0x48);
+
+            int currentlyCastingID = BlackMagicInstance.ReadInt(BaseAddress + 0xA6C);
+            int currentlyChannelingID = BlackMagicInstance.ReadInt(BaseAddress + 0xA80);
+
+            int combined = currentlyCastingID + currentlyChannelingID;
+
+            if (combined > 0)
+                IsCasting = true;
+            else
+                IsCasting = false;
 
             // too cpu heavy
             /*try

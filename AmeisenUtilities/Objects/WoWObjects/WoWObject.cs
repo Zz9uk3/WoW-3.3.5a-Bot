@@ -22,7 +22,7 @@ namespace AmeisenUtilities
 
         public uint Descriptor { get; set; }
         public double Distance { get; set; }
-        public UInt64 Guid { get; set; }
+        public ulong Guid { get; set; }
         public int MapID { get; set; }
         public string Name { get; set; }
         public float Rotation { get; set; }

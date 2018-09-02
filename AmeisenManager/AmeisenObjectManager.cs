@@ -57,7 +57,7 @@ namespace AmeisenManager
         /// </summary>
         /// <param name="guid">guid of the player you want to get</param>
         /// <returns>Player that you want to get</returns>
-        public WoWObject GetWoWObjectFromGUID(UInt64 guid)
+        public WoWObject GetWoWObjectFromGUID(ulong guid)
         {
             foreach (WoWObject p in ActiveWoWObjects)
                 if (p.Guid == guid)
@@ -144,7 +144,7 @@ namespace AmeisenManager
             {
                 if (t.GetType() == typeof(Me))
                     Me = (Me)t;
-                if (Me != null && t.Guid == Me.TargetGUID)
+                if (Me != null && t.Guid == Me.TargetGuid)
                 {
                     t.Update();
                     if (t.GetType() == typeof(Player))

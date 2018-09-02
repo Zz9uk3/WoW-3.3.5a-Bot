@@ -31,7 +31,7 @@ namespace AmeisenAI.Combat
         {
             string defaultCombatClass = AmeisenSettings.Instance.Settings.combatClassPath;
             if (defaultCombatClass != "none")
-                combatEngine.currentCombatLogic = CombatEngine.LoadCombatLogicFromFile(defaultCombatClass);
+                combatEngine.CurrentCombatLogic = CombatEngine.LoadCombatLogicFromFile(defaultCombatClass);
         }
 
         /// <summary>
@@ -72,28 +72,8 @@ namespace AmeisenAI.Combat
         {
             while (!stop)
             {
-                if (AmeisenDataHolder.Instance.IsDead)
-                {
-                    Thread.Sleep(1000);
-                    continue;
-                }
-
-                if (AmeisenDataHolder.Instance.IsUsingSpell)
-                {
-                    if (AmeisenCore.GetUnitCastingInfo(LuaUnit.player).name != "none"
-                        && AmeisenCore.GetUnitCastingInfo(LuaUnit.player).name != "none")
-                    {
-                        Thread.Sleep(200);
-                        continue;
-                    }
-                    else
-                    {
-                        AmeisenDataHolder.Instance.IsUsingSpell = false;
-                    }
-                }
-
                 combatEngine.ExecuteNextStep();
-                Thread.Sleep(200);
+                Thread.Sleep(50);
             }
         }
     }
