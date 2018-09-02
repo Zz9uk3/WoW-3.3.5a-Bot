@@ -47,9 +47,9 @@ namespace AmeisenAI
             }
         }
 
-        public bool DoFollow { get; set; }
         public bool IsAllowedToMove { get; set; }
         public bool IsAllowedToRevive { get; set; }
+        public bool IsNotInCombat { get; set; }
 
         /// <summary>
         /// Add an action for the bot to do.
@@ -57,7 +57,7 @@ namespace AmeisenAI
         /// <param name="action">Action you want the bot to do</param>
         public void AddActionToQueue(ref AmeisenAction action)
         {
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Added action to AI-Queue: " + action.ToString(), this);
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Added action to AI-Queue: " + action.ToString(), this);
             actionQueue.Enqueue(action);
         }
 
@@ -156,7 +156,7 @@ namespace AmeisenAI
         private AmeisenAIManager()
         {
             IsAllowedToMove = true;
-            DoFollow = true;
+            IsNotInCombat = true;
             IsAllowedToRevive = true;
             actionQueue = new ConcurrentQueue<AmeisenAction>();
             aiWorkers = new List<Thread>();
@@ -202,6 +202,7 @@ namespace AmeisenAI
                 currentAction.ActionIsDone();  // If there is no target, we can't face anyone...
             else
             {
+                Target.Update();
                 AmeisenCoreUtils.AmeisenCore.InteractWithGUID(Target.pos, Target.Guid, InteractionType.FACETARGET);
                 currentAction.ActionIsDone();
             }
@@ -222,12 +223,14 @@ namespace AmeisenAI
 
         private void InteractWithTarget(double distance, InteractionType action, ref AmeisenAction ameisenAction)
         {
-            if (Target == null)
+            if (Target == null || IsAllowedToMove)
                 ameisenAction.ActionIsDone();  // If there is no target, we can't interact with anyone...
             else if (Target.Distance > 3 && Target.Distance > distance)
             {
                 Vector3 posToGoTo = CalculatePosToGoTo(Target.pos, (int)distance);
                 AmeisenCoreUtils.AmeisenCore.InteractWithGUID(posToGoTo, Target.Guid, action);
+
+                AmeisenDataHolder.Instance.IsMoving = true;
 
                 ameisenAction.ActionIsDone();
             }
@@ -237,6 +240,8 @@ namespace AmeisenAI
                 Vector3 initialPosition = Me.pos;
                 Vector3 posToGoToToMakeSureTheInteractionGetsFired = CalculatePosToGoTo(Target.pos, 16);
                 AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(posToGoToToMakeSureTheInteractionGetsFired, InteractionType.MOVE);
+
+                AmeisenDataHolder.Instance.IsMoving = true;
 
                 // Let the character run
                 Thread.Sleep(2000);
@@ -254,13 +259,10 @@ namespace AmeisenAI
         {
             AmeisenAction ameisenAction = new AmeisenAction(
                        AmeisenActionType.MOVE_NEAR_POSITION,
-                       new object[] { corpsePosition, 10.0 }
+                       new object[] { corpsePosition, 10.0 },
+                       OnNearCorpseAndNeedToRevive
                        );
             AddActionToQueue(ref ameisenAction);
-
-            while (!ameisenAction.IsActionDone()) { Thread.Sleep(250); }
-
-            AmeisenCoreUtils.AmeisenCore.RetrieveCorpse();
         }
 
         private void MoveNearPosition(Vector3 position, double distance, ref AmeisenAction ameisenAction, bool shouldStopInRange = false)
@@ -274,23 +276,34 @@ namespace AmeisenAI
                 Vector3 posToGoTo = CalculatePosToGoTo(position, (int)distance);
 
                 if (IsAllowedToMove)
+                {
+                    AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Allowed to move, move near", this);
                     AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(posToGoTo, InteractionType.MOVE);
+                    AmeisenDataHolder.Instance.IsMoving = true;
 
-                // Let the character run to prevent random jumping
-                Thread.Sleep(300);
+                    // Let the character run to prevent random jumping
+                    Thread.Sleep(300);
 
-                Me.Update();
-                Vector3 activePosition = Me.pos;
-                // Stuck check, if we haven't moved since the last iteration, jump
-                CheckIfWeAreStuckIfYesJump(initialPosition, activePosition);
+                    Me.Update();
+                    Vector3 activePosition = Me.pos;
+                    // Stuck check, if we haven't moved since the last iteration, jump
+                    CheckIfWeAreStuckIfYesJump(initialPosition, activePosition);
+                }
+                else
+                {
+                    ameisenAction.ActionIsDone();
+                }
             }
             else
             {
                 if (shouldStopInRange)
                 {
+                    Me.Update();
                     Vector3 currentPosition = AmeisenDataHolder.Instance.Me.pos;
                     if (currentPosition.X != 0 && currentPosition.Y != 0 && currentPosition.Z != 0)
-                        AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(currentPosition, InteractionType.STOP);
+                    {
+                        //AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(currentPosition, InteractionType.STOP);
+                    }
                 }
 
                 ameisenAction.ActionIsDone();
@@ -303,26 +316,44 @@ namespace AmeisenAI
 
             if (distanceToPoint > distance * 2)
             {
-                Me.Update();
-                Vector3 initialPosition = Me.pos;
-                Vector3 posToGoTo = CalculatePosToGoTo(position, (int)distance);
-                AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(posToGoTo, InteractionType.MOVE);
+                if (IsAllowedToMove)
+                {
+                    AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "I'm allowed to move, so go for it", this);
+                    Me.Update();
+                    Vector3 initialPosition = Me.pos;
+                    Vector3 posToGoTo = CalculatePosToGoTo(position, (int)distance);
+                    AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(posToGoTo, InteractionType.MOVE);
 
-                // Let the character run to prevent random jumping
-                Thread.Sleep(300);
+                    // Let the character run to prevent random jumping
+                    Thread.Sleep(300);
 
-                Me.Update();
-                Vector3 activePosition = Me.pos;
-                // Stuck check, if we haven't moved since the last iteration, jump
-                CheckIfWeAreStuckIfYesJump(initialPosition, activePosition);
+                    Me.Update();
+                    Vector3 activePosition = Me.pos;
+                    // Stuck check, if we haven't moved since the last iteration, jump
+                    CheckIfWeAreStuckIfYesJump(initialPosition, activePosition);
+                }
+                else
+                {
+                    ameisenAction.ActionIsDone();
+                }
             }
             else
                 ameisenAction.ActionIsDone();
         }
 
+        private void OnNearCorpseAndNeedToRevive()
+        {
+            while (Me.Health == 1)
+            {
+                AmeisenCoreUtils.AmeisenCore.RetrieveCorpse();
+                Thread.Sleep(500);
+            }
+            AmeisenDataHolder.Instance.IsDead = false;
+        }
+
         private void ProcessAction(ref AmeisenAction currentAction)
         {
-            switch (currentAction.GetActionType())
+            switch (currentAction.ActionType)
             {
                 case AmeisenActionType.MOVE_TO_POSITION:
                     ProcessActionMoveToPosition(ref currentAction);
@@ -333,11 +364,11 @@ namespace AmeisenAI
                     break;
 
                 case AmeisenActionType.FORCE_MOVE_TO_POSITION:
-                    ProcessActionMoveToPosition(ref currentAction, true);
+                    ProcessActionMoveToPosition(ref currentAction, false);
                     break;
 
                 case AmeisenActionType.FORCE_MOVE_NEAR_TARGET:
-                    ProcessActionMoveNearPosition(ref currentAction, true);
+                    ProcessActionMoveNearPosition(ref currentAction, false);
                     break;
 
                 case AmeisenActionType.FACETARGET:
@@ -372,8 +403,8 @@ namespace AmeisenAI
 
         private void ProcessActionInteractWithTarget(ref AmeisenAction currentAction)
         {
-            if (IsAllowedToMove)
-                InteractWithTarget(AmeisenSettings.Instance.Settings.followDistance, (InteractionType)currentAction.GetActionParams(), ref currentAction);
+            if (IsAllowedToMove || ((InteractionType)currentAction.ActionParams) == InteractionType.STOP)
+                InteractWithTarget(AmeisenSettings.Instance.Settings.followDistance, (InteractionType)currentAction.ActionParams, ref currentAction);
             else
                 currentAction.ActionIsDone();
         }
@@ -381,7 +412,7 @@ namespace AmeisenAI
         private void ProcessActionMoveNearPosition(ref AmeisenAction currentAction, bool force = false)
         {
             if (IsAllowedToMove || force)
-                MoveNearPosition((Vector3)((object[])currentAction.GetActionParams())[0], (double)((object[])currentAction.GetActionParams())[1], ref currentAction);
+                MoveNearPosition((Vector3)((object[])currentAction.ActionParams)[0], (double)((object[])currentAction.ActionParams)[1], ref currentAction);
             else
                 currentAction.ActionIsDone();
         }
@@ -389,7 +420,7 @@ namespace AmeisenAI
         private void ProcessActionMoveToPosition(ref AmeisenAction currentAction, bool force = false)
         {
             if (IsAllowedToMove || force)
-                MoveToPosition((Vector3)currentAction.GetActionParams(), AmeisenSettings.Instance.Settings.followDistance, ref currentAction);
+                MoveToPosition((Vector3)currentAction.ActionParams, AmeisenSettings.Instance.Settings.followDistance, ref currentAction);
             else
                 currentAction.ActionIsDone();
         }
@@ -397,23 +428,26 @@ namespace AmeisenAI
         private void ProcessActionTargetEntity(ref AmeisenAction currentAction)
         {
             AmeisenCoreUtils.AmeisenCore.TargetGUID(
-                (UInt64)currentAction.GetActionParams());
+                (UInt64)currentAction.ActionParams);
             currentAction.ActionIsDone();
         }
 
         private void ProcessActionUseSpell(ref AmeisenAction currentAction, bool onMyself = false)
         {
-            WowSpellInfo spellInfo = AmeisenCoreUtils.AmeisenCore.GetSpellInfo((string)currentAction.GetActionParams());
             IsAllowedToMove = false;
-            AmeisenCoreUtils.AmeisenCore.CastSpellByName((string)currentAction.GetActionParams(), onMyself);
+            AmeisenDataHolder.Instance.IsUsingSpell = true;
+            SpellInfo spellInfo = AmeisenCoreUtils.AmeisenCore.GetSpellInfo((string)currentAction.ActionParams);
+            AmeisenCoreUtils.AmeisenCore.CastSpellByName((string)currentAction.ActionParams, onMyself);
 
             Thread.Sleep(200);
 
             while (Me.CurrentState == UnitState.CASTING)
+            {
+                Me.Update();
                 Thread.Sleep(200);
+            }
 
             currentAction.ActionIsDone();
-            IsAllowedToMove = true;
         }
 
         /// <summary>
@@ -434,7 +468,7 @@ namespace AmeisenAI
                         ProcessAction(ref currentAction);
 
                         // Reque the unfinished AmeisenAction
-                        if (!currentAction.IsActionDone())
+                        if (!currentAction.IsDone)
                             actionQueue.Enqueue(currentAction);
                     }
                 }

@@ -8,7 +8,6 @@ namespace AmeisenUtilities
     {
         public Unit(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
-            Update();
         }
 
         public int Energy { get; set; }

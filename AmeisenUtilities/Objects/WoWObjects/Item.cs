@@ -7,7 +7,6 @@ namespace AmeisenUtilities
     {
         public Item(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
-            Update();
         }
 
         public override string ToString()

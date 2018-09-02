@@ -1,5 +1,4 @@
-﻿using AmeisenAI;
-using AmeisenAI.Combat;
+﻿using AmeisenAI.Combat;
 using AmeisenManager;
 using AmeisenUtilities;
 using Microsoft.Win32;
@@ -53,7 +52,7 @@ namespace AmeisenBotGUI
                 listboxConditions.Items.Add(condition);
 
                 listboxConditions.SelectedIndex = 0;
-                
+
                 comboboxLuaUnitOne.IsEnabled = true;
                 comboboxLuaUnitTwo.IsEnabled = true;
                 comboboxValueOne.IsEnabled = true;
@@ -219,6 +218,18 @@ namespace AmeisenBotGUI
                 ((CombatLogicEntry)listboxCombatActions.SelectedItem).ActionType = (CombatActionType)comboboxActionType.SelectedItem;
         }
 
+        private void ComboboxLuaUnitOne_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (listboxConditions.SelectedItem != null)
+                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionLuaUnits[0] = (LuaUnit)comboboxLuaUnitOne.SelectedItem;
+        }
+
+        private void ComboboxLuaUnitTwo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (listboxConditions.SelectedItem != null)
+                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionLuaUnits[1] = (LuaUnit)comboboxLuaUnitTwo.SelectedItem;
+        }
+
         private void ComboboxValueOne_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (listboxConditions.SelectedItem != null)
@@ -362,7 +373,7 @@ namespace AmeisenBotGUI
                 listboxCombatActions.Items.Add(entry);
             prio = listboxCombatActions.Items.Count;
 
-            if(listboxCombatActions.Items.Count > 0)
+            if (listboxCombatActions.Items.Count > 0)
             {
                 buttonAddCondition.IsEnabled = true;
                 buttonRemoveCondition.IsEnabled = true;
@@ -413,18 +424,6 @@ namespace AmeisenBotGUI
         {
             if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
                 ((CombatLogicEntry)listboxCombatActions.SelectedItem).Parameters = textboxSpellName.Text;
-        }
-
-        private void ComboboxLuaUnitOne_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (listboxConditions.SelectedItem != null)
-                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionLuaUnits[0] = (LuaUnit)comboboxLuaUnitOne.SelectedItem;
-        }
-
-        private void ComboboxLuaUnitTwo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (listboxConditions.SelectedItem != null)
-                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionLuaUnits[1] = (LuaUnit)comboboxLuaUnitTwo.SelectedItem;
         }
     }
 }

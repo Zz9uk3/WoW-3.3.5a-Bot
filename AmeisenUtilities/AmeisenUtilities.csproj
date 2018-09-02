@@ -50,20 +50,16 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enums\AmeisenActionType.cs" />
-    <Compile Include="Enums\CombatActionType.cs" />
-    <Compile Include="Enums\CombatLogicActions.cs" />
-    <Compile Include="Enums\CombatLogicStatement.cs" />
-    <Compile Include="Enums\CombatLogicValues.cs" />
     <Compile Include="Enums\DynamicUnitFlags.cs" />
     <Compile Include="Enums\InteractionType.cs" />
     <Compile Include="Enums\LuaUnit.cs" />
+    <Compile Include="Structs\CastingInfo.cs" />
+    <Compile Include="Structs\NetworkBot.cs" />
+    <Compile Include="Objects\NetworkRegData.cs" />
+    <Compile Include="Objects\SendableMe.cs" />
     <Compile Include="Enums\UnitFlags.cs" />
     <Compile Include="Enums\UnitState.cs" />
     <Compile Include="Enums\WowObjectType.cs" />
-    <Compile Include="Objects\AmeisenAction.cs" />
-    <Compile Include="Objects\NetworkRegData.cs" />
-    <Compile Include="Objects\SendableMe.cs" />
     <Compile Include="Objects\Settings.cs" />
     <Compile Include="Objects\WoWClass.cs" />
     <Compile Include="Objects\WoWExe.cs" />
@@ -77,10 +73,9 @@
     <Compile Include="Objects\WoWObjects\Unit.cs" />
     <Compile Include="Objects\WoWObjects\WoWObject.cs" />
     <Compile Include="Structs\Credentials.cs" />
-    <Compile Include="Structs\NetworkBot.cs" />
     <Compile Include="Structs\Vector3.cs" />
-    <Compile Include="Structs\WowAuraInfo.cs" />
-    <Compile Include="Structs\WowSpellInfo.cs" />
+    <Compile Include="Structs\AuraInfo.cs" />
+    <Compile Include="Structs\SpellInfo.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Offsets.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

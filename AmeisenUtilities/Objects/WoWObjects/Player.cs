@@ -8,7 +8,6 @@ namespace AmeisenUtilities
     {
         public Player(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
-            Update();
         }
 
         /// <summary>

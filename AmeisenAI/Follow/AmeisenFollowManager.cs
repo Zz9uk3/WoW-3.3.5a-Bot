@@ -5,7 +5,7 @@ using AmeisenUtilities;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace AmeisenAI
+namespace AmeisenAI.Follow
 {
     public class AmeisenFollowManager
     {
@@ -33,6 +33,13 @@ namespace AmeisenAI
         public void AddPlayerToFollow(Unit unit)
         {
             followUnitList.Add(unit);
+        }
+
+        public void OnArrivedAtUnit()
+        {
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Arrived at Units Position", this);
+            AmeisenDataHolder.Instance.IsMoving = false;
+            arrivedAtUnit = true;
         }
 
         /// <summary>
@@ -71,11 +78,13 @@ namespace AmeisenAI
         private static readonly object padlock = new object();
         private static AmeisenFollowManager instance;
         private readonly Thread mainWorker;
+        private bool arrivedAtUnit;
         private List<Unit> followUnitList = new List<Unit>();
         private bool stop = false;
 
         private AmeisenFollowManager()
         {
+            arrivedAtUnit = true;
             mainWorker = new Thread(new ThreadStart(DoWork));
         }
 
@@ -89,7 +98,8 @@ namespace AmeisenAI
         {
             if (Me.Health == 0)
             {
-                AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Need to revive myself", this);
+                AmeisenLogger.Instance.Log(LogLevel.DEBUG, "I'm Dead, need to Release Spirit", this);
+                AmeisenDataHolder.Instance.IsDead = true;
 
                 ReleaseSpiritCheck();
                 GhostReviveCheck();
@@ -106,8 +116,14 @@ namespace AmeisenAI
             {
                 Unit activeUnit = GetActiveUnit();
 
-                if (activeUnit != null && AmeisenAIManager.Instance.DoFollow)
-                    MoveToCorpse(activeUnit);
+                if (activeUnit != null)
+                {
+                    Me.Update();
+                    if (AmeisenAIManager.Instance.IsNotInCombat
+                        && !Me.InCombat
+                        && arrivedAtUnit)
+                        FollowUnit(activeUnit);
+                }
             }
         }
 
@@ -118,9 +134,35 @@ namespace AmeisenAI
                 if (AmIDeadOrGhost())
                     continue;
 
+                if (Me.InCombat)
+                {
+                    Thread.Sleep(500);
+                    continue;
+                }
+
                 CheckForUnitsToFollow();
 
-                Thread.Sleep(50);
+                Thread.Sleep(500);
+            }
+        }
+
+        private void FollowUnit(Unit activeUnit)
+        {
+            Me.Update();
+            activeUnit.Update();
+            if (Utils.GetDistance(Me.pos, activeUnit.pos) > AmeisenSettings.Instance.Settings.followDistance)
+            {
+                AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Following Unit: " + activeUnit.Name, this);
+                AmeisenAction ameisenAction = new AmeisenAction(
+                                    AmeisenActionType.MOVE_NEAR_POSITION,
+                                    new object[] {
+                                    activeUnit.pos,
+                                    AmeisenSettings.Instance.Settings.followDistance }, // Follow distance
+                                    OnArrivedAtUnit
+                                   );
+
+                AmeisenAIManager.Instance.AddActionToQueue(ref ameisenAction);
+                arrivedAtUnit = false;
             }
         }
 
@@ -138,39 +180,29 @@ namespace AmeisenAI
 
         private void GhostReviveCheck()
         {
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Checking Ghost", this);
             if (AmeisenCore.IsGhost(LuaUnit.player))
             {
-                AmeisenLogger.Instance.Log(LogLevel.DEBUG, "I'm a ghost", this);
+                AmeisenLogger.Instance.Log(LogLevel.DEBUG, "I'm a Ghost", this);
 
                 AmeisenAction ameisenAction = new AmeisenAction(
-                AmeisenActionType.GO_TO_CORPSE_AND_REVIVE, null);
+                AmeisenActionType.GO_TO_CORPSE_AND_REVIVE, null, OnReviveSuccessful);
 
                 AmeisenAIManager.Instance.AddActionToQueue(ref ameisenAction);
-
-                while (!ameisenAction.IsActionDone())
-                    Thread.Sleep(50);
             }
         }
 
-        private void MoveToCorpse(Unit activeUnit)
+        private void OnReviveSuccessful()
         {
-            AmeisenAction ameisenAction = new AmeisenAction(
-                               AmeisenActionType.MOVE_NEAR_POSITION,
-                               new object[] {
-                                activeUnit.pos,
-                                4.0 } // Follow distance
-                               );
-
-            AmeisenAIManager.Instance.AddActionToQueue(ref ameisenAction);
-
-            while (!ameisenAction.IsActionDone())
-                Thread.Sleep(50);
+            AmeisenDataHolder.Instance.IsDead = false;
         }
 
         private void ReleaseSpiritCheck()
         {
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Checking IsDead", this);
             if (AmeisenCore.IsDead(LuaUnit.player) && AmeisenAIManager.Instance.IsAllowedToRevive)
             {
+                AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Releasing Spirit", this);
                 AmeisenCore.ReleaseSpirit();
             }
         }

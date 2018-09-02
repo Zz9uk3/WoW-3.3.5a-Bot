@@ -71,7 +71,7 @@ namespace AmeisenManager
         /// </summary>
         public void Start()
         {
-            ActiveWoWObjects = AmeisenCore.GetAllWoWObjects(false);
+            ActiveWoWObjects = AmeisenCore.GetAllWoWObjects();
 
             foreach (WoWObject t in ActiveWoWObjects)
                 if (t.GetType() == typeof(Me))
@@ -128,7 +128,7 @@ namespace AmeisenManager
 
         private void AntiAFK()
         {
-            AmeisenCoreUtils.AmeisenCore.AntiAFK();
+            AmeisenCore.AntiAFK();
         }
 
         private void ObjectUpdateTimer(object source, ElapsedEventArgs e)
@@ -138,13 +138,15 @@ namespace AmeisenManager
 
         private void RefreshObjects()
         {
-            ActiveWoWObjects = AmeisenCoreUtils.AmeisenCore.GetAllWoWObjects(false);
+            ActiveWoWObjects = AmeisenCore.GetAllWoWObjects();
 
             foreach (WoWObject t in ActiveWoWObjects)
             {
                 if (t.GetType() == typeof(Me))
                     Me = (Me)t;
                 if (Me != null && t.Guid == Me.TargetGUID)
+                {
+                    t.Update();
                     if (t.GetType() == typeof(Player))
                     {
                         t.Distance = Utils.GetDistance(Me.pos, t.pos);
@@ -162,6 +164,7 @@ namespace AmeisenManager
                         Target = (Me)t;
                         break;
                     }
+                }
             }
 
             // Best place for this :^)

@@ -1,14 +1,13 @@
-﻿using AmeisenAI.Combat;
-using AmeisenCoreUtils;
+﻿using AmeisenCoreUtils;
 using AmeisenData;
+using AmeisenLogging;
 using AmeisenUtilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 
-namespace AmeisenAI
+namespace AmeisenAI.Combat
 {
     public class CombatEngine
     {
@@ -94,37 +93,49 @@ namespace AmeisenAI
 
         private void AssistParty()
         {
-            if (Target == null)
+            //if (AmeisenCore.IsTargetFriendly())
+            //{
+            try
             {
                 int i = 1;
                 foreach (UInt64 guid in Me.PartymemberGUIDs)
                 {
                     foreach (WoWObject o in ActiveWoWObjects)
                         if (o.Guid == guid)
+                        {
+                            o.Update();
                             if (((Unit)o).InCombat)
                             {
                                 AmeisenCore.RunSlashCommand("/assist party" + i);
-                                AmeisenCore.AttackTarget();
-                                AmeisenAIManager.Instance.DoFollow = false;
+                                AmeisenCore.AttackTarget(Me);
+                                AmeisenAIManager.Instance.IsNotInCombat = false;
                             }
+                            else
+                            {
+                                AmeisenAIManager.Instance.IsNotInCombat = true;
+                            }
+                        }
                     i++;
                 }
             }
+            catch { }
+            //}
         }
 
         private bool CheckCombatStuff(CombatLogicEntry entry)
         {
             if (entry.CombatOnly)
             {
-                if (!AmeisenCoreUtils.AmeisenCore.GetCombatState(LuaUnit.player))
+                if (!Me.InCombat)
                 {
-                    AmeisenAIManager.Instance.DoFollow = true;
+                    AmeisenAIManager.Instance.IsNotInCombat = true;
                     if (!IsPartyInCombat())
                         return true;
                 }
                 else
                 {
-                    AmeisenAIManager.Instance.DoFollow = false;
+                    AmeisenAIManager.Instance.IsNotInCombat = false;
+                    AmeisenDataHolder.Instance.botState = BotState.COMBAT;
                 }
             }
             return false;
@@ -158,25 +169,26 @@ namespace AmeisenAI
                     return CompareLess(value1, value2);
 
                 case CombatLogicStatement.HAS_BUFF:
-                    return AmeisenCoreUtils.AmeisenCore.GetAuraInfo(
-                        (string)condition.customValue,
-                        condition.conditionLuaUnits[0]).duration > 0;
+                    return AmeisenCore.GetAuras(
+                        condition.conditionLuaUnits[0]).Contains(((string)condition.customValue).ToLower());
 
                 case CombatLogicStatement.NOT_HAS_BUFF:
-                    return AmeisenCoreUtils.AmeisenCore.GetAuraInfo(
-                        (string)condition.customValue,
-                        condition.conditionLuaUnits[0]).duration <= 0;
+                    return !AmeisenCore.GetAuras(
+                        condition.conditionLuaUnits[0]).Contains(((string)condition.customValue).ToLower());
             }
             return false;
         }
 
         private void CheckFacingTarget()
         {
+            Me.Update();
+            Target.Update();
             if (!Utils.IsFacing(Me.pos, Me.Rotation, Target.pos))
             {
                 AmeisenAction action = new AmeisenAction(
                     AmeisenActionType.FACETARGET,
-                    InteractionType.FACETARGET
+                    InteractionType.FACETARGET,
+                    null
                     );
                 AmeisenAIManager.Instance.AddActionToQueue(ref action);
             }
@@ -184,39 +196,44 @@ namespace AmeisenAI
 
         private void CheckOnCooldownAndUseSpell(CombatLogicEntry entry)
         {
-            if (!AmeisenCoreUtils.AmeisenCore.IsOnCooldown((string)entry.Parameters))
+            if (!AmeisenCore.IsOnCooldown((string)entry.Parameters))
             {
                 AmeisenAction action;
                 if (entry.IsForMyself)
-                    action = new AmeisenAction(AmeisenActionType.USE_SPELL_ON_ME, (string)entry.Parameters);
+                    action = new AmeisenAction(AmeisenActionType.USE_SPELL_ON_ME, (string)entry.Parameters, OnSpellUsed);
                 else
-                    action = new AmeisenAction(AmeisenActionType.USE_SPELL, (string)entry.Parameters);
+                    action = new AmeisenAction(AmeisenActionType.USE_SPELL, (string)entry.Parameters, OnSpellUsed);
 
                 AmeisenAIManager.Instance.AddActionToQueue(ref action);
-
-                do Thread.Sleep(50);
-                while (!action.IsActionDone());
             }
         }
 
-        private void CheckTargetDistance(CombatLogicEntry entry, bool isMeeleeSpell)
+        private void CheckTargetDistance(CombatLogicEntry entry, bool isMeleeSpell)
         {
+            Me.Update();
+            Target.Update();
+            Target.Distance = Utils.GetDistance(Me.pos, Target.pos);
+
             if (entry.MaxSpellDistance > 0)
                 if (Target.Distance > entry.MaxSpellDistance)
                 {
                     AmeisenAction action;
-                    if (isMeeleeSpell)
-                        action = new AmeisenAction(AmeisenActionType.INTERACT_TARGET, InteractionType.ATTACKPOS);
+                    if (isMeleeSpell)
+                    {
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "MeleeSpell: Forced to move to:" + Target.Name, this);
+
+                        object[] parameters = new object[2] { Target.pos, entry.MaxSpellDistance * 0.9 }; // 10% Offset
+                        action = new AmeisenAction(AmeisenActionType.FORCE_MOVE_TO_POSITION, parameters, null);
+                    }
                     else
                     {
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "RangedSpell: Forced to move to:" + Target.Name, this);
+
                         object[] parameters = new object[2] { Target.pos, entry.MaxSpellDistance * 0.9 }; // 10% Offset
-                        action = new AmeisenAction(AmeisenActionType.FORCE_MOVE_NEAR_TARGET, parameters);
+                        action = new AmeisenAction(AmeisenActionType.FORCE_MOVE_NEAR_TARGET, parameters, null);
                     }
 
                     AmeisenAIManager.Instance.AddActionToQueue(ref action);
-
-                    do Thread.Sleep(100);
-                    while (!action.IsActionDone());
                 }
         }
 
@@ -260,7 +277,7 @@ namespace AmeisenAI
                     }
                     else if (Target != null)
                     {
-                        AmeisenAIManager.Instance.DoFollow = false;
+                        AmeisenAIManager.Instance.IsNotInCombat = false;
                         Me.Update();
                         Target.Update();
 
@@ -273,7 +290,7 @@ namespace AmeisenAI
                     break;
 
                 case CombatLogicAction.SHAPESHIFT:
-                    AmeisenCoreUtils.AmeisenCore.CastShapeshift((int)entry.Parameters);
+                    AmeisenCore.CastShapeshift((int)entry.Parameters);
                     break;
 
                 case CombatLogicAction.FLEE:
@@ -313,7 +330,7 @@ namespace AmeisenAI
             if (CheckCombatStuff(entry))
                 return false;
 
-            bool isMeeleeSpell = entry.MaxSpellDistance < 3.2 ? true : false;
+            bool isMeleeSpell = entry.MaxSpellDistance < 3.2 ? true : false;
 
             if (!entry.IsBuff && !entry.IsForMyself)
             {
@@ -321,7 +338,7 @@ namespace AmeisenAI
                     return false;
 
                 if (Target != null)
-                    CheckTargetDistance(entry, isMeeleeSpell);
+                    CheckTargetDistance(entry, isMeleeSpell);
             }
 
             foreach (Condition c in entry.Conditions)
@@ -333,6 +350,15 @@ namespace AmeisenAI
 
         private double GetFirstValue(Condition condition)
         {
+            if (condition.conditionLuaUnits[0] == LuaUnit.target)
+                if (Target == null)
+                    return -1;
+
+            if (Me != null)
+                Me.Update();
+            if (Target != null)
+                Target.Update();
+
             switch (condition.conditionValues[0])
             {
                 case CombatLogicValues.HP:
@@ -354,6 +380,15 @@ namespace AmeisenAI
 
         private double GetSecondValue(Condition condition)
         {
+            if (condition.conditionLuaUnits[1] == LuaUnit.target)
+                if (Target == null)
+                    return -1;
+
+            if (Me != null)
+                Me.Update();
+            if (Target != null)
+                Target.Update();
+
             if (!condition.customSecondValue)
                 switch (condition.conditionValues[1])
                 {
@@ -388,6 +423,17 @@ namespace AmeisenAI
             }
             catch { }
             return false;
+        }
+
+        private void OnAttackingPos()
+        {
+            AmeisenDataHolder.Instance.botState = BotState.COMBAT;
+        }
+
+        private void OnSpellUsed()
+        {
+            AmeisenDataHolder.Instance.IsUsingSpell = false;
+            AmeisenAIManager.Instance.IsAllowedToMove = true;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using AmeisenLogging;
+﻿using AmeisenAI;
+using AmeisenLogging;
 using AmeisenManager;
 using AmeisenUtilities;
 using Microsoft.Win32;
@@ -41,7 +42,8 @@ namespace AmeisenBotGUI
             Application.Current.Resources["TextColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.textColor);
 
             Application.Current.Resources["MeNodeColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.meNodeColor);
-            Application.Current.Resources["WalkableNodeColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.walkableNodeColor);
+            Application.Current.Resources["WalkableNodeColorLow"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.walkableNodeColorLow);
+            Application.Current.Resources["WalkableNodeColorHigh"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.walkableNodeColorHigh);
 
             Application.Current.Resources["healthColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.healthColor);
             Application.Current.Resources["energyColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.energyColor);
@@ -68,11 +70,6 @@ namespace AmeisenBotGUI
             new DebugWindow().Show();
         }
 
-        private void ButtonFaceTarget_Click(object sender, RoutedEventArgs e)
-        {
-            BotManager.FaceTarget();
-        }
-
         private void ButtonGroup_Click(object sender, RoutedEventArgs e)
         {
             new GroupWindow().Show();
@@ -90,12 +87,12 @@ namespace AmeisenBotGUI
 
         private void ButtonMoveInteractTarget_Click(object sender, RoutedEventArgs e)
         {
-            BotManager.AddActionToAIQueue(new AmeisenAction(AmeisenActionType.INTERACT_TARGET, (AmeisenActionType)comboboxInteraction.SelectedItem));
+            BotManager.AddActionToAIQueue(new AmeisenAction(AmeisenActionType.INTERACT_TARGET, (AmeisenActionType)comboboxInteraction.SelectedItem, null));
         }
 
         private void ButtonMoveToTarget_Click(object sender, RoutedEventArgs e)
         {
-            BotManager.AddActionToAIQueue(new AmeisenAction(AmeisenActionType.MOVE_TO_POSITION, null));
+            BotManager.AddActionToAIQueue(new AmeisenAction(AmeisenActionType.MOVE_TO_POSITION, null, null));
         }
 
         private void ButtonOpenFile_Click(object sender, RoutedEventArgs e)
@@ -120,7 +117,12 @@ namespace AmeisenBotGUI
 
         private void CheckBoxAssistPartyAttack_Click(object sender, RoutedEventArgs e)
         {
-           BotManager.IsAllowedToAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
+            BotManager.IsAllowedToAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
+        }
+
+        private void CheckBoxAssistPartyBuff_Click(object sender, RoutedEventArgs e)
+        {
+            BotManager.IsAllowedToBuff = (bool)checkBoxAssistPartyBuff.IsChecked;
         }
 
         private void CheckBoxAssistPartyHeal_Click(object sender, RoutedEventArgs e)
@@ -133,14 +135,15 @@ namespace AmeisenBotGUI
             BotManager.IsAllowedToTank = (bool)checkBoxAssistPartyTank.IsChecked;
         }
 
-        private void CheckBoxAssistPartyBuff_Click(object sender, RoutedEventArgs e)
-        {
-            BotManager.IsAllowedToBuff = (bool)checkBoxAssistPartyBuff.IsChecked;
-        }
-
         private void CheckBoxFollowMaster_Click(object sender, RoutedEventArgs e)
         {
             AmeisenBotManager.Instance.FollowGroup = (bool)checkBoxFollowMaster.IsChecked;
+        }
+
+        private void CheckBoxTopMost_Click(object sender, RoutedEventArgs e)
+        {
+            Topmost = (bool)checkBoxTopMost.IsChecked;
+            BotManager.Settings.topMost = (bool)checkBoxTopMost.IsChecked;
         }
 
         private void Mainscreen_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -167,13 +170,24 @@ namespace AmeisenBotGUI
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Started UI-Update-Timer", this);
 
             checkBoxAssistPartyAttack.IsChecked = BotManager.Settings.behaviourAttack;
+            BotManager.IsAllowedToAttack = BotManager.Settings.behaviourAttack;
+
             checkBoxAssistPartyTank.IsChecked = BotManager.Settings.behaviourTank;
+            BotManager.IsAllowedToTank = BotManager.Settings.behaviourTank;
+
             checkBoxAssistPartyHeal.IsChecked = BotManager.Settings.behaviourHeal;
+            BotManager.IsAllowedToHeal = BotManager.Settings.behaviourHeal;
+
+            checkBoxAssistPartyBuff.IsChecked = BotManager.Settings.behaviourBuff;
+            BotManager.IsAllowedToBuff = BotManager.Settings.behaviourBuff;
 
             checkBoxFollowMaster.IsChecked = BotManager.Settings.followMaster;
             AmeisenBotManager.Instance.FollowGroup = BotManager.Settings.followMaster;
 
             sliderDistance.Value = BotManager.Settings.followDistance;
+
+            checkBoxTopMost.IsChecked = BotManager.Settings.topMost;
+            Topmost = BotManager.Settings.topMost;
 
             comboboxInteraction.Items.Add(InteractionType.FACETARGET);
             comboboxInteraction.Items.Add(InteractionType.FACEDESTINATION);

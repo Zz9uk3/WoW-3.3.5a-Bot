@@ -29,14 +29,36 @@ namespace AmeisenCoreUtils
         /// <summary>
         /// Attack our target
         /// </summary>
-        public static void AttackTarget() { LUADoString("AttackTarget();"); }
+        public static void AttackTarget(Me me)
+        {
+            me.Update();
+
+            Vector3 currentPosition = me.pos;
+            if (currentPosition.X != 0 && currentPosition.Y != 0 && currentPosition.Z != 0)
+            {
+                WriteXYZToMemory(currentPosition, InteractionType.MOVE);
+            }
+
+            LuaDoString("AttackTarget();");
+
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Attacking Target", "AmeisenCore");
+        }
+
+        private static void StopMovement()
+        {
+            //SendKey(new IntPtr(0x26));
+            //SendKey(new IntPtr(0x28));
+
+
+        }
 
         /// <summary>
         /// Switch shapeshift forms, use for example "WoWDruid.ShapeshiftForms.Bear"
         /// </summary>
         public static void CastShapeshift(int index)
         {
-            LUADoString("CastShapeshiftForm(\"" + index + "\");");
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Casting ShapeshiftForm:" + index, "AmeisenCore");
+            LuaDoString("CastShapeshiftForm(\"" + index + "\");");
         }
 
         /// <summary>
@@ -44,10 +66,11 @@ namespace AmeisenCoreUtils
         /// </summary>
         public static void CastSpellByName(string spellname, bool onMyself)
         {
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Casting Spell:" + spellname, "AmeisenCore");
             if (onMyself)
-                LUADoString("CastSpellByName(\"" + spellname + "\", true);");
+                LuaDoString("CastSpellByName(\"" + spellname + "\", true);");
             else
-                LUADoString("CastSpellByName(\"" + spellname + "\");");
+                LuaDoString("CastSpellByName(\"" + spellname + "\");");
         }
 
         /// <summary>
@@ -57,7 +80,7 @@ namespace AmeisenCoreUtils
         /// </summary>
         public static void CharacterJumpAsync()
         {
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Jumping", "AmeisenCore.AmeisenCore");
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Jumping", "AmeisenCore");
             new Thread(CharacterJump).Start();
         }
 
@@ -86,31 +109,38 @@ namespace AmeisenCoreUtils
         /// Reads all WoWObject out of WoW's ObjectManager
         /// </summary>
         /// <returns>all WoWObjects in WoW Manager</returns>
-        public static List<WoWObject> GetAllWoWObjects(bool refreshOnlyUnits = false)
+        public static List<WoWObject> GetAllWoWObjects()
         {
             List<WoWObject> objects = new List<WoWObject>();
 
-            uint currentObjectManager = BlackMagic.ReadUInt(Offsets.currentClientConnection);
-            currentObjectManager = BlackMagic.ReadUInt(currentObjectManager + Offsets.currentManagerOffset);
-
-            uint activeObj = BlackMagic.ReadUInt(currentObjectManager + Offsets.firstObjectOffset);
-            uint objType = BlackMagic.ReadUInt(activeObj + Offsets.gameobjectTypeOffset);
-
-            UInt64 myGUID = ReadPlayerGUID();
-
-            // loop through the objects until an object is bigger than 7 or lower than 1 to get all
-            // Objects from manager
-            while (objType <= 7 && objType > 0)
+            try
             {
-                //if (!(refreshOnlyUnits
-                //    && (objType == (int)WoWObjectType.UNIT || objType == (int)WoWObjectType.PLAYER)))
-                //{
-                WoWObject wowObject = ReadWoWObjectFromWoW(activeObj, (WowObjectType)objType);
-                objects.Add(wowObject);
-                //}
+                uint currentObjectManager = BlackMagic.ReadUInt(Offsets.currentClientConnection);
+                currentObjectManager = BlackMagic.ReadUInt(currentObjectManager + Offsets.currentManagerOffset);
 
-                activeObj = BlackMagic.ReadUInt(activeObj + Offsets.nextObjectOffset);
-                objType = BlackMagic.ReadUInt(activeObj + Offsets.gameobjectTypeOffset);
+                uint activeObj = BlackMagic.ReadUInt(currentObjectManager + Offsets.firstObjectOffset);
+                uint objType = BlackMagic.ReadUInt(activeObj + Offsets.gameobjectTypeOffset);
+
+                UInt64 myGUID = ReadPlayerGUID();
+
+                // loop through the objects until an object is bigger than 7 or lower than 1 to get
+                // all Objects from manager
+                while (objType <= 7 && objType > 0)
+                {
+                    //if (!(refreshOnlyUnits
+                    //    && (objType == (int)WoWObjectType.UNIT || objType == (int)WoWObjectType.PLAYER)))
+                    //{
+                    WoWObject wowObject = ReadWoWObjectFromWoW(activeObj, (WowObjectType)objType);
+                    objects.Add(wowObject);
+                    //}
+
+                    activeObj = BlackMagic.ReadUInt(activeObj + Offsets.nextObjectOffset);
+                    objType = BlackMagic.ReadUInt(activeObj + Offsets.gameobjectTypeOffset);
+                }
+            }
+            catch
+            {
+                AmeisenLogger.Instance.Log(LogLevel.ERROR, "Crash at reading Object, maybe in loadingscreen...", "AmeisenCore");
             }
 
             return objects;
@@ -120,19 +150,47 @@ namespace AmeisenCoreUtils
         /// Check for Auras/Buffs
         /// </summary>
         /// <returns>true if target has that aura, false if not</returns>
-        public static WowAuraInfo GetAuraInfo(string auraname, LuaUnit LuaUnit)
+        public static string[] GetAuras(LuaUnit LuaUnit)
         {
-            WowAuraInfo info = new WowAuraInfo();
+            string cmdBuffs = "local buffs, i = { }, 1;" +
+                         "local buff = UnitBuff(\"" + LuaUnit.ToString() + "\", i);" +
+                         "while buff do\n" +
+                             "buffs[#buffs + 1] = buff;" +
+                             "i = i + 1;" +
+                             "buff = UnitBuff(\"" + LuaUnit.ToString() + "\", i);" +
+                         "end;" +
+                         "if #buffs < 1 then\n" +
+                              "buffs = \"\";" +
+                         "else\n" +
+                              "activeUnitBuffs = table.concat(buffs, \", \");" +
+                         "end;";
 
-            string cmd = "name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId = UnitAura(\"" + LuaUnit.ToString() + "\", \"" + auraname + "\");";
+            string cmdDebuffs = "local buffs, i = { }, 1;" +
+                                "local buff = UnitDebuff(\"" + LuaUnit.ToString() + "\", i);" +
+                                "while buff do\n" +
+                                    "buffs[#buffs + 1] = buff;" +
+                                    "i = i + 1;" +
+                                    "buff = UnitDebuff(\"" + LuaUnit.ToString() + "\", i);" +
+                                "end;" +
+                                "if #buffs < 1 then\n" +
+                                     "buffs = \"\";" +
+                                "else\n" +
+                                     "activeUnitDebuffs = table.concat(buffs, \", \");" +
+                                "end;";
 
-            try { info.name = GetLocalizedText(cmd, "name"); } catch { info.name = ""; }
-            //try { info.stacks = int.Parse(GetLocalizedText(cmd, "count")); } catch { info.stacks = -1; }
-            try { info.duration = int.Parse(GetLocalizedText(cmd, "duration")); } catch { info.duration = -1; }
+            string[] buffs = GetLocalizedText(cmdBuffs, "activeUnitBuffs").Split(',');
+            string[] debuffs = GetLocalizedText(cmdDebuffs, "activeUnitDebuffs").Split(',');
 
-            info.name = auraname;
+            List<string> resultLowered = new List<string>();
 
-            return info;
+            foreach (string s in buffs)
+                resultLowered.Add(s.Trim().ToLower());
+            foreach (string s in debuffs)
+                resultLowered.Add(s.Trim().ToLower());
+
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "UnitAuras: " + resultLowered.ToString(), "AmeisenCore");
+
+            return resultLowered.ToArray();
         }
 
         /// <summary>
@@ -142,6 +200,8 @@ namespace AmeisenCoreUtils
         /// <returns>true if unit is in combat, false if not</returns>
         public static bool GetCombatState(LuaUnit LuaUnit)
         {
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Getting Combat state of: " + LuaUnit.ToString(), "AmeisenCore");
+
             bool isInCombat = false;
             try { if (int.Parse(GetLocalizedText("affectingCombat = UnitAffectingCombat(\"" + LuaUnit.ToString() + "\");", "affectingCombat")) == 1) isInCombat = true; else isInCombat = false; } catch { isInCombat = false; }
             return isInCombat;
@@ -155,6 +215,7 @@ namespace AmeisenCoreUtils
                 BlackMagic.ReadFloat(Offsets.corpseY),
                 BlackMagic.ReadFloat(Offsets.corpseZ)
             );
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Getting Corpse Position [" + corpsePosition.X + "," + corpsePosition.Y + "," + corpsePosition.Z + "]", "AmeisenCore");
             return corpsePosition;
         }
 
@@ -187,14 +248,10 @@ namespace AmeisenCoreUtils
                 playerBase = BlackMagic.ReadUInt(playerBase + 0x34);
                 playerBase = BlackMagic.ReadUInt(playerBase + 0x24);
 
-                AmeisenLogger.Instance.Log(LogLevel.WARNING, "Variable CodeCave: " +
-                    Encoding.UTF8.GetString(BlackMagic.ReadBytes(argCC, Encoding.UTF8.GetBytes(variable).Length)) +
-                    " | " + variable, "AmeisenCore.AmeisenCore");
-
                 string[] asmLocalText = new string[]
                 {
-                //"CALL " + (WoWOffsets.clientObjectManagerGetActivePlayerObject),
-                "MOV ECX, "+(playerBase),
+                "CALL " + (Offsets.clientObjectManagerGetActivePlayerObject),
+                "MOV ECX, EAX",
                 "PUSH -1",
                 "PUSH " + (argCC),
                 "CALL " + (Offsets.luaGetLocalizedText),
@@ -209,6 +266,8 @@ namespace AmeisenCoreUtils
                 while (!hookJobDoString.IsFinished || !hookJobDoString.IsFinished) { Thread.Sleep(5); }
 
                 string result = Encoding.UTF8.GetString((byte[])hookJobDoString.ReturnValue);
+
+                AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "DoString(" + command + "); => " + variable + " = " + result, "AmeisenCore");
 
                 BlackMagic.FreeMemory(argCCCommand);
                 BlackMagic.FreeMemory(argCC);
@@ -229,7 +288,7 @@ namespace AmeisenCoreUtils
         /// <returns>BaseAdress of the WoWObject</returns>
         public static uint GetMemLocByGUID(UInt64 guid, List<WoWObject> woWObjects)
         {
-            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Reading: GUID [" + guid + "]", "AmeisenCore.AmeisenCore");
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Reading: GUID [" + guid + "]", "AmeisenCore");
 
             if (woWObjects != null)
                 foreach (WoWObject obj in woWObjects)
@@ -252,7 +311,7 @@ namespace AmeisenCoreUtils
 
             foreach (Process p in processList)
             {
-                AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Found WoW Process! PID: " + p.Id, "AmeisenCore.AmeisenCore");
+                AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Found WoW Process! PID: " + p.Id, "AmeisenCore");
 
                 WoWExe wow = new WoWExe();
                 BlackMagic blackmagic = new BlackMagic(p.Id);
@@ -270,15 +329,30 @@ namespace AmeisenCoreUtils
         /// </summary>
         /// <param name="spell">spellname</param>
         /// <returns>true if it is on cooldown, false if not</returns>
-        public static WowSpellInfo GetSpellInfo(string spell)
+        public static SpellInfo GetSpellInfo(string spell)
         {
-            WowSpellInfo info = new WowSpellInfo();
+            SpellInfo info = new SpellInfo();
 
             string cmd = "name, rank, icon, cost, minRange, maxRange, castTime, powerType = GetSpellInfo(\"" + spell + "\");";
 
             info.name = spell; //try { info.name = GetLocalizedText("name"); } catch { info.castTime = -1; }
             try { info.castTime = int.Parse(GetLocalizedText(cmd, "castTime")); } catch { info.castTime = -1; }
             try { info.cost = int.Parse(GetLocalizedText(cmd, "cost")); } catch { info.cost = -1; }
+
+            return info;
+        }
+
+        public static CastingInfo GetUnitCastingInfo(LuaUnit player)
+        {
+            CastingInfo info = new CastingInfo();
+
+            string cmd = "name, _, _, _, _, endTime _, _, canInterrupt = UnitCastingInfo(\"" + player + "\");";
+
+            try { info.name = GetLocalizedText(cmd, "name"); } catch { info.name = "none"; }
+            try { info.endTime = int.Parse(GetLocalizedText(cmd, "endTime")); } catch { info.endTime = -1; }
+            try { info.canInterrupt = bool.Parse(GetLocalizedText(cmd, "canInterrupt")); } catch { info.canInterrupt = false; }
+
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "CastingInfo: [" + info.name + "," + info.endTime + "," + info.canInterrupt + "]", "AmeisenCore");
 
             return info;
         }
@@ -293,7 +367,7 @@ namespace AmeisenCoreUtils
         /// name="guid">guid of the entity</param> <param name="action">CTM Interaction to perform</param>
         public static void InteractWithGUID(Vector3 pos, UInt64 guid, InteractionType action)
         {
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Interacting: X [" + pos.X + "] Y [" + pos.Y + "] Z [" + pos.Z + "] GUID [" + guid + "]", "AmeisenCore.AmeisenCore");
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Interacting: X [" + pos.X + "] Y [" + pos.Y + "] Z [" + pos.Z + "] GUID [" + guid + "]", "AmeisenCore");
             BlackMagic.WriteUInt64(Offsets.ctmGUID, guid);
             MovePlayerToXYZ(pos, action);
         }
@@ -338,9 +412,9 @@ namespace AmeisenCoreUtils
         /// Execute the given LUA command inside WoW's MainThread
         /// </summary>
         /// <param name="command">lua command to run</param>
-        public static void LUADoString(string command)
+        public static void LuaDoString(string command)
         {
-            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Doing string: Command [" + command + "]", "AmeisenCore.AmeisenCore");
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Doing string: Command [" + command + "]", "AmeisenCore");
             uint argCC = BlackMagic.AllocateMemory(Encoding.UTF8.GetBytes(command).Length + 1);
             BlackMagic.WriteBytes(argCC, Encoding.UTF8.GetBytes(command));
 
@@ -360,7 +434,7 @@ namespace AmeisenCoreUtils
 
             while (!hookJob.IsFinished) { Thread.Sleep(1); }
 
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Command returned: Command [" + command + "]", "AmeisenCore.AmeisenCore");
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Command returned: Command [" + command + "]", "AmeisenCore");
             BlackMagic.FreeMemory(argCC);
         }
 
@@ -369,7 +443,7 @@ namespace AmeisenCoreUtils
         /// Interaction to perform</param>
         public static void MovePlayerToXYZ(Vector3 pos, InteractionType action)
         {
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Moving to: X [" + pos.X + "] Y [" + pos.Y + "] Z [" + pos.Z + "]", "AmeisenCore.AmeisenCore");
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Moving to: X [" + pos.X + "] Y [" + pos.Y + "] Z [" + pos.Z + "]", "AmeisenCore");
             //if (AmeisenManager.Instance.Me().pos.x != pos.x && AmeisenManager.Instance.Me().pos.y != pos.y && AmeisenManager.Instance.Me().pos.z != pos.z)
             //{
             WriteXYZToMemory(pos, action);
@@ -405,7 +479,7 @@ namespace AmeisenCoreUtils
         /// <returns>the WoWObject</returns>
         public static WoWObject ReadWoWObjectFromWoW(uint baseAddress, WowObjectType woWObjectType, bool isMe = false)
         {
-            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Reading: baseAddress [" + baseAddress + "]", "AmeisenCore.AmeisenCore");
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Reading: baseAddress [" + baseAddress + "]", "AmeisenCore");
 
             if (baseAddress == 0)
                 return null;
@@ -446,14 +520,14 @@ namespace AmeisenCoreUtils
 
         public static void ReleaseSpirit()
         {
-            LUADoString("RepopMe();");
+            LuaDoString("RepopMe();");
         }
 
         public static void RetrieveCorpse()
         {
             int corpseDelay = int.Parse(GetLocalizedText("corpseDelay = GetCorpseRecoveryDelay();", "corpseDelay"));
             Thread.Sleep((corpseDelay * 1000) + 100);
-            LUADoString("RetrieveCorpse();");
+            LuaDoString("RetrieveCorpse();");
         }
 
         /// <summary>
@@ -462,7 +536,7 @@ namespace AmeisenCoreUtils
         /// <param name="slashCommand">Example: /target player</param>
         public static void RunSlashCommand(string slashCommand)
         {
-            LUADoString("DEFAULT_CHAT_FRAME.editBox:SetText(\"" + slashCommand + "\") ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)");
+            LuaDoString("DEFAULT_CHAT_FRAME.editBox:SetText(\"" + slashCommand + "\") ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)");
         }
 
         [DllImport("user32.dll")]
@@ -474,7 +548,7 @@ namespace AmeisenCoreUtils
         /// <param name="guid">guid to target</param>
         public static void TargetGUID(UInt64 guid)
         {
-            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "TargetGUID: " + guid, "AmeisenCore.AmeisenCore");
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "TargetGUID: " + guid, "AmeisenCore");
 
             byte[] guidBytes = BitConverter.GetBytes(guid);
 
@@ -492,15 +566,20 @@ namespace AmeisenCoreUtils
 
         private static void CharacterJump()
         {
+            SendKey(new IntPtr(0x20));
+        }
+
+        private static void SendKey(IntPtr vKey)
+        {
             const uint KEYDOWN = 0x100;
             const uint KEYUP = 0x101;
 
             IntPtr windowHandle = BlackMagic.WindowHandle;
 
             // 0x20 = Spacebar (VK_SPACE)
-            SendMessage(windowHandle, KEYDOWN, new IntPtr(0x20), new IntPtr(0));
+            SendMessage(windowHandle, KEYDOWN, vKey, new IntPtr(0));
             Thread.Sleep(new Random().Next(20, 40)); // make it look more human-like :^)
-            SendMessage(windowHandle, KEYUP, new IntPtr(0x20), new IntPtr(0));
+            SendMessage(windowHandle, KEYUP, vKey, new IntPtr(0));
         }
 
         private static void PauseMainThread()
@@ -520,7 +599,7 @@ namespace AmeisenCoreUtils
         {
             const float distance = 1.5f;
 
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Writing: X [" + pos.X + "] Y [" + pos.Y + "] Z [" + pos.Z + "] Action [" + action + "] Distance [" + distance + "]", "AmeisenCore.AmeisenCore");
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Writing: X [" + pos.X + "] Y [" + pos.Y + "] Z [" + pos.Z + "] Action [" + action + "] Distance [" + distance + "]", "AmeisenCore");
             BlackMagic.WriteFloat(Offsets.ctmX, (float)pos.X);
             BlackMagic.WriteFloat(Offsets.ctmY, (float)pos.Y);
             BlackMagic.WriteFloat(Offsets.ctmZ, (float)pos.Z);

@@ -1,8 +1,9 @@
-﻿using AmeisenData;
+﻿using AmeisenCoreUtils;
+using AmeisenData;
 using AmeisenUtilities;
 using System.Threading;
 
-namespace AmeisenAI
+namespace AmeisenAI.Combat
 {
     public class AmeisenCombatManager
     {
@@ -52,7 +53,7 @@ namespace AmeisenAI
         private readonly Thread mainWorker;
         private CombatEngine combatEngine;
         private bool stop = false;
-        
+
         private AmeisenCombatManager()
         {
             mainWorker = new Thread(new ThreadStart(DoWork));
@@ -71,10 +72,24 @@ namespace AmeisenAI
         {
             while (!stop)
             {
-                if (Me.Health <= 1)
+                if (AmeisenDataHolder.Instance.IsDead)
                 {
                     Thread.Sleep(1000);
                     continue;
+                }
+
+                if (AmeisenDataHolder.Instance.IsUsingSpell)
+                {
+                    if (AmeisenCore.GetUnitCastingInfo(LuaUnit.player).name != "none"
+                        && AmeisenCore.GetUnitCastingInfo(LuaUnit.player).name != "none")
+                    {
+                        Thread.Sleep(200);
+                        continue;
+                    }
+                    else
+                    {
+                        AmeisenDataHolder.Instance.IsUsingSpell = false;
+                    }
                 }
 
                 combatEngine.ExecuteNextStep();

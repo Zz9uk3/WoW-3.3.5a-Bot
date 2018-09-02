@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="AmeisenDataHolder.cs" />
     <Compile Include="AmeisenSettings.cs" />
+    <Compile Include="BotState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

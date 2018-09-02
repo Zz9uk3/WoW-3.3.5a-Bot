@@ -14,10 +14,7 @@ namespace AmeisenUtilities
             BlackMagicInstance = blackMagic;
 
             Descriptor = BlackMagicInstance.ReadUInt(BaseAddress + 0x8);
-
             Guid = BlackMagicInstance.ReadUInt64(BaseAddress + 0x30);
-
-            Update();
         }
 
         public uint BaseAddress { get; set; }

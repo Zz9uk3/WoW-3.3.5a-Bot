@@ -8,7 +8,6 @@ namespace AmeisenUtilities
     {
         public Corpse(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
-            Update();
         }
 
         public override string ToString()

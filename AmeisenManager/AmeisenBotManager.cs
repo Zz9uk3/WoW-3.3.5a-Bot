@@ -1,4 +1,6 @@
 ﻿using AmeisenAI;
+using AmeisenAI.Combat;
+using AmeisenAI.Follow;
 using AmeisenCoreUtils;
 using AmeisenData;
 using AmeisenDB;
@@ -67,20 +69,21 @@ namespace AmeisenManager
             }
         }
 
+        public bool IsAllowedToAttack { get { return AmeisenDataHolder.Instance.IsAllowedToAttack; } set { AmeisenDataHolder.Instance.IsAllowedToAttack = value; } }
+
+        public bool IsAllowedToBuff { get { return AmeisenDataHolder.Instance.IsAllowedToBuff; } set { AmeisenDataHolder.Instance.IsAllowedToBuff = value; } }
+
+        public bool IsAllowedToHeal { get { return AmeisenDataHolder.Instance.IsAllowedToHeal; } set { AmeisenDataHolder.Instance.IsAllowedToHeal = value; } }
+
         public bool IsAllowedToMove
         {
             get { return AmeisenAIManager.IsAllowedToMove; }
             set { AmeisenAIManager.IsAllowedToMove = value; }
         }
 
+        public bool IsAllowedToTank { get { return AmeisenDataHolder.Instance.IsAllowedToTank; } set { AmeisenDataHolder.Instance.IsAllowedToTank = value; } }
         public bool IsAttached { get; private set; }
         public bool IsHooked { get; private set; }
-
-        public bool IsAllowedToBuff { get { return AmeisenDataHolder.Instance.IsAllowedToBuff; } set { AmeisenDataHolder.Instance.IsAllowedToBuff = value; } }
-        public bool IsAllowedToHeal { get { return AmeisenDataHolder.Instance.IsAllowedToHeal; } set { AmeisenDataHolder.Instance.IsAllowedToHeal = value; } }
-        public bool IsAllowedToTank { get { return AmeisenDataHolder.Instance.IsAllowedToTank; } set { AmeisenDataHolder.Instance.IsAllowedToTank = value; } }
-        public bool IsAllowedToAttack { get { return AmeisenDataHolder.Instance.IsAllowedToAttack; } set { AmeisenDataHolder.Instance.IsAllowedToAttack = value; } }
-
         public Me Me { get { return AmeisenDataHolder.Instance.Me; } }
         public List<WoWExe> RunningWoWs { get { return AmeisenCore.GetRunningWoWs(); } }
         public Settings Settings { get { return AmeisenSettings.Settings; } }
@@ -107,12 +110,6 @@ namespace AmeisenManager
         public void AddActionToAIQueue(ref AmeisenAction ameisenAction)
         {
             AmeisenAIManager.AddActionToQueue(ref ameisenAction);
-        }
-
-        public void FaceTarget()
-        {
-            AmeisenCore.MovePlayerToXYZ(Target.pos, InteractionType.ATTACK);
-            AmeisenCore.MovePlayerToXYZ(Target.pos, InteractionType.STOP);
         }
 
         public string GetLoadedConfigName()

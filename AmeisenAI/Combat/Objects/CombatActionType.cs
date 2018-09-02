@@ -1,4 +1,4 @@
-﻿namespace AmeisenUtilities
+﻿namespace AmeisenAI.Combat
 {
     public enum CombatActionType
     {

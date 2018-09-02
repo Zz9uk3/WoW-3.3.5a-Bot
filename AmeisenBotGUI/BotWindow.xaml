@@ -306,5 +306,6 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </CheckBox.BorderBrush>
         </CheckBox>
+        <CheckBox x:Name="checkBoxTopMost" Content="" HorizontalAlignment="Left" Margin="477,-1,0,0" VerticalAlignment="Top" Height="19" FontSize="14" Width="24" Click="CheckBoxTopMost_Click" />
     </Grid>
 </Window>

@@ -126,7 +126,10 @@ namespace AmeisenBotGUI
                 newY = (int)(myCanvasMiddle.Y + tempPos.Y);
 
                 DrawRectangle(newX - 2, newY - 2, 4, 4,
-                (Color)Application.Current.Resources["WalkableNodeColor"],
+                Interpolate(new Color[]{
+                    (Color)Application.Current.Resources["WalkableNodeColorLow"],
+                    (Color)Application.Current.Resources["WalkableNodeColorHigh"]
+                }, tempPos.Z / 100.0),
                 mapCanvas);
             }
 

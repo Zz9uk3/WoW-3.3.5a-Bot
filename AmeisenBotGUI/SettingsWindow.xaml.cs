@@ -130,7 +130,9 @@ namespace AmeisenBotGUI
             BotManager.Settings.accentColor = ((Color)Application.Current.Resources["AccentColor"]).ToString();
             BotManager.Settings.backgroundColor = ((Color)Application.Current.Resources["BackgroundColor"]).ToString();
             BotManager.Settings.textColor = ((Color)Application.Current.Resources["TextColor"]).ToString();
-            BotManager.Settings.walkableNodeColor = ((Color)Application.Current.Resources["WalkableNodeColor"]).ToString();
+
+            BotManager.Settings.walkableNodeColorLow = ((Color)Application.Current.Resources["WalkableNodeColorLow"]).ToString();
+            BotManager.Settings.walkableNodeColorHigh = ((Color)Application.Current.Resources["WalkableNodeColorHigh"]).ToString();
             BotManager.Settings.meNodeColor = ((Color)Application.Current.Resources["MeNodeColor"]).ToString();
 
             BotManager.Settings.healthColor = ((Color)Application.Current.Resources["healthColor"]).ToString();

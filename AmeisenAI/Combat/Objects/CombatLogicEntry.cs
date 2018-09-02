@@ -65,8 +65,8 @@ namespace AmeisenAI.Combat
 
     public class Condition
     {
-        public CombatLogicValues[] conditionValues;
         public LuaUnit[] conditionLuaUnits;
+        public CombatLogicValues[] conditionValues;
         public bool customSecondValue;
         public object customValue;
         public CombatLogicStatement statement;

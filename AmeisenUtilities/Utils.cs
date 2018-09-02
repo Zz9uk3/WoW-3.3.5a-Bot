@@ -62,7 +62,7 @@ namespace AmeisenUtilities
             else if (f > (float)Math.PI * 2)
                 f = f - (float)Math.PI * 2.0f;
 
-            return f == rotationA ? true : false;
+            return (f >= (rotationA * 0.7)) && (f <= (rotationA * 1.3)) ? true : false;
         }
     }
 }

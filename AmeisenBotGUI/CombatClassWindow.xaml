@@ -211,7 +211,7 @@
         <ComboBox x:Name="comboboxValueTwo" HorizontalAlignment="Left" Margin="480,237,0,0" VerticalAlignment="Top" Width="100" SelectionChanged="ComboboxValueTwo_SelectionChanged" IsEnabled="False" />
         <Button x:Name="buttonAddCondition" Content="+" HorizontalAlignment="Left" Margin="585,0,0,287" Width="85" BorderThickness="2" Height="48" VerticalAlignment="Bottom" FontSize="24" Click="ButtonAddCondition_Click" IsEnabled="False">
             <Button.Background>
-                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
             </Button.Background>
             <Button.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
@@ -222,7 +222,7 @@
         </Button>
         <Button x:Name="buttonRemoveCondition" Content="🗑" HorizontalAlignment="Left" Margin="675,0,0,287" Width="49" BorderThickness="2" Height="48" VerticalAlignment="Bottom" FontSize="16" Click="ButtonRemoveCondition_Click" IsEnabled="False">
             <Button.Background>
-                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
             </Button.Background>
             <Button.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
@@ -313,7 +313,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <ComboBox x:Name="comboboxLuaUnitOne" HorizontalAlignment="Left" Margin="375,165,0,0" VerticalAlignment="Top" Width="100" IsEnabled="False" SelectionChanged="ComboboxLuaUnitOne_SelectionChanged"/>
-        <ComboBox x:Name="comboboxLuaUnitTwo" HorizontalAlignment="Left" Margin="375,237,0,0" VerticalAlignment="Top" Width="100" IsEnabled="False" SelectionChanged="ComboboxLuaUnitTwo_SelectionChanged"/>
+        <ComboBox x:Name="comboboxLuaUnitOne" HorizontalAlignment="Left" Margin="375,165,0,0" VerticalAlignment="Top" Width="100" IsEnabled="False" SelectionChanged="ComboboxLuaUnitOne_SelectionChanged" />
+        <ComboBox x:Name="comboboxLuaUnitTwo" HorizontalAlignment="Left" Margin="375,237,0,0" VerticalAlignment="Top" Width="100" IsEnabled="False" SelectionChanged="ComboboxLuaUnitTwo_SelectionChanged" />
     </Grid>
 </Window>

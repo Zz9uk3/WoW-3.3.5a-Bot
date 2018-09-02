@@ -7,7 +7,6 @@ namespace AmeisenUtilities
     {
         public DynObject(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
-            Update();
         }
 
         public override string ToString()

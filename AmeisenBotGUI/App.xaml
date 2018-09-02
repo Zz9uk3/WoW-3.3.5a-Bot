@@ -17,8 +17,9 @@
         <Color x:Key="PlayerColor">#FFD0FFFD</Color>
         <Color x:Key="MeColor">#FFFFD0D0</Color>
 
-        <Color x:Key="WalkableNodeColor">#FFA0FF00</Color>
-        <Color x:Key="MeNodeColor">#FF00FFFF</Color>
+        <Color x:Key="WalkableNodeColorLow">#FFA0FF00</Color>
+        <Color x:Key="WalkableNodeColorHigh">#FF00FFFF</Color>
+        <Color x:Key="MeNodeColor">#FFFF6060</Color>
 
         <Color x:Key="HealthColor">#FFFF6060</Color>
         <Color x:Key="EnergyColor">#FFFFA160</Color>

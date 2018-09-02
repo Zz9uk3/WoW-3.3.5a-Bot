@@ -31,7 +31,7 @@ namespace AmeisenLogging
 
         public override string ToString()
         {
-            return "[" + id + "][" + timestamp + "]\t[" + loglevel.ToString() + "][" + originClass.ToString() + ":" + functionName + "] - " + msg;
+            return "[" + id + "][" + timestamp + "]\t[" + loglevel.ToString() + "]\t[" + originClass.ToString() + ":" + functionName + "] - " + msg;
         }
     }
 

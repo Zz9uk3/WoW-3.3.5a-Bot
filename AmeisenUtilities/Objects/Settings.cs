@@ -11,6 +11,7 @@
         public int ameisenServerPort = 16200;
         public string backgroundColor = "#FF323232";
         public bool behaviourAttack = false;
+        public bool behaviourBuff = true;
         public bool behaviourHeal = false;
         public bool behaviourTank = false;
         public int botMaxThreads = 2;
@@ -26,16 +27,17 @@
         public string expColor = "#FFD4A0FF";
         public double followDistance = 3.0;
         public bool followMaster = false;
-        public string textColor = "#FFFFFFFF";
         public string healthColor = "#FFFF6060";
         public string masterName = "";
-        public string meNodeColor = "#FF00FFFF";
+        public string meNodeColor = "#FFFF6060";
         public string picturePath = "";
         public bool serverAutoConnect = true;
         public string targetEnergyColor = "#FFFFA160";
         public string targetHealthColor = "#FFFF6060";
+        public string textColor = "#FFFFFFFF";
         public string threadsColor = "#FFFFFF60";
-        public string walkableNodeColor = "#FFA0FF00";
-        public bool behaviourBuff = true;
+        public bool topMost = false;
+        public string walkableNodeColorLow = "#FFA0FF00";
+        public string walkableNodeColorHigh = "#FFA0FFFF";
     }
 }

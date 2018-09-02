@@ -1,4 +1,4 @@
-﻿namespace AmeisenUtilities
+﻿namespace AmeisenAI
 {
     /// <summary>
     /// Action types, most of them should be pretty self-explaining

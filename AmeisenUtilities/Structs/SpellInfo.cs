@@ -1,9 +1,9 @@
 ﻿namespace AmeisenUtilities
 {
     /// <summary>
-    /// WoW Spell info
+    /// Spell info
     /// </summary>
-    public struct WowSpellInfo
+    public struct SpellInfo
     {
         public int castTime;
         public int cost;

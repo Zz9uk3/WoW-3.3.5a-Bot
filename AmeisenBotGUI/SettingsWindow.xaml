@@ -381,25 +381,25 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Rectangle.Stroke>
             <Rectangle.Fill>
-                <SolidColorBrush Color="{DynamicResource WalkableNodeColor}" />
+                <SolidColorBrush Color="{DynamicResource WalkableNodeColorLow}" />
             </Rectangle.Fill>
         </Rectangle>
-        <Label Content="Me:" HorizontalAlignment="Left" Margin="400,110,0,0" VerticalAlignment="Top" Height="23">
+        <Label Content="Me:" HorizontalAlignment="Left" Margin="400,138,0,0" VerticalAlignment="Top" Height="39">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Label Content="Walkable:" HorizontalAlignment="Left" Margin="400,82,0,0" VerticalAlignment="Top" Height="23">
+        <Label Content="Walkable Low:" HorizontalAlignment="Left" Margin="400,82,0,0" VerticalAlignment="Top" Height="35">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Rectangle x:Name="colorMe" HorizontalAlignment="Left" Height="23" Margin="490,110,0,0" VerticalAlignment="Top" Width="70">
+        <Rectangle x:Name="colorMe" HorizontalAlignment="Left" Height="23" Margin="490,138,0,0" VerticalAlignment="Top" Width="70">
             <Rectangle.Stroke>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Rectangle.Stroke>
             <Rectangle.Fill>
-                <SolidColorBrush Color="Cyan" />
+                <SolidColorBrush Color="{DynamicResource MeNodeColor}" />
             </Rectangle.Fill>
         </Rectangle>
         <Rectangle x:Name="colorHealth" HorizontalAlignment="Left" Height="23" Margin="490,308,0,0" VerticalAlignment="Top" Width="70">
@@ -479,6 +479,19 @@
             <Rectangle.Stroke>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Rectangle.Stroke>
+        </Rectangle>
+        <Label Content="Walkable High:" HorizontalAlignment="Left" Margin="400,110,0,0" VerticalAlignment="Top" Height="32">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Label.Foreground>
+        </Label>
+        <Rectangle x:Name="colorWalkableNodeHigh" HorizontalAlignment="Left" Height="23" Margin="490,110,0,0" VerticalAlignment="Top" Width="70">
+            <Rectangle.Stroke>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
+            </Rectangle.Stroke>
+            <Rectangle.Fill>
+                <SolidColorBrush Color="{DynamicResource WalkableNodeColorHigh}" />
+            </Rectangle.Fill>
         </Rectangle>
     </Grid>
 </Window>

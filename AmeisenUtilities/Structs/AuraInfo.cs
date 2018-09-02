@@ -1,9 +1,9 @@
 ﻿namespace AmeisenUtilities
 {
     /// <summary>
-    /// WoW Buff/Debuff info
+    /// Buff/Debuff info
     /// </summary>
-    public struct WowAuraInfo
+    public struct AuraInfo
     {
         public int duration;
         public string expirationTime;
