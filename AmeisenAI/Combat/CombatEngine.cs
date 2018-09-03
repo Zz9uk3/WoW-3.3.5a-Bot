@@ -395,20 +395,21 @@ namespace AmeisenAI.Combat
             if (isMeleeSpell)
             {
                 AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"MeleeSpell: Forced to move to:{Target.Name}", this);
-
+                AmeisenAIManager.Instance.IsAllowedToMoveNearTarget = true;
                 object[] parameters = new object[2] { Target.pos, entry.MaxSpellDistance * 0.8 }; // 20% Offset to move in
-                action = new AmeisenAction(AmeisenActionType.FORCE_MOVE_TO_POSITION, parameters, null);
+                action = new AmeisenAction(AmeisenActionType.MOVE_TO_POSITION, parameters, null);
             }
             else
             {
                 AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"RangedSpell: Forced to move to:{Target.Name}", this);
-
+                AmeisenAIManager.Instance.IsAllowedToMoveNearTarget = true;
                 object[] parameters = new object[2] { Target.pos, entry.MaxSpellDistance * 0.8 }; // 20% Offset to move in
-                action = new AmeisenAction(AmeisenActionType.FORCE_MOVE_NEAR_TARGET, parameters, null);
+                action = new AmeisenAction(AmeisenActionType.MOVE_NEAR_POSITION, parameters, null);
             }
 
             AmeisenAIManager.Instance.AddActionToQueue(ref action);
             while (action.IsDone) { Thread.Sleep(20); }
+            AmeisenAIManager.Instance.IsAllowedToMoveNearTarget = false;
         }
 
         private void RemoveDeadTargetsFromList()
