@@ -433,8 +433,8 @@ namespace AmeisenAI.Combat
         private void SelectTarget()
         {
             // Assist our Partymembers to notice new Guid's to be killed
-            if (AmeisenDataHolder.Instance.IsAllowedToAssistParty)
-                AssistPartyMembers();
+            //if (AmeisenDataHolder.Instance.IsAllowedToAssistParty)
+            AssistPartyMembers();
 
             if (Target != null)
                 Target.Update();
@@ -469,35 +469,36 @@ namespace AmeisenAI.Combat
                             if (((Unit)o).InCombat)
                             {
                                 AmeisenAIManager.Instance.IsAllowedToMove = false;
-
                                 ulong partymemberTargetGuid = ((Unit)o).TargetGuid;
 
                                 AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Partymember Guid: {partymemberTargetGuid}", this);
-                                
+
+                                Target.Update();
                                 // If we have no target, assist our partymembers
-                                if (Target == null || Target.Guid == 0)
-                                {
-                                    AmeisenCore.RunSlashCommand($"/assist party{i}");
-                                    Me.Update();
-                                    if (!GuidsToKill.Contains(Me.TargetGuid))
-                                        GuidsToKill.Add(Me.TargetGuid);
-                                }
+                                /*if (Target == null || Target.Guid == 0)
+                                {*/
+                                AmeisenCore.RunSlashCommand($"/assist party{i}");
+                                Me.Update();
+                                if (!GuidsToKill.Contains(Me.TargetGuid))
+                                    GuidsToKill.Add(Me.TargetGuid);
+                                //AmeisenCore.LuaDoString("AttackTarget();");
+                                /*}
                                 else // if we have a target, add it to the "To-Be-Killed"-List
                                 {
                                     if (!GuidsToKill.Contains(partymemberTargetGuid))
                                         GuidsToKill.Add(partymemberTargetGuid);
-                                }
+                                }*/
 
                                 // Start combat if we aren't already InCombat
                                 if (!Me.InCombat)
-                                    AmeisenCore.AttackTarget(Me);
+                                    AmeisenCore.LuaDoString("AttackTarget();");
                             }
                             i++;
                         }
                 }
             }
             catch { }
-            Thread.Sleep(500);
+            Thread.Sleep(100);
         }
     }
 }

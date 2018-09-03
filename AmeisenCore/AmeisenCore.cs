@@ -27,16 +27,6 @@ namespace AmeisenCoreUtils
             BlackMagic.WriteInt(Offsets.tickCount, Environment.TickCount);
         }
 
-        /// <summary>
-        /// Attack our target
-        /// </summary>
-        public static void AttackTarget(Me me)
-        {
-            LuaDoString("AttackTarget();");
-
-            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Attacking Target", "AmeisenCore");
-        }
-
         private static void StopMovement()
         {
             //SendKey(new IntPtr(0x26));

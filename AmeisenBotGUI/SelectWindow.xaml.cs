@@ -164,7 +164,8 @@ namespace AmeisenBotGUI
                 string path = configPath + accountName + extension;
                 Credentials credentials;
 
-                textboxCharactername.Text = Utils.FirstCharToUpper(accountName);
+                if (accountName.Length > 0)
+                    textboxCharactername.Text = Utils.FirstCharToUpper(accountName);
 
                 credentials = LoadCredentialsFromFile(path);
             }
