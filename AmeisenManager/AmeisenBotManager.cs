@@ -85,10 +85,10 @@ namespace AmeisenManager
         public bool IsAttached { get; private set; }
         public bool IsHooked { get; private set; }
         public Me Me { get { return AmeisenDataHolder.Instance.Me; } }
-        public List<WoWExe> RunningWoWs { get { return AmeisenCore.GetRunningWoWs(); } }
+        public List<WowExe> RunningWoWs { get { return AmeisenCore.GetRunningWoWs(); } }
         public Settings Settings { get { return AmeisenSettings.Settings; } }
         public Unit Target { get { return AmeisenDataHolder.Instance.Target; } }
-        public WoWExe WowExe { get; private set; }
+        public WowExe WowExe { get; private set; }
         public List<WoWObject> WoWObjects { get { return AmeisenObjectManager.GetObjects(); } }
         public Process WowProcess { get; private set; }
 
@@ -129,7 +129,7 @@ namespace AmeisenManager
             }
         }
 
-        public WoWExe GetWowExe()
+        public WowExe GetWowExe()
         {
             return WowExe;
         }
@@ -158,7 +158,7 @@ namespace AmeisenManager
             AmeisenSettings.SaveToFile(filename);
         }
 
-        public void StartBot(WoWExe wowExe)
+        public void StartBot(WowExe wowExe)
         {
             WowExe = wowExe;
 

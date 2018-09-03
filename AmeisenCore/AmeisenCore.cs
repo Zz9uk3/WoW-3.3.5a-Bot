@@ -306,16 +306,16 @@ namespace AmeisenCoreUtils
         /// Process object.
         /// </summary>
         /// <returns>A list containing all the runnign WoW processes</returns>
-        public static List<WoWExe> GetRunningWoWs()
+        public static List<WowExe> GetRunningWoWs()
         {
-            List<WoWExe> wows = new List<WoWExe>();
+            List<WowExe> wows = new List<WowExe>();
             List<Process> processList = new List<Process>(Process.GetProcessesByName("Wow"));
 
             foreach (Process p in processList)
             {
                 AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Found WoW Process! PID: {p.Id}", "AmeisenCore");
 
-                WoWExe wow = new WoWExe();
+                WowExe wow = new WowExe();
                 BlackMagic blackmagic = new BlackMagic(p.Id);
 
                 wow.characterName = blackmagic.ReadASCIIString(Offsets.playerName, 12);

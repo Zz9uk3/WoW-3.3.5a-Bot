@@ -46,9 +46,9 @@ namespace AmeisenBotGUI
                         botView.botName.Content = bot.name;
                         botView.botLevel.Content = bot.me.Level;
 
-                        botView.botHealth.Content = bot.me.Health + "/" + bot.me.MaxHealth;
-                        botView.botEnergy.Content = bot.me.Energy + "/" + bot.me.MaxEnergy;
-                        botView.botExp.Content = bot.me.Exp + "/" + bot.me.MaxExp;
+                        botView.botHealth.Content = $"{bot.me.Health} / {bot.me.MaxHealth}";
+                        botView.botEnergy.Content = $"{bot.me.Energy} / {bot.me.MaxEnergy}";
+                        botView.botExp.Content = $"{bot.me.Exp} / {bot.me.MaxExp}";
 
                         botView.botHealthProgressbar.Maximum = bot.me.MaxHealth;
                         botView.botEnergyProgressbar.Maximum = bot.me.MaxEnergy;
@@ -69,6 +69,11 @@ namespace AmeisenBotGUI
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            StartUIUpdateTimer();
+        }
+
+        private void StartUIUpdateTimer()
         {
             uiUpdateTimer = new DispatcherTimer();
             uiUpdateTimer.Tick += new EventHandler(UIUpdateTimer_Tick);

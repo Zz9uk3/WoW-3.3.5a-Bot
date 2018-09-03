@@ -18,7 +18,7 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class BotWindow : Window
     {
-        public BotWindow(WoWExe wowExe)
+        public BotWindow(WowExe wowExe)
         {
             InitializeComponent();
             BotManager = AmeisenBotManager.Instance;
@@ -64,7 +64,6 @@ namespace AmeisenBotGUI
             BotManager.StopBot();
         }
 
-        // -- External Windows SettingsWindow, DebugUI, CombatClass Editor
         private void ButtonExtendedDebugUI_Click(object sender, RoutedEventArgs e)
         {
             new DebugWindow().Show();
@@ -142,11 +141,21 @@ namespace AmeisenBotGUI
 
         private void CheckBoxTopMost_Click(object sender, RoutedEventArgs e)
         {
+            SetTopMost();
+        }
+
+        private void SetTopMost()
+        {
             Topmost = (bool)checkBoxTopMost.IsChecked;
             BotManager.Settings.topMost = (bool)checkBoxTopMost.IsChecked;
         }
 
         private void Mainscreen_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            SaveViewSettings();
+        }
+
+        private void SaveViewSettings()
         {
             BotManager.Settings.behaviourAttack = (bool)checkBoxAssistPartyAttack.IsChecked;
             BotManager.Settings.behaviourTank = (bool)checkBoxAssistPartyTank.IsChecked;
@@ -160,15 +169,45 @@ namespace AmeisenBotGUI
         {
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Loaded MainScreen", this);
 
-            Title = "AmeisenBot - " + BotManager.GetWowExe().characterName + " [" + BotManager.GetWowExe().process.Id + "]";
-            UpdateUI();
+            Title = $"AmeisenBot - {BotManager.GetWowExe().characterName} [{BotManager.GetWowExe().process.Id}]";
 
+            UpdateUI();
+            StartUIUpdateTime();
+
+            LoadViewSettings();
+
+            DebugLoadDefaultValues();
+        }
+
+        private void StartUIUpdateTime()
+        {
             uiUpdateTimer = new DispatcherTimer();
             uiUpdateTimer.Tick += new EventHandler(UIUpdateTimer_Tick);
             uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, BotManager.Settings.dataRefreshRate);
             uiUpdateTimer.Start();
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Started UI-Update-Timer", this);
 
+        }
+
+        private void DebugLoadDefaultValues()
+        {
+            comboboxInteraction.Items.Add(InteractionType.FACETARGET);
+            comboboxInteraction.Items.Add(InteractionType.FACEDESTINATION);
+            comboboxInteraction.Items.Add(InteractionType.STOP);
+            comboboxInteraction.Items.Add(InteractionType.MOVE);
+            comboboxInteraction.Items.Add(InteractionType.INTERACT);
+            comboboxInteraction.Items.Add(InteractionType.LOOT);
+            comboboxInteraction.Items.Add(InteractionType.INTERACTOBJECT);
+            comboboxInteraction.Items.Add(InteractionType.FACEOTHER);
+            comboboxInteraction.Items.Add(InteractionType.SKIN);
+            comboboxInteraction.Items.Add(InteractionType.ATTACK);
+            comboboxInteraction.Items.Add(InteractionType.ATTACKPOS);
+            comboboxInteraction.Items.Add(InteractionType.ATTACKGUID);
+            comboboxInteraction.Items.Add(InteractionType.WALKANDROTATE);
+        }
+
+        private void LoadViewSettings()
+        {
             checkBoxAssistPartyAttack.IsChecked = BotManager.Settings.behaviourAttack;
             BotManager.IsAllowedToAttack = BotManager.Settings.behaviourAttack;
 
@@ -188,20 +227,6 @@ namespace AmeisenBotGUI
 
             checkBoxTopMost.IsChecked = BotManager.Settings.topMost;
             Topmost = BotManager.Settings.topMost;
-
-            comboboxInteraction.Items.Add(InteractionType.FACETARGET);
-            comboboxInteraction.Items.Add(InteractionType.FACEDESTINATION);
-            comboboxInteraction.Items.Add(InteractionType.STOP);
-            comboboxInteraction.Items.Add(InteractionType.MOVE);
-            comboboxInteraction.Items.Add(InteractionType.INTERACT);
-            comboboxInteraction.Items.Add(InteractionType.LOOT);
-            comboboxInteraction.Items.Add(InteractionType.INTERACTOBJECT);
-            comboboxInteraction.Items.Add(InteractionType.FACEOTHER);
-            comboboxInteraction.Items.Add(InteractionType.SKIN);
-            comboboxInteraction.Items.Add(InteractionType.ATTACK);
-            comboboxInteraction.Items.Add(InteractionType.ATTACKPOS);
-            comboboxInteraction.Items.Add(InteractionType.ATTACKGUID);
-            comboboxInteraction.Items.Add(InteractionType.WALKANDROTATE);
         }
 
         private void Mainscreen_MouseDown(object sender, MouseButtonEventArgs e)
@@ -213,13 +238,11 @@ namespace AmeisenBotGUI
             catch { }
         }
 
-        // -- UI Stuff Update the GUI
-
         private void SliderDistance_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             try
             {
-                labelDistance.Content = "Follow Distance: " + Math.Round(sliderDistance.Value, 2) + "m";
+                labelDistance.Content = $"Follow Distance: {Math.Round(sliderDistance.Value, 2)}m";
                 BotManager.AmeisenSettings.Settings.followDistance = Math.Round(sliderDistance.Value, 2);
             }
             catch { }
@@ -241,85 +264,72 @@ namespace AmeisenBotGUI
             // TODO: find a better way to update this
             //AmeisenManager.Instance.GetObjects();
 
-            labelLoadedCombatClass.Content = "CombatClass: " + Path.GetFileName(BotManager.Settings.combatClassPath);
+            labelLoadedCombatClass.Content = $"CombatClass: {Path.GetFileName(BotManager.Settings.combatClassPath)}";
 
             if (BotManager.Me != null)
             {
                 try
                 {
-                    if (BotManager.Settings.picturePath != lastImgPath)
-                        if (BotManager.Settings.picturePath.Length > 0)
-                        {
-                            botPicture.Source = new BitmapImage(new Uri(BotManager.Settings.picturePath));
-                            lastImgPath = BotManager.Settings.picturePath;
-                        }
+                    UpdateMyViews();
 
-                    labelName.Content = BotManager.Me.Name + " lvl." + BotManager.Me.Level;
-                    //labelCasting.Content = "Casting: " + me.currentState;
-
-                    labelHP.Content = "Health " + BotManager.Me.Health + " / " + BotManager.Me.MaxHealth + "";
-                    progressBarHP.Maximum = BotManager.Me.MaxHealth;
-                    progressBarHP.Value = BotManager.Me.Health;
-
-                    labelEnergy.Content = "Energy " + BotManager.Me.Energy + " / " + BotManager.Me.MaxEnergy + "";
-                    progressBarEnergy.Maximum = BotManager.Me.MaxEnergy;
-                    progressBarEnergy.Value = BotManager.Me.Energy;
-
-                    labelExp.Content = "Exp " + BotManager.Me.Exp + " / " + BotManager.Me.MaxExp + "";
-                    progressBarXP.Maximum = BotManager.Me.MaxExp;
-                    progressBarXP.Value = BotManager.Me.Exp;
-
-                    /*labelPosition.Content =
-                        "X: " + me.pos.x +
-                        "\nY: " + me.pos.y +
-                        "\nZ: " + me.pos.z +
-                        "\nR: " + me.rotation;*/
+                    if (BotManager.Target != null)
+                    {
+                        UpdateTargetViews();
+                    }
                 }
                 catch (Exception e)
                 {
                     AmeisenLogger.Instance.Log(LogLevel.ERROR, e.ToString(), this);
                 }
-                if (BotManager.Target != null)
+            }
+
+            UpdateAIView();
+        }
+
+        private void UpdateAIView()
+        {
+            labelThreadsActive.Content = $"⚡ Threads: {BotManager.AmeisenAIManager.GetBusyThreadCount()}/{BotManager.AmeisenAIManager.GetActiveThreadCount()}";
+            progressBarBusyAIThreads.Maximum = BotManager.AmeisenAIManager.GetActiveThreadCount();
+            progressBarBusyAIThreads.Value = BotManager.AmeisenAIManager.GetBusyThreadCount();
+        }
+
+        private void UpdateTargetViews()
+        {
+            labelNameTarget.Content = $"{BotManager.Target.Name} lvl.{BotManager.Target.Level}";
+
+            labelTargetHP.Content = $"Health {BotManager.Target.Health} / {BotManager.Target.MaxHealth}";
+            progressBarHPTarget.Maximum = BotManager.Target.MaxHealth;
+            progressBarHPTarget.Value = BotManager.Target.Health;
+
+            labelTargetEnergy.Content = $"Energy {BotManager.Target.Energy} / {BotManager.Target.MaxEnergy}";
+            progressBarEnergyTarget.Maximum = BotManager.Target.MaxEnergy;
+            progressBarEnergyTarget.Value = BotManager.Target.Energy;
+
+            labelTargetDistance.Content = $"Distance: {BotManager.Target.Distance}m";
+        }
+
+        private void UpdateMyViews()
+        {
+            if (BotManager.Settings.picturePath != lastImgPath)
+                if (BotManager.Settings.picturePath.Length > 0)
                 {
-                    try
-                    {
-                        labelNameTarget.Content = BotManager.Target.Name + " lvl." + BotManager.Target.Level;
-                        //labelCastingTarget.Content = "Current state: " + me.target.currentState;
-
-                        labelTargetHP.Content = "Health " + BotManager.Target.Health + " / " + BotManager.Target.MaxHealth + "";
-                        progressBarHPTarget.Maximum = BotManager.Target.MaxHealth;
-                        progressBarHPTarget.Value = BotManager.Target.Health;
-
-                        labelTargetEnergy.Content = "Energy " + BotManager.Target.Energy + " / " + BotManager.Target.MaxEnergy + "";
-                        progressBarEnergyTarget.Maximum = BotManager.Target.MaxEnergy;
-                        progressBarEnergyTarget.Value = BotManager.Target.Energy;
-
-                        labelTargetDistance.Content = "Distance: " + BotManager.Target.Distance + "m";
-
-                        /*labelPositionTarget.Content =
-                            "X: " + me.target.pos.x +
-                            "\nY: " + me.target.pos.y +
-                            "\nZ: " + me.target.pos.z +
-                            "\nR: " + me.target.rotation;*/
-                    }
-                    catch (Exception e)
-                    {
-                        AmeisenLogger.Instance.Log(LogLevel.ERROR, e.ToString(), this);
-                    }
+                    botPicture.Source = new BitmapImage(new Uri(BotManager.Settings.picturePath));
+                    lastImgPath = BotManager.Settings.picturePath;
                 }
-            }
 
-            try
-            {
-                labelThreadsActive.Content = "⚡ Threads: " + BotManager.AmeisenAIManager.GetBusyThreadCount() +
-                                             "/" + BotManager.AmeisenAIManager.GetActiveThreadCount();
-                progressBarBusyAIThreads.Maximum = BotManager.AmeisenAIManager.GetActiveThreadCount();
-                progressBarBusyAIThreads.Value = BotManager.AmeisenAIManager.GetBusyThreadCount();
-            }
-            catch (Exception e)
-            {
-                AmeisenLogger.Instance.Log(LogLevel.ERROR, e.ToString(), this);
-            }
+            labelName.Content = BotManager.Me.Name + " lvl." + BotManager.Me.Level;
+
+            labelHP.Content = $"Health {BotManager.Me.Health} / {BotManager.Me.MaxHealth}";
+            progressBarHP.Maximum = BotManager.Me.MaxHealth;
+            progressBarHP.Value = BotManager.Me.Health;
+
+            labelEnergy.Content = $"Energy {BotManager.Me.Energy} / {BotManager.Me.MaxEnergy}";
+            progressBarEnergy.Maximum = BotManager.Me.MaxEnergy;
+            progressBarEnergy.Value = BotManager.Me.Energy;
+
+            labelExp.Content = $"Exp {BotManager.Me.Exp} / {BotManager.Me.MaxExp}";
+            progressBarXP.Maximum = BotManager.Me.MaxExp;
+            progressBarXP.Value = BotManager.Me.Exp;
         }
     }
 }

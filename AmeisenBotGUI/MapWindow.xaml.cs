@@ -22,36 +22,8 @@ namespace AmeisenBotGUI
             InitializeComponent();
         }
 
-        public static Color Interpolate(Color[] colors, double factor)
-        {
-            double r = 0.0, g = 0.0, b = 0.0;
-            double total = 0.0;
-            double step = 1.0 / (double)(colors.Length - 1);
-            double mu = 0.0;
-            double sigma_2 = 0.035;
-
-            foreach (Color color in colors)
-            {
-                total += Math.Exp(-(factor - mu) * (factor - mu) / (2.0 * sigma_2)) / Math.Sqrt(2.0 * Math.PI * sigma_2);
-                mu += step;
-            }
-
-            mu = 0.0;
-            foreach (Color color in colors)
-            {
-                double percent = Math.Exp(-(factor - mu) * (factor - mu) / (2.0 * sigma_2)) / Math.Sqrt(2.0 * Math.PI * sigma_2);
-                mu += step;
-
-                r += color.R * percent / total;
-                g += color.G * percent / total;
-                b += color.B * percent / total;
-            }
-
-            return Color.FromArgb(255, (byte)r, (byte)g, (byte)b);
-        }
-
         private Map currentMap;
-        private DispatcherTimer mapUpdateTimer;
+        private DispatcherTimer dbUpdateTimer;
         private int newX;
         private int newY;
         private DispatcherTimer uiUpdateTimer;
@@ -125,12 +97,12 @@ namespace AmeisenBotGUI
                 newX = (int)(myCanvasMiddle.X + tempPos.X);
                 newY = (int)(myCanvasMiddle.Y + tempPos.Y);
 
-                DrawRectangle(newX - 2, newY - 2, 4, 4,
-                Interpolate(new Color[]{
-                    (Color)Application.Current.Resources["WalkableNodeColorLow"],
-                    (Color)Application.Current.Resources["WalkableNodeColorHigh"]
-                }, tempPos.Z / 100.0),
-                mapCanvas);
+                Color nodeColor = Utils.InterpolateColors(new Color[]{
+                            (Color)Application.Current.Resources["WalkableNodeColorLow"],
+                            (Color)Application.Current.Resources["WalkableNodeColorHigh"],
+                            }, tempPos.Z / 100.0);
+
+                DrawRectangle(newX - 2, newY - 2, 4, 4, nodeColor, mapCanvas);
             }
 
             DrawRectangle((int)myCanvasMiddle.X, (int)myCanvasMiddle.Y, 4, 4,
@@ -145,10 +117,10 @@ namespace AmeisenBotGUI
                        AmeisenDBManager.Instance.GetNodes(
                            AmeisenBotManager.GetZoneID(),
                            AmeisenBotManager.GetMapID(),
-                           (int)(myPos.X + ((Width / 2) - 20)),
-                           (int)(myPos.X - ((Width / 2) + 20)),
-                           (int)(myPos.Y + ((Height / 2) - 20)),
-                           (int)(myPos.Y - ((Height / 2) + 20))
+                           (int)(myPos.X + ((Width / 2) - 20)), // Get the max drawing point x
+                           (int)(myPos.X - ((Width / 2) + 20)), // Get the min drawing point x
+                           (int)(myPos.Y + ((Height / 2) - 20)), // Get the max drawing point y
+                           (int)(myPos.Y - ((Height / 2) + 20)) // Get the min drawing point y
                            )
                        );
         }
@@ -173,22 +145,35 @@ namespace AmeisenBotGUI
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             uiUpdateTimer.Stop();
-            mapUpdateTimer.Stop();
+            dbUpdateTimer.Stop();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            // Load our current Map from Database
             currentMap = LoadMap();
 
+            // Refresh UI, my position, odes in current map
+            StartUIUpdateTimer();
+            // refresh the nodes from our database, this will be called
+            // each 10th time we update our UI to save database performance
+            StartDatabaseUpdateTimer();
+        }
+
+        private void StartDatabaseUpdateTimer()
+        {
+            dbUpdateTimer = new DispatcherTimer();
+            dbUpdateTimer.Tick += new EventHandler(MapUpdateTimer_Tick);
+            dbUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, AmeisenBotManager.Instance.Settings.dataRefreshRate * 10);
+            dbUpdateTimer.Start();
+        }
+
+        private void StartUIUpdateTimer()
+        {
             uiUpdateTimer = new DispatcherTimer();
             uiUpdateTimer.Tick += new EventHandler(UIUpdateTimer_Tick);
             uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 1000);
             uiUpdateTimer.Start();
-
-            mapUpdateTimer = new DispatcherTimer();
-            mapUpdateTimer.Tick += new EventHandler(MapUpdateTimer_Tick);
-            mapUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, AmeisenBotManager.Instance.Settings.dataRefreshRate * 10);
-            mapUpdateTimer.Start();
         }
 
         private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

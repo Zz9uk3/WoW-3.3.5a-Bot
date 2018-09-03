@@ -2,7 +2,7 @@
 
 namespace AmeisenUtilities
 {
-    public class WoWExe
+    public class WowExe
     {
         public string characterName;
         public Process process;
