@@ -9,7 +9,7 @@ namespace AmeisenUtilities
 
         public override string ToString()
         {
-            return process.Id.ToString() + " - " + characterName;
+            return $"{process.Id.ToString()} - {characterName}";
         }
     }
 }

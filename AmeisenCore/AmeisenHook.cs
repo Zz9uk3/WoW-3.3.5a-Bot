@@ -158,29 +158,29 @@ namespace AmeisenCoreUtils
                         codeCave = AmeisenCore.BlackMagic.AllocateMemory(32);
                         codeCaveForInjection = AmeisenCore.BlackMagic.AllocateMemory(64);
 
-                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "EndScene at: " + endscene.ToString("X"), this);
-                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "EndScene returning at: " + (endsceneReturnAddress).ToString("X"), this);
-                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "CodeCave at: " + codeCave.ToString("X"), this);
-                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "CodeCaveForInjection at: " + codeCaveForInjection.ToString("X"), this);
-                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "CodeToExecute at: " + codeToExecute.ToString("X"), this);
-                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Original Endscene bytes: " + Utils.ByteArrayToString(originalEndscene), this);
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"EndScene at: {endscene.ToString("X")}", this);
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"EndScene returning at: {(endsceneReturnAddress).ToString("X")}", this);
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"CodeCave at: {codeCave.ToString("X")}", this);
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"CodeCaveForInjection at: {codeCaveForInjection.ToString("X")}", this);
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"CodeToExecute at: {codeToExecute.ToString("X")}", this);
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Original Endscene bytes: {Utils.ByteArrayToString(originalEndscene)}", this);
 
                         AmeisenCore.BlackMagic.WriteBytes(codeCave, originalEndscene);
 
                         AmeisenCore.BlackMagic.Asm.Clear();
                         AmeisenCore.BlackMagic.Asm.AddLine("PUSHFD");
                         AmeisenCore.BlackMagic.Asm.AddLine("PUSHAD");
-                        AmeisenCore.BlackMagic.Asm.AddLine("MOV EBX, [" + (codeToExecute) + "]");
+                        AmeisenCore.BlackMagic.Asm.AddLine($"MOV EBX, [{(codeToExecute)}]");
                         AmeisenCore.BlackMagic.Asm.AddLine("TEST EBX, 1");
                         AmeisenCore.BlackMagic.Asm.AddLine("JE @out");
 
-                        AmeisenCore.BlackMagic.Asm.AddLine("MOV EDX, " + (codeCaveForInjection));
+                        AmeisenCore.BlackMagic.Asm.AddLine($"MOV EDX, {(codeCaveForInjection)}");
                         AmeisenCore.BlackMagic.Asm.AddLine("CALL EDX");
-                        AmeisenCore.BlackMagic.Asm.AddLine("MOV [" + (returnAdress) + "], EAX");
+                        AmeisenCore.BlackMagic.Asm.AddLine($"MOV [{(returnAdress)}], EAX");
 
                         AmeisenCore.BlackMagic.Asm.AddLine("@out:");
                         AmeisenCore.BlackMagic.Asm.AddLine("MOV EDX, 0");
-                        AmeisenCore.BlackMagic.Asm.AddLine("MOV [" + (codeToExecute) + "], EDX");
+                        AmeisenCore.BlackMagic.Asm.AddLine($"MOV [{(codeToExecute)}], EDX");
 
                         AmeisenCore.BlackMagic.Asm.AddLine("POPAD");
                         AmeisenCore.BlackMagic.Asm.AddLine("POPFD");
@@ -188,11 +188,11 @@ namespace AmeisenCoreUtils
                         AmeisenCore.BlackMagic.Asm.Inject(codeCave + 5);
 
                         AmeisenCore.BlackMagic.Asm.Clear();
-                        AmeisenCore.BlackMagic.Asm.AddLine("JMP " + (endsceneReturnAddress));
+                        AmeisenCore.BlackMagic.Asm.AddLine($"JMP {(endsceneReturnAddress)}");
                         AmeisenCore.BlackMagic.Asm.Inject((codeCave + (uint)asmLenght) + 5);
 
                         AmeisenCore.BlackMagic.Asm.Clear();
-                        AmeisenCore.BlackMagic.Asm.AddLine("JMP " + (codeCave));
+                        AmeisenCore.BlackMagic.Asm.AddLine($"JMP {(codeCave)}");
                         AmeisenCore.BlackMagic.Asm.Inject(endscene);
                     }
                     isHooked = true;
@@ -250,7 +250,7 @@ namespace AmeisenCoreUtils
                             buffer = AmeisenCore.BlackMagic.ReadByte(dwAddress);
                         }
                     }
-                    catch (Exception e) { AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Crash at reading returnAddress: " + e.ToString(), this); }
+                    catch (Exception e) { AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Crash at reading returnAddress: {e.ToString()}", this); }
 
                     isInjectionUsed = false;
                     return returnBytes.ToArray();

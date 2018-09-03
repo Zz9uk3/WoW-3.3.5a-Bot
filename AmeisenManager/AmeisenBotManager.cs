@@ -250,11 +250,7 @@ namespace AmeisenManager
         private static AmeisenBotManager instance;
 
         private readonly string sqlConnectionString =
-                "server={0};" +
-                "port={1};" +
-                "database={2};" +
-                "uid={3};" +
-                "password={4};";
+                "server={0};port={1};database={2};uid={3};password={4};";
 
         private bool followGroup;
 

@@ -56,7 +56,7 @@ namespace AmeisenAI
         /// <param name="action">Action you want the bot to do</param>
         public void AddActionToQueue(ref AmeisenAction action)
         {
-            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Added action to AI-Queue: " + action.ToString(), this);
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, $"Added action to AI-Queue: {action.ToString()}", this);
             actionQueue.Enqueue(action);
         }
 
@@ -66,7 +66,7 @@ namespace AmeisenAI
         /// <param name="action">Action you want the bot to do</param>
         public void AddActionToQueue(AmeisenAction action)
         {
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Added action to AI-Queue: " + action.ToString(), this);
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Added action to AI-Queue: {action.ToString()}", this);
             actionQueue.Enqueue(action);
         }
 

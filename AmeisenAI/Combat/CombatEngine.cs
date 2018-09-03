@@ -390,14 +390,14 @@ namespace AmeisenAI.Combat
             AmeisenAction action;
             if (isMeleeSpell)
             {
-                AmeisenLogger.Instance.Log(LogLevel.DEBUG, "MeleeSpell: Forced to move to:" + Target.Name, this);
+                AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"MeleeSpell: Forced to move to:{Target.Name}", this);
 
                 object[] parameters = new object[2] { Target.pos, entry.MaxSpellDistance * 0.8 }; // 20% Offset to move in
                 action = new AmeisenAction(AmeisenActionType.FORCE_MOVE_TO_POSITION, parameters, null);
             }
             else
             {
-                AmeisenLogger.Instance.Log(LogLevel.DEBUG, "RangedSpell: Forced to move to:" + Target.Name, this);
+                AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"RangedSpell: Forced to move to:{Target.Name}", this);
 
                 object[] parameters = new object[2] { Target.pos, entry.MaxSpellDistance * 0.8 }; // 20% Offset to move in
                 action = new AmeisenAction(AmeisenActionType.FORCE_MOVE_NEAR_TARGET, parameters, null);
@@ -469,7 +469,7 @@ namespace AmeisenAI.Combat
                                 // If we have no target, assist our partymembers
                                 if (Target.Guid == 0)
                                 {
-                                    AmeisenCore.RunSlashCommand("/assist party" + i);
+                                    AmeisenCore.RunSlashCommand($"/assist party{i}");
                                     if (!GuidsToKill.Contains(partymemberTargetGuid))
                                         GuidsToKill.Add(partymemberTargetGuid);
                                 }

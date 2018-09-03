@@ -51,29 +51,24 @@ namespace AmeisenUtilities
             StringBuilder sb = new StringBuilder();
 
             sb.Append("PLAYER");
-            sb.Append(" >> Address: " + BaseAddress.ToString("X"));
-            sb.Append(" >> Descriptor: " + Descriptor.ToString("X"));
-            sb.Append(" >> InCombat: " + InCombat.ToString());
-            sb.Append(" >> Name: " + Name);
-            sb.Append(" >> GUID: " + Guid);
-            sb.Append(" >> PosX: " + pos.X);
-            sb.Append(" >> PosY: " + pos.Y);
-            sb.Append(" >> PosZ: " + pos.Z);
-            sb.Append(" >> Rotation: " + Rotation);
-            sb.Append(" >> Distance: " + Distance);
-            sb.Append(" >> MapID: " + MapID);
-            sb.Append(" >> ZoneID: " + ZoneID);
-
-            /*if (target != null)
-                sb.Append(" >> Target: " + target.guid);
-            else
-                sb.Append(" >> Target: null");*/
-
-            sb.Append(" >> level: " + Level);
-            sb.Append(" >> health: " + Health);
-            sb.Append(" >> maxHealth: " + MaxHealth);
-            sb.Append(" >> energy: " + Energy);
-            sb.Append(" >> maxEnergy: " + MaxEnergy);
+            sb.Append($" >> Address: {BaseAddress.ToString("X")}");
+            sb.Append($" >> Descriptor: {Descriptor.ToString("X")}");
+            sb.Append($" >> InCombat: {InCombat.ToString()}");
+            sb.Append($" >> Name: {Name}");
+            sb.Append($" >> GUID: {Guid}");
+            sb.Append($" >> PosX: {pos.X}");
+            sb.Append($" >> PosY: {pos.Y}");
+            sb.Append($" >> PosZ: {pos.Z}");
+            sb.Append($" >> Rotation: {Rotation}");
+            sb.Append($" >> Distance: {Distance}");
+            sb.Append($" >> MapID: {MapID}");
+            sb.Append($" >> ZoneID: {ZoneID}");
+            sb.Append($" >> Target: {TargetGuid}");
+            sb.Append($" >> level: {Level}");
+            sb.Append($" >> health: {Health}");
+            sb.Append($" >> maxHealth: {MaxHealth}");
+            sb.Append($" >> energy: {Energy}");
+            sb.Append($" >> maxEnergy: {MaxEnergy}");
 
             return sb.ToString();
         }
