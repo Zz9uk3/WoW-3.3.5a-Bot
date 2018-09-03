@@ -21,6 +21,7 @@ namespace AmeisenBotGUI
         public MapWindow()
         {
             InitializeComponent();
+            Topmost = AmeisenBotManager.Instance.Settings.topMost;
         }
 
         private Map currentMap;

@@ -26,6 +26,7 @@ namespace AmeisenBotGUI
             // currently disabled
             //CheckForAutologin();
             GetAllAccounts();
+            Topmost = BotManager.Settings.topMost;
         }
 
         private void CheckForAutologin()

@@ -17,6 +17,7 @@ namespace AmeisenBotGUI
         {
             InitializeComponent();
             botViews = new List<BotView>();
+            Topmost = AmeisenBotManager.Instance.Settings.topMost;
         }
 
         private List<BotView> botViews;

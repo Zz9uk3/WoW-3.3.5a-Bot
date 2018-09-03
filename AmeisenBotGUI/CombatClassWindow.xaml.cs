@@ -24,6 +24,8 @@ namespace AmeisenBotGUI
                 loadedLogic = CombatEngine.LoadCombatLogicFromFile(defaultCombatClass);
             else
                 loadedLogic = new CombatLogic();
+
+            Topmost = BotManager.Settings.topMost;
         }
 
         private CombatLogic loadedLogic;
