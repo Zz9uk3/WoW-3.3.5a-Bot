@@ -33,6 +33,8 @@ namespace AmeisenData
         public bool IsUsingSpell { get; set; }
         public Me Me { get; set; }
         public Unit Target { get; set; }
+        public bool IsAllowedToAssistParty { get; set; }
+
         private static readonly object padlock = new object();
 
         private static AmeisenDataHolder instance = null;

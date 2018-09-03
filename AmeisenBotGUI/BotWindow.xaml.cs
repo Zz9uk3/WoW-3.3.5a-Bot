@@ -220,6 +220,9 @@ namespace AmeisenBotGUI
             checkBoxAssistPartyBuff.IsChecked = BotManager.Settings.behaviourBuff;
             BotManager.IsAllowedToBuff = BotManager.Settings.behaviourBuff;
 
+            checkBoxAssistGroup.IsChecked = BotManager.Settings.assistParty;
+            BotManager.IsAllowedToAssistParty = BotManager.Settings.assistParty;
+
             checkBoxFollowMaster.IsChecked = BotManager.Settings.followMaster;
             AmeisenBotManager.Instance.FollowGroup = BotManager.Settings.followMaster;
 
@@ -330,6 +333,11 @@ namespace AmeisenBotGUI
             labelExp.Content = $"Exp {BotManager.Me.Exp} / {BotManager.Me.MaxExp}";
             progressBarXP.Maximum = BotManager.Me.MaxExp;
             progressBarXP.Value = BotManager.Me.Exp;
+        }
+
+        private void CheckBoxAssistGroup_Click(object sender, RoutedEventArgs e)
+        {
+            BotManager.IsAllowedToAssistParty = (bool)checkBoxAssistGroup.IsChecked;
         }
     }
 }

@@ -265,9 +265,9 @@ namespace AmeisenAI
             AddActionToQueue(ref ameisenAction);
         }
 
-        private void MoveNearPosition(Vector3 position, double distance, ref AmeisenAction ameisenAction, bool shouldStopInRange = false)
+        private void MoveNearPosition(Vector3 position, double distance, ref AmeisenAction ameisenAction)
         {
-            double distanceToPoint = Utils.GetDistance(Me.pos, position);
+            double distanceToPoint = Utils.GetDistance(Me.pos, position) - 2;
 
             if (distanceToPoint > distance)
             {
@@ -289,16 +289,6 @@ namespace AmeisenAI
             }
             else
             {
-                if (shouldStopInRange)
-                {
-                    Me.Update();
-                    Vector3 currentPosition = AmeisenDataHolder.Instance.Me.pos;
-                    if (currentPosition.X != 0 && currentPosition.Y != 0 && currentPosition.Z != 0)
-                    {
-                        AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(currentPosition, InteractionType.STOP);
-                    }
-                }
-
                 ameisenAction.ActionIsDone();
             }
         }

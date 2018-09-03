@@ -4,6 +4,7 @@ using AmeisenMapping;
 using AmeisenMapping.objects;
 using AmeisenUtilities;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -110,24 +111,25 @@ namespace AmeisenBotGUI
                 mapCanvas);
         }
 
-        private Map LoadMap()
+        private void LoadMap()
         {
             Vector3 myPos = AmeisenBotManager.Instance.Me.pos;
-            return new Map(
-                       AmeisenDBManager.Instance.GetNodes(
-                           AmeisenBotManager.GetZoneID(),
-                           AmeisenBotManager.GetMapID(),
-                           (int)(myPos.X + ((Width / 2) - 20)), // Get the max drawing point x
-                           (int)(myPos.X - ((Width / 2) + 20)), // Get the min drawing point x
-                           (int)(myPos.Y + ((Height / 2) - 20)), // Get the max drawing point y
-                           (int)(myPos.Y - ((Height / 2) + 20)) // Get the min drawing point y
-                           )
-                       );
+            List<MapNode> nodelist = AmeisenDBManager.Instance.GetNodes(
+                AmeisenBotManager.GetZoneID(),
+                AmeisenBotManager.GetMapID(),
+                (int)(myPos.X + ((Width / 2) - 20)), // Get the max drawing point x
+                (int)(myPos.X - ((Width / 2) + 20)), // Get the min drawing point x
+                (int)(myPos.Y + ((Height / 2) - 20)), // Get the max drawing point y
+                (int)(myPos.Y - ((Height / 2) + 20)) // Get the min drawing point y
+                );
+
+            if (nodelist.Count > 0)
+                currentMap = new Map(nodelist);
         }
 
-        private void MapUpdateTimer_Tick(object sender, EventArgs e)
+        private void DBUpdateTimer_Tick(object sender, EventArgs e)
         {
-            currentMap = LoadMap();
+            LoadMap();
         }
 
         private Vector3 NodePosToCanvasPos(Vector3 canvasPos, Vector3 myPos)
@@ -150,9 +152,7 @@ namespace AmeisenBotGUI
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // Load our current Map from Database
-            currentMap = LoadMap();
-
+            currentMap = new Map(new List<MapNode>());
             // Refresh UI, my position, odes in current map
             StartUIUpdateTimer();
             // refresh the nodes from our database, this will be called
@@ -163,7 +163,7 @@ namespace AmeisenBotGUI
         private void StartDatabaseUpdateTimer()
         {
             dbUpdateTimer = new DispatcherTimer();
-            dbUpdateTimer.Tick += new EventHandler(MapUpdateTimer_Tick);
+            dbUpdateTimer.Tick += new EventHandler(DBUpdateTimer_Tick);
             dbUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, AmeisenBotManager.Instance.Settings.dataRefreshRate * 10);
             dbUpdateTimer.Start();
         }
@@ -172,7 +172,7 @@ namespace AmeisenBotGUI
         {
             uiUpdateTimer = new DispatcherTimer();
             uiUpdateTimer.Tick += new EventHandler(UIUpdateTimer_Tick);
-            uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 1000);
+            uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 2000);
             uiUpdateTimer.Start();
         }
 

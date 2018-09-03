@@ -94,6 +94,10 @@ namespace AmeisenAI.Combat
                     // Loot the Guid's from guidsWithPotentialLoot List
                     LootGuidsThatAreMine();
                 }
+                else
+                {
+                    AmeisenAIManager.Instance.IsAllowedToMove = false;
+                }
             }
         }
 
@@ -127,8 +131,8 @@ namespace AmeisenAI.Combat
 
         private bool CheckCondition(Condition condition)
         {
-            double value1 = GetValue(condition,0);
-            double value2 = GetValue(condition,1);
+            double value1 = GetValue(condition, 0);
+            double value2 = GetValue(condition, 1);
 
             return CheckCondition(value1, value2, condition);
         }
@@ -280,7 +284,7 @@ namespace AmeisenAI.Combat
                 return false;
 
             // Make sure we are not dead or casting
-            if (AmeisenDataHolder.Instance.IsDead || Me.IsCasting)
+            if (Me.Health < 1 || Me.IsCasting)
                 return false;
 
             if (!CheckCombatOnly(entry))
@@ -428,7 +432,8 @@ namespace AmeisenAI.Combat
         private void SelectTarget()
         {
             // Assist our Partymembers to notice new Guid's to be killed
-            AssistPartyMembers();
+            if (AmeisenDataHolder.Instance.IsAllowedToAssistParty)
+                AssistPartyMembers();
 
             if (Target != null)
                 Target.Update();
@@ -444,6 +449,7 @@ namespace AmeisenAI.Combat
         {
             // TODO: fix this junk
             //AmeisenCore.TargetGUID(GuidsToKill.FirstOrDefault());
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Target Guid: {GuidsToKill.FirstOrDefault()}", this);
         }
 
         private void AssistPartyMembers()
@@ -461,17 +467,19 @@ namespace AmeisenAI.Combat
                             o.Update();
                             if (((Unit)o).InCombat)
                             {
+                                AmeisenAIManager.Instance.IsAllowedToMove = false;
+
                                 ulong partymemberTargetGuid = ((Unit)o).TargetGuid;
 
-                                // Temporary fix
-                                Target.Guid = 0;
-
+                                AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Partymember Guid: {partymemberTargetGuid}", this);
+                                
                                 // If we have no target, assist our partymembers
-                                if (Target.Guid == 0)
+                                if (Target == null || Target.Guid == 0)
                                 {
                                     AmeisenCore.RunSlashCommand($"/assist party{i}");
-                                    if (!GuidsToKill.Contains(partymemberTargetGuid))
-                                        GuidsToKill.Add(partymemberTargetGuid);
+                                    Me.Update();
+                                    if (!GuidsToKill.Contains(Me.TargetGuid))
+                                        GuidsToKill.Add(Me.TargetGuid);
                                 }
                                 else // if we have a target, add it to the "To-Be-Killed"-List
                                 {
@@ -488,6 +496,7 @@ namespace AmeisenAI.Combat
                 }
             }
             catch { }
+            Thread.Sleep(500);
         }
     }
 }

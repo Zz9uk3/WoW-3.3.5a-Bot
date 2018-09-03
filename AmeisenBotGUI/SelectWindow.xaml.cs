@@ -25,6 +25,7 @@ namespace AmeisenBotGUI
 
             // currently disabled
             //CheckForAutologin();
+            GetAllAccounts();
         }
 
         private void CheckForAutologin()
@@ -42,7 +43,7 @@ namespace AmeisenBotGUI
         private readonly string autoLoginExe = AppDomain.CurrentDomain.BaseDirectory + "/WoWLoginAutomator.exe";
         private readonly string configPath = AppDomain.CurrentDomain.BaseDirectory + "/credentials/";
         private readonly string extension = ".json";
-        private bool autologinIsPossible = false;
+        private bool autologinIsPossible = true;
         private AmeisenBotManager BotManager { get; }
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
@@ -95,7 +96,7 @@ namespace AmeisenBotGUI
                 credentials.password = textboxPassword.Password;
                 credentials.charSlot = Convert.ToInt32(textboxCharSlot.Text);
 
-                if (checkboxSave.IsChecked == true)
+                if (checkboxSave.IsChecked == true || credentials.charname.Length > 0)
                     File.WriteAllText(path, Newtonsoft.Json.JsonConvert.SerializeObject(credentials));
 
                 string charname = textboxCharactername.Text;
@@ -142,9 +143,10 @@ namespace AmeisenBotGUI
             foreach (string f in Directory.GetFiles(configPath))
                 if (f.Length > 0)
                 {
-                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Adding Account: {f} [{f.Length}]", this);
-                    comboBoxAccounts.Items.Add(Path.GetFileNameWithoutExtension(f));
+                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Adding Account: {Utils.FirstCharToUpper(f)} [{f.Length}]", this);
+                    comboBoxAccounts.Items.Add(Utils.FirstCharToUpper(Path.GetFileNameWithoutExtension(f)));
                 }
+            comboBoxAccounts.SelectedIndex = 0;
         }
 
         /// <summary>
@@ -161,7 +163,7 @@ namespace AmeisenBotGUI
                 string path = configPath + accountName + extension;
                 Credentials credentials;
 
-                textboxCharactername.Text = accountName;
+                textboxCharactername.Text = Utils.FirstCharToUpper(accountName);
 
                 credentials = LoadCredentialsFromFile(path);
             }
@@ -179,7 +181,7 @@ namespace AmeisenBotGUI
             {
                 credentials = Newtonsoft.Json.JsonConvert.DeserializeObject<Credentials>(File.ReadAllText(path));
 
-                textboxCharactername.Text = credentials.charname;
+                textboxCharactername.Text = Utils.FirstCharToUpper(credentials.charname);
                 textboxUsername.Text = credentials.username;
                 textboxPassword.Password = credentials.password;
                 textboxCharSlot.Text = credentials.charSlot.ToString();
