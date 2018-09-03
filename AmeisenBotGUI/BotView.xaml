@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="AmeisenBotGUI.BotView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:AmeisenBotGUI"
+             mc:Ignorable="d" Height="235" Width="120">
+    <Grid>
+        <Rectangle HorizontalAlignment="Left" Height="235" VerticalAlignment="Top" Width="120" StrokeThickness="2">
+            <Rectangle.Stroke>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
+            </Rectangle.Stroke>
+            <Rectangle.Fill>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
+            </Rectangle.Fill>
+        </Rectangle>
+        <Image x:Name="botImage" HorizontalAlignment="Left" Height="100" Margin="10,10,0,0" VerticalAlignment="Top" Width="100" />
+        <Label x:Name="botName" Content="BotName" HorizontalAlignment="Left" Margin="10,115,0,0" VerticalAlignment="Top" Width="100">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Label.Foreground>
+        </Label>
+        <ProgressBar x:Name="botHealthProgressbar" HorizontalAlignment="Left" Height="20" Margin="10,146,0,0" VerticalAlignment="Top" Width="100">
+            <ProgressBar.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
+            </ProgressBar.BorderBrush>
+            <ProgressBar.Background>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
+            </ProgressBar.Background>
+            <ProgressBar.Foreground>
+                <SolidColorBrush Color="{DynamicResource HealthColor}" />
+            </ProgressBar.Foreground>
+        </ProgressBar>
+        <Label x:Name="botHealth" Content="0/0" HorizontalAlignment="Left" Margin="10,142,0,0" VerticalAlignment="Top" Width="100">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Label.Foreground>
+        </Label>
+        <ProgressBar x:Name="botEnergyProgressbar" HorizontalAlignment="Left" Height="20" Margin="10,175,0,0" VerticalAlignment="Top" Width="100">
+            <ProgressBar.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
+            </ProgressBar.BorderBrush>
+            <ProgressBar.Background>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
+            </ProgressBar.Background>
+            <ProgressBar.Foreground>
+                <SolidColorBrush Color="{DynamicResource EnergyColor}" />
+            </ProgressBar.Foreground>
+        </ProgressBar>
+        <Label x:Name="botEnergy" Content="0/0" HorizontalAlignment="Left" Margin="10,171,0,0" VerticalAlignment="Top" Width="100">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Label.Foreground>
+        </Label>
+        <Label x:Name="botLevel" Content="0" HorizontalAlignment="Left" Margin="10,84,0,0" VerticalAlignment="Top" Width="100">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Label.Foreground>
+        </Label>
+        <ProgressBar x:Name="botExpProgressbar" HorizontalAlignment="Left" Height="20" Margin="10,204,0,0" VerticalAlignment="Top" Width="100">
+            <ProgressBar.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
+            </ProgressBar.BorderBrush>
+            <ProgressBar.Background>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
+            </ProgressBar.Background>
+            <ProgressBar.Foreground>
+                <SolidColorBrush Color="{DynamicResource EXPColor}" />
+            </ProgressBar.Foreground>
+        </ProgressBar>
+        <Label x:Name="botExp" Content="0/0" HorizontalAlignment="Left" Margin="10,200,0,0" VerticalAlignment="Top" Width="100">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Label.Foreground>
+        </Label>
+    </Grid>
+</UserControl>

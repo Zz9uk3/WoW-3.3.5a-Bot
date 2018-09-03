@@ -13,6 +13,7 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -25,7 +26,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -56,6 +56,9 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>AmeisenBotGUI.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -76,28 +79,49 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CombatClassEditor.xaml.cs">
-      <DependentUpon>CombatClassEditor.xaml</DependentUpon>
+    <Compile Include="BotView.xaml.cs">
+      <DependentUpon>BotView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DebugUI.xaml.cs">
-      <DependentUpon>DebugUI.xaml</DependentUpon>
+    <Compile Include="CombatClassWindow.xaml.cs">
+      <DependentUpon>CombatClassWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DebugWindow.xaml.cs">
+      <DependentUpon>DebugWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GroupWindow.xaml.cs">
+      <DependentUpon>GroupWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MapWindow.xaml.cs">
+      <DependentUpon>MapWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="CombatClassEditor.xaml">
+    <Page Include="BotView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DebugUI.xaml">
+    <Page Include="CombatClassWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainscreenForm.xaml">
+    <Page Include="DebugWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WoWSelectForm.xaml">
+    <Page Include="BotWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GroupWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MapWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SelectWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -105,11 +129,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainscreenForm.xaml.cs">
-      <DependentUpon>MainscreenForm.xaml</DependentUpon>
+    <Compile Include="BotWindow.xaml.cs">
+      <DependentUpon>BotWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WoWSelectForm.xaml.cs">
-      <DependentUpon>WoWSelectForm.xaml</DependentUpon>
+    <Compile Include="SelectWindow.xaml.cs">
+      <DependentUpon>SelectWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="SettingsWindow.xaml">
@@ -160,18 +184,44 @@
       <Project>{3c281530-7a81-4803-bc85-de46ed2d6e74}</Project>
       <Name>AmeisenAI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenBotLib\AmeisenBotLib.csproj">
-      <Project>{0665c44a-0e3f-4570-9dcf-7388fe1e2424}</Project>
-      <Name>AmeisenBotLib</Name>
+    <ProjectReference Include="..\AmeisenData\AmeisenData.csproj">
+      <Project>{4B6AB536-AF35-4970-89FB-B45BC495F8BE}</Project>
+      <Name>AmeisenData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmeisenDB\AmeisenDB.csproj">
+      <Project>{9B3F7A78-0A9B-492A-8299-9C86D2E297ED}</Project>
+      <Name>AmeisenDB</Name>
     </ProjectReference>
     <ProjectReference Include="..\AmeisenLogger\AmeisenLogger.csproj">
       <Project>{017a67a9-f7bd-46e3-b716-e1d601afca4b}</Project>
       <Name>AmeisenLogger</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenOffsets\AmeisenUtilities.csproj">
-      <Project>{5369e077-2dc4-4de5-9020-2c7ddb41686f}</Project>
+    <ProjectReference Include="..\AmeisenManager\AmeisenManager.csproj">
+      <Project>{6CA2C759-3166-4B71-A56D-E9BA28E72E33}</Project>
+      <Name>AmeisenManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmeisenMapping\AmeisenMapping.csproj">
+      <Project>{08DB57D7-287A-4C12-AB76-F5EE4A0F3395}</Project>
+      <Name>AmeisenMapping</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmeisenServer\AmeisenServer.csproj">
+      <Project>{0f5350c6-755b-4d32-8dfd-4057c925ef0d}</Project>
+      <Name>AmeisenServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmeisenUtilities\AmeisenUtilities.csproj">
+      <Project>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</Project>
       <Name>AmeisenUtilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WoW-LoginAutomator\WoW-LoginAutomator\WoWLoginAutomator.csproj">
+      <Project>{14811d57-c812-4651-85fa-7c65b974724b}</Project>
+      <Name>WoWLoginAutomator</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="AfterBuild">
+    <ItemGroup>
+      <MoveToLibFolder Include="$(OutputPath)*.dll ; $(OutputPath)*.pdb ; $(OutputPath)*.xml" />
+    </ItemGroup>
+    <Move SourceFiles="@(MoveToLibFolder)" DestinationFolder="$(OutputPath)lib" OverwriteReadOnlyFiles="true" />
+  </Target>
 </Project>

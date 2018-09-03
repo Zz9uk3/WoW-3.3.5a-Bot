@@ -1,28 +1,92 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using AmeisenUtilities;
+using Newtonsoft.Json;
+using System;
+using System.Collections;
+using System.IO;
 using System.Net;
-using System.Net.Sockets;
+using System.Timers;
 
 namespace AmeisenServer
 {
-    class AmeisenServer
+    internal class AmeisenServer
     {
-        private static TcpListener listener;
-        private static List<AmeisenServerThread> threads = new List<AmeisenServerThread>();
+        private static ArrayList activeBots;
+        private static int botID;
+        private static Timer timeoutTimer;
 
-        static void Main(string[] args)
+        private static NetworkBot ConvertRegisterDataToBot(HttpListenerRequest request)
+        {
+            string bodyContent = ReadBody(request);
+            NetworkRegData registerData = JsonConvert.DeserializeObject<NetworkRegData>(bodyContent);
+
+            NetworkBot convertedBot = new NetworkBot
+            {
+                id = botID,
+                me = registerData.Me,
+                ip = request.RemoteEndPoint.Address.ToString(),
+                base64Image = registerData.Base64Image,
+                lastUpdate = DateTimeOffset.Now.ToUnixTimeMilliseconds()
+            };
+            convertedBot.name = convertedBot.me.Name;
+
+            return convertedBot;
+        }
+
+        /// <summary>
+        /// THIS THING IS THE SHIT...
+        /// </summary>
+        /// <param name="ip">IP-Address</param>
+        /// <param name="httpMethod">GET, POST, PUT ...</param>
+        /// <param name="url">URL</param>
+        private static void FancyCW(string ip, string httpMethod, string url)
+        {
+            Console.Write("[");
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write(ip);
+            Console.ResetColor();
+
+            Console.Write("]{");
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(httpMethod);
+            Console.ResetColor();
+
+            Console.Write("}: ");
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write(url + "\n");
+            Console.ResetColor();
+        }
+
+        private static int GetBotPositionByID(int botID)
+        {
+            int count = 0;
+            foreach (NetworkBot b in activeBots)
+            {
+                if (b.id == botID)
+                    return count;
+                count++;
+            }
+            return -1;
+        }
+
+        private static void Main(string[] args)
         {
             Console.Title = "AmeisenServer";
-            IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, 16200);
 
-            string serverRunning = "#+ Starting AmeisenServer [" + endPoint.ToString() + "] +#";
+            activeBots = new ArrayList();
+            botID = 0;
+
+            WebServer webServer = new WebServer(SendResponse, "http://+:16200/");
+            string serverRunning = "#+        Starting AmeisenServer [0.0.0.0:16200]        +#";
             string fancyBar = "";
 
             foreach (char c in serverRunning)
                 fancyBar += "-";
+
+            Console.WindowWidth = fancyBar.Length + 1;
+            Console.BufferWidth = fancyBar.Length + 1;
 
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(fancyBar);
@@ -32,11 +96,15 @@ namespace AmeisenServer
             Console.WriteLine(fancyBar);
             Console.ResetColor();
 
-            listener = new TcpListener(endPoint);
-            listener.Start();
+            webServer.Run();
 
-            Thread mainThread = new Thread(new ThreadStart(Run));
-            mainThread.Start();
+            timeoutTimer = new Timer(1000);
+            timeoutTimer.Elapsed += TimeoutCheck;
+            timeoutTimer.Start();
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("+- Webserver started...");
+            Console.ResetColor();
 
             string cmd = "";
             while (!cmd.ToLower().Equals("stop"))
@@ -45,27 +113,110 @@ namespace AmeisenServer
                 if (!cmd.ToLower().Equals("stop"))
                     Console.WriteLine("unknown: " + cmd);
             }
-
-            mainThread.Abort();
-
-            foreach (AmeisenServerThread thread in threads)
-            {
-                thread.Stop = true;
-                while (thread.Running)
-                    Thread.Sleep(100);
-            }
-
-            listener.Stop();
+            timeoutTimer.Stop();
         }
 
-        public static void Run()
+        /// <summary>
+        /// Read the body of the request we just received
+        /// </summary>
+        /// <param name="request">request to read the body of</param>
+        /// <returns>body of the request as string</returns>
+        private static string ReadBody(HttpListenerRequest request)
         {
-            while (true)
+            if (!request.HasEntityBody)
+                return null;
+
+            using (Stream body = request.InputStream)
+            using (StreamReader reader = new StreamReader(body, request.ContentEncoding))
+                return reader.ReadToEnd();
+        }
+
+        private static int RemoveBot(HttpListenerRequest request)
+        {
+            string bodyContent = ReadBody(request);
+            int idToRemove = Convert.ToInt32(bodyContent.Split('[')[1].Replace("]", ""));
+            RemoveBotByID(idToRemove);
+            return idToRemove;
+        }
+
+        private static void RemoveBotByID(int idToRemove)
+        {
+            foreach (NetworkBot b in activeBots)
+                if (b.id == idToRemove)
+                {
+                    activeBots.Remove(b);
+                    break;
+                }
+        }
+
+        private static string SendResponse(HttpListenerRequest request)
+        {
+            // Bot GET ACTIVE BOTS
+            if (request.HttpMethod == "GET")
             {
-                TcpClient client = listener.AcceptTcpClient();
-                Console.WriteLine("Handling new Client: " + client.Client.RemoteEndPoint.ToString());
-                threads.Add(new AmeisenServerThread(client));
+                if (request.Url.ToString().Contains("activeBots"))
+                {
+                    ArrayList copyOfBotList = (ArrayList)activeBots.Clone();
+                    return JsonConvert.SerializeObject(copyOfBotList);
+                }
+                else
+                    return string.Format("Go to the ./web/ folder and open index.html for a webview lmao, this kind of \"shit\" will never get through here >:)");
             }
+            // Bot REGISTER
+            else if (request.HttpMethod == "POST")
+            {
+                if (request.Url.ToString().Contains("botRegister"))
+                {
+                    activeBots.Add(ConvertRegisterDataToBot(request));
+                    botID++;
+                    return "addedBot:[" + (botID - 1) + "]";
+                }
+                // Bot UNREGISTER
+                else if (request.Url.ToString().Contains("botUnregister"))
+                {
+                    return "removedBot:[" + RemoveBot(request) + "]";
+                }
+                // Bot UPDATE
+                else if (request.Url.ToString().Contains("botUpdate"))
+                {
+                    return "updatedBot:[" + UpdateBot(request) + "]";
+                }
+                // UNKNOWN
+                else
+                    return "unknown command";
+            }
+            else
+                return "AyyLMAO";
+        }
+
+        private static void TimeoutCheck(object sender, ElapsedEventArgs e)
+        {
+            foreach (NetworkBot bot in activeBots)
+                if (DateTimeOffset.Now.ToUnixTimeMilliseconds() - bot.lastUpdate > 5000)
+                    RemoveBotByID(bot.id);
+        }
+
+        private static int UpdateBot(HttpListenerRequest request)
+        {
+            string bodyContent = ReadBody(request);
+            int idToUpdate = Convert.ToInt32(bodyContent.Split(']')[0].Replace("]", ""));
+            string botContent = bodyContent.Split(']')[1];
+
+            SendableMe meSendable = JsonConvert.DeserializeObject<SendableMe>(botContent);
+
+            NetworkBot convertedBot = new NetworkBot
+            {
+                id = idToUpdate,
+                me = meSendable,
+                ip = request.RemoteEndPoint.Address.ToString(),
+                base64Image = ((NetworkBot)activeBots[GetBotPositionByID(idToUpdate)]).base64Image,
+                lastUpdate = DateTimeOffset.Now.ToUnixTimeMilliseconds()
+            };
+
+            convertedBot.name = convertedBot.me.Name;
+            activeBots[GetBotPositionByID(idToUpdate)] = convertedBot;
+
+            return idToUpdate;
         }
     }
 }

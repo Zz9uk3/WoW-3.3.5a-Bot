@@ -1,5 +1,4 @@
-﻿using AmeisenUtilities;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -23,67 +22,37 @@ namespace AmeisenLogging
     /// </summary>
     public class AmeisenLogEntry
     {
-        public LogLevel loglevel;
+        public string functionName;
         public int id;
-        public string timestamp;
+        public LogLevel loglevel;
         public string msg;
         public object originClass;
-        public string functionName;
+        public string timestamp;
 
         public override string ToString()
         {
-            return "[" + id + "][" + timestamp + "]\t[" + loglevel.ToString() + "][" + originClass.ToString() + ":" + functionName + "] - " + msg;
+            return "[" + id + "][" + timestamp + "]\t[" + loglevel.ToString() + "]\t[" + originClass.ToString() + ":" + functionName + "] - " + msg;
         }
     }
 
     public class AmeisenLogger
     {
-        private readonly string logPath = AppDomain.CurrentDomain.BaseDirectory + "/logs/";
-        private readonly string logName;
-
-        private LogLevel activeLogLevel;
-        private int logcount = 0;
-        private bool loggingActive;
-        private ConcurrentQueue<AmeisenLogEntry> entries;
-        private Thread loggingThread;
-
-        private static AmeisenLogger i;
-
-        private AmeisenLogger()
-        {
-            activeLogLevel = LogLevel.WARNING; // Default to avoid spam
-            loggingActive = true;
-            entries = new ConcurrentQueue<AmeisenLogEntry>();
-            loggingThread = new Thread(new ThreadStart(WorkOnQueue));
-            loggingThread.Start();
-            logName = DateTime.Now.ToString("dd-MM-yyyy") + "_" + DateTime.Now.ToString("HH-mm") + ".txt";
-        }
-
-        ~AmeisenLogger(){
-            GetInstance().StopLogging();
-        }
-
         /// <summary>
         /// Initialize/Get the instance of our singleton
         /// </summary>
         /// <returns>AmeisenLogger instance</returns>
-        public static AmeisenLogger GetInstance()
+        public static AmeisenLogger Instance
         {
-            if (i == null)
-                i = new AmeisenLogger();
-            return i;
+            get
+            {
+                lock (padlock)
+                {
+                    if (instance == null)
+                        instance = new AmeisenLogger();
+                    return instance;
+                }
+            }
         }
-
-        /// <summary>
-        /// Set the LogLevel that is going to be saved in the logs
-        /// </summary>
-        /// <param name="logLevel">LogLevel to save to the logfile</param>
-        public void SetActiveLogLevel(LogLevel logLevel) { activeLogLevel = logLevel; }
-
-        /// <summary>
-        /// Stop the logging thread, dont forget it!
-        /// </summary>
-        public void StopLogging() { loggingActive = false; }
 
         /// <summary>
         /// Add an entry to the log
@@ -91,7 +60,9 @@ namespace AmeisenLogging
         /// <param name="loglevel">LogLevel of this Log-Message</param>
         /// <param name="msg">...</param>
         /// <param name="self">Class that calls it / string with class name</param>
-        /// <param name="functionName">Function name that this is called by, no need to set this manually</param>
+        /// <param name="functionName">
+        /// Function name that this is called by, no need to set this manually
+        /// </param>
         /// <returns>The AmeisenLogEntry</returns>
         public AmeisenLogEntry Log(LogLevel loglevel, string msg, object self, [CallerMemberName]string functionName = "")
         {
@@ -113,6 +84,44 @@ namespace AmeisenLogging
             return logEntry;
         }
 
+        /// <summary>
+        /// Set the LogLevel that is going to be saved in the logs
+        /// </summary>
+        /// <param name="logLevel">LogLevel to save to the logfile</param>
+        public void SetActiveLogLevel(LogLevel logLevel) { activeLogLevel = logLevel; }
+
+        /// <summary>
+        /// Stop the logging thread, dont forget it!
+        /// </summary>
+        public void StopLogging() { loggingActive = false; }
+
+        private static readonly object padlock = new object();
+        private static AmeisenLogger instance;
+        private readonly string logName;
+        private readonly string logPath = AppDomain.CurrentDomain.BaseDirectory + "/logs/";
+        private LogLevel activeLogLevel;
+        private ConcurrentQueue<AmeisenLogEntry> entries;
+        private int logcount = 0;
+        private bool loggingActive;
+        private Thread loggingThread;
+
+        private AmeisenLogger()
+        {
+            activeLogLevel = LogLevel.WARNING; // Default to avoid spam
+            loggingActive = true;
+            entries = new ConcurrentQueue<AmeisenLogEntry>();
+            loggingThread = new Thread(new ThreadStart(WorkOnQueue));
+            loggingThread.Start();
+            logName = DateTime.Now.ToString("dd-MM-yyyy") + "_" + DateTime.Now.ToString("HH-mm") + ".txt";
+        }
+
+        private void SaveLogToFile(AmeisenLogEntry entry)
+        {
+            if (!Directory.Exists(logPath))
+                Directory.CreateDirectory(logPath);
+            File.AppendAllText(logPath + logName, entry.ToString() + Environment.NewLine);
+        }
+
         private void WorkOnQueue()
         {
             while (loggingActive)
@@ -126,13 +135,6 @@ namespace AmeisenLogging
                 }
                 Thread.Sleep(100);
             }
-        }
-
-        private void SaveLogToFile(AmeisenLogEntry entry)
-        {
-            if (!Directory.Exists(logPath))
-                Directory.CreateDirectory(logPath);
-            File.AppendAllText(logPath + logName, entry.ToString() + Environment.NewLine);
         }
     }
 }

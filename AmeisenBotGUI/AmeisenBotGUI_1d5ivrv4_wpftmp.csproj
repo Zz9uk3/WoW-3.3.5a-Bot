@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{54601391-C520-4EB3-A13E-7FD9B036389A}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>AmeisenBotGUI</RootNamespace>
+    <AssemblyName>AmeisenBotGUI</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CombatClassEditor.xaml.cs">
+      <DependentUpon>CombatClassEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DebugUI.xaml.cs">
+      <DependentUpon>DebugUI.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsWindow.xaml.cs">
+      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainscreenForm.xaml.cs">
+      <DependentUpon>MainscreenForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WoWSelectForm.xaml.cs">
+      <DependentUpon>WoWSelectForm.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="app.manifest">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AmeisenAI\AmeisenAI.csproj">
+      <Project>{3c281530-7a81-4803-bc85-de46ed2d6e74}</Project>
+      <Name>AmeisenAI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmeisenLogger\AmeisenLogger.csproj">
+      <Project>{017a67a9-f7bd-46e3-b716-e1d601afca4b}</Project>
+      <Name>AmeisenLogger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmeisenManager\AmeisenManager.csproj">
+      <Project>{6CA2C759-3166-4B71-A56D-E9BA28E72E33}</Project>
+      <Name>AmeisenManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmeisenUtilities\AmeisenUtilities.csproj">
+      <Project>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</Project>
+      <Name>AmeisenUtilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ReferencePath Include="C:\Users\Jannis\Source\Repos\WoW-3.3.5a-Bot\AmeisenAI\bin\Debug\AmeisenAI.dll" />
+    <ReferencePath Include="C:\Users\Jannis\Source\Repos\WoW-3.3.5a-Bot\AmeisenLogger\bin\Debug\AmeisenLogger.dll" />
+    <ReferencePath Include="C:\Users\Jannis\Source\Repos\WoW-3.3.5a-Bot\AmeisenManager\bin\Debug\AmeisenManager.dll" />
+    <ReferencePath Include="C:\Users\Jannis\Source\Repos\WoW-3.3.5a-Bot\AmeisenUtilities\bin\Debug\AmeisenOffsets.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\mscorlib.dll" />
+    <ReferencePath Include="C:\Users\Jannis\Source\Repos\WoW-3.3.5a-Bot\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\PresentationCore.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\PresentationFramework.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Core.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Data.DataSetExtensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Data.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Xaml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Xml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Xml.Linq.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\WindowsBase.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="C:\Users\Jannis\Source\Repos\WoW-3.3.5a-Bot\AmeisenBotGUI\obj\Debug\CombatClassEditor.g.cs" />
+    <Compile Include="C:\Users\Jannis\Source\Repos\WoW-3.3.5a-Bot\AmeisenBotGUI\obj\Debug\DebugUI.g.cs" />
+    <Compile Include="C:\Users\Jannis\Source\Repos\WoW-3.3.5a-Bot\AmeisenBotGUI\obj\Debug\MainscreenForm.g.cs" />
+    <Compile Include="C:\Users\Jannis\Source\Repos\WoW-3.3.5a-Bot\AmeisenBotGUI\obj\Debug\WoWSelectForm.g.cs" />
+    <Compile Include="C:\Users\Jannis\Source\Repos\WoW-3.3.5a-Bot\AmeisenBotGUI\obj\Debug\SettingsWindow.g.cs" />
+    <Compile Include="C:\Users\Jannis\Source\Repos\WoW-3.3.5a-Bot\AmeisenBotGUI\obj\Debug\App.g.cs" />
+  </ItemGroup>
+</Project>

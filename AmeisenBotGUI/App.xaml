@@ -2,9 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:AmeisenBotGUI"
-             StartupUri="WoWSelectForm.xaml">
+             StartupUri="SelectWindow.xaml">
     <Application.Resources>
-
         <Color x:Key="AccentColor">#FFAAAAAA</Color>
         <Color x:Key="BackgroundColor">#FF323232</Color>
         <Color x:Key="TextColor">#FFFFFFFF</Color>
@@ -17,6 +16,16 @@
         <Color x:Key="UnitColor">#FFD0FFD4</Color>
         <Color x:Key="PlayerColor">#FFD0FFFD</Color>
         <Color x:Key="MeColor">#FFFFD0D0</Color>
-        
+
+        <Color x:Key="WalkableNodeColorLow">#FFA0FF00</Color>
+        <Color x:Key="WalkableNodeColorHigh">#FF00FFFF</Color>
+        <Color x:Key="MeNodeColor">#FFFF6060</Color>
+
+        <Color x:Key="HealthColor">#FFFF6060</Color>
+        <Color x:Key="EnergyColor">#FFFFA160</Color>
+        <Color x:Key="EXPColor">#FFD4A0FF</Color>
+        <Color x:Key="TargetHealthColor">#FFFF6060</Color>
+        <Color x:Key="TargetEnergyColor">#FFFFA160</Color>
+        <Color x:Key="ThreadsColor">#FFFFFF60</Color>
     </Application.Resources>
 </Application>

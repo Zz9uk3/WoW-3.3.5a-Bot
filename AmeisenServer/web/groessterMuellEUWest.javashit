@@ -1,0 +1,54 @@
+﻿function RefreshPage()
+{
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function () 
+    {
+        if (xmlhttp.readyState === 4) {
+            if(xmlhttp.status === 200) {
+                var activeBots = JSON.parse(xmlhttp.responseText);
+                var serverStats = "";
+                var htmlActiveBots = "";
+                var htmlCharacterInfo = "";
+                
+                serverStats += "<span class=\"uk-label\">Active Bots: " + activeBots.length + "</span> ";
+                
+                activeBots.forEach(function(element){
+					htmlActiveBots += "<span class=\"uk-label\">" + element.id + "</span> ";
+                    htmlActiveBots += "<span class=\"uk-label uk-label-danger\">" + element.ip + "</span> ";
+                    htmlActiveBots += "<span class=\"uk-label uk-label-warning\">" + element.name + "</span>";
+                    htmlActiveBots += "<br>";
+                    
+                    htmlCharacterInfo += "<div class=\"uk-width-medium-1-2\">";
+                    htmlCharacterInfo += "<div class=\"uk-panel uk-panel-box\">";
+                    htmlCharacterInfo += "<span class=\"uk-label\">" + element.id + "</span> ";
+                    htmlCharacterInfo += "<span class=\"uk-label\">lvl. " + element.me.Level + "</span> ";
+                    htmlCharacterInfo += "<span class=\"uk-label\">" + element.me.Name + "</span> ";
+                    
+                    htmlCharacterInfo += "<span class=\"uk-label uk-label-danger\">" + element.me.Health + "/" + element.me.MaxHealth + "</span> ";
+                    
+                    htmlCharacterInfo += "<span class=\"uk-label uk-label-danger\">" + element.me.Energy + "/" + element.me.MaxEnergy + "</span> ";
+                    
+                    htmlCharacterInfo += "<span class=\"uk-label uk-label-warning\">" + element.me.Exp + "/" + element.me.MaxExp + "xp</span> ";
+                    
+                    htmlCharacterInfo += "<span class=\"uk-label uk-label-success\">X: " + element.me.Pos.x + " Y: " + element.me.Pos.y + " Z: " + element.me.Pos.z + "</span> ";
+                    
+                    htmlCharacterInfo += "<span class=\"uk-label\">Rotation: " + element.me.Rotation + "</span> ";
+                    
+                    htmlCharacterInfo += "</div>";
+                    htmlCharacterInfo += "</div>";
+                });
+                
+                document.getElementById("serverStats").innerHTML = serverStats;
+                document.getElementById("activeBots").innerHTML = htmlActiveBots;
+                document.getElementById("characterInfo").innerHTML = htmlCharacterInfo;
+            }
+        }
+    };
+
+    var baseUrl = "http://127.0.0.1:16200/activeBots";
+    
+    xmlhttp.open("GET", baseUrl, true);
+    xmlhttp.send();
+}
+
+setInterval(RefreshPage, 1000);
