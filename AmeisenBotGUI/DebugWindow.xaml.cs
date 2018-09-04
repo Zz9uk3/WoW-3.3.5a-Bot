@@ -18,6 +18,7 @@ namespace AmeisenBotGUI
         {
             InitializeComponent();
             BotManager = AmeisenBotManager.Instance;
+            Topmost = BotManager.Settings.topMost;
         }
 
         private AmeisenBotManager BotManager { get; }
@@ -33,6 +34,11 @@ namespace AmeisenBotGUI
         }
 
         private void DebugUI_Loaded(object sender, RoutedEventArgs e)
+        {
+            StartUIUpdatTimer();
+        }
+
+        private void StartUIUpdatTimer()
         {
             DispatcherTimer uiUpdateTimer = new DispatcherTimer();
             uiUpdateTimer.Tick += new EventHandler(ObjectUpdateTimer_Tick);

@@ -55,9 +55,9 @@ namespace AmeisenAI.Combat
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("[" + Priority);
-            sb.Append("] " + Action.ToString());
-            sb.Append(" - " + Parameters.ToString());
+            sb.Append($"[{Priority}");
+            sb.Append($"] {Action.ToString()}");
+            sb.Append($" - {Parameters.ToString()}");
 
             return sb.ToString();
         }
@@ -84,16 +84,16 @@ namespace AmeisenAI.Combat
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(conditionLuaUnits[0].ToString());
-            sb.Append(" " + conditionValues[0].ToString());
-            sb.Append(" ? " + statement.ToString());
+            sb.Append($" {conditionValues[0].ToString()}");
+            sb.Append($" ? {statement.ToString()}");
             if (customSecondValue)
             {
-                sb.Append(" ? " + conditionLuaUnits[1].ToString());
-                sb.Append(" " + conditionValues[1].ToString());
+                sb.Append($" ? {conditionLuaUnits[1].ToString()}");
+                sb.Append($" {conditionValues[1].ToString()}");
             }
             else
             {
-                sb.Append(" ? " + customValue);
+                sb.Append($" ? {customValue}");
             }
 
             return sb.ToString(); ;

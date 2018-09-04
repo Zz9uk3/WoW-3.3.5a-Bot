@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 
 namespace AmeisenLogging
@@ -31,7 +32,16 @@ namespace AmeisenLogging
 
         public override string ToString()
         {
-            return "[" + id + "][" + timestamp + "]\t[" + loglevel.ToString() + "]\t[" + originClass.ToString() + ":" + functionName + "] - " + msg;
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append($"[{id}]");
+            sb.Append($"[{ timestamp}]\t");
+            sb.Append($"[{loglevel.ToString()}]\t");
+            sb.Append($"[{ originClass.ToString()}:");
+            sb.Append($"{ functionName}] - ");
+            sb.Append(msg);
+
+            return sb.ToString();
         }
     }
 
@@ -112,7 +122,7 @@ namespace AmeisenLogging
             entries = new ConcurrentQueue<AmeisenLogEntry>();
             loggingThread = new Thread(new ThreadStart(WorkOnQueue));
             loggingThread.Start();
-            logName = DateTime.Now.ToString("dd-MM-yyyy") + "_" + DateTime.Now.ToString("HH-mm") + ".txt";
+            logName = $"{DateTime.Now.ToString("dd-MM-yyyy")}_{DateTime.Now.ToString("HH-mm")}.txt";
         }
 
         private void SaveLogToFile(AmeisenLogEntry entry)
@@ -124,16 +134,13 @@ namespace AmeisenLogging
 
         private void WorkOnQueue()
         {
-            while (loggingActive)
+            while (loggingActive || !entries.IsEmpty)
             {
-                if (!entries.IsEmpty)
+                if (entries.TryDequeue(out AmeisenLogEntry currentEntry))
                 {
-                    if (entries.TryDequeue(out AmeisenLogEntry currentEntry))
-                    {
-                        SaveLogToFile(currentEntry);
-                    }
+                    SaveLogToFile(currentEntry);
                 }
-                Thread.Sleep(100);
+                Thread.Sleep(1);
             }
         }
     }

@@ -37,12 +37,12 @@ namespace AmeisenAI
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("Type: " + ActionType + ", ");
+            sb.Append($"Type: {ActionType}, ");
             if (ActionParams != null)
-                sb.Append("ActionParams: " + ActionParams.ToString() + ", ");
-            sb.Append("IsDone: " + IsDone.ToString());
+                sb.Append($"ActionParams: {ActionParams.ToString()}, ");
+            sb.Append($"IsDone: {IsDone.ToString()}");
             if (Callback != null)
-                sb.Append("Callback: " + Callback.ToString());
+                sb.Append($"Callback: {Callback.ToString()}");
             return sb.ToString();
         }
     }

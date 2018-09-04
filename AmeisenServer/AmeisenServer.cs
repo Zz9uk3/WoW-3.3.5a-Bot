@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Timers;
 
 namespace AmeisenServer
@@ -80,10 +81,10 @@ namespace AmeisenServer
 
             WebServer webServer = new WebServer(SendResponse, "http://+:16200/");
             string serverRunning = "#+        Starting AmeisenServer [0.0.0.0:16200]        +#";
-            string fancyBar = "";
+            StringBuilder fancyBar = new StringBuilder();
 
             foreach (char c in serverRunning)
-                fancyBar += "-";
+                fancyBar.Append("-");
 
             Console.WindowWidth = fancyBar.Length + 1;
             Console.BufferWidth = fancyBar.Length + 1;
@@ -111,7 +112,7 @@ namespace AmeisenServer
             {
                 cmd = Console.ReadLine();
                 if (!cmd.ToLower().Equals("stop"))
-                    Console.WriteLine("unknown: " + cmd);
+                    Console.WriteLine($"unknown: {cmd}");
             }
             timeoutTimer.Stop();
         }

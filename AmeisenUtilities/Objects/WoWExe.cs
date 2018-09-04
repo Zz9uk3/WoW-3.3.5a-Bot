@@ -2,14 +2,14 @@
 
 namespace AmeisenUtilities
 {
-    public class WoWExe
+    public class WowExe
     {
         public string characterName;
         public Process process;
 
         public override string ToString()
         {
-            return process.Id.ToString() + " - " + characterName;
+            return $"{process.Id.ToString()} - {characterName}";
         }
     }
 }

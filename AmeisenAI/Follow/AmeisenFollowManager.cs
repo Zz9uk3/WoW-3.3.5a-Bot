@@ -152,7 +152,7 @@ namespace AmeisenAI.Follow
             if (Utils.GetDistance(Me.pos, activeUnit.pos) > AmeisenSettings.Instance.Settings.followDistance)
             {
                 arrivedAtUnit = false;
-                AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Following Unit: " + activeUnit.Name, this);
+                AmeisenLogger.Instance.Log(LogLevel.VERBOSE, $"Following Unit: {activeUnit.Name}", this);
                 AmeisenAction ameisenAction = new AmeisenAction(
                                     AmeisenActionType.MOVE_NEAR_POSITION,
                                     new object[] {
@@ -164,7 +164,7 @@ namespace AmeisenAI.Follow
                 AmeisenAIManager.Instance.AddActionToQueue(ref ameisenAction);
 
                 // Slow follow, falling behind the master quite fast
-                //while (!ameisenAction.IsDone) { Thread.Sleep(50); }
+                while (!ameisenAction.IsDone) { Thread.Sleep(1); }
             }
         }
 

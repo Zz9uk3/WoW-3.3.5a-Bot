@@ -24,39 +24,39 @@ namespace AmeisenUtilities
             StringBuilder sb = new StringBuilder();
 
             sb.Append("ME");
-            sb.Append(" >> Address: " + BaseAddress.ToString("X"));
-            sb.Append(" >> Descriptor: " + Descriptor.ToString("X"));
-            sb.Append(" >> InCombat: " + InCombat.ToString());
-            sb.Append(" >> Name: " + Name);
-            sb.Append(" >> GUID: " + Guid);
-            sb.Append(" >> PosX: " + pos.X);
-            sb.Append(" >> PosY: " + pos.Y);
-            sb.Append(" >> PosZ: " + pos.Z);
-            sb.Append(" >> Rotation: " + Rotation);
-            sb.Append(" >> Distance: " + Distance);
-            sb.Append(" >> MapID: " + MapID);
-            sb.Append(" >> ZoneID: " + ZoneID);
+            sb.Append($" >> Address: {BaseAddress.ToString("X")}");
+            sb.Append($" >> Descriptor: {Descriptor.ToString("X")}");
+            sb.Append($" >> InCombat: {InCombat.ToString()}");
+            sb.Append($" >> Name: {Name}");
+            sb.Append($" >> GUID: {Guid}");
+            sb.Append($" >> PosX: {pos.X}");
+            sb.Append($" >> PosY: {pos.Y}");
+            sb.Append($" >> PosZ: {pos.Z}");
+            sb.Append($" >> Rotation: {Rotation}");
+            sb.Append($" >> Distance: {Distance}");
+            sb.Append($" >> MapID: {MapID}");
+            sb.Append($" >> ZoneID: {ZoneID}");
 
             if (TargetGuid != 0)
-                sb.Append(" >> TargetGUID: " + TargetGuid.ToString());
+                sb.Append($" >> TargetGUID: {TargetGuid.ToString()}");
             else
                 sb.Append(" >> Target: none");
-            sb.Append(" >> currentState: " + CurrentState);
-            sb.Append(" >> level: " + Level);
-            sb.Append(" >> health: " + Health);
-            sb.Append(" >> maxHealth: " + MaxHealth);
-            sb.Append(" >> energy: " + Energy);
-            sb.Append(" >> maxEnergy: " + MaxEnergy);
-
-            sb.Append(" >> exp: " + Exp);
-            sb.Append(" >> maxExp: " + MaxExp);
-
-            sb.Append(" >> partyLeader: " + PartyleaderGUID);
+            sb.Append($" >> currentState: {CurrentState}");
+            sb.Append($" >> level: {Level}");
+            sb.Append($" >> health: {Health}");
+            sb.Append($" >> maxHealth: {MaxHealth}");
+            sb.Append($" >> energy: {Energy}");
+            sb.Append($" >> maxEnergy: {MaxEnergy}");
+                      
+            sb.Append($" >> exp: {Exp}");
+            sb.Append($" >> maxExp: {MaxExp}");
+                      
+            sb.Append($" >> partyLeader: {PartyleaderGUID}");
 
             int count = 1;
             foreach (ulong guid in PartymemberGuids)
             {
-                sb.Append(" >> partymember" + count + ": " + guid);
+                sb.Append($" >> partymember{count}: {guid}");
                 count++;
             }
             return sb.ToString();

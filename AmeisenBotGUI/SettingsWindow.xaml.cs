@@ -17,6 +17,7 @@ namespace AmeisenBotGUI
         {
             InitializeComponent();
             BotManager = AmeisenBotManager.Instance;
+            Topmost = BotManager.Settings.topMost;
         }
 
         private AmeisenBotManager BotManager { get; }
@@ -39,29 +40,34 @@ namespace AmeisenBotGUI
                 RestoreDirectory = true,
                 Filter = "Images|*.png;*.jpg;*.bmp"
             };
-
             if (openFileDialog.ShowDialog() == true)
             {
-                string configDir = AppDomain.CurrentDomain.BaseDirectory + "config/";
-                string imageDir = AppDomain.CurrentDomain.BaseDirectory + "config/img/";
-
-                if (!Directory.Exists(configDir))
-                {
-                    Directory.CreateDirectory(configDir);
-                }
-
-                if (!Directory.Exists(imageDir))
-                {
-                    Directory.CreateDirectory(imageDir);
-                }
-
-                string imagePath = AppDomain.CurrentDomain.BaseDirectory + "config/img/" + openFileDialog.SafeFileName;
-
-                File.Copy(openFileDialog.FileName, imagePath);
-
-                BotManager.Settings.picturePath = imagePath;
-                labelSelectedPicture.Content = openFileDialog.SafeFileName;
+                LoadBotPicture(openFileDialog.FileName);
             }
+        }
+
+        private void LoadBotPicture(string fileName)
+        {
+            string configDir = AppDomain.CurrentDomain.BaseDirectory + "config/";
+            string imageDir = AppDomain.CurrentDomain.BaseDirectory + "config/img/";
+
+            if (!Directory.Exists(configDir))
+            {
+                Directory.CreateDirectory(configDir);
+            }
+
+            if (!Directory.Exists(imageDir))
+            {
+                Directory.CreateDirectory(imageDir);
+            }
+
+            string imagePath = $"{AppDomain.CurrentDomain.BaseDirectory}config\\\\img\\\\{Path.GetFileName(fileName)}";
+
+            File.Copy(fileName, imagePath);
+
+            BotManager.Settings.picturePath = imagePath;
+            labelSelectedPicture.Content = Path.GetFileName(fileName);
+
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -116,39 +122,61 @@ namespace AmeisenBotGUI
                 //something is wrong...
             }
 
-            BotManager.Settings.ameisenServerIP = textboxIP.Text;
-            BotManager.Settings.ameisenServerPort = Convert.ToInt32(textboxPort.Text);
-            BotManager.Settings.serverAutoConnect = (bool)checkboxAutoConnect.IsChecked;
+            SaveSettings();
+        }
 
-            BotManager.Settings.databaseIP = textboxDBIP.Text;
-            BotManager.Settings.databasePort = Convert.ToInt32(textboxDBPort.Text);
-            BotManager.Settings.databaseName = textboxDBDatabase.Text;
-            BotManager.Settings.databaseUsername = textboxDBUsername.Text;
-            BotManager.Settings.databasePasswort = textboxDBPassword.Password;
-            BotManager.Settings.databaseAutoConnect = (bool)checkboxDBAutoConnect.IsChecked;
+        /// <summary>
+        /// Save settings from UI
+        /// </summary>
+        private void SaveSettings()
+        {
+            SaveAmeisenServerSettings();
+            SaveDatabaseSettings();
+            SaveMapUISettings();
+            SaveMainUISettings();
 
-            BotManager.Settings.accentColor = ((Color)Application.Current.Resources["AccentColor"]).ToString();
-            BotManager.Settings.backgroundColor = ((Color)Application.Current.Resources["BackgroundColor"]).ToString();
-            BotManager.Settings.textColor = ((Color)Application.Current.Resources["TextColor"]).ToString();
+            BotManager.SaveSettingsToFile(BotManager.GetLoadedConfigName());
+        }
 
+        private void SaveMapUISettings()
+        {
             BotManager.Settings.walkableNodeColorLow = ((Color)Application.Current.Resources["WalkableNodeColorLow"]).ToString();
             BotManager.Settings.walkableNodeColorHigh = ((Color)Application.Current.Resources["WalkableNodeColorHigh"]).ToString();
             BotManager.Settings.meNodeColor = ((Color)Application.Current.Resources["MeNodeColor"]).ToString();
+        }
 
+        private void SaveAmeisenServerSettings()
+        {
+            BotManager.Settings.ameisenServerIP = textboxIP.Text;
+            BotManager.Settings.ameisenServerPort = Convert.ToInt32(textboxPort.Text);
+            BotManager.Settings.serverAutoConnect = (bool)checkboxAutoConnect.IsChecked;
+        }
+
+        private void SaveMainUISettings()
+        {
+            BotManager.Settings.accentColor = ((Color)Application.Current.Resources["AccentColor"]).ToString();
+            BotManager.Settings.backgroundColor = ((Color)Application.Current.Resources["BackgroundColor"]).ToString();
+            BotManager.Settings.textColor = ((Color)Application.Current.Resources["TextColor"]).ToString();
             BotManager.Settings.healthColor = ((Color)Application.Current.Resources["healthColor"]).ToString();
             BotManager.Settings.energyColor = ((Color)Application.Current.Resources["energyColor"]).ToString();
             BotManager.Settings.expColor = ((Color)Application.Current.Resources["expColor"]).ToString();
             BotManager.Settings.targetHealthColor = ((Color)Application.Current.Resources["targetHealthColor"]).ToString();
             BotManager.Settings.targetEnergyColor = ((Color)Application.Current.Resources["targetEnergyColor"]).ToString();
             BotManager.Settings.threadsColor = ((Color)Application.Current.Resources["threadsColor"]).ToString();
+        }
 
-            BotManager.SaveSettingsToFile(BotManager.GetLoadedConfigName());
+        private void SaveDatabaseSettings()
+        {
+            BotManager.Settings.databaseIP = textboxDBIP.Text;
+            BotManager.Settings.databasePort = Convert.ToInt32(textboxDBPort.Text);
+            BotManager.Settings.databaseName = textboxDBDatabase.Text;
+            BotManager.Settings.databaseUsername = textboxDBUsername.Text;
+            BotManager.Settings.databasePasswort = textboxDBPassword.Password;
+            BotManager.Settings.databaseAutoConnect = (bool)checkboxDBAutoConnect.IsChecked;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            labelSelectedPicture.Content = Path.GetFileName(BotManager.Settings.picturePath);
-
             switch (BotManager.Settings.dataRefreshRate)
             {
                 case 1000:
@@ -201,10 +229,31 @@ namespace AmeisenBotGUI
                     break;
             }
 
+            LoadSettings();
+        }
+
+        /// <summary>
+        /// Load settings to UI
+        /// </summary>
+        private void LoadSettings()
+        {
+            labelSelectedPicture.Content = Path.GetFileName(BotManager.Settings.picturePath);
+
+            LoadAmeisenServerSettings();
+            LoadDatabaseSettings();
+
+            // Colors are already loaded
+        }
+
+        private void LoadAmeisenServerSettings()
+        {
             textboxIP.Text = BotManager.Settings.ameisenServerIP;
             textboxPort.Text = BotManager.Settings.ameisenServerPort.ToString();
             checkboxAutoConnect.IsChecked = BotManager.Settings.serverAutoConnect;
+        }
 
+        private void LoadDatabaseSettings()
+        {
             textboxDBIP.Text = BotManager.Settings.databaseIP;
             textboxDBPort.Text = BotManager.Settings.databasePort.ToString();
             textboxDBDatabase.Text = BotManager.Settings.databaseName;

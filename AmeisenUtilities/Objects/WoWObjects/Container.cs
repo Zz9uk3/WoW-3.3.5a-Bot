@@ -14,16 +14,16 @@ namespace AmeisenUtilities
             StringBuilder sb = new StringBuilder();
 
             sb.Append("CONTAINER");
-            sb.Append(" >> Address: " + BaseAddress.ToString("X"));
-            sb.Append(" >> Name: " + Name);
-            sb.Append(" >> GUID: " + Guid);
-            sb.Append(" >> PosX: " + pos.X);
-            sb.Append(" >> PosY: " + pos.Y);
-            sb.Append(" >> PosZ: " + pos.Z);
-            sb.Append(" >> Rotation: " + Rotation);
-            sb.Append(" >> Distance: " + Distance);
-            sb.Append(" >> MapID: " + MapID);
-            sb.Append(" >> ZoneID: " + ZoneID);
+            sb.Append($" >> Address: {BaseAddress.ToString("X")}");
+            sb.Append($" >> Name: {Name}");
+            sb.Append($" >> GUID: {Guid}");
+            sb.Append($" >> PosX: {pos.X}");
+            sb.Append($" >> PosY: {pos.Y}");
+            sb.Append($" >> PosZ: {pos.Z}");
+            sb.Append($" >> Rotation: {Rotation}");
+            sb.Append($" >> Distance: {Distance}");
+            sb.Append($" >> MapID: {MapID}");
+            sb.Append($" >> ZoneID: {ZoneID}");
 
             return sb.ToString();
         }

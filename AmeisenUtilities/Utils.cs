@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Media.Imaging;
 
@@ -63,6 +64,39 @@ namespace AmeisenUtilities
                 f = f - (float)Math.PI * 2.0f;
 
             return (f >= (rotationA * 0.7)) && (f <= (rotationA * 1.3)) ? true : false;
+        }
+
+        public static string FirstCharToUpper(string input)
+        {
+            return input?.First().ToString().ToUpper() + input?.Substring(1);
+        }
+
+        public static System.Windows.Media.Color InterpolateColors(System.Windows.Media.Color[] colors, double factor)
+        {
+            double r = 0.0, g = 0.0, b = 0.0;
+            double total = 0.0;
+            double step = 1.0 / (double)(colors.Length - 1);
+            double mu = 0.0;
+            double sigma_2 = 0.035;
+
+            foreach (System.Windows.Media.Color color in colors)
+            {
+                total += Math.Exp(-(factor - mu) * (factor - mu) / (2.0 * sigma_2)) / Math.Sqrt(2.0 * Math.PI * sigma_2);
+                mu += step;
+            }
+
+            mu = 0.0;
+            foreach (System.Windows.Media.Color color in colors)
+            {
+                double percent = Math.Exp(-(factor - mu) * (factor - mu) / (2.0 * sigma_2)) / Math.Sqrt(2.0 * Math.PI * sigma_2);
+                mu += step;
+
+                r += color.R * percent / total;
+                g += color.G * percent / total;
+                b += color.B * percent / total;
+            }
+
+            return System.Windows.Media.Color.FromArgb(255, (byte)r, (byte)g, (byte)b);
         }
     }
 }
