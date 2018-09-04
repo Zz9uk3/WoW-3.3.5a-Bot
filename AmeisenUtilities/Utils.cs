@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Media.Imaging;
 
@@ -63,6 +64,11 @@ namespace AmeisenUtilities
                 f = f - (float)Math.PI * 2.0f;
 
             return (f >= (rotationA * 0.7)) && (f <= (rotationA * 1.3)) ? true : false;
+        }
+
+        public static string FirstCharToUpper(string input)
+        {
+            return input?.First().ToString().ToUpper() + input?.Substring(1);
         }
 
         public static System.Windows.Media.Color InterpolateColors(System.Windows.Media.Color[] colors, double factor)

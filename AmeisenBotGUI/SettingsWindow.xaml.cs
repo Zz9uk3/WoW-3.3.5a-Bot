@@ -17,6 +17,7 @@ namespace AmeisenBotGUI
         {
             InitializeComponent();
             BotManager = AmeisenBotManager.Instance;
+            Topmost = BotManager.Settings.topMost;
         }
 
         private AmeisenBotManager BotManager { get; }

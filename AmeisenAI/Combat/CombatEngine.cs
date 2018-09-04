@@ -94,6 +94,10 @@ namespace AmeisenAI.Combat
                     // Loot the Guid's from guidsWithPotentialLoot List
                     LootGuidsThatAreMine();
                 }
+                else
+                {
+                    AmeisenAIManager.Instance.IsAllowedToMove = false;
+                }
             }
         }
 
@@ -281,7 +285,7 @@ namespace AmeisenAI.Combat
                 return false;
 
             // Make sure we are not dead or casting
-            if (AmeisenDataHolder.Instance.IsDead || Me.IsCasting)
+            if (Me.Health < 1 || Me.IsCasting)
                 return false;
 
             if (!CheckCombatOnly(entry))
@@ -422,16 +426,16 @@ namespace AmeisenAI.Combat
             if (isMeleeSpell)
             {
                 AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"MeleeSpell: Forced to move to:{Target.Name}", this);
-
+                AmeisenAIManager.Instance.IsAllowedToMoveNearTarget = true;
                 object[] parameters = new object[2] { Target.pos, entry.MaxSpellDistance * 0.8 }; // 20% Offset to move in
-                action = new AmeisenAction(AmeisenActionType.FORCE_MOVE_TO_POSITION, parameters, null);
+                action = new AmeisenAction(AmeisenActionType.MOVE_TO_POSITION, parameters, null);
             }
             else
             {
                 AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"RangedSpell: Forced to move to:{Target.Name}", this);
-
+                AmeisenAIManager.Instance.IsAllowedToMoveNearTarget = true;
                 object[] parameters = new object[2] { Target.pos, entry.MaxSpellDistance * 0.8 }; // 20% Offset to move in
-                action = new AmeisenAction(AmeisenActionType.FORCE_MOVE_NEAR_TARGET, parameters, null);
+                action = new AmeisenAction(AmeisenActionType.MOVE_NEAR_POSITION, parameters, null);
             }
 
             AmeisenAIManager.Instance.AddActionToQueue(ref action);
@@ -466,6 +470,7 @@ namespace AmeisenAI.Combat
         private void SelectTarget()
         {
             // Assist our Partymembers to notice new Guid's to be killed
+            //if (AmeisenDataHolder.Instance.IsAllowedToAssistParty)
             AssistPartyMembers();
 
             if (Target != null)
@@ -482,6 +487,7 @@ namespace AmeisenAI.Combat
         {
             // TODO: fix this junk
             //AmeisenCore.TargetGUID(GuidsToKill.FirstOrDefault());
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Target Guid: {GuidsToKill.FirstOrDefault()}", this);
         }
 
         private void AssistPartyMembers()
@@ -501,23 +507,27 @@ namespace AmeisenAI.Combat
                         if (activeUnit.InCombat)
                         {
                             ulong partymemberTargetGuid = activeUnit.TargetGuid;
+                            AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Partymember Guid: {partymemberTargetGuid}", this);
 
+                            Target.Update();
                             // If we have no target, assist our partymembers
-                            if (Target.Guid == 0)
-                            {
-                                AmeisenCore.RunSlashCommand($"/assist party{i}");
-                                if (!GuidsToKill.Contains(partymemberTargetGuid))
-                                    GuidsToKill.Add(partymemberTargetGuid);
-                            }
+                            /*if (Target == null || Target.Guid == 0)
+                            {*/
+                            AmeisenCore.RunSlashCommand($"/assist party{i}");
+                            Me.Update();
+                            if (!GuidsToKill.Contains(Me.TargetGuid))
+                                GuidsToKill.Add(Me.TargetGuid);
+                            //AmeisenCore.LuaDoString("AttackTarget();");
+                            /*}
                             else // if we have a target, add it to the "To-Be-Killed"-List
                             {
                                 if (!GuidsToKill.Contains(partymemberTargetGuid))
                                     GuidsToKill.Add(partymemberTargetGuid);
-                            }
+                            }*/
 
                             // Start combat if we aren't already InCombat
                             if (!Me.InCombat)
-                                AmeisenCore.AttackTarget(Me);
+                                AmeisenCore.LuaDoString("AttackTarget();");
                         }
                         i++;
                         break;
@@ -526,6 +536,7 @@ namespace AmeisenAI.Combat
 
             }
             catch { }
+            Thread.Sleep(100);
         }
     }
 }

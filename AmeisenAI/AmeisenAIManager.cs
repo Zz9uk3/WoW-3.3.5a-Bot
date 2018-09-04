@@ -172,6 +172,8 @@ namespace AmeisenAI
             set { AmeisenDataHolder.Instance.Target = value; }
         }
 
+        public bool IsAllowedToMoveNearTarget { get; internal set; }
+
         /// <summary> Modify our go-to-position by a small factor to provide "naturality" </summary>
         /// <param name="targetPos">pos you want to go to/param> 
         /// <param name="distanceToTarget">distance to keep to the target</param> 
@@ -265,9 +267,9 @@ namespace AmeisenAI
             AddActionToQueue(ref ameisenAction);
         }
 
-        private void MoveNearPosition(Vector3 position, double distance, ref AmeisenAction ameisenAction, bool shouldStopInRange = false)
+        private void MoveNearPosition(Vector3 position, double distance, ref AmeisenAction ameisenAction)
         {
-            double distanceToPoint = Utils.GetDistance(Me.pos, position);
+            double distanceToPoint = Utils.GetDistance(Me.pos, position) - 2;
 
             if (distanceToPoint > distance)
             {
@@ -289,16 +291,6 @@ namespace AmeisenAI
             }
             else
             {
-                if (shouldStopInRange)
-                {
-                    Me.Update();
-                    Vector3 currentPosition = AmeisenDataHolder.Instance.Me.pos;
-                    if (currentPosition.X != 0 && currentPosition.Y != 0 && currentPosition.Z != 0)
-                    {
-                        AmeisenCoreUtils.AmeisenCore.MovePlayerToXYZ(currentPosition, InteractionType.STOP);
-                    }
-                }
-
                 ameisenAction.ActionIsDone();
             }
         }
@@ -349,14 +341,6 @@ namespace AmeisenAI
                     ProcessActionMoveNearPosition(ref currentAction);
                     break;
 
-                case AmeisenActionType.FORCE_MOVE_TO_POSITION:
-                    ProcessActionMoveToPosition(ref currentAction, true);
-                    break;
-
-                case AmeisenActionType.FORCE_MOVE_NEAR_TARGET:
-                    ProcessActionMoveNearPosition(ref currentAction, true);
-                    break;
-
                 case AmeisenActionType.FACETARGET:
                     FaceTarget(ref currentAction);
                     break;
@@ -395,17 +379,17 @@ namespace AmeisenAI
                 currentAction.ActionIsDone();
         }
 
-        private void ProcessActionMoveNearPosition(ref AmeisenAction currentAction, bool force = false)
+        private void ProcessActionMoveNearPosition(ref AmeisenAction currentAction)
         {
-            if (IsAllowedToMove || force)
+            if (IsAllowedToMove || IsAllowedToMoveNearTarget)
                 MoveNearPosition((Vector3)((object[])currentAction.ActionParams)[0], (double)((object[])currentAction.ActionParams)[1], ref currentAction);
             else
                 currentAction.ActionIsDone();
         }
 
-        private void ProcessActionMoveToPosition(ref AmeisenAction currentAction, bool force = false)
+        private void ProcessActionMoveToPosition(ref AmeisenAction currentAction)
         {
-            if (IsAllowedToMove || force)
+            if (IsAllowedToMove || IsAllowedToMoveNearTarget)
                 MoveToPosition((Vector3)currentAction.ActionParams, AmeisenSettings.Instance.Settings.followDistance, ref currentAction);
             else
                 currentAction.ActionIsDone();

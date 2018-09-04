@@ -1,6 +1,8 @@
-﻿using AmeisenMapping.objects;
+﻿using AmeisenLogging;
+using AmeisenMapping.objects;
 using Dapper;
 using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -63,7 +65,7 @@ namespace AmeisenDB
 
             IsConnected = false;
         }
-
+        
         /// <summary> Get all saved nodes by the zone & map id </summary> <param name="zoneID">zone
         /// id to get the nodes from</param> <param name="mapID">map id to get the nodes from</param>
         /// <returns>list containing all the MapNodes</returns>
@@ -74,23 +76,29 @@ namespace AmeisenDB
                 StringBuilder sqlQuery = new StringBuilder();
                 sqlQuery.Append($"SELECT * FROM {TABLE_NAME_NODES} ");
                 sqlQuery.Append($"WHERE zone_id = {zoneID} AND ");
-                sqlQuery.Append($"map_id = {mapID}");
+                sqlQuery.Append($"map_id = {mapID} ");
 
                 if (maxX != 0)
-                    sqlQuery.Append($" AND x < {maxX}");
+                    sqlQuery.Append($"AND x < {maxX} ");
                 if (maxY != 0)
-                    sqlQuery.Append($" AND y < {maxY}");
+                    sqlQuery.Append($"AND y < {maxY} ");
                 if (minX != 0)
-                    sqlQuery.Append($" AND x > {minX}");
+                    sqlQuery.Append($"AND x > {minX} ");
                 if (minY != 0)
-                    sqlQuery.Append($" AND y > {minY}");
+                    sqlQuery.Append($"AND y > {minY} ");
 
                 sqlQuery.Append(";");
+
                 try
                 {
-                    return sqlConnection.Query<MapNode>(sqlQuery.ToString()).AsList();
+                    List<MapNode> nodeList = sqlConnection.Query<MapNode>(sqlQuery.ToString()).AsList();
+                    return nodeList;
                 }
-                catch { return new List<MapNode>(); }
+                catch 
+                {
+                    //AmeisenLogger.Instance.Log(LogLevel.ERROR, "Query error: " + e.ToString(), this);
+                    return new List<MapNode>();
+                }
             }
             else
             {

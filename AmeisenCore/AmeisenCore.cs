@@ -4,6 +4,7 @@ using Magic;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -24,24 +25,6 @@ namespace AmeisenCoreUtils
         public static void AntiAFK()
         {
             BlackMagic.WriteInt(Offsets.tickCount, Environment.TickCount);
-        }
-
-        /// <summary>
-        /// Attack our target
-        /// </summary>
-        public static void AttackTarget(Me me)
-        {
-            me.Update();
-
-            Vector3 currentPosition = me.pos;
-            if (currentPosition.X != 0 && currentPosition.Y != 0 && currentPosition.Z != 0)
-            {
-                WriteXYZToMemory(currentPosition, InteractionType.MOVE);
-            }
-
-            LuaDoString("AttackTarget();");
-
-            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Attacking Target", "AmeisenCore");
         }
 
         private static void StopMovement()
@@ -643,11 +626,11 @@ namespace AmeisenCoreUtils
         /// <summary> Write the coordinates and action to the memory. </summary> <param
         /// name="pos">Vector3 containing the X,y & Z coordinates</param> <param name="action">CTM
         /// Interaction to perform</param>
-        private static void WriteXYZToMemory(Vector3 pos, InteractionType action)
+        private static void WriteXYZToMemory(Vector3 pos, InteractionType action, [CallerMemberName]string functionName = "")
         {
             const float distance = 1.5f;
 
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Writing: X [{pos.X}] Y [{pos.Y}] Z [{pos.Z}] Action [{action}] Distance [{distance}]", "AmeisenCore");
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Writing: X [{pos.X},{pos.Y},{pos.Z}] Action [{action}] Distance [{distance}]", "AmeisenCore", functionName);
             BlackMagic.WriteFloat(Offsets.ctmX, (float)pos.X);
             BlackMagic.WriteFloat(Offsets.ctmY, (float)pos.Y);
             BlackMagic.WriteFloat(Offsets.ctmZ, (float)pos.Z);

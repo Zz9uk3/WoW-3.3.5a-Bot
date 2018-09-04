@@ -41,7 +41,7 @@ namespace AmeisenLogging
             sb.Append($"{ functionName}] - ");
             sb.Append(msg);
 
-            return  sb.ToString();
+            return sb.ToString();
         }
     }
 
@@ -134,16 +134,13 @@ namespace AmeisenLogging
 
         private void WorkOnQueue()
         {
-            while (loggingActive || entries.Count > 0)
+            while (loggingActive || !entries.IsEmpty)
             {
-                if (!entries.IsEmpty)
+                if (entries.TryDequeue(out AmeisenLogEntry currentEntry))
                 {
-                    if (entries.TryDequeue(out AmeisenLogEntry currentEntry))
-                    {
-                        SaveLogToFile(currentEntry);
-                    }
+                    SaveLogToFile(currentEntry);
                 }
-                Thread.Sleep(100);
+                Thread.Sleep(1);
             }
         }
     }

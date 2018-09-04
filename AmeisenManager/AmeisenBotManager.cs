@@ -75,6 +75,8 @@ namespace AmeisenManager
 
         public bool IsAllowedToHeal { get { return AmeisenDataHolder.Instance.IsAllowedToHeal; } set { AmeisenDataHolder.Instance.IsAllowedToHeal = value; } }
 
+        public bool IsAllowedToAssistParty { get { return AmeisenDataHolder.Instance.IsAllowedToAssistParty; } set { AmeisenDataHolder.Instance.IsAllowedToAssistParty = value; } }
+
         public bool IsAllowedToMove
         {
             get { return AmeisenAIManager.IsAllowedToMove; }

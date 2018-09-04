@@ -164,7 +164,7 @@ namespace AmeisenAI.Follow
                 AmeisenAIManager.Instance.AddActionToQueue(ref ameisenAction);
 
                 // Slow follow, falling behind the master quite fast
-                //while (!ameisenAction.IsDone) { Thread.Sleep(50); }
+                while (!ameisenAction.IsDone) { Thread.Sleep(1); }
             }
         }
 

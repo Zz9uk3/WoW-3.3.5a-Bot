@@ -39,5 +39,6 @@
         public bool topMost = false;
         public string walkableNodeColorLow = "#FFA0FF00";
         public string walkableNodeColorHigh = "#FFA0FFFF";
+        public bool assistParty = true;
     }
 }
