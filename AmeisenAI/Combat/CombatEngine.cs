@@ -70,7 +70,7 @@ namespace AmeisenAI.Combat
                 SelectTarget();
 
                 // Remove all dead targets from list and Add them to the LootList
-                RemoveDeadTargetsFromList();
+                RemoveDeadTargetsFromListAndCheckForLoot();
 
                 // If we are at the end of instructions, go to the beginning
                 if (posAt == CurrentCombatLogic.combatLogicEntries.Count)
@@ -101,7 +101,7 @@ namespace AmeisenAI.Combat
 
         private int posAt;
 
-        private List<WoWObject> ActiveWoWObjects
+        private List<WowObject> ActiveWoWObjects
         {
             get { return AmeisenDataHolder.Instance.ActiveWoWObjects; }
         }
@@ -120,17 +120,18 @@ namespace AmeisenAI.Combat
 
         private bool CheckCombatOnly(CombatLogicEntry entry)
         {
-            if (entry.CombatOnly && !Me.InCombat && !IsPartyInCombat())
+            if (entry.CombatOnly && (!Me.InCombat || !IsPartyInCombat()))
                 return false;
             return true;
         }
 
         private bool CheckCondition(Condition condition)
         {
-            double value1 = GetValue(condition,0);
-            double value2 = GetValue(condition,1);
-
-            return CheckCondition(value1, value2, condition);
+            return CheckCondition(
+                GetValue(condition, 0),
+                GetValue(condition, 1),
+                condition
+                );
         }
 
         private bool CheckCondition(double value1, double value2, Condition condition)
@@ -171,7 +172,7 @@ namespace AmeisenAI.Combat
                 null
                 );
             AmeisenAIManager.Instance.AddActionToQueue(ref action);
-            while (action.IsDone) { Thread.Sleep(20); }
+            while (!action.IsDone) { Thread.Sleep(20); }
         }
 
         private void CheckOnCooldownAndUseSpell(CombatLogicEntry entry)
@@ -308,7 +309,7 @@ namespace AmeisenAI.Combat
                 }
             }
 
-            // Check the Value-Conditions eg Health, Energy, ...
+            // Check the Value-Conditions, Health, Energy, ...
             foreach (Condition c in entry.Conditions)
                 if (!CheckCondition(c))
                     return false;
@@ -370,10 +371,12 @@ namespace AmeisenAI.Combat
             try
             {
                 foreach (ulong guid in Me.PartymemberGuids)
-                    foreach (WoWObject o in ActiveWoWObjects)
-                        if (o.Guid == guid)
-                            if (((Unit)o).InCombat)
-                                return true;
+                {
+                    Unit activeUnit = (Unit)GetUnitFromListByGuid(guid);
+                    activeUnit.Update();
+                    if (activeUnit.InCombat)
+                        return true;
+                }
             }
             catch { }
             return false;
@@ -381,7 +384,35 @@ namespace AmeisenAI.Combat
 
         private void LootGuidsThatAreMine()
         {
-            // TODO: Implement looting lmao
+            foreach (ulong guid in GuidsWithPotentialLoot)
+            {
+                Unit activeUnit = (Unit)GetUnitFromListByGuid(guid);
+                activeUnit.Update();
+
+                if (activeUnit != null)
+                {
+                    bool isLootable = activeUnit.IsLootable;
+                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"{activeUnit.Name} [{activeUnit.Guid}] IsLootable: {isLootable}", this);
+
+                    if (isLootable)
+                    {
+                        // Loot the target
+                        object[] parameters = new object[2] { Target.pos, InteractionType.LOOT };
+                        AmeisenAction action = new AmeisenAction(AmeisenActionType.INTERACT_TARGET, parameters, null);
+
+                        AmeisenAIManager.Instance.AddActionToQueue(ref action);
+                        while (!action.IsDone) { Thread.Sleep(20); }
+                    }
+                }
+            }
+        }
+
+        private WowObject GetUnitFromListByGuid(ulong guid)
+        {
+            foreach (WowObject o in ActiveWoWObjects)
+                if (o.Guid == guid)
+                    return o;
+            return null;
         }
 
         // TODO: need to move this into a CombatMovementManager or something like this
@@ -404,23 +435,30 @@ namespace AmeisenAI.Combat
             }
 
             AmeisenAIManager.Instance.AddActionToQueue(ref action);
-            while (action.IsDone) { Thread.Sleep(20); }
+            while (!action.IsDone) { Thread.Sleep(20); }
         }
 
-        private void RemoveDeadTargetsFromList()
+        private void RemoveDeadTargetsFromListAndCheckForLoot()
         {
             // Sometimes crashing because the List is being updated from elsewhere
             // TODO: need to fix that using a lock or so
             try
             {
                 foreach (ulong guid in GuidsToKill)
-                    foreach (WoWObject o in ActiveWoWObjects)
-                        if (o.Guid == guid)
-                            if (((Unit)o).Health == 0)
-                            {
-                                GuidsWithPotentialLoot.Add(guid);
-                                GuidsToKill.Remove(guid);
-                            }
+                {
+                    Unit activeUnit = (Unit)GetUnitFromListByGuid(guid);
+                    activeUnit.Update();
+
+                    if (activeUnit != null)
+                    {
+                        if (activeUnit.Health == 0 || guid == 0)
+                        {
+                            GuidsWithPotentialLoot.Add(guid);
+                            GuidsToKill.Remove(guid);
+                        }
+                    }
+                    break;
+                }
             }
             catch { }
         }
@@ -455,37 +493,37 @@ namespace AmeisenAI.Combat
                 int i = 1;
                 foreach (ulong guid in Me.PartymemberGuids)
                 {
-                    foreach (WoWObject o in ActiveWoWObjects)
-                        if (o.Guid == guid)
+                    Unit activeUnit = (Unit)GetUnitFromListByGuid(guid);
+                    activeUnit.Update();
+
+                    if (activeUnit != null)
+                    {
+                        if (activeUnit.InCombat)
                         {
-                            o.Update();
-                            if (((Unit)o).InCombat)
+                            ulong partymemberTargetGuid = activeUnit.TargetGuid;
+
+                            // If we have no target, assist our partymembers
+                            if (Target.Guid == 0)
                             {
-                                ulong partymemberTargetGuid = ((Unit)o).TargetGuid;
-
-                                // Temporary fix
-                                Target.Guid = 0;
-
-                                // If we have no target, assist our partymembers
-                                if (Target.Guid == 0)
-                                {
-                                    AmeisenCore.RunSlashCommand($"/assist party{i}");
-                                    if (!GuidsToKill.Contains(partymemberTargetGuid))
-                                        GuidsToKill.Add(partymemberTargetGuid);
-                                }
-                                else // if we have a target, add it to the "To-Be-Killed"-List
-                                {
-                                    if (!GuidsToKill.Contains(partymemberTargetGuid))
-                                        GuidsToKill.Add(partymemberTargetGuid);
-                                }
-
-                                // Start combat if we aren't already InCombat
-                                if (!Me.InCombat)
-                                    AmeisenCore.AttackTarget(Me);
+                                AmeisenCore.RunSlashCommand($"/assist party{i}");
+                                if (!GuidsToKill.Contains(partymemberTargetGuid))
+                                    GuidsToKill.Add(partymemberTargetGuid);
                             }
-                            i++;
+                            else // if we have a target, add it to the "To-Be-Killed"-List
+                            {
+                                if (!GuidsToKill.Contains(partymemberTargetGuid))
+                                    GuidsToKill.Add(partymemberTargetGuid);
+                            }
+
+                            // Start combat if we aren't already InCombat
+                            if (!Me.InCombat)
+                                AmeisenCore.AttackTarget(Me);
                         }
+                        i++;
+                        break;
+                    }
                 }
+
             }
             catch { }
         }

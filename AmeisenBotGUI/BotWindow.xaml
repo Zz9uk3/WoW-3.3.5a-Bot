@@ -105,14 +105,6 @@
         </Label>
         <Label x:Name="labelDebugInfo" Content="- DebugInfo -" HorizontalAlignment="Left" Margin="10,235,0,0" VerticalAlignment="Top" FontFamily="Consolas" Foreground="White" Visibility="Hidden" />
         <Label x:Name="labelDebugInfoTarget" Content="- DebugInfo -" HorizontalAlignment="Left" Margin="200,235,0,0" VerticalAlignment="Top" FontFamily="Consolas" Foreground="White" Visibility="Hidden" />
-        <Button x:Name="buttonMoveToTarget" Content="🚀 Move to Target" Margin="0,314,73,0" Click="ButtonMoveToTarget_Click" HorizontalAlignment="Right" Width="140" BorderThickness="2" Background="{x:Null}" Height="30" VerticalAlignment="Top">
-            <Button.BorderBrush>
-                <SolidColorBrush Color="{DynamicResource AccentColor}" />
-            </Button.BorderBrush>
-            <Button.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}" />
-            </Button.Foreground>
-        </Button>
         <Button x:Name="buttonExit" Content="X" Margin="0,-2,-2,0" VerticalAlignment="Top" FontFamily="Consolas" Click="ButtonExit_Click" FontWeight="Bold" Background="{x:Null}" BorderThickness="2" HorizontalAlignment="Right" Width="20">
             <Button.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
@@ -158,22 +150,6 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Button.BorderBrush>
         </Button>
-        <Button x:Name="buttonMoveInteractTarget" Content="🖐️ Interact with Target" Margin="0,279,73,0" Click="ButtonMoveInteractTarget_Click" HorizontalAlignment="Right" Width="140" BorderThickness="2" Background="{x:Null}" Height="30" VerticalAlignment="Top">
-            <Button.BorderBrush>
-                <SolidColorBrush Color="{DynamicResource AccentColor}" />
-            </Button.BorderBrush>
-            <Button.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}" />
-            </Button.Foreground>
-        </Button>
-        <ComboBox x:Name="comboboxInteraction" Margin="0,259,73,78" Foreground="Black" HorizontalAlignment="Right" Width="140">
-            <ComboBox.BorderBrush>
-                <SolidColorBrush Color="{DynamicResource AccentColor}" />
-            </ComboBox.BorderBrush>
-            <ComboBox.Background>
-                <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
-            </ComboBox.Background>
-        </ComboBox>
         <Button x:Name="buttonExtendedDebugUI" Content="💻" Margin="0,153,-2,0" Click="ButtonExtendedDebugUI_Click" HorizontalAlignment="Right" Width="60" BorderThickness="2" Background="{x:Null}" FontSize="32" Height="60" VerticalAlignment="Top">
             <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />

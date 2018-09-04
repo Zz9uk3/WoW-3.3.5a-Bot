@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AmeisenUtilities
 {
-    public class Corpse : WoWObject
+    public class Corpse : WowObject
     {
         public Corpse(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {

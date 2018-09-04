@@ -34,7 +34,7 @@ namespace AmeisenManager
             }
         }
 
-        public List<WoWObject> ActiveWoWObjects { get { return AmeisenDataHolder.Instance.ActiveWoWObjects; } }
+        public List<WowObject> ActiveWoWObjects { get { return AmeisenDataHolder.Instance.ActiveWoWObjects; } }
         public AmeisenAIManager AmeisenAIManager { get; private set; }
         public AmeisenClient AmeisenClient { get; private set; }
         public AmeisenCombatManager AmeisenCombatManager { get; private set; }
@@ -89,7 +89,7 @@ namespace AmeisenManager
         public Settings Settings { get { return AmeisenSettings.Settings; } }
         public Unit Target { get { return AmeisenDataHolder.Instance.Target; } }
         public WowExe WowExe { get; private set; }
-        public List<WoWObject> WoWObjects { get { return AmeisenObjectManager.GetObjects(); } }
+        public List<WowObject> WoWObjects { get { return AmeisenObjectManager.GetObjects(); } }
         public Process WowProcess { get; private set; }
 
         public static int GetMapID()

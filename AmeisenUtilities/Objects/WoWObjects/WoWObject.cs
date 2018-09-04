@@ -4,11 +4,11 @@ using System.Text;
 
 namespace AmeisenUtilities
 {
-    public class WoWObject
+    public class WowObject
     {
         public Vector3 pos;
 
-        public WoWObject(uint baseAddress, BlackMagic blackMagic)
+        public WowObject(uint baseAddress, BlackMagic blackMagic)
         {
             BaseAddress = baseAddress;
             BlackMagicInstance = blackMagic;

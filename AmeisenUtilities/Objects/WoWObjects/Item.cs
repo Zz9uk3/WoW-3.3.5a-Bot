@@ -3,7 +3,7 @@ using System.Text;
 
 namespace AmeisenUtilities
 {
-    public class Item : WoWObject
+    public class Item : WowObject
     {
         public Item(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {

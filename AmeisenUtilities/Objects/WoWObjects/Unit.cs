@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AmeisenUtilities
 {
-    public partial class Unit : WoWObject
+    public partial class Unit : WowObject
     {
         public Unit(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
@@ -13,12 +13,15 @@ namespace AmeisenUtilities
         public int Energy { get; set; }
         public int Health { get; set; }
         public bool InCombat { get { return UFlags[(int)UnitFlags.COMBAT]; } }
+        public bool IsLootable { get { return UFlags[(int)DynamicUnitFlags.LOOTABLE]; } }
+        public bool IsDead { get { return UFlags[(int)DynamicUnitFlags.DEAD]; } }
         public bool IsCasting { get; set; }
         public int Level { get; set; }
         public int MaxEnergy { get; set; }
         public int MaxHealth { get; set; }
         public bool NeedToRevive { get { return Health == 0; } }
         public BitVector32 UFlags { get; set; }
+        public BitVector32 DynamicUFlags { get; set; }
         public ulong TargetGuid { get; set; }
 
         /// <summary>
@@ -109,6 +112,12 @@ namespace AmeisenUtilities
             try
             {
                 UFlags = (BitVector32)BlackMagicInstance.ReadObject(Descriptor + 0xEC, typeof(BitVector32));
+            }
+            catch { }
+
+            try
+            {
+                DynamicUFlags = (BitVector32)BlackMagicInstance.ReadObject(Descriptor + 0xEC, typeof(BitVector32));
             }
             catch { }
         }

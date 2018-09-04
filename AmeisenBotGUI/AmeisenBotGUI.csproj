@@ -83,6 +83,9 @@
     <Compile Include="BotView.xaml.cs">
       <DependentUpon>BotView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ColorPickWindow.xaml.cs">
+      <DependentUpon>ColorPickWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CombatClassWindow.xaml.cs">
       <DependentUpon>CombatClassWindow.xaml</DependentUpon>
     </Compile>
@@ -99,6 +102,10 @@
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="BotView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ColorPickWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -190,7 +197,7 @@
       <Name>AmeisenData</Name>
     </ProjectReference>
     <ProjectReference Include="..\AmeisenDB\AmeisenDB.csproj">
-      <Project>{9B3F7A78-0A9B-492A-8299-9C86D2E297ED}</Project>
+      <Project>{9b3f7a78-0a9b-492a-8299-9c86d2e297ed}</Project>
       <Name>AmeisenDB</Name>
     </ProjectReference>
     <ProjectReference Include="..\AmeisenLogger\AmeisenLogger.csproj">
@@ -202,12 +209,8 @@
       <Name>AmeisenManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\AmeisenMapping\AmeisenMapping.csproj">
-      <Project>{08DB57D7-287A-4C12-AB76-F5EE4A0F3395}</Project>
+      <Project>{08db57d7-287a-4c12-ab76-f5ee4a0f3395}</Project>
       <Name>AmeisenMapping</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmeisenServer\AmeisenServer.csproj">
-      <Project>{0f5350c6-755b-4d32-8dfd-4057c925ef0d}</Project>
-      <Name>AmeisenServer</Name>
     </ProjectReference>
     <ProjectReference Include="..\AmeisenUtilities\AmeisenUtilities.csproj">
       <Project>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</Project>

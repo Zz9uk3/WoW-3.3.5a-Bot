@@ -1,5 +1,4 @@
-﻿using AmeisenAI;
-using AmeisenLogging;
+﻿using AmeisenLogging;
 using AmeisenManager;
 using AmeisenUtilities;
 using Microsoft.Win32;
@@ -84,16 +83,6 @@ namespace AmeisenBotGUI
             WindowState = WindowState.Minimized;
         }
 
-        private void ButtonMoveInteractTarget_Click(object sender, RoutedEventArgs e)
-        {
-            BotManager.AddActionToAIQueue(new AmeisenAction(AmeisenActionType.INTERACT_TARGET, (AmeisenActionType)comboboxInteraction.SelectedItem, null));
-        }
-
-        private void ButtonMoveToTarget_Click(object sender, RoutedEventArgs e)
-        {
-            BotManager.AddActionToAIQueue(new AmeisenAction(AmeisenActionType.MOVE_TO_POSITION, null, null));
-        }
-
         private void ButtonOpenFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
@@ -175,8 +164,6 @@ namespace AmeisenBotGUI
             StartUIUpdateTime();
 
             LoadViewSettings();
-
-            DebugLoadDefaultValues();
         }
 
         private void StartUIUpdateTime()
@@ -187,23 +174,6 @@ namespace AmeisenBotGUI
             uiUpdateTimer.Start();
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Started UI-Update-Timer", this);
 
-        }
-
-        private void DebugLoadDefaultValues()
-        {
-            comboboxInteraction.Items.Add(InteractionType.FACETARGET);
-            comboboxInteraction.Items.Add(InteractionType.FACEDESTINATION);
-            comboboxInteraction.Items.Add(InteractionType.STOP);
-            comboboxInteraction.Items.Add(InteractionType.MOVE);
-            comboboxInteraction.Items.Add(InteractionType.INTERACT);
-            comboboxInteraction.Items.Add(InteractionType.LOOT);
-            comboboxInteraction.Items.Add(InteractionType.INTERACTOBJECT);
-            comboboxInteraction.Items.Add(InteractionType.FACEOTHER);
-            comboboxInteraction.Items.Add(InteractionType.SKIN);
-            comboboxInteraction.Items.Add(InteractionType.ATTACK);
-            comboboxInteraction.Items.Add(InteractionType.ATTACKPOS);
-            comboboxInteraction.Items.Add(InteractionType.ATTACKGUID);
-            comboboxInteraction.Items.Add(InteractionType.WALKANDROTATE);
         }
 
         private void LoadViewSettings()

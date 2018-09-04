@@ -60,11 +60,11 @@ namespace AmeisenBotGUI
         {
             listboxObjects.Items.Clear();
             if (BotManager.WoWObjects != null)
-                foreach (WoWObject obj in BotManager.WoWObjects)
+                foreach (WowObject obj in BotManager.WoWObjects)
                 {
                     if (obj == null)
                         break;
-                    if (obj.GetType() == typeof(WoWObject) && checkboxFilterWOWOBJECT.IsChecked == true)
+                    if (obj.GetType() == typeof(WowObject) && checkboxFilterWOWOBJECT.IsChecked == true)
                         listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["WoWObjectColor"])));
                     else if (obj.GetType() == typeof(GameObject) && checkboxFilterGAMEOBJECT.IsChecked == true)
                         listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["GameObjectColor"])));

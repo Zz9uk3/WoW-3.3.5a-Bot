@@ -109,9 +109,9 @@ namespace AmeisenCoreUtils
         /// Reads all WoWObject out of WoW's ObjectManager
         /// </summary>
         /// <returns>all WoWObjects in WoW Manager</returns>
-        public static List<WoWObject> GetAllWoWObjects()
+        public static List<WowObject> GetAllWoWObjects()
         {
-            List<WoWObject> objects = new List<WoWObject>();
+            List<WowObject> objects = new List<WowObject>();
 
             try
             {
@@ -130,7 +130,7 @@ namespace AmeisenCoreUtils
                     //if (!(refreshOnlyUnits
                     //    && (objType == (int)WoWObjectType.UNIT || objType == (int)WoWObjectType.PLAYER)))
                     //{
-                    WoWObject wowObject = ReadWoWObjectFromWoW(activeObj, (WowObjectType)objType);
+                    WowObject wowObject = ReadWoWObjectFromWoW(activeObj, (WowObjectType)objType);
                     objects.Add(wowObject);
                     //}
 
@@ -288,12 +288,12 @@ namespace AmeisenCoreUtils
         /// </summary>
         /// <param name="guid">guid to search for</param>
         /// <returns>BaseAdress of the WoWObject</returns>
-        public static uint GetMemLocByGUID(ulong guid, List<WoWObject> woWObjects)
+        public static uint GetMemLocByGUID(ulong guid, List<WowObject> woWObjects)
         {
             AmeisenLogger.Instance.Log(LogLevel.VERBOSE, $"Reading: GUID [{guid}]", "AmeisenCore");
 
             if (woWObjects != null)
-                foreach (WoWObject obj in woWObjects)
+                foreach (WowObject obj in woWObjects)
                     if (obj != null)
                         if (obj.Guid == guid)
                             return obj.BaseAddress;
@@ -514,7 +514,7 @@ namespace AmeisenCoreUtils
         /// <param name="guid">guid of the object</param>
         /// <param name="baseAddress">baseAddress of the object</param>
         /// <returns>the WoWObject</returns>
-        public static WoWObject ReadWoWObjectFromWoW(uint baseAddress, WowObjectType woWObjectType, bool isMe = false)
+        public static WowObject ReadWoWObjectFromWoW(uint baseAddress, WowObjectType woWObjectType, bool isMe = false)
         {
             AmeisenLogger.Instance.Log(LogLevel.VERBOSE, $"Reading: baseAddress [{baseAddress}]", "AmeisenCore");
 

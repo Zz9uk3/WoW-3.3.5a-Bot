@@ -20,7 +20,7 @@ namespace AmeisenData
             }
         }
 
-        public List<WoWObject> ActiveWoWObjects { get; set; }
+        public List<WowObject> ActiveWoWObjects { get; set; }
 
         public double FollowDistance { get; set; }
 

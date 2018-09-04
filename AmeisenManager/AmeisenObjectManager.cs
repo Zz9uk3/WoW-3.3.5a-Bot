@@ -39,7 +39,7 @@ namespace AmeisenManager
         /// Get our WoWObjects in the memory
         /// </summary>
         /// <returns>WoWObjects in the memory</returns>
-        public List<WoWObject> GetObjects()
+        public List<WowObject> GetObjects()
         {
             AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Getting Objects", this);
 
@@ -57,9 +57,9 @@ namespace AmeisenManager
         /// </summary>
         /// <param name="guid">guid of the player you want to get</param>
         /// <returns>Player that you want to get</returns>
-        public WoWObject GetWoWObjectFromGUID(ulong guid)
+        public WowObject GetWoWObjectFromGUID(ulong guid)
         {
-            foreach (WoWObject p in ActiveWoWObjects)
+            foreach (WowObject p in ActiveWoWObjects)
                 if (p.Guid == guid)
                     return p;
 
@@ -73,7 +73,7 @@ namespace AmeisenManager
         {
             ActiveWoWObjects = AmeisenCore.GetAllWoWObjects();
 
-            foreach (WoWObject t in ActiveWoWObjects)
+            foreach (WowObject t in ActiveWoWObjects)
                 if (t.GetType() == typeof(Me))
                 {
                     Me = (Me)t;
@@ -108,7 +108,7 @@ namespace AmeisenManager
             RefreshObjects();
         }
 
-        private List<WoWObject> ActiveWoWObjects
+        private List<WowObject> ActiveWoWObjects
         {
             get { return AmeisenDataHolder.Instance.ActiveWoWObjects; }
             set { AmeisenDataHolder.Instance.ActiveWoWObjects = value; }
@@ -140,7 +140,7 @@ namespace AmeisenManager
         {
             ActiveWoWObjects = AmeisenCore.GetAllWoWObjects();
 
-            foreach (WoWObject t in ActiveWoWObjects)
+            foreach (WowObject t in ActiveWoWObjects)
             {
                 if (t.GetType() == typeof(Me))
                     Me = (Me)t;
