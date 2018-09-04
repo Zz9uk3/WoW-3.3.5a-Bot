@@ -376,14 +376,14 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Rectangle x:Name="colorWalkable" HorizontalAlignment="Left" Height="23" Margin="490,82,0,0" VerticalAlignment="Top" Width="70">
-            <Rectangle.Stroke>
-                <SolidColorBrush Color="{DynamicResource AccentColor}" />
-            </Rectangle.Stroke>
-            <Rectangle.Fill>
-                <SolidColorBrush Color="{DynamicResource WalkableNodeColorLow}" />
-            </Rectangle.Fill>
-        </Rectangle>
+        <Button x:Name="colorWalkable" HorizontalAlignment="Left" Height="23" Margin="490,82,0,0" VerticalAlignment="Top" Width="70" Click="ColorWalkable_Click">
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+            <Button.Background>
+                <SolidColorBrush Color="{DynamicResource WalkableNodeColorLow}"/>
+            </Button.Background>
+        </Button>
         <Label Content="Me:" HorizontalAlignment="Left" Margin="400,138,0,0" VerticalAlignment="Top" Height="39">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
@@ -394,14 +394,15 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Rectangle x:Name="colorMe" HorizontalAlignment="Left" Height="23" Margin="490,138,0,0" VerticalAlignment="Top" Width="70">
-            <Rectangle.Stroke>
-                <SolidColorBrush Color="{DynamicResource AccentColor}" />
-            </Rectangle.Stroke>
-            <Rectangle.Fill>
-                <SolidColorBrush Color="{DynamicResource MeNodeColor}" />
-            </Rectangle.Fill>
-        </Rectangle>
+        <Button x:Name="colorMe" HorizontalAlignment="Left" Height="23" Margin="490,138,0,0" VerticalAlignment="Top" Width="70" Click="ColorMe_Click">
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+            <Button.Background>
+                <SolidColorBrush Color="{DynamicResource MeNodeColor}"/>
+            </Button.Background>
+
+        </Button>
         <Rectangle x:Name="colorHealth" HorizontalAlignment="Left" Height="23" Margin="490,308,0,0" VerticalAlignment="Top" Width="70">
             <Rectangle.Stroke>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
@@ -485,13 +486,14 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Rectangle x:Name="colorWalkableNodeHigh" HorizontalAlignment="Left" Height="23" Margin="490,110,0,0" VerticalAlignment="Top" Width="70">
-            <Rectangle.Stroke>
-                <SolidColorBrush Color="{DynamicResource AccentColor}" />
-            </Rectangle.Stroke>
-            <Rectangle.Fill>
-                <SolidColorBrush Color="{DynamicResource WalkableNodeColorHigh}" />
-            </Rectangle.Fill>
-        </Rectangle>
+        <Button x:Name="colorWalkableNodeHigh" HorizontalAlignment="Left" Height="23" Margin="490,110,0,0" VerticalAlignment="Top" Width="70" Click="ColorWalkableNodeHigh_Click">
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Button.BorderBrush>
+            <Button.Background>
+                <SolidColorBrush Color="{DynamicResource WalkableNodeColorHigh}"/>
+            </Button.Background>
+
+        </Button>
     </Grid>
 </Window>

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AmeisenBotGUI"
         mc:Ignorable="d"
-        Title="ColorPickWindow" Height="200" Width="300" BorderThickness="2">
+        Title="ColorPickWindow" Height="180" Width="300" BorderThickness="2" ResizeMode="NoResize" WindowStyle="None" MouseLeftButtonDown="Window_MouseLeftButtonDown">
     <Window.BorderBrush>
         <SolidColorBrush Color="{DynamicResource AccentColor}"/>
     </Window.BorderBrush>
@@ -13,21 +13,21 @@
         <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
     </Window.Background>
     <Grid>
-        <Slider x:Name="sliderRed" HorizontalAlignment="Left" Margin="59,14,0,0" VerticalAlignment="Top" Width="219" Maximum="255" SmallChange="1" ValueChanged="UpdateColor"/>
+        <Slider x:Name="sliderRed" HorizontalAlignment="Left" Margin="59,14,0,0" VerticalAlignment="Top" Width="219" Maximum="255" SmallChange="1" ValueChanged="UpdateColor" Value="255"/>
         <Label Content="Red:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Foreground="Red"/>
-        <Slider x:Name="sliderGreen" HorizontalAlignment="Left" Margin="59,45,0,0" VerticalAlignment="Top" Width="219" Maximum="255" SmallChange="1" ValueChanged="UpdateColor"/>
+        <Slider x:Name="sliderGreen" HorizontalAlignment="Left" Margin="59,45,0,0" VerticalAlignment="Top" Width="219" Maximum="255" SmallChange="1" ValueChanged="UpdateColor" Value="255"/>
         <Label Content="Green:" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top">
             <Label.Foreground>
                 <SolidColorBrush Color="Lime"/>
             </Label.Foreground>
         </Label>
-        <Slider x:Name="sliderBlue" HorizontalAlignment="Left" Margin="59,76,0,0" VerticalAlignment="Top" Width="219" Maximum="255" SmallChange="1" ValueChanged="UpdateColor"/>
+        <Slider x:Name="sliderBlue" HorizontalAlignment="Left" Margin="59,76,0,0" VerticalAlignment="Top" Width="219" Maximum="255" SmallChange="1" ValueChanged="UpdateColor" Value="255"/>
         <Label Content="Blue:" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top">
             <Label.Foreground>
                 <SolidColorBrush Color="#FF00F3FF"/>
             </Label.Foreground>
         </Label>
-        <Slider x:Name="sliderAlpha" HorizontalAlignment="Left" Margin="59,107,0,0" VerticalAlignment="Top" Width="219" Foreground="Blue" Maximum="255" SmallChange="1" ValueChanged="UpdateColor"/>
+        <Slider x:Name="sliderAlpha" HorizontalAlignment="Left" Margin="59,107,0,0" VerticalAlignment="Top" Width="219" Foreground="Blue" Maximum="255" SmallChange="1" ValueChanged="UpdateColor" Value="255"/>
         <Label Content="Alpha:" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}"/>

@@ -270,5 +270,28 @@ namespace AmeisenBotGUI
             }
             catch { }
         }
+
+        private void ColorWalkable_Click(object sender, RoutedEventArgs e)
+        {
+            SelectColor("WalkableNodeColorLow");
+        }
+
+        private void ColorWalkableNodeHigh_Click(object sender, RoutedEventArgs e)
+        {
+            SelectColor("WalkableNodeColorHigh");
+        }
+
+        private void ColorMe_Click(object sender, RoutedEventArgs e)
+        {
+            SelectColor("MeNodeColor");
+        }
+
+        private void SelectColor(string resourceColor)
+        {
+            ColorPickWindow colorpicker = new ColorPickWindow();
+            colorpicker.ShowDialog();
+            if (colorpicker.ApplyColor)
+                Application.Current.Resources[resourceColor] = colorpicker.ActiveColor;
+        }
     }
 }

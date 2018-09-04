@@ -68,7 +68,10 @@ namespace AmeisenUtilities
 
         public static string FirstCharToUpper(string input)
         {
-            return input?.First().ToString().ToUpper() + input?.Substring(1);
+            if (input.Length > 1)
+                return input?.First().ToString().ToUpper() + input?.Substring(1);
+            else
+                return input;
         }
 
         public static System.Windows.Media.Color InterpolateColors(System.Windows.Media.Color[] colors, double factor)

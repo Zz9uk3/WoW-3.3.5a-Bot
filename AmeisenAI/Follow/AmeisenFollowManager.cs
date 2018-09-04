@@ -96,7 +96,7 @@ namespace AmeisenAI.Follow
 
         private bool AmIDeadOrGhost()
         {
-            if (Me.Health == 0)
+            if (Me?.Health == 0)
             {
                 AmeisenLogger.Instance.Log(LogLevel.DEBUG, "I'm Dead, need to Release Spirit", this);
                 AmeisenDataHolder.Instance.IsDead = true;
@@ -133,11 +133,12 @@ namespace AmeisenAI.Follow
                 if (AmIDeadOrGhost())
                     continue;
 
-                if (Me.IsCasting || Me.InCombat)
-                {
-                    Thread.Sleep(1000);
-                    continue;
-                }
+                if (Me != null)
+                    if (Me.IsCasting || Me.InCombat)
+                    {
+                        Thread.Sleep(1000);
+                        continue;
+                    }
 
                 CheckForUnitsToFollow();
 

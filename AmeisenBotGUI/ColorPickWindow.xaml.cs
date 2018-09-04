@@ -20,6 +20,7 @@ namespace AmeisenBotGUI
     public partial class ColorPickWindow : Window
     {
         public Color ActiveColor { get; private set; }
+        public bool ApplyColor { get; private set; }
 
         public ColorPickWindow()
         {
@@ -28,16 +29,20 @@ namespace AmeisenBotGUI
 
         private void UpdateColor(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            ActiveColor = Color.FromArgb(
-                        (byte)sliderAlpha.Value,
-                        (byte)sliderRed.Value,
-                        (byte)sliderGreen.Value,
-                        (byte)sliderBlue.Value);
+            try
+            {
+                ActiveColor = Color.FromArgb(
+                            (byte)sliderAlpha.Value,
+                            (byte)sliderRed.Value,
+                            (byte)sliderGreen.Value,
+                            (byte)sliderBlue.Value);
 
-            colorRect.Background =
-                new SolidColorBrush(
-                    ActiveColor
-                    );
+                colorRect.Background =
+                    new SolidColorBrush(
+                        ActiveColor
+                        );
+            }
+            catch { }
         }
 
         private void ButtonCancel_Click(object sender, RoutedEventArgs e)
@@ -47,7 +52,13 @@ namespace AmeisenBotGUI
 
         private void ButtonOK_Click(object sender, RoutedEventArgs e)
         {
+            ApplyColor = true;
             Close();
+        }
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            DragMove();
         }
     }
 }
