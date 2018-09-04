@@ -90,7 +90,6 @@ namespace AmeisenAI.Combat
                 if (!Me.InCombat)
                 {
                     AmeisenAIManager.Instance.IsAllowedToMove = true;
-
                     // Loot the Guid's from guidsWithPotentialLoot List
                     LootGuidsThatAreMine();
                 }
@@ -121,6 +120,8 @@ namespace AmeisenAI.Combat
             get { return AmeisenDataHolder.Instance.Target; }
             set { AmeisenDataHolder.Instance.Target = value; }
         }
+
+        public bool AttackShit { get; private set; }
 
         private bool CheckCombatOnly(CombatLogicEntry entry)
         {
@@ -288,8 +289,16 @@ namespace AmeisenAI.Combat
             if (Me.Health < 1 || Me.IsCasting)
                 return false;
 
-            if (!CheckCombatOnly(entry))
-                return false;
+            // Forced attack cause flag isnt updated...
+            if (AttackShit)
+            {
+                AttackShit = false; // We should be in Combat right now
+            }
+            else
+            {
+                if (!CheckCombatOnly(entry))
+                    return false;
+            }
 
             // Check if we are in spell range only if its not for me
             if (!entry.IsForMyself)
@@ -492,51 +501,47 @@ namespace AmeisenAI.Combat
 
         private void AssistPartyMembers()
         {
-            // Sometimes crashing because the List is being updated from elsewhere
-            // TODO: need to fix that using a lock or so
-            try
+            if (Me?.TargetGuid == 0)
             {
-                int i = 1;
-                foreach (ulong guid in Me.PartymemberGuids)
+                // Sometimes crashing because the List is being updated from elsewhere
+                // TODO: need to fix that using a lock or so
+                try
                 {
-                    Unit activeUnit = (Unit)GetUnitFromListByGuid(guid);
-                    activeUnit.Update();
-
-                    if (activeUnit != null)
+                    int i = 1;
+                    foreach (ulong guid in Me.PartymemberGuids)
                     {
+                        Unit activeUnit = (Unit)GetUnitFromListByGuid(guid);
+                        activeUnit.Update();
+
                         if (activeUnit.InCombat)
                         {
                             ulong partymemberTargetGuid = activeUnit.TargetGuid;
                             AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Partymember Guid: {partymemberTargetGuid}", this);
 
-                            Target.Update();
-                            // If we have no target, assist our partymembers
-                            /*if (Target == null || Target.Guid == 0)
-                            {*/
-                            AmeisenCore.RunSlashCommand($"/assist party{i}");
+                            AmeisenCore.LuaDoString($"AssistUnit(\"party{i}\");");
                             Me.Update();
                             if (!GuidsToKill.Contains(Me.TargetGuid))
+
                                 GuidsToKill.Add(Me.TargetGuid);
                             //AmeisenCore.LuaDoString("AttackTarget();");
-                            /*}
-                            else // if we have a target, add it to the "To-Be-Killed"-List
-                            {
-                                if (!GuidsToKill.Contains(partymemberTargetGuid))
-                                    GuidsToKill.Add(partymemberTargetGuid);
-                            }*/
 
+                            Target.Update();
                             // Start combat if we aren't already InCombat
                             if (!Me.InCombat)
+                            {
+                                Thread.Sleep(100);
+                                AttackShit = true;
+                                AmeisenAIManager.Instance.IsAllowedToMove = false;
                                 AmeisenCore.LuaDoString("AttackTarget();");
+                            }
                         }
                         i++;
                         break;
                     }
-                }
 
+                }
+                catch { }
             }
-            catch { }
-            Thread.Sleep(100);
         }
     }
 }
