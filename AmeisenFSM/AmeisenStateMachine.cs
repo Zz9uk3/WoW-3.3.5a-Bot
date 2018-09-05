@@ -1,12 +1,7 @@
 ﻿using AmeisenFSM.Actions;
 using AmeisenFSM.Enums;
 using AmeisenFSM.Interfaces;
-using AmeisenFSM.Objects;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AmeisenFSM
 {
@@ -35,22 +30,31 @@ namespace AmeisenFSM
         public BotState GetCurrentState()
         {
             return StateStack.Count > 0 ?
-                StateStack.Peek() : BotState.Error;
+                StateStack.Peek() : BotState.None;
         }
 
         public void PushAction(BotState botState)
         {
             if (GetCurrentState() != botState)
+            {
+                GetCurrentStateAction(GetCurrentState())?.StartExit.Invoke();
                 StateStack.Push(botState);
+                GetCurrentStateAction(GetCurrentState())?.StartAction.Invoke();
+            }
         }
 
         public BotState PopAction()
         {
-            return StateStack.Pop();
+            GetCurrentStateAction(GetCurrentState())?.StartExit.Invoke();
+            BotState tmpState = StateStack.Pop();
+            GetCurrentStateAction(GetCurrentState())?.StartAction.Invoke();
+            return tmpState;
         }
 
         private IAction GetCurrentStateAction(BotState state)
         {
+            if (state == BotState.None)
+                return null;
             return StateActionMap[state];
         }
     }

@@ -2,7 +2,7 @@
 {
     public enum BotState
     {
-        Error = -1,
+        None = -1,
         Idle,
         Follow,
         Moving,
