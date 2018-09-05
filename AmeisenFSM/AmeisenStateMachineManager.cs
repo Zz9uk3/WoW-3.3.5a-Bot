@@ -1,6 +1,7 @@
 ﻿using AmeisenData;
 using AmeisenFSM.Enums;
 using AmeisenUtilities;
+using System;
 using System.Threading;
 
 namespace AmeisenFSM
@@ -67,6 +68,13 @@ namespace AmeisenFSM
                 else if (StateMachine.GetCurrentState() == BotState.Combat)
                     StateMachine.PopAction();
 
+                if (AmeisenDataHolder.Instance.IsAllowedToAssistParty)
+                    if (PartymembersInCombat())
+                        StateMachine.PushAction(BotState.Combat);
+                    else if (StateMachine.GetCurrentState() == BotState.Combat)
+                        StateMachine.PopAction();
+
+
                 if (Me.IsDead)
                     StateMachine.PushAction(BotState.Dead);
                 else if (StateMachine.GetCurrentState() == BotState.Dead)
@@ -74,6 +82,19 @@ namespace AmeisenFSM
 
                 Thread.Sleep(250);
             }
+        }
+
+        private bool PartymembersInCombat()
+        {
+            foreach (ulong guid in Me.PartymemberGuids)
+                foreach (WowObject obj in AmeisenDataHolder.Instance.ActiveWoWObjects)
+                    if (guid == obj.Guid)
+                    {
+                        if (((Unit)obj).InCombat)
+                            return true;
+                        break;
+                    }
+            return false;
         }
     }
 }
