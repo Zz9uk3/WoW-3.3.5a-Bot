@@ -26,7 +26,6 @@ namespace AmeisenUtilities
             sb.Append("ME");
             sb.Append($" >> Address: {BaseAddress.ToString("X")}");
             sb.Append($" >> Descriptor: {Descriptor.ToString("X")}");
-            sb.Append($" >> InCombat: {InCombat.ToString()}");
             sb.Append($" >> Name: {Name}");
             sb.Append($" >> GUID: {Guid}");
             sb.Append($" >> PosX: {pos.X}");
@@ -90,10 +89,10 @@ namespace AmeisenUtilities
 
             if (PartyleaderGUID != 0)
             {
-                PartymemberGuids.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer1));
-                PartymemberGuids.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer2));
-                PartymemberGuids.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer3));
-                PartymemberGuids.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer4));
+                PartymemberGuids?.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer1));
+                PartymemberGuids?.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer2));
+                PartymemberGuids?.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer3));
+                PartymemberGuids?.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer4));
             }
         }
     }
