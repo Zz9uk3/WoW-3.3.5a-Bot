@@ -67,6 +67,11 @@ namespace AmeisenFSM
                 else if (StateMachine.GetCurrentState() == BotState.Combat)
                     StateMachine.PopAction();
 
+                if (Me.IsDead)
+                    StateMachine.PushAction(BotState.Dead);
+                else if (StateMachine.GetCurrentState() == BotState.Dead)
+                    StateMachine.PopAction();
+
                 Thread.Sleep(250);
             }
         }

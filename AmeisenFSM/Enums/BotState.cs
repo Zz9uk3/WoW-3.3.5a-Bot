@@ -7,5 +7,6 @@
         Follow,
         Moving,
         Combat,
+        Dead,
     }
 }

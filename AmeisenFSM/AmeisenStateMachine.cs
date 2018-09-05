@@ -36,7 +36,8 @@ namespace AmeisenFSM
                 { BotState.Idle, new ActionIdle() },
                 { BotState.Follow, new ActionFollow() },
                 { BotState.Moving, new ActionMoving() },
-                { BotState.Combat, new ActionCombat() }
+                { BotState.Combat, new ActionCombat() },
+                { BotState.Dead, new ActionDead() }
             };
         }
 

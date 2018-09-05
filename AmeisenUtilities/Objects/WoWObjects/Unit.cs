@@ -16,7 +16,7 @@ namespace AmeisenUtilities
 
         public bool IsCasting { get; set; }
 
-        public bool IsDead { get { return UFlags[(int)DynamicUnitFlags.DEAD]; } }
+        public bool IsDead { get; set; }
 
         public bool IsLootable { get { return UFlags[(int)DynamicUnitFlags.LOOTABLE]; } }
 
@@ -31,6 +31,8 @@ namespace AmeisenUtilities
         public ulong TargetGuid { get; set; }
 
         public BitVector32 UFlags { get; set; }
+
+        public BitVector32 UFlags2 { get; set; }
 
         public Unit(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
@@ -129,7 +131,13 @@ namespace AmeisenUtilities
 
             try
             {
-                DynamicUFlags = (BitVector32)BlackMagicInstance.ReadObject(Descriptor + 0xEC, typeof(BitVector32));
+                UFlags2 = (BitVector32)BlackMagicInstance.ReadObject(Descriptor + 0xF0, typeof(BitVector32));
+            }
+            catch { }
+
+            try
+            {
+                IsDead = BlackMagicInstance.ReadByte(Descriptor + 0x12B) == 1;
             }
             catch { }
         }

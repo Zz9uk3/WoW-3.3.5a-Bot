@@ -3,15 +3,16 @@ using AmeisenData;
 using AmeisenFSM.Interfaces;
 using AmeisenUtilities;
 using System.Collections.Generic;
+using System.Threading;
 using static AmeisenFSM.Objects.Delegates;
 
 namespace AmeisenFSM.Actions
 {
-    public class ActionDead : IAction
+    public class ActionDead : ActionMoving
     {
-        public Start StartAction { get { return Start; } }
-        public DoThings StartDoThings { get { return DoThings; } }
-        public Exit StartExit { get { return Stop; } }
+        public override Start StartAction { get { return Start; } }
+        public override DoThings StartDoThings { get { return DoThings; } }
+        public override Exit StartExit { get { return Stop; } }
 
         private Unit ActiveUnit { get; set; }
 
@@ -23,33 +24,34 @@ namespace AmeisenFSM.Actions
             set { AmeisenDataHolder.Instance.Me = value; }
         }
 
-        public void DoThings()
+        public override void DoThings()
         {
+            GoToCorpseAndRevive();
+            base.DoThings();
         }
 
-        public void Start()
+        public override void Start()
         {
+            base.Start();
         }
 
-        public void Stop()
+        public override void Stop()
         {
+            base.Stop();
         }
 
         private void GoToCorpseAndRevive()
         {
-            Vector3 corpsePosition = AmeisenCoreUtils.AmeisenCore.GetCorpsePosition();
+            Vector3 corpsePosition = AmeisenCore.GetCorpsePosition();
 
             if (corpsePosition.X != 0 && corpsePosition.Y != 0 && corpsePosition.Z != 0)
-                MoveNearCorpseAndRevive(corpsePosition);
+                if (!WaypointQueue.Contains(corpsePosition))
+                    WaypointQueue.Enqueue(corpsePosition);
 
-            //if (Me.Health <= 1)
-            //We are alive
-        }
+            if (Utils.GetDistance(Me.pos, corpsePosition) < 10.0)
+                AmeisenCore.RetrieveCorpse();
 
-        private void MoveNearCorpseAndRevive(Vector3 corpsePosition)
-        {
-            // Move to corpse Revive
-            AmeisenCore.RetrieveCorpse();
+            Thread.Sleep(500);
         }
     }
 }
