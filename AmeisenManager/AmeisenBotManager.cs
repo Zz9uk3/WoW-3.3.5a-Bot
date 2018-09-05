@@ -1,9 +1,8 @@
-﻿using AmeisenAI;
-using AmeisenAI.Combat;
-using AmeisenAI.Follow;
-using AmeisenCoreUtils;
+﻿using AmeisenCoreUtils;
 using AmeisenData;
 using AmeisenDB;
+using AmeisenFSM;
+using AmeisenFSM.Enums;
 using AmeisenLogging;
 using AmeisenUtilities;
 using Magic;
@@ -35,55 +34,44 @@ namespace AmeisenManager
         }
 
         public List<WowObject> ActiveWoWObjects { get { return AmeisenDataHolder.Instance.ActiveWoWObjects; } }
-        public AmeisenAIManager AmeisenAIManager { get; private set; }
+        public AmeisenStateMachineManager AmeisenStateMachineManager { get; private set; }
         public AmeisenClient AmeisenClient { get; private set; }
-        public AmeisenCombatManager AmeisenCombatManager { get; private set; }
         public AmeisenDBManager AmeisenDBManager { get; private set; }
-        public AmeisenFollowManager AmeisenFollowManager { get; private set; }
         public AmeisenHook AmeisenHook { get; private set; }
         public AmeisenObjectManager AmeisenObjectManager { get; private set; }
         public AmeisenSettings AmeisenSettings { get; private set; }
         public BlackMagic Blackmagic { get; private set; }
 
-        public bool FollowGroup
+        public bool IsAllowedToAttack
         {
-            get
-            {
-                return followGroup;
-            }
-            set
-            {
-                followGroup = value;
-
-                if (value == true)
-                {
-                    foreach (ulong guid in Me.PartymemberGuids)
-                    {
-                        AmeisenFollowManager.AddPlayerToFollow((Unit)AmeisenObjectManager.GetWoWObjectFromGUID(guid));
-                    }
-                }
-                else
-                {
-                    AmeisenFollowManager.RemoveAllPlayersToFollow();
-                }
-            }
+            get { return AmeisenDataHolder.Instance.IsAllowedToAttack; }
+            set { AmeisenDataHolder.Instance.IsAllowedToAttack = value; }
         }
-
-        public bool IsAllowedToAttack { get { return AmeisenDataHolder.Instance.IsAllowedToAttack; } set { AmeisenDataHolder.Instance.IsAllowedToAttack = value; } }
-
-        public bool IsAllowedToBuff { get { return AmeisenDataHolder.Instance.IsAllowedToBuff; } set { AmeisenDataHolder.Instance.IsAllowedToBuff = value; } }
-
-        public bool IsAllowedToHeal { get { return AmeisenDataHolder.Instance.IsAllowedToHeal; } set { AmeisenDataHolder.Instance.IsAllowedToHeal = value; } }
-
-        public bool IsAllowedToAssistParty { get { return AmeisenDataHolder.Instance.IsAllowedToAssistParty; } set { AmeisenDataHolder.Instance.IsAllowedToAssistParty = value; } }
-
-        public bool IsAllowedToMove
+        public bool IsAllowedToBuff
         {
-            get { return AmeisenAIManager.IsAllowedToMove; }
-            set { AmeisenAIManager.IsAllowedToMove = value; }
+            get { return AmeisenDataHolder.Instance.IsAllowedToBuff; }
+            set { AmeisenDataHolder.Instance.IsAllowedToBuff = value; }
         }
-
-        public bool IsAllowedToTank { get { return AmeisenDataHolder.Instance.IsAllowedToTank; } set { AmeisenDataHolder.Instance.IsAllowedToTank = value; } }
+        public bool IsAllowedToHeal
+        {
+            get { return AmeisenDataHolder.Instance.IsAllowedToHeal; }
+            set { AmeisenDataHolder.Instance.IsAllowedToHeal = value; }
+        }
+        public bool IsAllowedToTank
+        {
+            get { return AmeisenDataHolder.Instance.IsAllowedToTank; }
+            set { AmeisenDataHolder.Instance.IsAllowedToTank = value; }
+        }
+        public bool IsAllowedToAssistParty
+        {
+            get { return AmeisenDataHolder.Instance.IsAllowedToAssistParty; }
+            set { AmeisenDataHolder.Instance.IsAllowedToAssistParty = value; }
+        }
+        public bool IsAllowedToFollowParty
+        {
+            get { return AmeisenDataHolder.Instance.IsAllowedToFollowParty; }
+            set { AmeisenDataHolder.Instance.IsAllowedToFollowParty = value; }
+        }
         public bool IsAttached { get; private set; }
         public bool IsHooked { get; private set; }
         public Me Me { get { return AmeisenDataHolder.Instance.Me; } }
@@ -102,16 +90,6 @@ namespace AmeisenManager
         public static int GetZoneID()
         {
             return AmeisenCore.GetZoneID();
-        }
-
-        public void AddActionToAIQueue(AmeisenAction ameisenAction)
-        {
-            AmeisenAIManager.AddActionToQueue(ameisenAction);
-        }
-
-        public void AddActionToAIQueue(ref AmeisenAction ameisenAction)
-        {
-            AmeisenAIManager.AddActionToQueue(ref ameisenAction);
         }
 
         public string GetLoadedConfigName()
@@ -147,7 +125,7 @@ namespace AmeisenManager
             AmeisenSettings.Settings.combatClassPath = fileName;
             AmeisenSettings.SaveToFile(AmeisenSettings.loadedconfName);
 
-            AmeisenCombatManager.ReloadCombatClass();
+            //TODO: replace AmeisenCombatManager.ReloadCombatClass();
         }
 
         public void LoadSettingsFromFile(string filename)
@@ -195,16 +173,12 @@ namespace AmeisenManager
             AmeisenObjectManager.Start();
 
             // Start the AI
-            AmeisenAIManager = AmeisenAIManager.Instance;
-            AmeisenAIManager.Start(AmeisenSettings.Settings.botMaxThreads);
+            //AmeisenAIManager = AmeisenAIManager.Instance;
+            //AmeisenAIManager.Start(AmeisenSettings.Settings.botMaxThreads);
 
-            // Start the combatmanager
-            AmeisenCombatManager = AmeisenCombatManager.Instance;
-            AmeisenCombatManager.Start();
-
-            // Start Follow Engine
-            AmeisenFollowManager = AmeisenFollowManager.Instance;
-            AmeisenFollowManager.Start();
+            // Start the StateMachine
+            AmeisenStateMachineManager = new AmeisenStateMachineManager();
+            AmeisenStateMachineManager.StateMachine.PushAction(BotState.Idle);
 
             // Connect to Server
             if (Settings.serverAutoConnect)
@@ -228,13 +202,10 @@ namespace AmeisenManager
             AmeisenObjectManager.Stop();
 
             // Stop the combatmanager
-            AmeisenCombatManager.Stop();
-
-            // Stop the Follow Engine
-            AmeisenFollowManager.Stop();
+            AmeisenStateMachineManager.Stop();
 
             // Stop the AI
-            AmeisenAIManager.Stop();
+            //AmeisenAIManager.Stop();
 
             // Unhook the EndScene
             AmeisenHook.DisposeHooking();
@@ -253,8 +224,6 @@ namespace AmeisenManager
 
         private readonly string sqlConnectionString =
                 "server={0};port={1};database={2};uid={3};password={4};";
-
-        private bool followGroup;
 
         private AmeisenBotManager()
         {

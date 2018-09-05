@@ -1,16 +1,10 @@
-﻿using AmeisenCoreUtils;
-using AmeisenData;
-using AmeisenFSM.Interfaces;
-using AmeisenLogging;
-using AmeisenManager;
+﻿using AmeisenData;
 using AmeisenUtilities;
-using System;
 using System.Collections.Generic;
-using static AmeisenFSM.Objects.Delegates;
 
 namespace AmeisenFSM.Actions
 {
-    public class ActionFollow : IAction
+    public class ActionFollow : ActionMoving
     {
         private List<Unit> ActiveUnits { get; set; }
         private Unit ActiveUnit { get; set; }
@@ -21,32 +15,43 @@ namespace AmeisenFSM.Actions
             set { AmeisenDataHolder.Instance.Me = value; }
         }
 
-        public Start StartAction { get { return Start; } }
-        public DoThings StartDoThings { get { return DoThings; } }
-        public Exit StartExit { get { return Stop; } }
-
-        public void Start()
+        public new void Start()
         {
+            base.Start();
             ActiveUnits = GetUnitsToFollow();
         }
 
-        public void DoThings()
+        public new void DoThings()
         {
             Me.Update();
             ActiveUnit.Update();
 
+            // When we are far enough away, follow
             if (Utils.GetDistance(Me.pos, ActiveUnit.pos)
                 > AmeisenSettings.Instance.Settings.followDistance)
             {
-
+                // Dont add waypoints twice
+                if (!WaypointQueue.Contains(ActiveUnit.pos))
+                {
+                    WaypointQueue.Enqueue(ActiveUnit.pos);
+                }
             }
+
+            // Do the movement stuff
+            base.DoThings();
         }
 
-
-        public void Stop()
+        public new void Stop()
         {
+            base.Stop();
         }
 
+        /// <summary>
+        /// Returns a list with Units that we are allowed to follow:
+        /// Party Units if: AmeisenDataHolder.Instance.IsAllowedToFollowParty is true.
+        /// ...
+        /// </summary>
+        /// <returns>List containing all Units we are able to follow</returns>
         private List<Unit> GetUnitsToFollow()
         {
             List<Unit> tempList = new List<Unit>();
@@ -55,51 +60,46 @@ namespace AmeisenFSM.Actions
             {
                 List<ulong> partymembers = Me.PartymemberGuids;
                 foreach (ulong guid in partymembers)
-                    tempList.Add(
-                       (Unit)AmeisenObjectManager.Instance.GetWoWObjectFromGUID(guid));
+                {
+                    tempList.Add((Unit)GetWoWObjectFromGUID(guid));
+                }
             }
 
             return tempList;
         }
 
+        /// <summary>
+        /// Return a Player by the given GUID
+        /// </summary>
+        /// <param name="guid">guid of the player you want to get</param>
+        /// <returns>Player that you want to get</returns>
+        public WowObject GetWoWObjectFromGUID(ulong guid)
+        {
+            foreach (WowObject p in AmeisenDataHolder.Instance.ActiveWoWObjects)
+            {
+                if (p.Guid == guid)
+                {
+                    return p;
+                }
+            }
+
+            return null;
+        }
+
+        // Get the first Unit from our active Unit list and refresh it.
         private void RefreshActiveUnit()
         {
             foreach (Unit u in ActiveUnits)
             {
                 if (u == null)
+                {
                     continue;
+                }
+
                 u.Update();
                 ActiveUnit = u;
             }
             ActiveUnit = null;
-        }
-
-        private void DoFollow()
-        {
-            Me.Update();
-            Vector3 initialPosition = Me.pos;
-            Vector3 posToGoTo = CalculatePosToGoTo(position, (int)distance);
-
-            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Allowed to move, move near", this);
-            AmeisenCore.MovePlayerToXYZ(posToGoTo, InteractionType.MOVE);
-            AmeisenDataHolder.Instance.IsMoving = true;
-
-            //Me.Update();
-            //Vector3 activePosition = Me.pos;
-            // Stuck check, if we haven't moved since the last iteration, jump
-            //CheckIfWeAreStuckIfYesJump(initialPosition, activePosition);
-        }
-
-        /// <summary> Modify our go-to-position by a small factor to provide "naturality" </summary>
-        /// <param name="targetPos">pos you want to go to/param> 
-        /// <param name="distanceToTarget">distance to keep to the target</param> 
-        /// <returns>modified position</returns>
-        private Vector3 CalculatePosToGoTo(Vector3 targetPos, int distanceToTarget)
-        {
-            Random rnd = new Random();
-            float factorX = rnd.Next((distanceToTarget / 4) * -1, distanceToTarget / 2);
-            float factorY = rnd.Next((distanceToTarget / 4) * -1, distanceToTarget / 2);
-            return new Vector3(targetPos.X + factorX, targetPos.Y + factorY, targetPos.Z);
         }
     }
 }

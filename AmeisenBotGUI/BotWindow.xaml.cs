@@ -125,7 +125,7 @@ namespace AmeisenBotGUI
 
         private void CheckBoxFollowMaster_Click(object sender, RoutedEventArgs e)
         {
-            AmeisenBotManager.Instance.FollowGroup = (bool)checkBoxFollowMaster.IsChecked;
+            BotManager.IsAllowedToFollowParty = (bool)checkBoxFollowParty.IsChecked;
         }
 
         private void CheckBoxTopMost_Click(object sender, RoutedEventArgs e)
@@ -150,7 +150,7 @@ namespace AmeisenBotGUI
             BotManager.Settings.behaviourTank = (bool)checkBoxAssistPartyTank.IsChecked;
             BotManager.Settings.behaviourHeal = (bool)checkBoxAssistPartyHeal.IsChecked;
             BotManager.Settings.behaviourBuff = (bool)checkBoxAssistPartyBuff.IsChecked;
-            BotManager.Settings.followMaster = (bool)checkBoxFollowMaster.IsChecked;
+            BotManager.Settings.followMaster = (bool)checkBoxFollowParty.IsChecked;
             BotManager.SaveSettingsToFile(BotManager.GetLoadedConfigName());
         }
 
@@ -193,8 +193,8 @@ namespace AmeisenBotGUI
             checkBoxAssistGroup.IsChecked = BotManager.Settings.assistParty;
             BotManager.IsAllowedToAssistParty = BotManager.Settings.assistParty;
 
-            checkBoxFollowMaster.IsChecked = BotManager.Settings.followMaster;
-            AmeisenBotManager.Instance.FollowGroup = BotManager.Settings.followMaster;
+            checkBoxFollowParty.IsChecked = BotManager.Settings.followMaster;
+            BotManager.IsAllowedToFollowParty = BotManager.Settings.followMaster;
 
             sliderDistance.Value = BotManager.Settings.followDistance;
 
@@ -261,9 +261,6 @@ namespace AmeisenBotGUI
 
         private void UpdateAIView()
         {
-            labelThreadsActive.Content = $"⚡ Threads: {BotManager.AmeisenAIManager.GetBusyThreadCount()}/{BotManager.AmeisenAIManager.GetActiveThreadCount()}";
-            progressBarBusyAIThreads.Maximum = BotManager.AmeisenAIManager.GetActiveThreadCount();
-            progressBarBusyAIThreads.Value = BotManager.AmeisenAIManager.GetBusyThreadCount();
         }
 
         private void UpdateTargetViews()

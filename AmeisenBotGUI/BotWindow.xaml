@@ -113,7 +113,7 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Button.BorderBrush>
         </Button>
-        <CheckBox x:Name="checkBoxFollowMaster" Content="🚀 Follow Group" Margin="270,10,0,0" Background="White" HorizontalAlignment="Left" Width="129" BorderThickness="2" Height="20" VerticalAlignment="Top" Click="CheckBoxFollowMaster_Click" FontSize="14">
+        <CheckBox x:Name="checkBoxFollowParty" Content="🚀 Follow Group" Margin="270,10,0,0" Background="White" HorizontalAlignment="Left" Width="129" BorderThickness="2" Height="20" VerticalAlignment="Top" Click="CheckBoxFollowMaster_Click" FontSize="14">
             <CheckBox.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </CheckBox.Foreground>

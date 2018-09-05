@@ -72,6 +72,10 @@
       <Project>{9B3F7A78-0A9B-492A-8299-9C86D2E297ED}</Project>
       <Name>AmeisenDB</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AmeisenFSM\AmeisenFSM.csproj">
+      <Project>{c93b8f0c-8cfa-45f6-9b2c-43b72e1cfe0f}</Project>
+      <Name>AmeisenFSM</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AmeisenLogger\AmeisenLogger.csproj">
       <Project>{017a67a9-f7bd-46e3-b716-e1d601afca4b}</Project>
       <Name>AmeisenLogger</Name>

@@ -75,7 +75,7 @@
       <Name>AmeisenData</Name>
     </ProjectReference>
     <ProjectReference Include="..\AmeisenLogger\AmeisenLogger.csproj">
-      <Project>{017a67a9-f7bd-46e3-b716-e1d601afca4b}</Project>
+      <Project>{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}</Project>
       <Name>AmeisenLogger</Name>
     </ProjectReference>
     <ProjectReference Include="..\AmeisenUtilities\AmeisenUtilities.csproj">
@@ -83,6 +83,5 @@
       <Name>AmeisenUtilities</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

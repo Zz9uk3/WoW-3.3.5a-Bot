@@ -38,7 +38,6 @@ namespace AmeisenAI.Follow
         public void OnArrivedAtUnit()
         {
             AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Arrived at Units Position", this);
-            AmeisenDataHolder.Instance.IsMoving = false;
             arrivedAtUnit = true;
         }
 
@@ -99,7 +98,6 @@ namespace AmeisenAI.Follow
             if (Me?.Health == 0)
             {
                 AmeisenLogger.Instance.Log(LogLevel.DEBUG, "I'm Dead, need to Release Spirit", this);
-                AmeisenDataHolder.Instance.IsDead = true;
 
                 ReleaseSpiritCheck();
                 GhostReviveCheck();
@@ -154,18 +152,7 @@ namespace AmeisenAI.Follow
             {
                 arrivedAtUnit = false;
                 AmeisenLogger.Instance.Log(LogLevel.VERBOSE, $"Following Unit: {activeUnit.Name}", this);
-                AmeisenAction ameisenAction = new AmeisenAction(
-                                    AmeisenActionType.MOVE_NEAR_POSITION,
-                                    new object[] {
-                                    activeUnit.pos,
-                                    AmeisenSettings.Instance.Settings.followDistance }, // Follow distance
-                                    OnArrivedAtUnit
-                                   );
-
-                AmeisenAIManager.Instance.AddActionToQueue(ref ameisenAction);
-
-                // Slow follow, falling behind the master quite fast
-                while (!ameisenAction.IsDone) { Thread.Sleep(1); }
+                
             }
         }
 
@@ -190,20 +177,17 @@ namespace AmeisenAI.Follow
 
                 AmeisenAction ameisenAction = new AmeisenAction(
                 AmeisenActionType.GO_TO_CORPSE_AND_REVIVE, null, OnReviveSuccessful);
-
-                AmeisenAIManager.Instance.AddActionToQueue(ref ameisenAction);
             }
         }
 
         private void OnReviveSuccessful()
         {
-            AmeisenDataHolder.Instance.IsDead = false;
         }
 
         private void ReleaseSpiritCheck()
         {
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Checking IsDead", this);
-            if (AmeisenCore.IsDead(LuaUnit.player) && AmeisenAIManager.Instance.IsAllowedToRevive)
+            if (AmeisenCore.IsDead(LuaUnit.player))
             {
                 AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Releasing Spirit", this);
                 AmeisenCore.ReleaseSpirit();

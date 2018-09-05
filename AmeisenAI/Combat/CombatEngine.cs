@@ -89,13 +89,11 @@ namespace AmeisenAI.Combat
 
                 if (!Me.InCombat)
                 {
-                    AmeisenAIManager.Instance.IsAllowedToMove = true;
                     // Loot the Guid's from guidsWithPotentialLoot List
                     LootGuidsThatAreMine();
                 }
                 else
                 {
-                    AmeisenAIManager.Instance.IsAllowedToMove = false;
                 }
             }
         }
@@ -171,26 +169,12 @@ namespace AmeisenAI.Combat
 
         private void FaceTarget()
         {
-            AmeisenAction action = new AmeisenAction(
-                AmeisenActionType.FACETARGET,
-                InteractionType.FACETARGET,
-                null
-                );
-            AmeisenAIManager.Instance.AddActionToQueue(ref action);
-            while (!action.IsDone) { Thread.Sleep(20); }
         }
 
         private void CheckOnCooldownAndUseSpell(CombatLogicEntry entry)
         {
             if (!AmeisenCore.IsOnCooldown((string)entry.Parameters))
             {
-                AmeisenAction action;
-                if (entry.IsForMyself)
-                    action = new AmeisenAction(AmeisenActionType.USE_SPELL_ON_ME, (string)entry.Parameters, null);
-                else
-                    action = new AmeisenAction(AmeisenActionType.USE_SPELL, (string)entry.Parameters, null);
-
-                AmeisenAIManager.Instance.AddActionToQueue(ref action);
             }
         }
 
@@ -410,11 +394,6 @@ namespace AmeisenAI.Combat
                     if (isLootable)
                     {
                         // Loot the target
-                        object[] parameters = new object[2] { Target.pos, InteractionType.LOOT };
-                        AmeisenAction action = new AmeisenAction(AmeisenActionType.INTERACT_TARGET, parameters, null);
-
-                        AmeisenAIManager.Instance.AddActionToQueue(ref action);
-                        while (!action.IsDone) { Thread.Sleep(20); }
                     }
                 }
             }
@@ -431,24 +410,6 @@ namespace AmeisenAI.Combat
         // TODO: need to move this into a CombatMovementManager or something like this
         private void MoveIntoRange(CombatLogicEntry entry, bool isMeleeSpell)
         {
-            AmeisenAction action;
-            if (isMeleeSpell)
-            {
-                AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"MeleeSpell: Forced to move to:{Target.Name}", this);
-                AmeisenAIManager.Instance.IsAllowedToMoveNearTarget = true;
-                object[] parameters = new object[2] { Target.pos, entry.MaxSpellDistance * 0.8 }; // 20% Offset to move in
-                action = new AmeisenAction(AmeisenActionType.MOVE_TO_POSITION, parameters, null);
-            }
-            else
-            {
-                AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"RangedSpell: Forced to move to:{Target.Name}", this);
-                AmeisenAIManager.Instance.IsAllowedToMoveNearTarget = true;
-                object[] parameters = new object[2] { Target.pos, entry.MaxSpellDistance * 0.8 }; // 20% Offset to move in
-                action = new AmeisenAction(AmeisenActionType.MOVE_NEAR_POSITION, parameters, null);
-            }
-
-            AmeisenAIManager.Instance.AddActionToQueue(ref action);
-            while (!action.IsDone) { Thread.Sleep(20); }
         }
 
         private void RemoveDeadTargetsFromListAndCheckForLoot()
@@ -531,8 +492,7 @@ namespace AmeisenAI.Combat
                             {
                                 Thread.Sleep(100);
                                 AttackShit = true;
-                                AmeisenAIManager.Instance.IsAllowedToMove = false;
-                                AmeisenCore.LuaDoString("AttackTarget();");
+                                //AmeisenCore.LuaDoString("AttackTarget();");
                             }
                         }
                         i++;
