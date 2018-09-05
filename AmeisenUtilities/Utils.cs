@@ -32,6 +32,14 @@ namespace AmeisenUtilities
             return hex.ToString();
         }
 
+        public static string FirstCharToUpper(string input)
+        {
+            if (input.Length > 1)
+                return input?.First().ToString().ToUpper() + input?.Substring(1);
+            else
+                return input;
+        }
+
         public static string GenerateRandonString(int lenght, string chars)
         {
             Random rnd = new Random();
@@ -52,26 +60,6 @@ namespace AmeisenUtilities
         {
             ImageConverter converter = new ImageConverter();
             return (byte[])converter.ConvertTo(img, typeof(byte[]));
-        }
-
-        public static bool IsFacing(Vector3 myPosition, float rotationA, Vector3 targetPosition)
-        {
-            float f = (float)Math.Atan2(targetPosition.Y - myPosition.Y, targetPosition.X - myPosition.X);
-
-            if (f < 0.0f)
-                f = f + (float)Math.PI * 2.0f;
-            else if (f > (float)Math.PI * 2)
-                f = f - (float)Math.PI * 2.0f;
-
-            return (f >= (rotationA * 0.7)) && (f <= (rotationA * 1.3)) ? true : false;
-        }
-
-        public static string FirstCharToUpper(string input)
-        {
-            if (input.Length > 1)
-                return input?.First().ToString().ToUpper() + input?.Substring(1);
-            else
-                return input;
         }
 
         public static System.Windows.Media.Color InterpolateColors(System.Windows.Media.Color[] colors, double factor)
@@ -100,6 +88,18 @@ namespace AmeisenUtilities
             }
 
             return System.Windows.Media.Color.FromArgb(255, (byte)r, (byte)g, (byte)b);
+        }
+
+        public static bool IsFacing(Vector3 myPosition, float rotationA, Vector3 targetPosition)
+        {
+            float f = (float)Math.Atan2(targetPosition.Y - myPosition.Y, targetPosition.X - myPosition.X);
+
+            if (f < 0.0f)
+                f = f + (float)Math.PI * 2.0f;
+            else if (f > (float)Math.PI * 2)
+                f = f - (float)Math.PI * 2.0f;
+
+            return (f >= (rotationA * 0.7)) && (f <= (rotationA * 1.3)) ? true : false;
         }
     }
 }

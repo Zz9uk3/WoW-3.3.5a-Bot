@@ -1,4 +1,5 @@
-﻿using AmeisenCoreUtils;
+﻿using AmeisenCombat.Objects;
+using AmeisenCoreUtils;
 using AmeisenData;
 using AmeisenLogging;
 using AmeisenUtilities;
@@ -8,19 +9,44 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 
-namespace AmeisenAI.Combat
+namespace AmeisenCombat
 {
-    public class CombatEngine
+    public class AmeisenCombatEngine
     {
-        public CombatEngine()
+        private static readonly string combatclassesPath = AppDomain.CurrentDomain.BaseDirectory + "/combatclasses/";
+
+        private int posAt;
+
+        public bool AttackShit { get; private set; }
+
+        public CombatLogic CurrentCombatLogic { get; set; }
+
+        public List<ulong> GuidsToKill { get; set; }
+
+        public List<ulong> GuidsWithPotentialLoot { get; set; }
+
+        private List<WowObject> ActiveWoWObjects
+        {
+            get { return AmeisenDataHolder.Instance.ActiveWoWObjects; }
+        }
+
+        private Me Me
+        {
+            get { return AmeisenDataHolder.Instance.Me; }
+            set { AmeisenDataHolder.Instance.Me = value; }
+        }
+
+        private Unit Target
+        {
+            get { return AmeisenDataHolder.Instance.Target; }
+            set { AmeisenDataHolder.Instance.Target = value; }
+        }
+
+        public AmeisenCombatEngine()
         {
             GuidsToKill = new List<ulong>();
             GuidsWithPotentialLoot = new List<ulong>();
         }
-
-        public CombatLogic CurrentCombatLogic { get; set; }
-        public List<ulong> GuidsToKill { get; set; }
-        public List<ulong> GuidsWithPotentialLoot { get; set; }
 
         /// <summary>
         /// Load a combatclass file.
@@ -98,28 +124,48 @@ namespace AmeisenAI.Combat
             }
         }
 
-        private static readonly string combatclassesPath = AppDomain.CurrentDomain.BaseDirectory + "/combatclasses/";
-
-        private int posAt;
-
-        private List<WowObject> ActiveWoWObjects
+        private void AssistPartyMembers()
         {
-            get { return AmeisenDataHolder.Instance.ActiveWoWObjects; }
-        }
+            if (Me?.TargetGuid == 0)
+            {
+                // Sometimes crashing because the List is being updated from elsewhere
+                // TODO: need to fix that using a lock or so
+                try
+                {
+                    int i = 1;
+                    foreach (ulong guid in Me.PartymemberGuids)
+                    {
+                        Unit activeUnit = (Unit)GetUnitFromListByGuid(guid);
+                        activeUnit.Update();
 
-        private Me Me
-        {
-            get { return AmeisenDataHolder.Instance.Me; }
-            set { AmeisenDataHolder.Instance.Me = value; }
-        }
+                        if (activeUnit.InCombat)
+                        {
+                            ulong partymemberTargetGuid = activeUnit.TargetGuid;
+                            AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Partymember Guid: {partymemberTargetGuid}", this);
 
-        private Unit Target
-        {
-            get { return AmeisenDataHolder.Instance.Target; }
-            set { AmeisenDataHolder.Instance.Target = value; }
-        }
+                            AmeisenCore.LuaDoString($"AssistUnit(\"party{i}\");");
+                            Me.Update();
+                            if (!GuidsToKill.Contains(Me.TargetGuid))
 
-        public bool AttackShit { get; private set; }
+                                GuidsToKill.Add(Me.TargetGuid);
+                            //AmeisenCore.LuaDoString("AttackTarget();");
+
+                            Target.Update();
+                            // Start combat if we aren't already InCombat
+                            if (!Me.InCombat)
+                            {
+                                Thread.Sleep(100);
+                                AttackShit = true;
+                                //AmeisenCore.LuaDoString("AttackTarget();");
+                            }
+                        }
+                        i++;
+                        break;
+                    }
+                }
+                catch { }
+            }
+        }
 
         private bool CheckCombatOnly(CombatLogicEntry entry)
         {
@@ -165,10 +211,6 @@ namespace AmeisenAI.Combat
                         condition.conditionLuaUnits[0]).Contains(((string)condition.customValue).ToLower());
             }
             return false;
-        }
-
-        private void FaceTarget()
-        {
         }
 
         private void CheckOnCooldownAndUseSpell(CombatLogicEntry entry)
@@ -314,6 +356,18 @@ namespace AmeisenAI.Combat
             return true;
         }
 
+        private void FaceTarget()
+        {
+        }
+
+        private WowObject GetUnitFromListByGuid(ulong guid)
+        {
+            foreach (WowObject o in ActiveWoWObjects)
+                if (o.Guid == guid)
+                    return o;
+            return null;
+        }
+
         private double GetValue(Condition condition, int id)
         {
             if (condition.conditionLuaUnits[id] == LuaUnit.target)
@@ -399,14 +453,6 @@ namespace AmeisenAI.Combat
             }
         }
 
-        private WowObject GetUnitFromListByGuid(ulong guid)
-        {
-            foreach (WowObject o in ActiveWoWObjects)
-                if (o.Guid == guid)
-                    return o;
-            return null;
-        }
-
         // TODO: need to move this into a CombatMovementManager or something like this
         private void MoveIntoRange(CombatLogicEntry entry, bool isMeleeSpell)
         {
@@ -458,50 +504,6 @@ namespace AmeisenAI.Combat
             // TODO: fix this junk
             //AmeisenCore.TargetGUID(GuidsToKill.FirstOrDefault());
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Target Guid: {GuidsToKill.FirstOrDefault()}", this);
-        }
-
-        private void AssistPartyMembers()
-        {
-            if (Me?.TargetGuid == 0)
-            {
-                // Sometimes crashing because the List is being updated from elsewhere
-                // TODO: need to fix that using a lock or so
-                try
-                {
-                    int i = 1;
-                    foreach (ulong guid in Me.PartymemberGuids)
-                    {
-                        Unit activeUnit = (Unit)GetUnitFromListByGuid(guid);
-                        activeUnit.Update();
-
-                        if (activeUnit.InCombat)
-                        {
-                            ulong partymemberTargetGuid = activeUnit.TargetGuid;
-                            AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Partymember Guid: {partymemberTargetGuid}", this);
-
-                            AmeisenCore.LuaDoString($"AssistUnit(\"party{i}\");");
-                            Me.Update();
-                            if (!GuidsToKill.Contains(Me.TargetGuid))
-
-                                GuidsToKill.Add(Me.TargetGuid);
-                            //AmeisenCore.LuaDoString("AttackTarget();");
-
-                            Target.Update();
-                            // Start combat if we aren't already InCombat
-                            if (!Me.InCombat)
-                            {
-                                Thread.Sleep(100);
-                                AttackShit = true;
-                                //AmeisenCore.LuaDoString("AttackTarget();");
-                            }
-                        }
-                        i++;
-                        break;
-                    }
-
-                }
-                catch { }
-            }
         }
     }
 }

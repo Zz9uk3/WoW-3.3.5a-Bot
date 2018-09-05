@@ -13,6 +13,20 @@ namespace AmeisenManager
 {
     public class AmeisenClient
     {
+        private static readonly HttpClient client = new HttpClient();
+
+        private static readonly object padlock = new object();
+
+        private static AmeisenClient instance;
+
+        private Thread botListUpdateThread;
+
+        private System.Timers.Timer botListUpdateTimer;
+
+        private Thread botUpdateThread;
+
+        private System.Timers.Timer botUpdateTimer;
+
         public static AmeisenClient Instance
         {
             get
@@ -31,6 +45,21 @@ namespace AmeisenManager
         public IPAddress IPAddress { get; private set; }
         public bool IsRegistered { get; private set; }
         public int Port { get; private set; }
+
+        private Me Me
+        {
+            get { return AmeisenDataHolder.Instance.Me; }
+            set { AmeisenDataHolder.Instance.Me = value; }
+        }
+
+        private AmeisenClient()
+        {
+            botUpdateTimer = new System.Timers.Timer(1000);
+            botUpdateTimer.Elapsed += UpdateBot;
+
+            botListUpdateTimer = new System.Timers.Timer(1000);
+            botListUpdateTimer.Elapsed += UpdateBotList;
+        }
 
         public async void Register(Me me, IPAddress ip, int port = 16200)
         {
@@ -86,32 +115,6 @@ namespace AmeisenManager
 
                 IsRegistered = false;
             }
-        }
-
-        private static readonly HttpClient client = new HttpClient();
-        private static readonly object padlock = new object();
-        private static AmeisenClient instance;
-        private Thread botListUpdateThread;
-
-        private System.Timers.Timer botListUpdateTimer;
-
-        private Thread botUpdateThread;
-
-        private System.Timers.Timer botUpdateTimer;
-
-        private AmeisenClient()
-        {
-            botUpdateTimer = new System.Timers.Timer(1000);
-            botUpdateTimer.Elapsed += UpdateBot;
-
-            botListUpdateTimer = new System.Timers.Timer(1000);
-            botListUpdateTimer.Elapsed += UpdateBotList;
-        }
-
-        private Me Me
-        {
-            get { return AmeisenDataHolder.Instance.Me; }
-            set { AmeisenDataHolder.Instance.Me = value; }
         }
 
         private async void UpdateBot(object source, ElapsedEventArgs e)

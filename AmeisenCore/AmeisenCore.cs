@@ -27,14 +27,6 @@ namespace AmeisenCoreUtils
             BlackMagic.WriteInt(Offsets.tickCount, Environment.TickCount);
         }
 
-        private static void StopMovement()
-        {
-            //SendKey(new IntPtr(0x26));
-            //SendKey(new IntPtr(0x28));
-
-
-        }
-
         /// <summary>
         /// Switch shapeshift forms, use for example "WoWDruid.ShapeshiftForms.Bear"
         /// </summary>
@@ -592,19 +584,6 @@ namespace AmeisenCoreUtils
             SendKey(new IntPtr(0x20));
         }
 
-        private static void SendKey(IntPtr vKey)
-        {
-            const uint KEYDOWN = 0x100;
-            const uint KEYUP = 0x101;
-
-            IntPtr windowHandle = BlackMagic.WindowHandle;
-
-            // 0x20 = Spacebar (VK_SPACE)
-            SendMessage(windowHandle, KEYDOWN, vKey, new IntPtr(0));
-            Thread.Sleep(new Random().Next(20, 40)); // make it look more human-like :^)
-            SendMessage(windowHandle, KEYUP, vKey, new IntPtr(0));
-        }
-
         private static void PauseMainThread()
         {
             SThread.SuspendThread(
@@ -621,6 +600,25 @@ namespace AmeisenCoreUtils
                     SThread.GetMainThread(BlackMagic.ProcessId).Id
                     )
                 );
+        }
+
+        private static void SendKey(IntPtr vKey)
+        {
+            const uint KEYDOWN = 0x100;
+            const uint KEYUP = 0x101;
+
+            IntPtr windowHandle = BlackMagic.WindowHandle;
+
+            // 0x20 = Spacebar (VK_SPACE)
+            SendMessage(windowHandle, KEYDOWN, vKey, new IntPtr(0));
+            Thread.Sleep(new Random().Next(20, 40)); // make it look more human-like :^)
+            SendMessage(windowHandle, KEYUP, vKey, new IntPtr(0));
+        }
+
+        private static void StopMovement()
+        {
+            //SendKey(new IntPtr(0x26));
+            //SendKey(new IntPtr(0x28));
         }
 
         /// <summary> Write the coordinates and action to the memory. </summary> <param

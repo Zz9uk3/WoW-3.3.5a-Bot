@@ -1,4 +1,4 @@
-﻿namespace AmeisenAI.Combat
+﻿namespace AmeisenCombat.Objects
 {
     public enum CombatLogicValues
     {

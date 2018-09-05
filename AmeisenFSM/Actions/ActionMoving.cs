@@ -10,6 +10,9 @@ namespace AmeisenFSM.Actions
 {
     public class ActionMoving : IAction
     {
+        public virtual Start StartAction { get { return Start; } }
+        public virtual DoThings StartDoThings { get { return DoThings; } }
+        public virtual Exit StartExit { get { return Stop; } }
         public Queue<Vector3> WaypointQueue { get; set; }
 
         private Me Me
@@ -18,53 +21,28 @@ namespace AmeisenFSM.Actions
             set { AmeisenDataHolder.Instance.Me = value; }
         }
 
-        public Start StartAction { get { return Start; } }
-        public DoThings StartDoThings { get { return DoThings; } }
-        public Exit StartExit { get { return Stop; } }
+        public virtual void DoThings()
+        {
+            if (WaypointQueue.Count > 0)
+            {
+                MoveToNode();
+            }
+        }
 
-        public void Start()
+        public virtual void Start()
         {
             WaypointQueue = new Queue<Vector3>();
         }
 
-        public void DoThings()
-        {
-            if (WaypointQueue.Count > 0)
-            {
-            }
-        }
-
-        public void Stop()
+        public virtual void Stop()
         {
             WaypointQueue.Clear();
         }
 
-        private void MoveToNode()
-        {
-            Me.Update();
-            Vector3 initialPosition = Me.pos;
-            Vector3 targetPosition = WaypointQueue.Peek();
-
-            if (WaypointQueue.Count > 0)
-            {
-                // Check if we are close enough to the node to dequeue it, otherwise move to it
-                if (Utils.GetDistance(initialPosition, targetPosition) > 3.0)
-                {
-                    //Vector3 posToGoTo = RebaseVector(targetPosition, 0);
-                    AmeisenCore.MovePlayerToXYZ(targetPosition, InteractionType.MOVE);
-                }
-                else
-                {
-                    WaypointQueue.Dequeue();
-                }
-            }
-        }
-
         /// <summary>
         /// Very basic Obstacle avoidance.
-        /// 
-        /// Need to change this to a better waypoint system that
-        /// uses our MapNode Database...
+        ///
+        /// Need to change this to a better waypoint system that uses our MapNode Database...
         /// </summary>
         /// <param name="initialPosition">initial position</param>
         /// <param name="activePosition">position now</param>
@@ -81,10 +59,28 @@ namespace AmeisenFSM.Actions
             return false;
         }
 
+        private void MoveToNode()
+        {
+            Me.Update();
+            Vector3 initialPosition = Me.pos;
+            Vector3 targetPosition = WaypointQueue.Peek();
+
+            // Check if we are close enough to the node to dequeue it, otherwise move to it
+            if (Utils.GetDistance(initialPosition, targetPosition)
+                > AmeisenSettings.Instance.Settings.followDistance)
+            {
+                //Vector3 posToGoTo = RebaseVector(targetPosition, 0);
+                AmeisenCore.MovePlayerToXYZ(targetPosition, InteractionType.MOVE);
+            }
+            else
+            {
+                WaypointQueue.Dequeue();
+            }
+        }
+
         /// <summary> Modify our go-to-position by a small factor to provide "naturality" </summary>
-        /// <param name="targetPos">pos you want to go to/param> 
-        /// <param name="offset">distance to keep to the target</param> 
-        /// <returns>modified position</returns>
+        /// <param name="targetPos">pos you want to go to/param> <param name="offset">distance to
+        /// keep to the target</param> <returns>modified position</returns>
         private Vector3 RebaseVector(Vector3 targetPos, int offset)
         {
             Random rnd = new Random();
@@ -94,4 +90,3 @@ namespace AmeisenFSM.Actions
         }
     }
 }
-

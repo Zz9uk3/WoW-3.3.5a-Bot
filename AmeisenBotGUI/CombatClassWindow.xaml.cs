@@ -1,4 +1,5 @@
-﻿using AmeisenAI.Combat;
+﻿using AmeisenCombat;
+using AmeisenCombat.Objects;
 using AmeisenManager;
 using AmeisenUtilities;
 using Microsoft.Win32;
@@ -14,6 +15,12 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class CombatClassWindow : Window
     {
+        private CombatLogic loadedLogic;
+
+        private int prio;
+
+        private AmeisenBotManager BotManager { get; }
+
         public CombatClassWindow()
         {
             InitializeComponent();
@@ -21,16 +28,12 @@ namespace AmeisenBotGUI
 
             string defaultCombatClass = BotManager.Settings.combatClassPath;
             if (defaultCombatClass != "none")
-                loadedLogic = CombatEngine.LoadCombatLogicFromFile(defaultCombatClass);
+                loadedLogic = AmeisenCombatEngine.LoadCombatLogicFromFile(defaultCombatClass);
             else
                 loadedLogic = new CombatLogic();
 
             Topmost = BotManager.Settings.topMost;
         }
-
-        private CombatLogic loadedLogic;
-        private int prio;
-        private AmeisenBotManager BotManager { get; }
 
         private void ButtonAddCombatEntry_Click(object sender, RoutedEventArgs e)
         {
@@ -48,7 +51,7 @@ namespace AmeisenBotGUI
         {
             if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
             {
-                AmeisenAI.Combat.Condition condition = new AmeisenAI.Combat.Condition();
+                AmeisenCombat.Objects.Condition condition = new AmeisenCombat.Objects.Condition();
 
                 ((CombatLogicEntry)listboxCombatActions.SelectedItem).Conditions.Add(condition);
                 listboxConditions.Items.Add(condition);
@@ -94,7 +97,7 @@ namespace AmeisenBotGUI
             if (openFileDialog.ShowDialog() == true)
             {
                 loadedLogic.combatLogicEntries.Clear();
-                loadedLogic = CombatEngine.LoadCombatLogicFromFile(openFileDialog.FileName);
+                loadedLogic = AmeisenCombatEngine.LoadCombatLogicFromFile(openFileDialog.FileName);
 
                 if (loadedLogic.combatLogicEntries != null)
                 {
@@ -143,7 +146,7 @@ namespace AmeisenBotGUI
                 saveFileDialog.FileName = defaultCombatClass;
 
             if (saveFileDialog.ShowDialog() == true)
-                CombatEngine.SaveToFile(saveFileDialog.FileName, loadedLogic);
+                AmeisenCombatEngine.SaveToFile(saveFileDialog.FileName, loadedLogic);
         }
 
         private void CheckboxCanCastDuringMovement_Checked(object sender, RoutedEventArgs e)
@@ -223,19 +226,19 @@ namespace AmeisenBotGUI
         private void ComboboxLuaUnitOne_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (listboxConditions.SelectedItem != null)
-                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionLuaUnits[0] = (LuaUnit)comboboxLuaUnitOne.SelectedItem;
+                ((AmeisenCombat.Objects.Condition)listboxConditions.SelectedItem).conditionLuaUnits[0] = (LuaUnit)comboboxLuaUnitOne.SelectedItem;
         }
 
         private void ComboboxLuaUnitTwo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (listboxConditions.SelectedItem != null)
-                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionLuaUnits[1] = (LuaUnit)comboboxLuaUnitTwo.SelectedItem;
+                ((AmeisenCombat.Objects.Condition)listboxConditions.SelectedItem).conditionLuaUnits[1] = (LuaUnit)comboboxLuaUnitTwo.SelectedItem;
         }
 
         private void ComboboxValueOne_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (listboxConditions.SelectedItem != null)
-                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionValues[0] = (CombatLogicValues)comboboxValueOne.SelectedItem;
+                ((AmeisenCombat.Objects.Condition)listboxConditions.SelectedItem).conditionValues[0] = (CombatLogicValues)comboboxValueOne.SelectedItem;
         }
 
         private void ComboboxValueOperator_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -243,7 +246,7 @@ namespace AmeisenBotGUI
             if (listboxConditions.SelectedItem != null)
             {
                 CombatLogicStatement op = (CombatLogicStatement)comboboxValueOperator.SelectedItem;
-                AmeisenAI.Combat.Condition cond = ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem);
+                AmeisenCombat.Objects.Condition cond = ((AmeisenCombat.Objects.Condition)listboxConditions.SelectedItem);
 
                 cond.statement = op;
 
@@ -254,7 +257,7 @@ namespace AmeisenBotGUI
         private void ComboboxValueTwo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (listboxConditions.SelectedItem != null)
-                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionValues[1] = (CombatLogicValues)comboboxValueTwo.SelectedItem;
+                ((AmeisenCombat.Objects.Condition)listboxConditions.SelectedItem).conditionValues[1] = (CombatLogicValues)comboboxValueTwo.SelectedItem;
         }
 
         private void GuiCombatClassEditor_Loaded(object sender, RoutedEventArgs e)
@@ -326,7 +329,7 @@ namespace AmeisenBotGUI
                 checkboxIsForMySelf.IsChecked = entry.IsForMyself;
 
                 listboxConditions.Items.Clear();
-                foreach (AmeisenAI.Combat.Condition c in entry.Conditions)
+                foreach (AmeisenCombat.Objects.Condition c in entry.Conditions)
                     listboxConditions.Items.Add(c);
 
                 comboboxActionType.SelectedItem = entry.ActionType;
@@ -350,20 +353,20 @@ namespace AmeisenBotGUI
         {
             if (((CombatLogicEntry)listboxCombatActions.SelectedItem) != null)
             {
-                if ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem != null)
+                if ((AmeisenCombat.Objects.Condition)listboxConditions.SelectedItem != null)
                 {
-                    radiobuttonCustomValue.IsChecked = ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).customSecondValue;
+                    radiobuttonCustomValue.IsChecked = ((AmeisenCombat.Objects.Condition)listboxConditions.SelectedItem).customSecondValue;
 
                     if (radiobuttonCustomValue.IsChecked == true)
-                        textboxCustomValue.Text = ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).customValue.ToString();
+                        textboxCustomValue.Text = ((AmeisenCombat.Objects.Condition)listboxConditions.SelectedItem).customValue.ToString();
                     else
-                        comboboxValueTwo.SelectedItem = ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionValues[1];
+                        comboboxValueTwo.SelectedItem = ((AmeisenCombat.Objects.Condition)listboxConditions.SelectedItem).conditionValues[1];
 
-                    comboboxValueOne.SelectedItem = ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionValues[0];
-                    comboboxValueOperator.SelectedItem = ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).statement;
+                    comboboxValueOne.SelectedItem = ((AmeisenCombat.Objects.Condition)listboxConditions.SelectedItem).conditionValues[0];
+                    comboboxValueOperator.SelectedItem = ((AmeisenCombat.Objects.Condition)listboxConditions.SelectedItem).statement;
 
-                    comboboxLuaUnitOne.SelectedItem = ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionLuaUnits[0];
-                    comboboxLuaUnitTwo.SelectedItem = ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).conditionLuaUnits[1];
+                    comboboxLuaUnitOne.SelectedItem = ((AmeisenCombat.Objects.Condition)listboxConditions.SelectedItem).conditionLuaUnits[0];
+                    comboboxLuaUnitTwo.SelectedItem = ((AmeisenCombat.Objects.Condition)listboxConditions.SelectedItem).conditionLuaUnits[1];
                 }
             }
         }
@@ -384,30 +387,30 @@ namespace AmeisenBotGUI
 
         private void RadiobuttonCustomValue_Checked(object sender, RoutedEventArgs e)
         {
-            if (textboxCustomValue != null && (AmeisenAI.Combat.Condition)listboxConditions.SelectedItem != null)
+            if (textboxCustomValue != null && (AmeisenCombat.Objects.Condition)listboxConditions.SelectedItem != null)
             {
                 comboboxValueTwo.IsEnabled = false;
                 comboboxLuaUnitTwo.IsEnabled = false;
                 textboxCustomValue.IsEnabled = true;
-                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).customSecondValue = true;
+                ((AmeisenCombat.Objects.Condition)listboxConditions.SelectedItem).customSecondValue = true;
             }
         }
 
         private void RadiobuttonPreValue_Checked(object sender, RoutedEventArgs e)
         {
-            if (textboxCustomValue != null && (AmeisenAI.Combat.Condition)listboxConditions.SelectedItem != null)
+            if (textboxCustomValue != null && (AmeisenCombat.Objects.Condition)listboxConditions.SelectedItem != null)
             {
                 comboboxValueTwo.IsEnabled = true;
                 comboboxLuaUnitTwo.IsEnabled = true;
                 textboxCustomValue.IsEnabled = false;
-                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).customSecondValue = false;
+                ((AmeisenCombat.Objects.Condition)listboxConditions.SelectedItem).customSecondValue = false;
             }
         }
 
         private void TextboxCustomValue_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (listboxConditions.SelectedItem != null && textboxCustomValue.Text.Length > 0)
-                ((AmeisenAI.Combat.Condition)listboxConditions.SelectedItem).customValue = textboxCustomValue.Text;
+                ((AmeisenCombat.Objects.Condition)listboxConditions.SelectedItem).customValue = textboxCustomValue.Text;
         }
 
         private void TextboxMaxDistance_TextChanged(object sender, TextChangedEventArgs e)

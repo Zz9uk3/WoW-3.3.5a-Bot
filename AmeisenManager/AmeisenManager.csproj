@@ -56,10 +56,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmeisenAI\AmeisenAI.csproj">
-      <Project>{3c281530-7a81-4803-bc85-de46ed2d6e74}</Project>
-      <Name>AmeisenAI</Name>
-    </ProjectReference>
     <ProjectReference Include="..\AmeisenCore\AmeisenCore.csproj">
       <Project>{567f9df2-e2d0-4bc8-a295-b7913cc1303e}</Project>
       <Name>AmeisenCore</Name>

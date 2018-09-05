@@ -4,6 +4,16 @@ namespace AmeisenMapping.objects
 {
     public class MapNode
     {
+        public int MapID { get; private set; }
+
+        public int X { get; private set; }
+
+        public int Y { get; private set; }
+
+        public int Z { get; private set; }
+
+        public int ZoneID { get; private set; }
+
         public MapNode()
         {
         }
@@ -25,11 +35,5 @@ namespace AmeisenMapping.objects
             ZoneID = zoneID;
             MapID = mapID;
         }
-
-        public int MapID { get; private set; }
-        public int X { get; private set; }
-        public int Y { get; private set; }
-        public int Z { get; private set; }
-        public int ZoneID { get; private set; }
     }
 }

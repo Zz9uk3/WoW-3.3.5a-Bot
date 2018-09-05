@@ -5,6 +5,8 @@ namespace AmeisenMapping
 {
     public class Map
     {
+        public List<MapNode> Nodes { get; private set; }
+
         public Map(MapNode initialNode)
         {
             Nodes = new List<MapNode> { initialNode };
@@ -14,7 +16,5 @@ namespace AmeisenMapping
         {
             Nodes = initialNodes;
         }
-
-        public List<MapNode> Nodes { get; private set; }
     }
 }

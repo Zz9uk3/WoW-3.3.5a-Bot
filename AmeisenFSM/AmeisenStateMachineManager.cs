@@ -1,16 +1,31 @@
-﻿using System.Threading;
+﻿using AmeisenData;
+using AmeisenFSM.Enums;
+using AmeisenUtilities;
+using System.Threading;
 
 namespace AmeisenFSM
 {
     public class AmeisenStateMachineManager
     {
         public bool Active { get; private set; }
-        private Thread MainWorker { get; set; }
+        public bool PushedCombat { get; private set; }
         public AmeisenStateMachine StateMachine { get; private set; }
+
+        private Thread MainWorker { get; set; }
+
+        private Me Me
+        {
+            get { return AmeisenDataHolder.Instance.Me; }
+            set { AmeisenDataHolder.Instance.Me = value; }
+        }
+
+        private Thread StateWatcherWorker { get; set; }
 
         public AmeisenStateMachineManager()
         {
+            Active = false;
             MainWorker = new Thread(new ThreadStart(DoWork));
+            StateWatcherWorker = new Thread(new ThreadStart(WatchForStateChanges));
             StateMachine = new AmeisenStateMachine();
         }
 
@@ -18,8 +33,9 @@ namespace AmeisenFSM
         {
             if (!Active)
             {
-                MainWorker.Start();
                 Active = true;
+                MainWorker.Start();
+                StateWatcherWorker.Start();
             }
         }
 
@@ -27,8 +43,9 @@ namespace AmeisenFSM
         {
             if (Active)
             {
-                Active = true;
+                Active = false;
                 MainWorker.Join();
+                StateWatcherWorker.Join();
             }
         }
 
@@ -37,9 +54,21 @@ namespace AmeisenFSM
             while (Active)
             {
                 StateMachine.Update();
-                Thread.Sleep(25);
+                Thread.Sleep(10);
             }
         }
 
+        private void WatchForStateChanges()
+        {
+            while (Active)
+            {
+                if (Me.InCombat)
+                    StateMachine.PushAction(BotState.Combat);
+                else if (StateMachine.GetCurrentState() == BotState.Combat)
+                    StateMachine.PopAction();
+
+                Thread.Sleep(250);
+            }
+        }
     }
 }

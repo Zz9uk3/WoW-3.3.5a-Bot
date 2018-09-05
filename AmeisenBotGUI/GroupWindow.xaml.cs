@@ -13,15 +13,16 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class GroupWindow : Window
     {
+        private List<BotView> botViews;
+
+        private DispatcherTimer uiUpdateTimer;
+
         public GroupWindow()
         {
             InitializeComponent();
             botViews = new List<BotView>();
             Topmost = AmeisenBotManager.Instance.Settings.topMost;
         }
-
-        private List<BotView> botViews;
-        private DispatcherTimer uiUpdateTimer;
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
@@ -31,6 +32,14 @@ namespace AmeisenBotGUI
         private void ButtonMinimize_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
+        }
+
+        private void StartUIUpdateTimer()
+        {
+            uiUpdateTimer = new DispatcherTimer();
+            uiUpdateTimer.Tick += new EventHandler(UIUpdateTimer_Tick);
+            uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 1000);
+            uiUpdateTimer.Start();
         }
 
         private void UIUpdateTimer_Tick(object sender, EventArgs e)
@@ -72,14 +81,6 @@ namespace AmeisenBotGUI
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             StartUIUpdateTimer();
-        }
-
-        private void StartUIUpdateTimer()
-        {
-            uiUpdateTimer = new DispatcherTimer();
-            uiUpdateTimer.Tick += new EventHandler(UIUpdateTimer_Tick);
-            uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 1000);
-            uiUpdateTimer.Start();
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)

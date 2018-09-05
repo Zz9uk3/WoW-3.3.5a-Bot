@@ -2,12 +2,34 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AmeisenAI.Combat
+namespace AmeisenCombat.Objects
 {
     public class CombatLogicEntry
     {
+        public CombatLogicAction Action { get; set; }
+
+        public CombatActionType ActionType { get; set; }
+
+        public bool CanMoveDuringCast { get; set; }
+
+        public bool CombatOnly { get; set; }
+
+        public List<Condition> Conditions { get; set; }
+
+        public bool IsBuff { get; set; }
+
+        public bool IsBuffForParty { get; set; }
+
+        public bool IsForMyself { get; set; }
+
+        public float MaxSpellDistance { get; set; }
+
+        public object Parameters { get; set; }
+
+        public int Priority { get; set; }
+
         public CombatLogicEntry(
-            int priority,
+                                                                                                    int priority,
             CombatLogicAction action,
             List<Condition> conditions,
             bool combatOnly,
@@ -39,18 +61,6 @@ namespace AmeisenAI.Combat
             Conditions = new List<Condition>();
             Parameters = "";
         }
-
-        public CombatLogicAction Action { get; set; }
-        public CombatActionType ActionType { get; set; }
-        public bool CanMoveDuringCast { get; set; }
-        public bool CombatOnly { get; set; }
-        public List<Condition> Conditions { get; set; }
-        public bool IsBuff { get; set; }
-        public bool IsBuffForParty { get; set; }
-        public bool IsForMyself { get; set; }
-        public float MaxSpellDistance { get; set; }
-        public object Parameters { get; set; }
-        public int Priority { get; set; }
 
         public override string ToString()
         {

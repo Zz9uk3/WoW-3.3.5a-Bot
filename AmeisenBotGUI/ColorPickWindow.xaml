@@ -7,59 +7,58 @@
         mc:Ignorable="d"
         Title="ColorPickWindow" Height="180" Width="300" BorderThickness="2" ResizeMode="NoResize" WindowStyle="None" MouseLeftButtonDown="Window_MouseLeftButtonDown">
     <Window.BorderBrush>
-        <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+        <SolidColorBrush Color="{DynamicResource AccentColor}" />
     </Window.BorderBrush>
     <Window.Background>
-        <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+        <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
     </Window.Background>
     <Grid>
-        <Slider x:Name="sliderRed" HorizontalAlignment="Left" Margin="59,14,0,0" VerticalAlignment="Top" Width="219" Maximum="255" SmallChange="1" ValueChanged="UpdateColor" Value="255"/>
-        <Label Content="Red:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Foreground="Red"/>
-        <Slider x:Name="sliderGreen" HorizontalAlignment="Left" Margin="59,45,0,0" VerticalAlignment="Top" Width="219" Maximum="255" SmallChange="1" ValueChanged="UpdateColor" Value="255"/>
+        <Slider x:Name="sliderRed" HorizontalAlignment="Left" Margin="59,14,0,0" VerticalAlignment="Top" Width="219" Maximum="255" SmallChange="1" ValueChanged="UpdateColor" Value="255" />
+        <Label Content="Red:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Foreground="Red" />
+        <Slider x:Name="sliderGreen" HorizontalAlignment="Left" Margin="59,45,0,0" VerticalAlignment="Top" Width="219" Maximum="255" SmallChange="1" ValueChanged="UpdateColor" Value="255" />
         <Label Content="Green:" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top">
             <Label.Foreground>
-                <SolidColorBrush Color="Lime"/>
+                <SolidColorBrush Color="Lime" />
             </Label.Foreground>
         </Label>
-        <Slider x:Name="sliderBlue" HorizontalAlignment="Left" Margin="59,76,0,0" VerticalAlignment="Top" Width="219" Maximum="255" SmallChange="1" ValueChanged="UpdateColor" Value="255"/>
+        <Slider x:Name="sliderBlue" HorizontalAlignment="Left" Margin="59,76,0,0" VerticalAlignment="Top" Width="219" Maximum="255" SmallChange="1" ValueChanged="UpdateColor" Value="255" />
         <Label Content="Blue:" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top">
             <Label.Foreground>
-                <SolidColorBrush Color="#FF00F3FF"/>
+                <SolidColorBrush Color="#FF00F3FF" />
             </Label.Foreground>
         </Label>
-        <Slider x:Name="sliderAlpha" HorizontalAlignment="Left" Margin="59,107,0,0" VerticalAlignment="Top" Width="219" Foreground="Blue" Maximum="255" SmallChange="1" ValueChanged="UpdateColor" Value="255"/>
+        <Slider x:Name="sliderAlpha" HorizontalAlignment="Left" Margin="59,107,0,0" VerticalAlignment="Top" Width="219" Foreground="Blue" Maximum="255" SmallChange="1" ValueChanged="UpdateColor" Value="255" />
         <Label Content="Alpha:" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top">
             <Label.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
         <Button x:Name="buttonCancel" Content="Cancel" HorizontalAlignment="Left" Margin="10,135,0,0" VerticalAlignment="Top" Width="70" BorderThickness="2" Click="ButtonCancel_Click">
             <Button.BorderBrush>
-                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Button.BorderBrush>
             <Button.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Button.Foreground>
             <Button.Background>
-                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
             </Button.Background>
         </Button>
         <Button x:Name="buttonOK" Content="OK" HorizontalAlignment="Left" Margin="211,135,0,0" VerticalAlignment="Top" Width="67" BorderThickness="2" Click="ButtonOK_Click">
             <Button.BorderBrush>
-                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Button.BorderBrush>
             <Button.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Button.Foreground>
             <Button.Background>
-                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
             </Button.Background>
         </Button>
         <Button x:Name="colorRect" Content="" HorizontalAlignment="Left" Margin="85,135,0,0" VerticalAlignment="Top" Width="121" Height="22">
             <Button.BorderBrush>
-                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Button.BorderBrush>
         </Button>
-
     </Grid>
 </Window>

@@ -13,14 +13,14 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class SettingsWindow : Window
     {
+        private AmeisenBotManager BotManager { get; }
+
         public SettingsWindow()
         {
             InitializeComponent();
             BotManager = AmeisenBotManager.Instance;
             Topmost = BotManager.Settings.topMost;
         }
-
-        private AmeisenBotManager BotManager { get; }
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
@@ -46,6 +46,28 @@ namespace AmeisenBotGUI
             }
         }
 
+        private void ColorMe_Click(object sender, RoutedEventArgs e)
+        {
+            SelectColor("MeNodeColor");
+        }
+
+        private void ColorWalkable_Click(object sender, RoutedEventArgs e)
+        {
+            SelectColor("WalkableNodeColorLow");
+        }
+
+        private void ColorWalkableNodeHigh_Click(object sender, RoutedEventArgs e)
+        {
+            SelectColor("WalkableNodeColorHigh");
+        }
+
+        private void LoadAmeisenServerSettings()
+        {
+            textboxIP.Text = BotManager.Settings.ameisenServerIP;
+            textboxPort.Text = BotManager.Settings.ameisenServerPort.ToString();
+            checkboxAutoConnect.IsChecked = BotManager.Settings.serverAutoConnect;
+        }
+
         private void LoadBotPicture(string fileName)
         {
             string configDir = AppDomain.CurrentDomain.BaseDirectory + "config/";
@@ -68,7 +90,87 @@ namespace AmeisenBotGUI
 
             BotManager.Settings.picturePath = imagePath;
             labelSelectedPicture.Content = Path.GetFileName(fileName);
+        }
 
+        private void LoadDatabaseSettings()
+        {
+            textboxDBIP.Text = BotManager.Settings.databaseIP;
+            textboxDBPort.Text = BotManager.Settings.databasePort.ToString();
+            textboxDBDatabase.Text = BotManager.Settings.databaseName;
+            textboxDBUsername.Text = BotManager.Settings.databaseUsername;
+            textboxDBPassword.Password = BotManager.Settings.databasePasswort;
+            checkboxDBAutoConnect.IsChecked = BotManager.Settings.databaseAutoConnect;
+        }
+
+        /// <summary>
+        /// Load settings to UI
+        /// </summary>
+        private void LoadSettings()
+        {
+            labelSelectedPicture.Content = Path.GetFileName(BotManager.Settings.picturePath);
+
+            LoadAmeisenServerSettings();
+            LoadDatabaseSettings();
+
+            // Colors are already loaded
+        }
+
+        private void SaveAmeisenServerSettings()
+        {
+            BotManager.Settings.ameisenServerIP = textboxIP.Text;
+            BotManager.Settings.ameisenServerPort = Convert.ToInt32(textboxPort.Text);
+            BotManager.Settings.serverAutoConnect = (bool)checkboxAutoConnect.IsChecked;
+        }
+
+        private void SaveDatabaseSettings()
+        {
+            BotManager.Settings.databaseIP = textboxDBIP.Text;
+            BotManager.Settings.databasePort = Convert.ToInt32(textboxDBPort.Text);
+            BotManager.Settings.databaseName = textboxDBDatabase.Text;
+            BotManager.Settings.databaseUsername = textboxDBUsername.Text;
+            BotManager.Settings.databasePasswort = textboxDBPassword.Password;
+            BotManager.Settings.databaseAutoConnect = (bool)checkboxDBAutoConnect.IsChecked;
+        }
+
+        private void SaveMainUISettings()
+        {
+            BotManager.Settings.accentColor = ((Color)Application.Current.Resources["AccentColor"]).ToString();
+            BotManager.Settings.backgroundColor = ((Color)Application.Current.Resources["BackgroundColor"]).ToString();
+            BotManager.Settings.textColor = ((Color)Application.Current.Resources["TextColor"]).ToString();
+            BotManager.Settings.healthColor = ((Color)Application.Current.Resources["healthColor"]).ToString();
+            BotManager.Settings.energyColor = ((Color)Application.Current.Resources["energyColor"]).ToString();
+            BotManager.Settings.expColor = ((Color)Application.Current.Resources["expColor"]).ToString();
+            BotManager.Settings.targetHealthColor = ((Color)Application.Current.Resources["targetHealthColor"]).ToString();
+            BotManager.Settings.targetEnergyColor = ((Color)Application.Current.Resources["targetEnergyColor"]).ToString();
+            BotManager.Settings.threadsColor = ((Color)Application.Current.Resources["threadsColor"]).ToString();
+        }
+
+        private void SaveMapUISettings()
+        {
+            BotManager.Settings.walkableNodeColorLow = ((Color)Application.Current.Resources["WalkableNodeColorLow"]).ToString();
+            BotManager.Settings.walkableNodeColorHigh = ((Color)Application.Current.Resources["WalkableNodeColorHigh"]).ToString();
+            BotManager.Settings.meNodeColor = ((Color)Application.Current.Resources["MeNodeColor"]).ToString();
+        }
+
+        /// <summary>
+        /// Save settings from UI
+        /// </summary>
+        private void SaveSettings()
+        {
+            SaveAmeisenServerSettings();
+            SaveDatabaseSettings();
+            SaveMapUISettings();
+            SaveMainUISettings();
+
+            BotManager.SaveSettingsToFile(BotManager.GetLoadedConfigName());
+        }
+
+        private void SelectColor(string resourceColor)
+        {
+            ColorPickWindow colorpicker = new ColorPickWindow();
+            colorpicker.ShowDialog();
+            if (colorpicker.ApplyColor)
+                Application.Current.Resources[resourceColor] = colorpicker.ActiveColor;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -124,56 +226,6 @@ namespace AmeisenBotGUI
             }
 
             SaveSettings();
-        }
-
-        /// <summary>
-        /// Save settings from UI
-        /// </summary>
-        private void SaveSettings()
-        {
-            SaveAmeisenServerSettings();
-            SaveDatabaseSettings();
-            SaveMapUISettings();
-            SaveMainUISettings();
-
-            BotManager.SaveSettingsToFile(BotManager.GetLoadedConfigName());
-        }
-
-        private void SaveMapUISettings()
-        {
-            BotManager.Settings.walkableNodeColorLow = ((Color)Application.Current.Resources["WalkableNodeColorLow"]).ToString();
-            BotManager.Settings.walkableNodeColorHigh = ((Color)Application.Current.Resources["WalkableNodeColorHigh"]).ToString();
-            BotManager.Settings.meNodeColor = ((Color)Application.Current.Resources["MeNodeColor"]).ToString();
-        }
-
-        private void SaveAmeisenServerSettings()
-        {
-            BotManager.Settings.ameisenServerIP = textboxIP.Text;
-            BotManager.Settings.ameisenServerPort = Convert.ToInt32(textboxPort.Text);
-            BotManager.Settings.serverAutoConnect = (bool)checkboxAutoConnect.IsChecked;
-        }
-
-        private void SaveMainUISettings()
-        {
-            BotManager.Settings.accentColor = ((Color)Application.Current.Resources["AccentColor"]).ToString();
-            BotManager.Settings.backgroundColor = ((Color)Application.Current.Resources["BackgroundColor"]).ToString();
-            BotManager.Settings.textColor = ((Color)Application.Current.Resources["TextColor"]).ToString();
-            BotManager.Settings.healthColor = ((Color)Application.Current.Resources["healthColor"]).ToString();
-            BotManager.Settings.energyColor = ((Color)Application.Current.Resources["energyColor"]).ToString();
-            BotManager.Settings.expColor = ((Color)Application.Current.Resources["expColor"]).ToString();
-            BotManager.Settings.targetHealthColor = ((Color)Application.Current.Resources["targetHealthColor"]).ToString();
-            BotManager.Settings.targetEnergyColor = ((Color)Application.Current.Resources["targetEnergyColor"]).ToString();
-            BotManager.Settings.threadsColor = ((Color)Application.Current.Resources["threadsColor"]).ToString();
-        }
-
-        private void SaveDatabaseSettings()
-        {
-            BotManager.Settings.databaseIP = textboxDBIP.Text;
-            BotManager.Settings.databasePort = Convert.ToInt32(textboxDBPort.Text);
-            BotManager.Settings.databaseName = textboxDBDatabase.Text;
-            BotManager.Settings.databaseUsername = textboxDBUsername.Text;
-            BotManager.Settings.databasePasswort = textboxDBPassword.Password;
-            BotManager.Settings.databaseAutoConnect = (bool)checkboxDBAutoConnect.IsChecked;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -233,36 +285,6 @@ namespace AmeisenBotGUI
             LoadSettings();
         }
 
-        /// <summary>
-        /// Load settings to UI
-        /// </summary>
-        private void LoadSettings()
-        {
-            labelSelectedPicture.Content = Path.GetFileName(BotManager.Settings.picturePath);
-
-            LoadAmeisenServerSettings();
-            LoadDatabaseSettings();
-
-            // Colors are already loaded
-        }
-
-        private void LoadAmeisenServerSettings()
-        {
-            textboxIP.Text = BotManager.Settings.ameisenServerIP;
-            textboxPort.Text = BotManager.Settings.ameisenServerPort.ToString();
-            checkboxAutoConnect.IsChecked = BotManager.Settings.serverAutoConnect;
-        }
-
-        private void LoadDatabaseSettings()
-        {
-            textboxDBIP.Text = BotManager.Settings.databaseIP;
-            textboxDBPort.Text = BotManager.Settings.databasePort.ToString();
-            textboxDBDatabase.Text = BotManager.Settings.databaseName;
-            textboxDBUsername.Text = BotManager.Settings.databaseUsername;
-            textboxDBPassword.Password = BotManager.Settings.databasePasswort;
-            checkboxDBAutoConnect.IsChecked = BotManager.Settings.databaseAutoConnect;
-        }
-
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             try
@@ -270,29 +292,6 @@ namespace AmeisenBotGUI
                 DragMove();
             }
             catch { }
-        }
-
-        private void ColorWalkable_Click(object sender, RoutedEventArgs e)
-        {
-            SelectColor("WalkableNodeColorLow");
-        }
-
-        private void ColorWalkableNodeHigh_Click(object sender, RoutedEventArgs e)
-        {
-            SelectColor("WalkableNodeColorHigh");
-        }
-
-        private void ColorMe_Click(object sender, RoutedEventArgs e)
-        {
-            SelectColor("MeNodeColor");
-        }
-
-        private void SelectColor(string resourceColor)
-        {
-            ColorPickWindow colorpicker = new ColorPickWindow();
-            colorpicker.ShowDialog();
-            if (colorpicker.ApplyColor)
-                Application.Current.Resources[resourceColor] = colorpicker.ActiveColor;
         }
     }
 }

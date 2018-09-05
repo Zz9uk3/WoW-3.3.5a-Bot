@@ -17,6 +17,26 @@ namespace AmeisenCoreUtils
         public bool isHooked = false;
         public bool isInjectionUsed = false;
 
+        private static readonly object padlock = new object();
+
+        private static AmeisenHook instance;
+
+        private uint codeCave;
+
+        private uint codeCaveForInjection;
+
+        private uint codeToExecute;
+
+        private uint endsceneReturnAddress;
+
+        private ConcurrentQueue<HookJob> hookJobs;
+
+        private Thread hookWorker;
+
+        private byte[] originalEndscene = new byte[] { 0xB8, 0x51, 0xD7, 0xCA, 0x64 };
+
+        private uint returnAdress;
+
         public static AmeisenHook Instance
         {
             get
@@ -30,6 +50,18 @@ namespace AmeisenCoreUtils
 
                     return instance;
                 }
+            }
+        }
+
+        private AmeisenHook()
+        {
+            Hook();
+            hookJobs = new ConcurrentQueue<HookJob>();
+            hookWorker = new Thread(new ThreadStart(DoWork));
+
+            if (isHooked)
+            {
+                hookWorker.Start();
             }
         }
 
@@ -63,29 +95,6 @@ namespace AmeisenCoreUtils
 
             isHooked = false;
             hookWorker.Join();
-        }
-
-        private static readonly object padlock = new object();
-        private static AmeisenHook instance;
-        private uint codeCave;
-        private uint codeCaveForInjection;
-        private uint codeToExecute;
-        private uint endsceneReturnAddress;
-        private ConcurrentQueue<HookJob> hookJobs;
-        private Thread hookWorker;
-        private byte[] originalEndscene = new byte[] { 0xB8, 0x51, 0xD7, 0xCA, 0x64 };
-        private uint returnAdress;
-
-        private AmeisenHook()
-        {
-            Hook();
-            hookJobs = new ConcurrentQueue<HookJob>();
-            hookWorker = new Thread(new ThreadStart(DoWork));
-
-            if (isHooked)
-            {
-                hookWorker.Start();
-            }
         }
 
         private void DoWork()
@@ -267,6 +276,14 @@ namespace AmeisenCoreUtils
     /// </summary>
     public class HookJob
     {
+        public string[] Asm { get; set; }
+
+        public bool IsFinished { get; set; }
+
+        public bool ReadReturnBytes { get; set; }
+
+        public object ReturnValue { get; set; }
+
         /// <summary>
         /// Build a job to execute on the endscene hook
         /// </summary>
@@ -279,11 +296,6 @@ namespace AmeisenCoreUtils
             ReadReturnBytes = readReturnBytes;
             ReturnValue = null;
         }
-
-        public string[] Asm { get; set; }
-        public bool IsFinished { get; set; }
-        public bool ReadReturnBytes { get; set; }
-        public object ReturnValue { get; set; }
     }
 
     /// <summary>
@@ -291,6 +303,8 @@ namespace AmeisenCoreUtils
     /// </summary>
     public class ReturnHookJob : HookJob
     {
+        public HookJob ChainedJob { get; private set; }
+
         /// <summary>
         /// Build a job to execute on the endscene hook
         /// </summary>
@@ -300,7 +314,5 @@ namespace AmeisenCoreUtils
         /// Job to execute after running the main Job, for example GetLocalizedText stuff
         /// </param>
         public ReturnHookJob(string[] asm, bool readReturnBytes, HookJob chainedJob) : base(asm, readReturnBytes) { ChainedJob = chainedJob; }
-
-        public HookJob ChainedJob { get; private set; }
     }
 }

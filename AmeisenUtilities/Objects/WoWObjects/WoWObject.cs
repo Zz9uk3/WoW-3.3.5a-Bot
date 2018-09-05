@@ -1,5 +1,4 @@
 ﻿using Magic;
-using System;
 using System.Text;
 
 namespace AmeisenUtilities
@@ -7,6 +6,24 @@ namespace AmeisenUtilities
     public class WowObject
     {
         public Vector3 pos;
+
+        public uint BaseAddress { get; set; }
+
+        public BlackMagic BlackMagicInstance { get; set; }
+
+        public uint Descriptor { get; set; }
+
+        public double Distance { get; set; }
+
+        public ulong Guid { get; set; }
+
+        public int MapID { get; set; }
+
+        public string Name { get; set; }
+
+        public float Rotation { get; set; }
+
+        public int ZoneID { get; set; }
 
         public WowObject(uint baseAddress, BlackMagic blackMagic)
         {
@@ -16,17 +33,6 @@ namespace AmeisenUtilities
             Descriptor = BlackMagicInstance.ReadUInt(BaseAddress + 0x8);
             Guid = BlackMagicInstance.ReadUInt64(BaseAddress + 0x30);
         }
-
-        public uint BaseAddress { get; set; }
-        public BlackMagic BlackMagicInstance { get; set; }
-
-        public uint Descriptor { get; set; }
-        public double Distance { get; set; }
-        public ulong Guid { get; set; }
-        public int MapID { get; set; }
-        public string Name { get; set; }
-        public float Rotation { get; set; }
-        public int ZoneID { get; set; }
 
         public override string ToString()
         {

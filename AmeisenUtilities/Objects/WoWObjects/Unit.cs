@@ -6,23 +6,35 @@ namespace AmeisenUtilities
 {
     public partial class Unit : WowObject
     {
+        public BitVector32 DynamicUFlags { get; set; }
+
+        public int Energy { get; set; }
+
+        public int Health { get; set; }
+
+        public bool InCombat { get { return UFlags[(int)UnitFlags.COMBAT]; } }
+
+        public bool IsCasting { get; set; }
+
+        public bool IsDead { get { return UFlags[(int)DynamicUnitFlags.DEAD]; } }
+
+        public bool IsLootable { get { return UFlags[(int)DynamicUnitFlags.LOOTABLE]; } }
+
+        public int Level { get; set; }
+
+        public int MaxEnergy { get; set; }
+
+        public int MaxHealth { get; set; }
+
+        public bool NeedToRevive { get { return Health == 0; } }
+
+        public ulong TargetGuid { get; set; }
+
+        public BitVector32 UFlags { get; set; }
+
         public Unit(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
         }
-
-        public int Energy { get; set; }
-        public int Health { get; set; }
-        public bool InCombat { get { return UFlags[(int)UnitFlags.COMBAT]; } }
-        public bool IsLootable { get { return UFlags[(int)DynamicUnitFlags.LOOTABLE]; } }
-        public bool IsDead { get { return UFlags[(int)DynamicUnitFlags.DEAD]; } }
-        public bool IsCasting { get; set; }
-        public int Level { get; set; }
-        public int MaxEnergy { get; set; }
-        public int MaxHealth { get; set; }
-        public bool NeedToRevive { get { return Health == 0; } }
-        public BitVector32 UFlags { get; set; }
-        public BitVector32 DynamicUFlags { get; set; }
-        public ulong TargetGuid { get; set; }
 
         /// <summary>
         /// Get any NPC's name by its BaseAdress

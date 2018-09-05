@@ -1,5 +1,4 @@
 ﻿using Magic;
-using System;
 using System.Text;
 
 namespace AmeisenUtilities

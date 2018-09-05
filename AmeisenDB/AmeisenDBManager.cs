@@ -1,8 +1,6 @@
-﻿using AmeisenLogging;
-using AmeisenMapping.objects;
+﻿using AmeisenMapping.objects;
 using Dapper;
 using MySql.Data.MySqlClient;
-using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,6 +10,12 @@ namespace AmeisenDB
     {
         public const string TABLE_NAME_NODES = "ameisenbot_map_nodes";
         public string DBName = "ameisenbot";
+
+        private static readonly object padlock = new object();
+
+        private static AmeisenDBManager instance = null;
+
+        private MySqlConnection sqlConnection;
 
         public static AmeisenDBManager Instance
         {
@@ -30,6 +34,11 @@ namespace AmeisenDB
         }
 
         public bool IsConnected { get; private set; }
+
+        private AmeisenDBManager()
+        {
+            IsConnected = false;
+        }
 
         /// <summary>
         /// Connect to a MySQL database
@@ -65,7 +74,7 @@ namespace AmeisenDB
 
             IsConnected = false;
         }
-        
+
         /// <summary> Get all saved nodes by the zone & map id </summary> <param name="zoneID">zone
         /// id to get the nodes from</param> <param name="mapID">map id to get the nodes from</param>
         /// <returns>list containing all the MapNodes</returns>
@@ -94,7 +103,7 @@ namespace AmeisenDB
                     List<MapNode> nodeList = sqlConnection.Query<MapNode>(sqlQuery.ToString()).AsList();
                     return nodeList;
                 }
-                catch 
+                catch
                 {
                     //AmeisenLogger.Instance.Log(LogLevel.ERROR, "Query error: " + e.ToString(), this);
                     return new List<MapNode>();
@@ -155,15 +164,6 @@ namespace AmeisenDB
             {
                 return 0;
             }
-        }
-
-        private static readonly object padlock = new object();
-        private static AmeisenDBManager instance = null;
-        private MySqlConnection sqlConnection;
-
-        private AmeisenDBManager()
-        {
-            IsConnected = false;
         }
     }
 }

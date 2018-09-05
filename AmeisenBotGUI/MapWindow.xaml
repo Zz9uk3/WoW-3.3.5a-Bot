@@ -40,7 +40,7 @@
         </Label>
         <Rectangle HorizontalAlignment="Left" Height="8" Margin="40,10,0,0" VerticalAlignment="Top" Width="8">
             <Rectangle.Stroke>
-                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Rectangle.Stroke>
             <Rectangle.Fill>
                 <SolidColorBrush Color="{DynamicResource MeNodeColor}" />
@@ -53,20 +53,20 @@
         </Label>
         <Rectangle HorizontalAlignment="Left" Height="8" Margin="171,10,0,0" VerticalAlignment="Top" Width="40">
             <Rectangle.Stroke>
-                <SolidColorBrush Color="#FFAAAAAA"/>
+                <SolidColorBrush Color="#FFAAAAAA" />
             </Rectangle.Stroke>
             <Rectangle.Fill>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <LinearGradientBrush.RelativeTransform>
                         <TransformGroup>
-                            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
-                            <SkewTransform CenterY="0.5" CenterX="0.5"/>
-                            <RotateTransform Angle="90" CenterY="0.5" CenterX="0.5"/>
-                            <TranslateTransform/>
+                            <ScaleTransform CenterY="0.5" CenterX="0.5" />
+                            <SkewTransform CenterY="0.5" CenterX="0.5" />
+                            <RotateTransform Angle="90" CenterY="0.5" CenterX="0.5" />
+                            <TranslateTransform />
                         </TransformGroup>
                     </LinearGradientBrush.RelativeTransform>
-                    <GradientStop Color="{DynamicResource WalkableNodeColorHigh}" Offset="0"/>
-                    <GradientStop Color="{DynamicResource WalkableNodeColorLow}" Offset="1"/>
+                    <GradientStop Color="{DynamicResource WalkableNodeColorHigh}" Offset="0" />
+                    <GradientStop Color="{DynamicResource WalkableNodeColorLow}" Offset="1" />
                 </LinearGradientBrush>
             </Rectangle.Fill>
         </Rectangle>

@@ -1,5 +1,4 @@
 ﻿using Magic;
-using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,17 +6,22 @@ namespace AmeisenUtilities
 {
     public class Me : Player
     {
+        public UnitState CurrentState { get; set; }
+
+        public int Exp { get; set; }
+
+        public int MaxExp { get; set; }
+
+        public ulong PartyleaderGUID { get; set; }
+
+        public List<ulong> PartymemberGuids { get; set; }
+
+        public uint PlayerBase { get; set; }
+
         public Me(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
             Update();
         }
-
-        public UnitState CurrentState { get; set; }
-        public int Exp { get; set; }
-        public int MaxExp { get; set; }
-        public ulong PartyleaderGUID { get; set; }
-        public List<ulong> PartymemberGuids { get; set; }
-        public uint PlayerBase { get; set; }
 
         public override string ToString()
         {
@@ -46,10 +50,10 @@ namespace AmeisenUtilities
             sb.Append($" >> maxHealth: {MaxHealth}");
             sb.Append($" >> energy: {Energy}");
             sb.Append($" >> maxEnergy: {MaxEnergy}");
-                      
+
             sb.Append($" >> exp: {Exp}");
             sb.Append($" >> maxExp: {MaxExp}");
-                      
+
             sb.Append($" >> partyLeader: {PartyleaderGUID}");
 
             int count = 1;

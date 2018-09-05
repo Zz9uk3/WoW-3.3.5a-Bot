@@ -3,7 +3,6 @@ using AmeisenManager;
 using AmeisenUtilities;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -17,16 +16,12 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class SelectWindow : Window
     {
-        #region Private Fields
-
         private readonly string autoLoginExe = AppDomain.CurrentDomain.BaseDirectory + "/WoWLoginAutomator.exe";
         private readonly string configPath = AppDomain.CurrentDomain.BaseDirectory + "/credentials/";
         private readonly string extension = ".json";
         private bool autologinIsPossible = false;
 
-        #endregion Private Fields
-
-        #region Public Constructors
+        private AmeisenBotManager BotManager { get; }
 
         public SelectWindow()
         {
@@ -42,16 +37,6 @@ namespace AmeisenBotGUI
             else
                 loadingForm.Height = 58;
         }
-
-        #endregion Public Constructors
-
-        #region Private Properties
-
-        private AmeisenBotManager BotManager { get; }
-
-        #endregion Private Properties
-
-        #region Private Methods
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
@@ -212,7 +197,5 @@ namespace AmeisenBotGUI
                     comboBoxWoWs.SelectedItem = comboBoxWoWs.Items[0];
             }
         }
-
-        #endregion Private Methods
     }
 }

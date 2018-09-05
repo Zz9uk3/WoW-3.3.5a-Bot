@@ -22,6 +22,16 @@ namespace AmeisenManager
     /// </summary>
     public class AmeisenObjectManager
     {
+        private static readonly object padlock = new object();
+
+        private static AmeisenObjectManager instance;
+
+        private Thread objectUpdateThread;
+
+        private System.Timers.Timer objectUpdateTimer;
+
+        private DateTime timestampObjects;
+
         public static AmeisenObjectManager Instance
         {
             get
@@ -33,6 +43,29 @@ namespace AmeisenManager
                     return instance;
                 }
             }
+        }
+
+        private List<WowObject> ActiveWoWObjects
+        {
+            get { return AmeisenDataHolder.Instance.ActiveWoWObjects; }
+            set { AmeisenDataHolder.Instance.ActiveWoWObjects = value; }
+        }
+
+        private Me Me
+        {
+            get { return AmeisenDataHolder.Instance.Me; }
+            set { AmeisenDataHolder.Instance.Me = value; }
+        }
+
+        private Unit Target
+        {
+            get { return AmeisenDataHolder.Instance.Target; }
+            set { AmeisenDataHolder.Instance.Target = value; }
+        }
+
+        private AmeisenObjectManager()
+        {
+            RefreshObjects();
         }
 
         /// <summary>
@@ -93,37 +126,6 @@ namespace AmeisenManager
         {
             objectUpdateTimer.Stop();
             objectUpdateThread.Join();
-        }
-
-        private static readonly object padlock = new object();
-        private static AmeisenObjectManager instance;
-        private Thread objectUpdateThread;
-
-        private System.Timers.Timer objectUpdateTimer;
-
-        private DateTime timestampObjects;
-
-        private AmeisenObjectManager()
-        {
-            RefreshObjects();
-        }
-
-        private List<WowObject> ActiveWoWObjects
-        {
-            get { return AmeisenDataHolder.Instance.ActiveWoWObjects; }
-            set { AmeisenDataHolder.Instance.ActiveWoWObjects = value; }
-        }
-
-        private Me Me
-        {
-            get { return AmeisenDataHolder.Instance.Me; }
-            set { AmeisenDataHolder.Instance.Me = value; }
-        }
-
-        private Unit Target
-        {
-            get { return AmeisenDataHolder.Instance.Target; }
-            set { AmeisenDataHolder.Instance.Target = value; }
         }
 
         private void AntiAFK()

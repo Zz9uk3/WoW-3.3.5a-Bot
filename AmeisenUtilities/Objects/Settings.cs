@@ -9,6 +9,7 @@
         public string ameisenServerIP = "127.0.0.1";
         public string ameisenServerName = Utils.GenerateRandonString(12, "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
         public int ameisenServerPort = 16200;
+        public bool assistParty = true;
         public string backgroundColor = "#FF323232";
         public bool behaviourAttack = false;
         public bool behaviourBuff = true;
@@ -37,8 +38,7 @@
         public string textColor = "#FFFFFFFF";
         public string threadsColor = "#FFFFFF60";
         public bool topMost = false;
-        public string walkableNodeColorLow = "#FFA0FF00";
         public string walkableNodeColorHigh = "#FFA0FFFF";
-        public bool assistParty = true;
+        public string walkableNodeColorLow = "#FFA0FF00";
     }
 }

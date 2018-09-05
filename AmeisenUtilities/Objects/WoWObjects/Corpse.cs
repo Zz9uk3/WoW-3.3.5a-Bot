@@ -1,11 +1,12 @@
 ﻿using Magic;
-using System;
 using System.Text;
 
 namespace AmeisenUtilities
 {
     public class Corpse : WowObject
     {
+        private ulong Owner { get; set; }
+
         public Corpse(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
         {
         }
@@ -39,7 +40,5 @@ namespace AmeisenUtilities
             Rotation = BlackMagicInstance.ReadFloat(BaseAddress + 0x20);
             Owner = BlackMagicInstance.ReadUInt64(BaseAddress + 0x18);
         }
-
-        private ulong Owner { get; set; }
     }
 }

@@ -14,14 +14,14 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class DebugWindow : Window
     {
+        private AmeisenBotManager BotManager { get; }
+
         public DebugWindow()
         {
             InitializeComponent();
             BotManager = AmeisenBotManager.Instance;
             Topmost = BotManager.Settings.topMost;
         }
-
-        private AmeisenBotManager BotManager { get; }
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
@@ -36,14 +36,6 @@ namespace AmeisenBotGUI
         private void DebugUI_Loaded(object sender, RoutedEventArgs e)
         {
             StartUIUpdatTimer();
-        }
-
-        private void StartUIUpdatTimer()
-        {
-            DispatcherTimer uiUpdateTimer = new DispatcherTimer();
-            uiUpdateTimer.Tick += new EventHandler(ObjectUpdateTimer_Tick);
-            uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 1, 0);
-            uiUpdateTimer.Start();
         }
 
         private void DebugUI_MouseDown(object sender, MouseButtonEventArgs e)
@@ -83,6 +75,14 @@ namespace AmeisenBotGUI
                         listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["MeColor"])));
                 }
         }
+
+        private void StartUIUpdatTimer()
+        {
+            DispatcherTimer uiUpdateTimer = new DispatcherTimer();
+            uiUpdateTimer.Tick += new EventHandler(ObjectUpdateTimer_Tick);
+            uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 1, 0);
+            uiUpdateTimer.Start();
+        }
     }
 
     /// <summary>
@@ -90,13 +90,14 @@ namespace AmeisenBotGUI
     /// </summary>
     internal class DataItem
     {
+        public Brush Background { get; set; }
+
+        public string Text { get; set; }
+
         public DataItem(string text, Brush background)
         {
             Text = text;
             Background = background;
         }
-
-        public Brush Background { get; set; }
-        public string Text { get; set; }
     }
 }

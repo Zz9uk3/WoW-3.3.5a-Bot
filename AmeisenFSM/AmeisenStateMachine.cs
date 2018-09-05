@@ -7,27 +7,26 @@ namespace AmeisenFSM
 {
     /// <summary>
     /// This is a Stack based FSM that will manage our bots actions
-    /// 
-    /// You can Push a BotState and Pop a BotState from the stack.
-    /// This allows you to manage the bots executed logic.
-    /// (sidenote: duplicate BotStates wont be added to the Stack)
-    /// 
-    /// There is a Bot enum, wich an IAction gets mapped to using a
-    /// Dictionary. This IAction has to implement 3 methods:
-    /// 
+    ///
+    /// You can Push a BotState and Pop a BotState from the stack. This allows you to manage the bots
+    /// executed logic. (sidenote: duplicate BotStates wont be added to the Stack)
+    ///
+    /// There is a Bot enum, wich an IAction gets mapped to using a Dictionary. This IAction has to
+    /// implement 3 methods:
+    ///
     /// Start:      will be called on first call only
     /// DoThings:   will be called everytime Update(); is called
     /// Exit:       will be called after the last call only
-    /// 
+    ///
     /// In this 3 methods you can implement logic or so...
-    /// 
-    /// And remember to call Update(); on a frequent basis, else
-    /// this thing isnt going to do anything.
+    ///
+    /// And remember to call Update(); on a frequent basis, else this thing isnt going to do anything.
     /// </summary>
     public class AmeisenStateMachine
     {
-        private Stack<BotState> StateStack { get; set; }
         private Dictionary<BotState, IAction> StateActionMap { get; set; }
+
+        private Stack<BotState> StateStack { get; set; }
 
         public AmeisenStateMachine()
         {
@@ -42,14 +41,6 @@ namespace AmeisenFSM
         }
 
         /// <summary>
-        /// Call this to Update the Statemachine and execute actions
-        /// </summary>
-        public void Update()
-        {
-            GetCurrentStateAction(GetCurrentState())?.StartDoThings.Invoke();
-        }
-
-        /// <summary>
         /// Returns our current BotState to see what the bot is doing right now
         /// </summary>
         /// <returns>current BotState</returns>
@@ -60,8 +51,19 @@ namespace AmeisenFSM
         }
 
         /// <summary>
-        /// Push something onto the state Stack of the bot, 
-        /// this calls the Stop() of current State 
+        /// Pop the state Stack of the bot, calls the Start() of new State and the Stop() of current State.
+        /// </summary>
+        /// <param name="botState">the state you want to change to</param>
+        public BotState PopAction()
+        {
+            GetCurrentStateAction(GetCurrentState())?.StartExit.Invoke();
+            BotState tmpState = StateStack.Pop();
+            GetCurrentStateAction(GetCurrentState())?.StartAction.Invoke();
+            return tmpState;
+        }
+
+        /// <summary>
+        /// Push something onto the state Stack of the bot, this calls the Stop() of current State
         /// and the Start() of new State.
         /// </summary>
         /// <param name="botState">the state you want to change to</param>
@@ -76,16 +78,11 @@ namespace AmeisenFSM
         }
 
         /// <summary>
-        /// Pop the state Stack of the bot, calls the Start() of new State
-        /// and the Stop() of current State.
+        /// Call this to Update the Statemachine and execute actions
         /// </summary>
-        /// <param name="botState">the state you want to change to</param>
-        public BotState PopAction()
+        public void Update()
         {
-            GetCurrentStateAction(GetCurrentState())?.StartExit.Invoke();
-            BotState tmpState = StateStack.Pop();
-            GetCurrentStateAction(GetCurrentState())?.StartAction.Invoke();
-            return tmpState;
+            GetCurrentStateAction(GetCurrentState())?.StartDoThings.Invoke();
         }
 
         /// <summary>

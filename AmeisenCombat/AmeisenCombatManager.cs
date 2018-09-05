@@ -1,12 +1,21 @@
-﻿using AmeisenCoreUtils;
-using AmeisenData;
+﻿using AmeisenData;
 using AmeisenUtilities;
 using System.Threading;
 
-namespace AmeisenAI.Combat
+namespace AmeisenCombat
 {
     public class AmeisenCombatManager
     {
+        private static readonly object padlock = new object();
+
+        private static AmeisenCombatManager instance;
+
+        private readonly Thread mainWorker;
+
+        private AmeisenCombatEngine combatEngine;
+
+        private bool stop = false;
+
         /// <summary>
         /// Initialize/Get the instance of our singleton
         /// </summary>
@@ -24,6 +33,20 @@ namespace AmeisenAI.Combat
             }
         }
 
+        private Me Me
+        {
+            get { return AmeisenDataHolder.Instance.Me; }
+            set { AmeisenDataHolder.Instance.Me = value; }
+        }
+
+        private AmeisenCombatManager()
+        {
+            mainWorker = new Thread(new ThreadStart(DoWork));
+            combatEngine = new AmeisenCombatEngine();
+
+            ReloadCombatClass();
+        }
+
         /// <summary>
         /// Reload our CombatClass specified in the AmeisenSettings class
         /// </summary>
@@ -31,7 +54,7 @@ namespace AmeisenAI.Combat
         {
             string defaultCombatClass = AmeisenSettings.Instance.Settings.combatClassPath;
             if (defaultCombatClass != "none")
-                combatEngine.CurrentCombatLogic = CombatEngine.LoadCombatLogicFromFile(defaultCombatClass);
+                combatEngine.CurrentCombatLogic = AmeisenCombatEngine.LoadCombatLogicFromFile(defaultCombatClass);
         }
 
         /// <summary>
@@ -46,26 +69,6 @@ namespace AmeisenAI.Combat
         {
             stop = true;
             mainWorker.Abort();
-        }
-
-        private static readonly object padlock = new object();
-        private static AmeisenCombatManager instance;
-        private readonly Thread mainWorker;
-        private CombatEngine combatEngine;
-        private bool stop = false;
-
-        private AmeisenCombatManager()
-        {
-            mainWorker = new Thread(new ThreadStart(DoWork));
-            combatEngine = new CombatEngine();
-
-            ReloadCombatClass();
-        }
-
-        private Me Me
-        {
-            get { return AmeisenDataHolder.Instance.Me; }
-            set { AmeisenDataHolder.Instance.Me = value; }
         }
 
         private void DoWork()

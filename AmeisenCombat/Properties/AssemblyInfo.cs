@@ -1,13 +1,13 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
 // Allgemeine Informationen über eine Assembly werden über die folgenden Attribute gesteuert. Ändern
 // Sie diese Attributwerte, um die Informationen zu ändern, die einer Assembly zugeordnet sind.
-[assembly: AssemblyTitle("AmeisenAI")]
-[assembly: AssemblyDescription("The AmeisenBot-AI functionality")]
+[assembly: AssemblyTitle("AmeisenCombatEngine")]
+[assembly: AssemblyDescription("Ameisenbot Combat Engine")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Jannis H.")]
-[assembly: AssemblyProduct("AmeisenAI")]
+[assembly: AssemblyProduct("AmeisenCombatEngine")]
 [assembly: AssemblyCopyright("Copyright © 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Die folgende GUID bestimmt die ID der Typbibliothek, wenn dieses Projekt für COM verfügbar gemacht wird
-[assembly: Guid("3c281530-7a81-4803-bc85-de46ed2d6e74")]
+[assembly: Guid("cd72ad54-7c40-4ec0-8878-0771922a2961")]
 
 // Versionsinformationen für eine Assembly bestehen aus den folgenden vier Werten:
 //
@@ -26,6 +26,5 @@ using System.Runtime.InteropServices;
 //
 // Sie können alle Werte angeben oder Standardwerte für die Build- und Revisionsnummern verwenden,
 // indem Sie "*" wie unten gezeigt eingeben: [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.2.6822.31670")]
-[assembly: AssemblyFileVersion("1.2.6822.31670")]
-[assembly: AssemblyInformationalVersion("1.2.6822.31670")]
+[assembly: AssemblyVersion("1.0.6823.30612")]
+[assembly: AssemblyFileVersion("1.0.6823.30612")]

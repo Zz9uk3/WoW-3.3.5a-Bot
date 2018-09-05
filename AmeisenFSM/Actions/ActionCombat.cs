@@ -8,6 +8,12 @@ namespace AmeisenFSM.Actions
 {
     internal class ActionCombat : IAction
     {
+        public Start StartAction { get { return Start; } }
+
+        public DoThings StartDoThings { get { return DoThings; } }
+
+        public Exit StartExit { get { return Stop; } }
+
         private Me Me
         {
             get { return AmeisenDataHolder.Instance.Me; }
@@ -20,15 +26,22 @@ namespace AmeisenFSM.Actions
             set { AmeisenDataHolder.Instance.Target = value; }
         }
 
-        public Start StartAction { get { return Start; } }
-        public DoThings StartDoThings { get { return DoThings; } }
-        public Exit StartExit { get { return Stop; } }
+        public void DoThings()
+        {
+        }
 
-        public void Start() { }
+        public void Start()
+        {
+        }
 
-        public void DoThings() { }
+        public void Stop()
+        {
+        }
 
-        public void Stop() { }
+        private void CastSpellByName(string name, bool onMyself)
+        {
+            AmeisenCore.CastSpellByName(name, onMyself);
+        }
 
         private void FaceTarget()
         {
@@ -43,14 +56,9 @@ namespace AmeisenFSM.Actions
             }
         }
 
-        private void CastSpellByName(string name, bool onMyself)
-        {
-            AmeisenCore.CastSpellByName(name, onMyself);
-        }
-
         private SpellInfo GetSpellInfo(string name, bool onMyself)
         {
-           return AmeisenCore.GetSpellInfo(name);
+            return AmeisenCore.GetSpellInfo(name);
         }
     }
 }
