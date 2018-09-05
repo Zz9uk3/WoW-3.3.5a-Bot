@@ -10,12 +10,12 @@ namespace AmeisenFSM.Actions
         public Exit StartExit { get { return Stop; } }
 
         // Idle Start code here
-        public static void Start() { }
+        public void Start() { }
 
         // Idle DoThings code here
-        public static void DoThings() { }
+        public void DoThings() { }
 
         // Idle Stop code here
-        public static void Stop() { }
+        public void Stop() { }
     }
 }

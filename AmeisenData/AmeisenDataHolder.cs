@@ -34,6 +34,7 @@ namespace AmeisenData
         public Me Me { get; set; }
         public Unit Target { get; set; }
         public bool IsAllowedToAssistParty { get; set; }
+        public bool IsAllowedToFollowParty { get; set; }
 
         private static readonly object padlock = new object();
 
