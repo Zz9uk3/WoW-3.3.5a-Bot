@@ -1,7 +1,6 @@
 ﻿using AmeisenData;
 using AmeisenFSM.Enums;
 using AmeisenUtilities;
-using System;
 using System.Threading;
 
 namespace AmeisenFSM
@@ -30,6 +29,9 @@ namespace AmeisenFSM
             StateMachine = new AmeisenStateMachine();
         }
 
+        /// <summary>
+        /// Fire up the FSM
+        /// </summary>
         public void Start()
         {
             if (!Active)
@@ -40,6 +42,9 @@ namespace AmeisenFSM
             }
         }
 
+        /// <summary>
+        /// Shutdown the FSM
+        /// </summary>
         public void Stop()
         {
             if (Active)
@@ -50,6 +55,9 @@ namespace AmeisenFSM
             }
         }
 
+        /// <summary>
+        /// Update the Statemachine, let it do its work
+        /// </summary>
         private void DoWork()
         {
             while (Active)
@@ -59,22 +67,27 @@ namespace AmeisenFSM
             }
         }
 
+        /// <summary>
+        /// Change the state of out FSM
+        /// </summary>
         private void WatchForStateChanges()
         {
             while (Active)
             {
+                // Am I in combat
                 if (Me.InCombat)
                     StateMachine.PushAction(BotState.Combat);
                 else if (StateMachine.GetCurrentState() == BotState.Combat)
                     StateMachine.PopAction();
 
+                // Is my party fighting?
                 if (AmeisenDataHolder.Instance.IsAllowedToAssistParty)
                     if (PartymembersInCombat())
                         StateMachine.PushAction(BotState.Combat);
                     else if (StateMachine.GetCurrentState() == BotState.Combat)
                         StateMachine.PopAction();
 
-
+                // Am I dead?
                 if (Me.IsDead)
                     StateMachine.PushAction(BotState.Dead);
                 else if (StateMachine.GetCurrentState() == BotState.Dead)
@@ -84,6 +97,10 @@ namespace AmeisenFSM
             }
         }
 
+        /// <summary>
+        /// Check if any of our partymembers are in combat
+        /// </summary>
+        /// <returns>returns yes if one or more member/s is/are in combat</returns>
         private bool PartymembersInCombat()
         {
             foreach (ulong guid in Me.PartymemberGuids)
