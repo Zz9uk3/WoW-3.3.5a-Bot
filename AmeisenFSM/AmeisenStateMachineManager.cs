@@ -1,6 +1,7 @@
 ﻿using AmeisenCoreUtils;
 using AmeisenData;
 using AmeisenFSM.Enums;
+using AmeisenLogging;
 using AmeisenUtilities;
 using System.Threading;
 
@@ -63,6 +64,7 @@ namespace AmeisenFSM
         {
             while (Active)
             {
+                // Do the Actions
                 StateMachine.Update();
                 Thread.Sleep(AmeisenSettings.Instance.Settings.stateMachineUpdateMillis);
             }
@@ -76,35 +78,45 @@ namespace AmeisenFSM
             while (Active)
             {
                 // Am I in combat
-                if (Me.InCombat)
-                    StateMachine.PushAction(BotState.Combat);
-                else if (StateMachine.GetCurrentState() == BotState.Combat)
-                    StateMachine.PopAction();
-
-                // Is my party fighting?
-                if (AmeisenDataHolder.Instance.IsAllowedToAssistParty)
-                    if (PartymembersInCombat())
-                        StateMachine.PushAction(BotState.Combat);
-                    else if (StateMachine.GetCurrentState() == BotState.Combat)
-                        StateMachine.PopAction();
+                InCombatCheck();
 
                 // Do I need to release my spirit
-                if (AmeisenDataHolder.Instance.IsAllowedToReleaseSpirit)
-                    if (Me.Health == 0)
-                    {
-                        AmeisenCore.ReleaseSpirit();
-                        Thread.Sleep(2000);
-                    }
+                ReleaseSpiritCheck();
 
                 // Am I dead?
-                if (AmeisenDataHolder.Instance.IsAllowedToRevive)
-                    if (Me.IsDead)
-                    StateMachine.PushAction(BotState.Dead);
-                else if (StateMachine.GetCurrentState() == BotState.Dead)
-                    StateMachine.PopAction();
+                DeadCheck();
+
+                AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"FSM: {StateMachine.GetCurrentState()}", this);
 
                 Thread.Sleep(AmeisenSettings.Instance.Settings.stateMachineStateUpdateMillis);
             }
+        }
+
+        private void InCombatCheck()
+        {
+            if (Me.InCombat || (PartymembersInCombat() && AmeisenDataHolder.Instance.IsAllowedToAssistParty))
+                StateMachine.PushAction(BotState.Combat);
+            else if (StateMachine.GetCurrentState() == BotState.Combat)
+                StateMachine.PopAction();
+        }
+
+        private void ReleaseSpiritCheck()
+        {
+            if (AmeisenDataHolder.Instance.IsAllowedToReleaseSpirit)
+                if (Me.Health == 0)
+                {
+                    AmeisenCore.ReleaseSpirit();
+                    Thread.Sleep(2000);
+                }
+        }
+
+        private void DeadCheck()
+        {
+            if (AmeisenDataHolder.Instance.IsAllowedToRevive)
+                if (Me.IsDead)
+                    StateMachine.PushAction(BotState.Dead);
+                else if (StateMachine.GetCurrentState() == BotState.Dead)
+                    StateMachine.PopAction();
         }
 
         /// <summary>
@@ -113,14 +125,18 @@ namespace AmeisenFSM
         /// <returns>returns yes if one or more member/s is/are in combat</returns>
         private bool PartymembersInCombat()
         {
-            foreach (ulong guid in Me.PartymemberGuids)
-                foreach (WowObject obj in AmeisenDataHolder.Instance.ActiveWoWObjects)
-                    if (guid == obj.Guid)
-                    {
-                        if (((Unit)obj).InCombat)
-                            return true;
-                        break;
-                    }
+            try
+            {
+                foreach (ulong guid in Me.PartymemberGuids)
+                    foreach (WowObject obj in AmeisenDataHolder.Instance.ActiveWoWObjects)
+                        if (guid == obj.Guid)
+                        {
+                            if (((Unit)obj).InCombat)
+                                return true;
+                            break;
+                        }
+            }
+            catch { }
             return false;
         }
     }

@@ -1,7 +1,9 @@
 ﻿using AmeisenFSM.Actions;
 using AmeisenFSM.Enums;
 using AmeisenFSM.Interfaces;
+using AmeisenLogging;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace AmeisenFSM
 {
@@ -55,8 +57,9 @@ namespace AmeisenFSM
         /// Pop the state Stack of the bot, calls the Start() of new State and the Stop() of current State.
         /// </summary>
         /// <param name="botState">the state you want to change to</param>
-        public BotState PopAction()
+        public BotState PopAction([CallerMemberName]string functionName = "")
         {
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"FSM Pop called by: {functionName}", this);
             GetCurrentStateAction(GetCurrentState())?.StartExit.Invoke();
             BotState tmpState = StateStack.Pop();
             GetCurrentStateAction(GetCurrentState())?.StartAction.Invoke();
@@ -68,10 +71,11 @@ namespace AmeisenFSM
         /// and the Start() of new State.
         /// </summary>
         /// <param name="botState">the state you want to change to</param>
-        public void PushAction(BotState botState)
+        public void PushAction(BotState botState, [CallerMemberName]string functionName = "")
         {
             if (GetCurrentState() != botState)
             {
+                AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"FSM Push [{botState}] called by: {functionName}", this);
                 GetCurrentStateAction(GetCurrentState())?.StartExit.Invoke();
                 StateStack.Push(botState);
                 GetCurrentStateAction(GetCurrentState())?.StartAction.Invoke();

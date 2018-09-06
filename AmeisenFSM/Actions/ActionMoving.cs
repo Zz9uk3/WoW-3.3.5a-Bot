@@ -61,20 +61,22 @@ namespace AmeisenFSM.Actions
 
         private void MoveToNode()
         {
-            Me.Update();
-            Vector3 initialPosition = Me.pos;
-            Vector3 targetPosition = WaypointQueue.Peek();
+            if (WaypointQueue.Count > 0){
+                Me.Update();
+                Vector3 initialPosition = Me.pos;
+                Vector3 targetPosition = WaypointQueue.Peek();
 
-            // Check if we are close enough to the node to dequeue it, otherwise move to it
-            if (Utils.GetDistance(initialPosition, targetPosition)
-                > AmeisenSettings.Instance.Settings.followDistance)
-            {
-                //Vector3 posToGoTo = RebaseVector(targetPosition, 0);
-                AmeisenCore.MovePlayerToXYZ(targetPosition, InteractionType.MOVE);
-            }
-            else
-            {
-                WaypointQueue.Dequeue();
+                // Check if we are close enough to the node to dequeue it, otherwise move to it
+                if (Utils.GetDistance(initialPosition, targetPosition)
+                    > AmeisenSettings.Instance.Settings.followDistance)
+                {
+                    //Vector3 posToGoTo = RebaseVector(targetPosition, 0);
+                    AmeisenCore.MovePlayerToXYZ(targetPosition, InteractionType.MOVE);
+                }
+                else
+                {
+                    WaypointQueue.Dequeue();
+                }
             }
         }
 

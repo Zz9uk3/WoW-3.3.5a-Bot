@@ -6,32 +6,7 @@ namespace AmeisenCombat
 {
     public class AmeisenCombatManager
     {
-        private static readonly object padlock = new object();
-
-        private static AmeisenCombatManager instance;
-
-        private readonly Thread mainWorker;
-
         private AmeisenCombatEngine combatEngine;
-
-        private bool stop = false;
-
-        /// <summary>
-        /// Initialize/Get the instance of our singleton
-        /// </summary>
-        /// <returns>AmeisenAIManager instance</returns>
-        public static AmeisenCombatManager Instance
-        {
-            get
-            {
-                lock (padlock)
-                {
-                    if (instance == null)
-                        instance = new AmeisenCombatManager();
-                    return instance;
-                }
-            }
-        }
 
         private Me Me
         {
@@ -39,11 +14,9 @@ namespace AmeisenCombat
             set { AmeisenDataHolder.Instance.Me = value; }
         }
 
-        private AmeisenCombatManager()
+        public AmeisenCombatManager()
         {
-            mainWorker = new Thread(new ThreadStart(DoWork));
             combatEngine = new AmeisenCombatEngine();
-
             ReloadCombatClass();
         }
 
@@ -57,27 +30,9 @@ namespace AmeisenCombat
                 combatEngine.CurrentCombatLogic = AmeisenCombatEngine.LoadCombatLogicFromFile(defaultCombatClass);
         }
 
-        /// <summary>
-        /// Start the CombatEngine
-        /// </summary>
-        public void Start() { mainWorker.Start(); }
-
-        /// <summary>
-        /// Stop the CombatEngine
-        /// </summary>
-        public void Stop()
+        public void DoWork()
         {
-            stop = true;
-            mainWorker.Abort();
-        }
-
-        private void DoWork()
-        {
-            while (!stop)
-            {
-                combatEngine.ExecuteNextStep();
-                Thread.Sleep(50);
-            }
+            combatEngine.ExecuteNextStep();
         }
     }
 }

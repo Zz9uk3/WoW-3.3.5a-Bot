@@ -1,4 +1,5 @@
-﻿using AmeisenCoreUtils;
+﻿using AmeisenCombat;
+using AmeisenCoreUtils;
 using AmeisenData;
 using AmeisenFSM.Interfaces;
 using AmeisenUtilities;
@@ -9,10 +10,9 @@ namespace AmeisenFSM.Actions
     internal class ActionCombat : IAction
     {
         public Start StartAction { get { return Start; } }
-
         public DoThings StartDoThings { get { return DoThings; } }
-
         public Exit StartExit { get { return Stop; } }
+        private AmeisenCombatManager combatManager;
 
         private Me Me
         {
@@ -26,8 +26,11 @@ namespace AmeisenFSM.Actions
             set { AmeisenDataHolder.Instance.Target = value; }
         }
 
+        public ActionCombat() { combatManager = new AmeisenCombatManager(); }
+
         public void DoThings()
         {
+            combatManager.DoWork();
         }
 
         public void Start()

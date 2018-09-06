@@ -52,6 +52,7 @@
     <Compile Include="Objects\CombatLogicEntry.cs" />
     <Compile Include="Objects\CombatLogicStatement.cs" />
     <Compile Include="Objects\CombatLogicValues.cs" />
+    <Compile Include="Objects\IAmeisenCombatClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

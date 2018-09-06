@@ -314,7 +314,7 @@ namespace AmeisenCoreUtils
 
             info.name = spell; //try { info.name = GetLocalizedText("name"); } catch { info.castTime = -1; }
             try { info.castTime = int.Parse(GetLocalizedText(cmd, "castTime")); } catch { info.castTime = -1; }
-            try { info.cost = int.Parse(GetLocalizedText(cmd, "cost")); } catch { info.cost = -1; }
+            //try { info.cost = int.Parse(GetLocalizedText(cmd, "cost")); } catch { info.cost = -1; }
 
             return info;
         }

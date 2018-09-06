@@ -54,6 +54,10 @@
     <Compile Include="Interfaces\IAction.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AmeisenCombat\AmeisenCombat.csproj">
+      <Project>{CD72AD54-7C40-4EC0-8878-0771922A2961}</Project>
+      <Name>AmeisenCombat</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AmeisenCore\AmeisenCore.csproj">
       <Project>{567f9df2-e2d0-4bc8-a295-b7913cc1303e}</Project>
       <Name>AmeisenCore</Name>

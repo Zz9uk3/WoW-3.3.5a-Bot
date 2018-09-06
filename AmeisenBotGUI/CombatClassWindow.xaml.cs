@@ -28,7 +28,7 @@ namespace AmeisenBotGUI
 
             string defaultCombatClass = BotManager.Settings.combatClassPath;
             if (defaultCombatClass != "none")
-                loadedLogic = AmeisenCombatEngine.LoadCombatLogicFromFile(defaultCombatClass);
+                loadedLogic = AmeisenCombat.AmeisenCombatEngine.LoadCombatLogicFromFile(defaultCombatClass);
             else
                 loadedLogic = new CombatLogic();
 
@@ -97,7 +97,7 @@ namespace AmeisenBotGUI
             if (openFileDialog.ShowDialog() == true)
             {
                 loadedLogic.combatLogicEntries.Clear();
-                loadedLogic = AmeisenCombatEngine.LoadCombatLogicFromFile(openFileDialog.FileName);
+                loadedLogic = AmeisenCombat.AmeisenCombatEngine.LoadCombatLogicFromFile(openFileDialog.FileName);
 
                 if (loadedLogic.combatLogicEntries != null)
                 {
@@ -146,7 +146,7 @@ namespace AmeisenBotGUI
                 saveFileDialog.FileName = defaultCombatClass;
 
             if (saveFileDialog.ShowDialog() == true)
-                AmeisenCombatEngine.SaveToFile(saveFileDialog.FileName, loadedLogic);
+                AmeisenCombat.AmeisenCombatEngine.SaveToFile(saveFileDialog.FileName, loadedLogic);
         }
 
         private void CheckboxCanCastDuringMovement_Checked(object sender, RoutedEventArgs e)

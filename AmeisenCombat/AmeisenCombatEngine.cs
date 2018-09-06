@@ -118,9 +118,6 @@ namespace AmeisenCombat
                     // Loot the Guid's from guidsWithPotentialLoot List
                     LootGuidsThatAreMine();
                 }
-                else
-                {
-                }
             }
         }
 
@@ -167,13 +164,6 @@ namespace AmeisenCombat
             }
         }
 
-        private bool CheckCombatOnly(CombatLogicEntry entry)
-        {
-            if (entry.CombatOnly && (!Me.InCombat || !IsPartyInCombat()))
-                return false;
-            return true;
-        }
-
         private bool CheckCondition(Condition condition)
         {
             return CheckCondition(
@@ -217,6 +207,10 @@ namespace AmeisenCombat
         {
             if (!AmeisenCore.IsOnCooldown((string)entry.Parameters))
             {
+                SpellInfo spellInfo = AmeisenCore.GetSpellInfo((string)entry.Parameters);
+                AmeisenCore.CastSpellByName((string)entry.Parameters, entry.IsForMyself);
+
+                Thread.Sleep(spellInfo.castTime);
             }
         }
 
@@ -315,17 +309,6 @@ namespace AmeisenCombat
             if (Me.Health < 1 || Me.IsCasting)
                 return false;
 
-            // Forced attack cause flag isnt updated...
-            if (AttackShit)
-            {
-                AttackShit = false; // We should be in Combat right now
-            }
-            else
-            {
-                if (!CheckCombatOnly(entry))
-                    return false;
-            }
-
             // Check if we are in spell range only if its not for me
             if (!entry.IsForMyself)
             {
@@ -341,12 +324,22 @@ namespace AmeisenCombat
                 bool isMeleeSpell = entry.MaxSpellDistance < 3.0 ? true : false;
 
                 // Finally check if we are in range
-                while (!IsInRange(entry))
+                while (true)
                 {
                     //Move in range
                     MoveIntoRange(entry, isMeleeSpell);
+                    if (IsInRange(entry))
+                    {
+                        AmeisenCore.MovePlayerToXYZ(Target.pos, InteractionType.STOP);
+                        break;
+                    }
+                    Thread.Sleep(100);
                 }
+
+                if (!Utils.IsFacing(Me.pos, Me.Rotation, Target.pos))
+                    FaceTarget();
             }
+
 
             // Check the Value-Conditions, Health, Energy, ...
             foreach (Condition c in entry.Conditions)
@@ -358,6 +351,7 @@ namespace AmeisenCombat
 
         private void FaceTarget()
         {
+            AmeisenCore.MovePlayerToXYZ(Target.pos, InteractionType.FACETARGET);
         }
 
         private WowObject GetUnitFromListByGuid(ulong guid)
@@ -378,7 +372,7 @@ namespace AmeisenCombat
                 Me.Update();
             if (Target != null)
                 Target.Update();
-
+            
             switch (condition.conditionValues[id])
             {
                 case CombatLogicValues.HP:
@@ -396,9 +390,9 @@ namespace AmeisenCombat
                     break;
             }
 
-            if (id == 1)
-                if (condition.customValue.GetType() == typeof(double))
-                    return (double)condition.customValue;
+            if (condition.customValue.GetType() == typeof(int)
+                || condition.customValue.GetType() == typeof(double))
+                return (double)condition.customValue;
 
             return -1;
         }
@@ -435,27 +429,33 @@ namespace AmeisenCombat
 
         private void LootGuidsThatAreMine()
         {
-            foreach (ulong guid in GuidsWithPotentialLoot)
+            try
             {
-                Unit activeUnit = (Unit)GetUnitFromListByGuid(guid);
-                activeUnit.Update();
-
-                if (activeUnit != null)
+                foreach (ulong guid in GuidsWithPotentialLoot)
                 {
-                    bool isLootable = activeUnit.IsLootable;
-                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"{activeUnit.Name} [{activeUnit.Guid}] IsLootable: {isLootable}", this);
+                    Unit activeUnit = (Unit)GetUnitFromListByGuid(guid);
+                    activeUnit.Update();
 
-                    if (isLootable)
+                    if (activeUnit != null)
                     {
-                        // Loot the target
+                        bool isLootable = activeUnit.IsLootable;
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"{activeUnit.Name} [{activeUnit.Guid}] IsLootable: {isLootable}", this);
+
+                        if (isLootable)
+                        {
+                            // Loot the target
+                        }
                     }
                 }
             }
+            catch { }
         }
 
         // TODO: need to move this into a CombatMovementManager or something like this
         private void MoveIntoRange(CombatLogicEntry entry, bool isMeleeSpell)
         {
+            Target.Update();
+            AmeisenCore.MovePlayerToXYZ(Target.pos, InteractionType.MOVE);
         }
 
         private void RemoveDeadTargetsFromListAndCheckForLoot()
