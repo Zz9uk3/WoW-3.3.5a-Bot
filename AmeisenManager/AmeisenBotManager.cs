@@ -85,6 +85,18 @@ namespace AmeisenManager
             set { AmeisenDataHolder.Instance.IsAllowedToTank = value; }
         }
 
+        public bool IsAllowedToReleaseSpirit
+        {
+            get { return AmeisenDataHolder.Instance.IsAllowedToReleaseSpirit; }
+            set { AmeisenDataHolder.Instance.IsAllowedToReleaseSpirit = value; }
+        }
+
+        public bool IsAllowedToRevive
+        {
+            get { return AmeisenDataHolder.Instance.IsAllowedToRevive; }
+            set { AmeisenDataHolder.Instance.IsAllowedToRevive = value; }
+        }
+
         public bool IsAttached { get; private set; }
         public bool IsHooked { get; private set; }
         public Me Me { get { return AmeisenDataHolder.Instance.Me; } }

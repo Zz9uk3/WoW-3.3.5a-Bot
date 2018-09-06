@@ -40,5 +40,9 @@
         public bool topMost = false;
         public string walkableNodeColorHigh = "#FFA0FFFF";
         public string walkableNodeColorLow = "#FFA0FF00";
+        public bool releaseSpirit = false;
+        public bool revive = false;
+        public int stateMachineUpdateMillis = 10;
+        public int stateMachineStateUpdateMillis = 250;
     }
 }

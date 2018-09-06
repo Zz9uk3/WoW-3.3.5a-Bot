@@ -1,4 +1,5 @@
-﻿using AmeisenData;
+﻿using AmeisenCoreUtils;
+using AmeisenData;
 using AmeisenFSM.Enums;
 using AmeisenUtilities;
 using System.Threading;
@@ -63,7 +64,7 @@ namespace AmeisenFSM
             while (Active)
             {
                 StateMachine.Update();
-                Thread.Sleep(10);
+                Thread.Sleep(AmeisenSettings.Instance.Settings.stateMachineUpdateMillis);
             }
         }
 
@@ -87,13 +88,22 @@ namespace AmeisenFSM
                     else if (StateMachine.GetCurrentState() == BotState.Combat)
                         StateMachine.PopAction();
 
+                // Do I need to release my spirit
+                if (AmeisenDataHolder.Instance.IsAllowedToReleaseSpirit)
+                    if (Me.Health == 0)
+                    {
+                        AmeisenCore.ReleaseSpirit();
+                        Thread.Sleep(2000);
+                    }
+
                 // Am I dead?
-                if (Me.IsDead)
+                if (AmeisenDataHolder.Instance.IsAllowedToRevive)
+                    if (Me.IsDead)
                     StateMachine.PushAction(BotState.Dead);
                 else if (StateMachine.GetCurrentState() == BotState.Dead)
                     StateMachine.PopAction();
 
-                Thread.Sleep(250);
+                Thread.Sleep(AmeisenSettings.Instance.Settings.stateMachineStateUpdateMillis);
             }
         }
 

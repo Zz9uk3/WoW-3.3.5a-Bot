@@ -174,7 +174,7 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </CheckBox.BorderBrush>
         </CheckBox>
-        <CheckBox x:Name="checkBoxAssistPartyHeal" Content="💕 Heal" Margin="179,35,0,0" Background="White" HorizontalAlignment="Left" Width="74" BorderThickness="2" Height="20" VerticalAlignment="Top" Click="CheckBoxAssistPartyHeal_Click" FontSize="14">
+        <CheckBox x:Name="checkBoxAssistPartyHeal" Content="⛨ Heal" Margin="179,35,0,0" Background="White" HorizontalAlignment="Left" Width="74" BorderThickness="2" Height="20" VerticalAlignment="Top" Click="CheckBoxAssistPartyHeal_Click" FontSize="14">
             <CheckBox.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </CheckBox.Foreground>
@@ -284,6 +284,22 @@
         </CheckBox>
         <CheckBox x:Name="checkBoxTopMost" Content="" HorizontalAlignment="Left" Margin="477,-1,0,0" VerticalAlignment="Top" Height="19" FontSize="14" Width="24" Click="CheckBoxTopMost_Click" />
         <CheckBox x:Name="checkBoxAssistGroup" Content="🤝 Assist Group" Margin="270,35,0,0" Background="White" HorizontalAlignment="Left" Width="124" BorderThickness="2" Height="20" VerticalAlignment="Top" Click="CheckBoxAssistGroup_Click" FontSize="14">
+            <CheckBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </CheckBox.Foreground>
+            <CheckBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
+            </CheckBox.BorderBrush>
+        </CheckBox>
+        <CheckBox x:Name="checkBoxReleaseSpirit" Content="👻 Release Spirit" Margin="270,60,0,0" Background="White" HorizontalAlignment="Left" Width="129" BorderThickness="2" Height="20" VerticalAlignment="Top" Click="CheckBoxReleaseSpirit_Click" FontSize="14">
+            <CheckBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </CheckBox.Foreground>
+            <CheckBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
+            </CheckBox.BorderBrush>
+        </CheckBox>
+        <CheckBox x:Name="checkBoxRevive" Content="💀 Revive" Margin="270,85,0,0" Background="White" HorizontalAlignment="Left" Width="129" BorderThickness="2" Height="20" VerticalAlignment="Top" Click="CheckBoxReleaseSpirit_Copy_Click" FontSize="14">
             <CheckBox.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </CheckBox.Foreground>

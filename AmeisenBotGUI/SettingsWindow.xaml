@@ -39,7 +39,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Label Content="Data refresh rate" HorizontalAlignment="Left" Margin="0,45,0,0" VerticalAlignment="Top" BorderBrush="White" BorderThickness="0,0,0,1" Cursor="None" FontSize="16" Width="160">
+        <Label Content="Object refresh rate" HorizontalAlignment="Left" Margin="0,45,0,0" VerticalAlignment="Top" BorderBrush="White" BorderThickness="0,0,0,1" Cursor="None" FontSize="16" Width="160">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
@@ -64,57 +64,57 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </RadioButton.Foreground>
         </RadioButton>
-        <Label Content="Intelligence (Threads)" HorizontalAlignment="Left" Margin="0,187,0,0" VerticalAlignment="Top" BorderBrush="White" BorderThickness="0,0,0,1" Cursor="None" FontSize="16" Width="160">
+        <Label Content="Intelligence (Threads)" HorizontalAlignment="Left" Margin="0,187,0,0" VerticalAlignment="Top" BorderBrush="White" BorderThickness="0,0,0,1" Cursor="None" FontSize="16" Width="160" IsEnabled="False">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <RadioButton x:Name="radiobuttonIntLowest" Content="Dumb AF" HorizontalAlignment="Left" Margin="10,224,0,0" VerticalAlignment="Top" BorderBrush="Red" BorderThickness="4,0,0,0" GroupName="int">
+        <RadioButton x:Name="radiobuttonIntLowest" Content="Dumb AF" HorizontalAlignment="Left" Margin="10,224,0,0" VerticalAlignment="Top" BorderBrush="Red" BorderThickness="4,0,0,0" GroupName="int" IsEnabled="False">
             <RadioButton.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </RadioButton.Foreground>
         </RadioButton>
-        <RadioButton x:Name="radiobuttonIntLow" Content="A bit" HorizontalAlignment="Left" Margin="10,244,0,0" VerticalAlignment="Top" BorderThickness="4,0,0,0" BorderBrush="#FFFFA000" GroupName="int">
+        <RadioButton x:Name="radiobuttonIntLow" Content="A bit" HorizontalAlignment="Left" Margin="10,244,0,0" VerticalAlignment="Top" BorderThickness="4,0,0,0" BorderBrush="#FFFFA000" GroupName="int" IsEnabled="False">
             <RadioButton.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </RadioButton.Foreground>
         </RadioButton>
-        <RadioButton x:Name="radiobuttonIntMedium" Content="Decent" HorizontalAlignment="Left" Margin="10,264,0,0" VerticalAlignment="Top" BorderBrush="Yellow" BorderThickness="4,0,0,0" GroupName="int">
+        <RadioButton x:Name="radiobuttonIntMedium" Content="Decent" HorizontalAlignment="Left" Margin="10,264,0,0" VerticalAlignment="Top" BorderBrush="Yellow" BorderThickness="4,0,0,0" GroupName="int" IsEnabled="False">
             <RadioButton.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </RadioButton.Foreground>
         </RadioButton>
-        <RadioButton x:Name="radiobuttonIntHigh" Content="High" HorizontalAlignment="Left" Margin="10,284,0,0" VerticalAlignment="Top" BorderBrush="#FFA0FF00" BorderThickness="4,0,0,0" GroupName="int">
+        <RadioButton x:Name="radiobuttonIntHigh" Content="High" HorizontalAlignment="Left" Margin="10,284,0,0" VerticalAlignment="Top" BorderBrush="#FFA0FF00" BorderThickness="4,0,0,0" GroupName="int" IsEnabled="False">
             <RadioButton.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </RadioButton.Foreground>
         </RadioButton>
-        <RadioButton x:Name="radiobuttonIntHighest" Content="Legend" HorizontalAlignment="Left" Margin="10,304,0,0" VerticalAlignment="Top" BorderBrush="Magenta" BorderThickness="4,0,0,0" GroupName="int">
+        <RadioButton x:Name="radiobuttonIntHighest" Content="Legend" HorizontalAlignment="Left" Margin="10,304,0,0" VerticalAlignment="Top" BorderBrush="Magenta" BorderThickness="4,0,0,0" GroupName="int" IsEnabled="False">
             <RadioButton.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </RadioButton.Foreground>
         </RadioButton>
-        <Label Content="max. 1" HorizontalAlignment="Left" Margin="116,218,0,0" VerticalAlignment="Top">
+        <Label Content="max. 1" HorizontalAlignment="Left" Margin="116,218,0,0" VerticalAlignment="Top" IsEnabled="False">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Label Content="max. 2" HorizontalAlignment="Left" Margin="116,238,0,0" VerticalAlignment="Top">
+        <Label Content="max. 2" HorizontalAlignment="Left" Margin="116,238,0,0" VerticalAlignment="Top" IsEnabled="False">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Label Content="max. 3" HorizontalAlignment="Left" Margin="116,258,0,0" VerticalAlignment="Top">
+        <Label Content="max. 3" HorizontalAlignment="Left" Margin="116,258,0,0" VerticalAlignment="Top" IsEnabled="False">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Label Content="max. 4" HorizontalAlignment="Left" Margin="116,278,0,0" VerticalAlignment="Top">
+        <Label Content="max. 4" HorizontalAlignment="Left" Margin="116,278,0,0" VerticalAlignment="Top" IsEnabled="False">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Label Content="max. 8" HorizontalAlignment="Left" Margin="116,298,0,0" VerticalAlignment="Top">
+        <Label Content="max. 8" HorizontalAlignment="Left" Margin="116,298,0,0" VerticalAlignment="Top" IsEnabled="False">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
@@ -208,7 +208,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <CheckBox x:Name="checkboxAutoConnect" Content="Auto-Connect on start" Margin="200,138,0,0" VerticalAlignment="Top" Width="160" HorizontalAlignment="Left" BorderThickness="2" IsChecked="True">
+        <CheckBox x:Name="checkboxAutoConnect" Content="Auto-Connect on start" Margin="204,138,0,0" VerticalAlignment="Top" Width="156" HorizontalAlignment="Left" BorderThickness="2" IsChecked="True">
             <CheckBox.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </CheckBox.Foreground>
@@ -262,7 +262,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <CheckBox x:Name="checkboxDBAutoConnect" Content="Auto-Connect on start" Margin="200,364,0,0" VerticalAlignment="Top" Width="160" HorizontalAlignment="Left" BorderThickness="2" IsChecked="True">
+        <CheckBox x:Name="checkboxDBAutoConnect" Content="Auto-Connect on start" Margin="204,364,0,0" VerticalAlignment="Top" Width="156" HorizontalAlignment="Left" BorderThickness="2" IsChecked="True">
             <CheckBox.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </CheckBox.Foreground>
@@ -332,14 +332,14 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Rectangle x:Name="colorBackground" HorizontalAlignment="Left" Height="23" Margin="490,224,0,0" VerticalAlignment="Top" Width="70">
-            <Rectangle.Stroke>
+        <Button x:Name="colorBackground" HorizontalAlignment="Left" Height="23" Margin="490,224,0,0" VerticalAlignment="Top" Width="70" Click="ColorBackground_Click">
+            <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
-            </Rectangle.Stroke>
-            <Rectangle.Fill>
+            </Button.BorderBrush>
+            <Button.Background>
                 <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
-            </Rectangle.Fill>
-        </Rectangle>
+            </Button.Background>
+        </Button>
         <Label Content="Outline:" HorizontalAlignment="Left" Margin="400,252,0,0" VerticalAlignment="Top" Height="27">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
@@ -350,22 +350,22 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Rectangle x:Name="colorOutline" HorizontalAlignment="Left" Height="23" Margin="490,252,0,0" VerticalAlignment="Top" Width="70">
-            <Rectangle.Stroke>
+        <Button x:Name="colorOutline" HorizontalAlignment="Left" Height="23" Margin="490,252,0,0" VerticalAlignment="Top" Width="70" Click="ColorOutline_Click">
+            <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
-            </Rectangle.Stroke>
-            <Rectangle.Fill>
+            </Button.BorderBrush>
+            <Button.Background>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
-            </Rectangle.Fill>
-        </Rectangle>
-        <Rectangle x:Name="colorText" HorizontalAlignment="Left" Height="23" Margin="490,280,0,0" VerticalAlignment="Top" Width="70">
-            <Rectangle.Stroke>
+            </Button.Background>
+        </Button>
+        <Button x:Name="colorText" HorizontalAlignment="Left" Height="23" Margin="490,280,0,0" VerticalAlignment="Top" Width="70" Click="ColorText_Click">
+            <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
-            </Rectangle.Stroke>
-            <Rectangle.Fill>
+            </Button.BorderBrush>
+            <Button.Background>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
-            </Rectangle.Fill>
-        </Rectangle>
+            </Button.Background>
+        </Button>
         <Label Content="Text:" HorizontalAlignment="Left" Margin="400,280,0,0" VerticalAlignment="Top" Height="28">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
@@ -402,14 +402,14 @@
                 <SolidColorBrush Color="{DynamicResource MeNodeColor}" />
             </Button.Background>
         </Button>
-        <Rectangle x:Name="colorHealth" HorizontalAlignment="Left" Height="23" Margin="490,308,0,0" VerticalAlignment="Top" Width="70">
-            <Rectangle.Stroke>
+        <Button x:Name="colorHealth" HorizontalAlignment="Left" Height="23" Margin="490,308,0,0" VerticalAlignment="Top" Width="70" Click="ColorHealth_Click">
+            <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
-            </Rectangle.Stroke>
-            <Rectangle.Fill>
+            </Button.BorderBrush>
+            <Button.Background>
                 <SolidColorBrush Color="{DynamicResource HealthColor}" />
-            </Rectangle.Fill>
-        </Rectangle>
+            </Button.Background>
+        </Button>
         <Label Content="Energy:" HorizontalAlignment="Left" Margin="400,336,0,0" VerticalAlignment="Top" Height="28">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
@@ -420,22 +420,22 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Rectangle x:Name="colorEnergy" HorizontalAlignment="Left" Height="23" Margin="490,336,0,0" VerticalAlignment="Top" Width="70">
-            <Rectangle.Fill>
+        <Button x:Name="colorEnergy" HorizontalAlignment="Left" Height="23" Margin="490,336,0,0" VerticalAlignment="Top" Width="70" Click="ColorEnergy_Click">
+            <Button.Background>
                 <SolidColorBrush Color="{DynamicResource EnergyColor}" />
-            </Rectangle.Fill>
-            <Rectangle.Stroke>
+            </Button.Background>
+            <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
-            </Rectangle.Stroke>
-        </Rectangle>
-        <Rectangle x:Name="colorExp" HorizontalAlignment="Left" Height="23" Margin="490,364,0,0" VerticalAlignment="Top" Width="70">
-            <Rectangle.Stroke>
+            </Button.BorderBrush>
+        </Button>
+        <Button x:Name="colorExp" HorizontalAlignment="Left" Height="23" Margin="490,364,0,0" VerticalAlignment="Top" Width="70" Click="ColorExp_Click">
+            <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
-            </Rectangle.Stroke>
-            <Rectangle.Fill>
+            </Button.BorderBrush>
+            <Button.Background>
                 <SolidColorBrush Color="{DynamicResource EXPColor}" />
-            </Rectangle.Fill>
-        </Rectangle>
+            </Button.Background>
+        </Button>
         <Label Content="Target Health:" HorizontalAlignment="Left" Margin="400,392,0,0" VerticalAlignment="Top" Height="28">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
@@ -446,22 +446,22 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Rectangle x:Name="colorTargetHealth" HorizontalAlignment="Left" Height="23" Margin="490,392,0,0" VerticalAlignment="Top" Width="70">
-            <Rectangle.Fill>
+        <Button x:Name="colorTargetHealth" HorizontalAlignment="Left" Height="23" Margin="490,392,0,0" VerticalAlignment="Top" Width="70" Click="ColorTargetHealth_Click">
+            <Button.Background>
                 <SolidColorBrush Color="{DynamicResource TargetHealthColor}" />
-            </Rectangle.Fill>
-            <Rectangle.Stroke>
+            </Button.Background>
+            <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
-            </Rectangle.Stroke>
-        </Rectangle>
-        <Rectangle x:Name="colorTargetEnergy" HorizontalAlignment="Left" Height="23" Margin="490,420,0,0" VerticalAlignment="Top" Width="70">
-            <Rectangle.Stroke>
+            </Button.BorderBrush>
+        </Button>
+        <Button x:Name="colorTargetEnergy" HorizontalAlignment="Left" Height="23" Margin="490,420,0,0" VerticalAlignment="Top" Width="70" Click="ColorTargetEnergy_Click">
+            <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
-            </Rectangle.Stroke>
-            <Rectangle.Fill>
+            </Button.BorderBrush>
+            <Button.Background>
                 <SolidColorBrush Color="{DynamicResource TargetEnergyColor}" />
-            </Rectangle.Fill>
-        </Rectangle>
+            </Button.Background>
+        </Button>
         <Label Content="Threads" HorizontalAlignment="Left" Margin="400,448,0,0" VerticalAlignment="Top" Height="23">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
@@ -472,14 +472,14 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Rectangle x:Name="colorThreads" HorizontalAlignment="Left" Height="23" Margin="490,448,0,0" VerticalAlignment="Top" Width="70">
-            <Rectangle.Fill>
+        <Button x:Name="colorThreads" HorizontalAlignment="Left" Height="23" Margin="490,448,0,0" VerticalAlignment="Top" Width="70" Click="ColorThreads_Click">
+            <Button.Background>
                 <SolidColorBrush Color="{DynamicResource ThreadsColor}" />
-            </Rectangle.Fill>
-            <Rectangle.Stroke>
+            </Button.Background>
+            <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
-            </Rectangle.Stroke>
-        </Rectangle>
+            </Button.BorderBrush>
+        </Button>
         <Label Content="Walkable High:" HorizontalAlignment="Left" Margin="400,110,0,0" VerticalAlignment="Top" Height="32">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />

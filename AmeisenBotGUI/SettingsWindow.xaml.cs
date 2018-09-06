@@ -293,5 +293,50 @@ namespace AmeisenBotGUI
             }
             catch { }
         }
+
+        private void ColorBackground_Click(object sender, RoutedEventArgs e)
+        {
+            SelectColor("BackgroundColor");
+        }
+
+        private void ColorOutline_Click(object sender, RoutedEventArgs e)
+        {
+            SelectColor("AccentColor");
+        }
+
+        private void ColorText_Click(object sender, RoutedEventArgs e)
+        {
+            SelectColor("TextColor");
+        }
+
+        private void ColorHealth_Click(object sender, RoutedEventArgs e)
+        {
+            SelectColor("HealthColor");
+        }
+
+        private void ColorEnergy_Click(object sender, RoutedEventArgs e)
+        {
+            SelectColor("EnergyColor");
+        }
+
+        private void ColorExp_Click(object sender, RoutedEventArgs e)
+        {
+            SelectColor("EXPColor");
+        }
+
+        private void ColorTargetHealth_Click(object sender, RoutedEventArgs e)
+        {
+            SelectColor("TargetHealthColor");
+        }
+
+        private void ColorTargetEnergy_Click(object sender, RoutedEventArgs e)
+        {
+            SelectColor("TargetEnergyColor");
+        }
+
+        private void ColorThreads_Click(object sender, RoutedEventArgs e)
+        {
+            SelectColor("ThreadsColor");
+        }
     }
 }

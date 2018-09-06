@@ -13,7 +13,7 @@ using System.Windows.Threading;
 namespace AmeisenBotGUI
 {
     /// <summary>
-    /// Interaktionslogik für mainscreenForm.xaml
+    /// Interaktionslogik für mainscreenForm.xaml 💕
     /// </summary>
     public partial class BotWindow : Window
     {
@@ -158,6 +158,12 @@ namespace AmeisenBotGUI
             checkBoxFollowParty.IsChecked = BotManager.Settings.followMaster;
             BotManager.IsAllowedToFollowParty = BotManager.Settings.followMaster;
 
+            checkBoxReleaseSpirit.IsChecked = BotManager.Settings.releaseSpirit;
+            BotManager.IsAllowedToReleaseSpirit = BotManager.Settings.releaseSpirit;
+
+            checkBoxRevive.IsChecked = BotManager.Settings.revive;
+            BotManager.IsAllowedToRevive = BotManager.Settings.revive;
+            
             sliderDistance.Value = BotManager.Settings.followDistance;
 
             checkBoxTopMost.IsChecked = BotManager.Settings.topMost;
@@ -197,6 +203,8 @@ namespace AmeisenBotGUI
             BotManager.Settings.behaviourHeal = (bool)checkBoxAssistPartyHeal.IsChecked;
             BotManager.Settings.behaviourBuff = (bool)checkBoxAssistPartyBuff.IsChecked;
             BotManager.Settings.followMaster = (bool)checkBoxFollowParty.IsChecked;
+            BotManager.Settings.releaseSpirit = (bool)checkBoxReleaseSpirit.IsChecked;
+            BotManager.Settings.revive = (bool)checkBoxRevive.IsChecked;
             BotManager.SaveSettingsToFile(BotManager.GetLoadedConfigName());
         }
 
@@ -304,6 +312,16 @@ namespace AmeisenBotGUI
             }
 
             UpdateAIView();
+        }
+
+        private void CheckBoxReleaseSpirit_Click(object sender, RoutedEventArgs e)
+        {
+            BotManager.IsAllowedToReleaseSpirit = (bool)checkBoxReleaseSpirit.IsChecked;
+        }
+
+        private void CheckBoxReleaseSpirit_Copy_Click(object sender, RoutedEventArgs e)
+        {
+            BotManager.IsAllowedToRevive = (bool)checkBoxRevive.IsChecked;
         }
     }
 }
