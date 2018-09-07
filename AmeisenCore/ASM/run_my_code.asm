@@ -6,7 +6,7 @@ TEST EBX, 1
 JE @out
 
 MOV EDX, {1}
-CALL EDX");
+CALL EDX
 MOV [{2}], EAX
 
 @out:
