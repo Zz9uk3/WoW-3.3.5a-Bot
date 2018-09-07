@@ -55,7 +55,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmeisenFSM\AmeisenBot.FSM.csproj">
+    <ProjectReference Include="..\AmeisenBot.FSM\AmeisenBot.FSM.csproj">
       <Project>{C93B8F0C-8CFA-45F6-9B2C-43B72E1CFE0F}</Project>
       <Name>AmeisenBot.FSM</Name>
     </ProjectReference>

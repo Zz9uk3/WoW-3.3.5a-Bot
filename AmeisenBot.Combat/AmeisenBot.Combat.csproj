@@ -56,19 +56,19 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmeisenCore\AmeisenBot.Core.csproj">
+    <ProjectReference Include="..\AmeisenBot.Core\AmeisenBot.Core.csproj">
       <Project>{567F9DF2-E2D0-4BC8-A295-B7913CC1303E}</Project>
       <Name>AmeisenBot.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenData\AmeisenBot.Data.csproj">
+    <ProjectReference Include="..\AmeisenBot.Data\AmeisenBot.Data.csproj">
       <Project>{4B6AB536-AF35-4970-89FB-B45BC495F8BE}</Project>
       <Name>AmeisenBot.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenLogger\AmeisenBot.Logger.csproj">
+    <ProjectReference Include="..\AmeisenBot.Logger\AmeisenBot.Logger.csproj">
       <Project>{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}</Project>
       <Name>AmeisenBot.Logger</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenUtilities\AmeisenBot.Utilities.csproj">
+    <ProjectReference Include="..\AmeisenBot.Utilities\AmeisenBot.Utilities.csproj">
       <Project>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</Project>
       <Name>AmeisenBot.Utilities</Name>
     </ProjectReference>

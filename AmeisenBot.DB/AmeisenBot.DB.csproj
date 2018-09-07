@@ -69,11 +69,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmeisenLogger\AmeisenBot.Logger.csproj">
+    <ProjectReference Include="..\AmeisenBot.Logger\AmeisenBot.Logger.csproj">
       <Project>{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}</Project>
       <Name>AmeisenBot.Logger</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenMapping\AmeisenBot.Mapping.csproj">
+    <ProjectReference Include="..\AmeisenBot.Mapping\AmeisenBot.Mapping.csproj">
       <Project>{08DB57D7-287A-4C12-AB76-F5EE4A0F3395}</Project>
       <Name>AmeisenBot.Mapping</Name>
     </ProjectReference>

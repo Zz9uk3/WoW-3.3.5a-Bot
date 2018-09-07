@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Core", "AmeisenB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Server", "AmeisenBot.Server\AmeisenBot.Server.csproj", "{0F5350C6-755B-4D32-8DFD-4057C925EF0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.GUI", "AmeisenBot.BotGUI\AmeisenBot.GUI.csproj", "{54601391-C520-4EB3-A13E-7FD9B036389A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.GUI", "AmeisenBot.GUI\AmeisenBot.GUI.csproj", "{54601391-C520-4EB3-A13E-7FD9B036389A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Logger", "AmeisenBot.Logger\AmeisenBot.Logger.csproj", "{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}"
 EndProject
@@ -23,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Mapping", "Ameis
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenPathLib", "AmeisenPath\AmeisenPathLib\AmeisenPathLib.csproj", "{DA582835-AC0B-4C1D-ADD7-1A272057BDE6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WoWLoginAutomator", "WoWLoginAutomator\WoW-LoginAutomator\WoWLoginAutomator.csproj", "{14811D57-C812-4651-85FA-7C65B974724B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WoWLoginAutomator", "WoW-LoginAutomator\WoW-LoginAutomator\WoWLoginAutomator.csproj", "{14811D57-C812-4651-85FA-7C65B974724B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.FSM", "AmeisenBot.FSM\AmeisenBot.FSM.csproj", "{C93B8F0C-8CFA-45F6-9B2C-43B72E1CFE0F}"
 EndProject

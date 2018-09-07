@@ -56,31 +56,31 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmeisenCore\AmeisenBot.Core.csproj">
+    <ProjectReference Include="..\AmeisenBot.Core\AmeisenBot.Core.csproj">
       <Project>{567f9df2-e2d0-4bc8-a295-b7913cc1303e}</Project>
       <Name>AmeisenBot.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenData\AmeisenBot.Data.csproj">
+    <ProjectReference Include="..\AmeisenBot.Data\AmeisenBot.Data.csproj">
       <Project>{4b6ab536-af35-4970-89fb-b45bc495f8be}</Project>
       <Name>AmeisenBot.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenDB\AmeisenBot.DB.csproj">
+    <ProjectReference Include="..\AmeisenBot.DB\AmeisenBot.DB.csproj">
       <Project>{9B3F7A78-0A9B-492A-8299-9C86D2E297ED}</Project>
       <Name>AmeisenBot.DB</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenFSM\AmeisenBot.FSM.csproj">
+    <ProjectReference Include="..\AmeisenBot.FSM\AmeisenBot.FSM.csproj">
       <Project>{c93b8f0c-8cfa-45f6-9b2c-43b72e1cfe0f}</Project>
       <Name>AmeisenBot.FSM</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenLogger\AmeisenBot.Logger.csproj">
+    <ProjectReference Include="..\AmeisenBot.Logger\AmeisenBot.Logger.csproj">
       <Project>{017a67a9-f7bd-46e3-b716-e1d601afca4b}</Project>
       <Name>AmeisenBot.Logger</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenMapping\AmeisenBot.Mapping.csproj">
+    <ProjectReference Include="..\AmeisenBot.Mapping\AmeisenBot.Mapping.csproj">
       <Project>{08DB57D7-287A-4C12-AB76-F5EE4A0F3395}</Project>
       <Name>AmeisenBot.Mapping</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenUtilities\AmeisenBot.Utilities.csproj">
+    <ProjectReference Include="..\AmeisenBot.Utilities\AmeisenBot.Utilities.csproj">
       <Project>{5369e077-2dc4-4de5-9020-2c7ddb41686f}</Project>
       <Name>AmeisenBot.Utilities</Name>
     </ProjectReference>

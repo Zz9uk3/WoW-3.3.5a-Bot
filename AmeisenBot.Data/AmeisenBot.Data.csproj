@@ -51,7 +51,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmeisenUtilities\AmeisenBot.Utilities.csproj">
+    <ProjectReference Include="..\AmeisenBot.Utilities\AmeisenBot.Utilities.csproj">
       <Project>{5369e077-2dc4-4de5-9020-2c7ddb41686f}</Project>
       <Name>AmeisenBot.Utilities</Name>
     </ProjectReference>

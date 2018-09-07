@@ -54,23 +54,23 @@
     <Compile Include="Interfaces\IAction.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmeisenCombat\AmeisenBot.Combat.csproj">
+    <ProjectReference Include="..\AmeisenBot.Combat\AmeisenBot.Combat.csproj">
       <Project>{CD72AD54-7C40-4EC0-8878-0771922A2961}</Project>
       <Name>AmeisenBot.Combat</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenCore\AmeisenBot.Core.csproj">
+    <ProjectReference Include="..\AmeisenBot.Core\AmeisenBot.Core.csproj">
       <Project>{567f9df2-e2d0-4bc8-a295-b7913cc1303e}</Project>
       <Name>AmeisenBot.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenData\AmeisenBot.Data.csproj">
+    <ProjectReference Include="..\AmeisenBot.Data\AmeisenBot.Data.csproj">
       <Project>{4B6AB536-AF35-4970-89FB-B45BC495F8BE}</Project>
       <Name>AmeisenBot.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenLogger\AmeisenBot.Logger.csproj">
+    <ProjectReference Include="..\AmeisenBot.Logger\AmeisenBot.Logger.csproj">
       <Project>{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}</Project>
       <Name>AmeisenBot.Logger</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenUtilities\AmeisenBot.Utilities.csproj">
+    <ProjectReference Include="..\AmeisenBot.Utilities\AmeisenBot.Utilities.csproj">
       <Project>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</Project>
       <Name>AmeisenBot.Utilities</Name>
     </ProjectReference>
