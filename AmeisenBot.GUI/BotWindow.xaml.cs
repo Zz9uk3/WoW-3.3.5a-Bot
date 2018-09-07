@@ -42,12 +42,12 @@ namespace AmeisenBotGUI
             Application.Current.Resources["WalkableNodeColorLow"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.walkableNodeColorLow);
             Application.Current.Resources["WalkableNodeColorHigh"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.walkableNodeColorHigh);
 
-            Application.Current.Resources["healthColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.healthColor);
-            Application.Current.Resources["energyColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.energyColor);
-            Application.Current.Resources["expColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.expColor);
-            Application.Current.Resources["targetHealthColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.targetHealthColor);
-            Application.Current.Resources["targetEnergyColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.targetEnergyColor);
-            Application.Current.Resources["threadsColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.threadsColor);
+            Application.Current.Resources["HealthColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.healthColor);
+            Application.Current.Resources["EnergyColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.energyColor);
+            Application.Current.Resources["ExpColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.expColor);
+            Application.Current.Resources["TargetHealthColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.targetHealthColor);
+            Application.Current.Resources["TargetEnergyColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.targetEnergyColor);
+            Application.Current.Resources["ThreadsColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.threadsColor);
         }
 
         private void ButtonCobatClassEditor_Click(object sender, RoutedEventArgs e)
@@ -245,12 +245,16 @@ namespace AmeisenBotGUI
 
         private void UpdateMyViews()
         {
-            if (BotManager.Settings.picturePath != lastImgPath)
-                if (BotManager.Settings.picturePath.Length > 0)
-                {
-                    botPicture.Source = new BitmapImage(new Uri(BotManager.Settings.picturePath));
-                    lastImgPath = BotManager.Settings.picturePath;
-                }
+            try
+            {
+                if (BotManager.Settings.picturePath != lastImgPath)
+                    if (BotManager.Settings.picturePath.Length > 0)
+                    {
+                        botPicture.Source = new BitmapImage(new Uri(BotManager.Settings.picturePath));
+                        lastImgPath = BotManager.Settings.picturePath;
+                    }
+            }
+            catch { AmeisenLogger.Instance.Log(LogLevel.ERROR, "Failed to load picture...", this); }
 
             labelName.Content = BotManager.Me.Name + " lvl." + BotManager.Me.Level;
 

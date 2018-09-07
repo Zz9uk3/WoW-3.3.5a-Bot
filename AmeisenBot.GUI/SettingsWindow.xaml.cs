@@ -82,10 +82,12 @@ namespace AmeisenBotGUI
 
             string imagePath = $"{AppDomain.CurrentDomain.BaseDirectory}config\\\\img\\\\{Path.GetFileName(fileName)}";
 
-
-            if (File.Exists(imagePath))
-                File.Delete(imagePath);
-            File.Copy(fileName, imagePath);
+            if (imagePath != fileName)
+            {
+                if (File.Exists(imagePath))
+                    File.Delete(imagePath);
+                File.Copy(fileName, imagePath);
+            }
 
             BotManager.Settings.picturePath = imagePath;
             labelSelectedPicture.Content = Path.GetFileName(fileName);
