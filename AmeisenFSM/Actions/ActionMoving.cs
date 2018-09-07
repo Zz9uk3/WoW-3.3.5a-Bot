@@ -14,11 +14,17 @@ namespace AmeisenBotFSM.Actions
         public virtual DoThings StartDoThings { get { return DoThings; } }
         public virtual Exit StartExit { get { return Stop; } }
         public Queue<Vector3> WaypointQueue { get; set; }
+        internal AmeisenDataHolder AmeisenDataHolder { get; set; }
 
         private Me Me
         {
-            get { return AmeisenDataHolder.Instance.Me; }
-            set { AmeisenDataHolder.Instance.Me = value; }
+            get { return AmeisenDataHolder.Me; }
+            set { AmeisenDataHolder.Me = value; }
+        }
+
+        public ActionMoving(AmeisenDataHolder ameisenDataHolder)
+        {
+            AmeisenDataHolder = ameisenDataHolder;
         }
 
         public virtual void DoThings()

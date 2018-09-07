@@ -14,51 +14,33 @@ namespace AmeisenBotManager
     public class AmeisenClient
     {
         private static readonly HttpClient client = new HttpClient();
-
-        private static readonly object padlock = new object();
-
-        private static AmeisenClient instance;
-
         private Thread botListUpdateThread;
-
         private System.Timers.Timer botListUpdateTimer;
-
         private Thread botUpdateThread;
-
         private System.Timers.Timer botUpdateTimer;
-
-        public static AmeisenClient Instance
-        {
-            get
-            {
-                lock (padlock)
-                {
-                    if (instance == null)
-                        instance = new AmeisenClient();
-                    return instance;
-                }
-            }
-        }
-
         public int BotID { get; private set; }
         public List<NetworkBot> BotList { get; private set; }
         public IPAddress IPAddress { get; private set; }
         public bool IsRegistered { get; private set; }
         public int Port { get; private set; }
+        private AmeisenDataHolder AmeisenDataHolder { get; set; }
 
-        private Me Me
+        public AmeisenClient(AmeisenDataHolder ameisenDataHolder)
         {
-            get { return AmeisenDataHolder.Instance.Me; }
-            set { AmeisenDataHolder.Instance.Me = value; }
-        }
+            AmeisenDataHolder = ameisenDataHolder;
 
-        private AmeisenClient()
-        {
             botUpdateTimer = new System.Timers.Timer(1000);
             botUpdateTimer.Elapsed += UpdateBot;
+            AmeisenDataHolder = ameisenDataHolder;
 
             botListUpdateTimer = new System.Timers.Timer(1000);
             botListUpdateTimer.Elapsed += UpdateBotList;
+        }
+
+        private Me Me
+        {
+            get { return AmeisenDataHolder.Me; }
+            set { AmeisenDataHolder.Me = value; }
         }
 
         public async void Register(Me me, IPAddress ip, int port = 16200)
@@ -69,10 +51,10 @@ namespace AmeisenBotManager
                 Port = port;
 
                 string base64Image = "";
-                if (BotManager.Instance.Settings.picturePath.Length > 0)
+                if (AmeisenSettings.Instance.Settings.picturePath.Length > 0)
                     base64Image = Convert.ToBase64String(
                             Utils.ImageToByte(
-                                new Bitmap(BotManager.Instance.Settings.picturePath)
+                                new Bitmap(AmeisenSettings.Instance.Settings.picturePath)
                                 )
                             );
 

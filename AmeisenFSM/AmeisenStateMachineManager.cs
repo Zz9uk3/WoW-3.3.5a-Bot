@@ -12,23 +12,24 @@ namespace AmeisenBotFSM
         public bool Active { get; private set; }
         public bool PushedCombat { get; private set; }
         public AmeisenStateMachine StateMachine { get; private set; }
-
+        private AmeisenDataHolder AmeisenDataHolder { get; set; }
         private Thread MainWorker { get; set; }
 
         private Me Me
         {
-            get { return AmeisenDataHolder.Instance.Me; }
-            set { AmeisenDataHolder.Instance.Me = value; }
+            get { return AmeisenDataHolder.Me; }
+            set { AmeisenDataHolder.Me = value; }
         }
 
         private Thread StateWatcherWorker { get; set; }
 
-        public AmeisenStateMachineManager()
+        public AmeisenStateMachineManager(AmeisenDataHolder ameisenDataHolder)
         {
             Active = false;
+            AmeisenDataHolder = ameisenDataHolder;
             MainWorker = new Thread(new ThreadStart(DoWork));
             StateWatcherWorker = new Thread(new ThreadStart(WatchForStateChanges));
-            StateMachine = new AmeisenStateMachine();
+            StateMachine = new AmeisenStateMachine(ameisenDataHolder);
         }
 
         /// <summary>
@@ -94,7 +95,7 @@ namespace AmeisenBotFSM
 
         private void InCombatCheck()
         {
-            if (Me.InCombat || (PartymembersInCombat() && AmeisenDataHolder.Instance.IsAllowedToAssistParty))
+            if (Me.InCombat || (PartymembersInCombat() && AmeisenDataHolder.IsAllowedToAssistParty))
                 StateMachine.PushAction(BotState.Combat);
             else if (StateMachine.GetCurrentState() == BotState.Combat)
                 StateMachine.PopAction();
@@ -102,7 +103,7 @@ namespace AmeisenBotFSM
 
         private void ReleaseSpiritCheck()
         {
-            if (AmeisenDataHolder.Instance.IsAllowedToReleaseSpirit)
+            if (AmeisenDataHolder.IsAllowedToReleaseSpirit)
                 if (Me.Health == 0)
                 {
                     AmeisenCore.ReleaseSpirit();
@@ -112,7 +113,7 @@ namespace AmeisenBotFSM
 
         private void DeadCheck()
         {
-            if (AmeisenDataHolder.Instance.IsAllowedToRevive)
+            if (AmeisenDataHolder.IsAllowedToRevive)
                 if (Me.IsDead)
                     StateMachine.PushAction(BotState.Dead);
                 else if (StateMachine.GetCurrentState() == BotState.Dead)
@@ -128,7 +129,7 @@ namespace AmeisenBotFSM
             try
             {
                 foreach (ulong guid in Me.PartymemberGuids)
-                    foreach (WowObject obj in AmeisenDataHolder.Instance.ActiveWoWObjects)
+                    foreach (WowObject obj in AmeisenDataHolder.ActiveWoWObjects)
                         if (guid == obj.Guid)
                         {
                             if (((Unit)obj).InCombat)

@@ -12,15 +12,15 @@ namespace AmeisenBotFSM.Actions
         public override Start StartAction { get { return Start; } }
         public override DoThings StartDoThings { get { return DoThings; } }
         public override Exit StartExit { get { return Stop; } }
-
         private Unit ActiveUnit { get; set; }
-
         private List<Unit> ActiveUnits { get; set; }
+
+        public ActionDead(AmeisenDataHolder ameisenDataHolder) : base(ameisenDataHolder) { }
 
         private Me Me
         {
-            get { return AmeisenDataHolder.Instance.Me; }
-            set { AmeisenDataHolder.Instance.Me = value; }
+            get { return AmeisenDataHolder.Me; }
+            set { AmeisenDataHolder.Me = value; }
         }
 
         public override void DoThings()

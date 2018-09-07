@@ -15,15 +15,13 @@ namespace AmeisenBotGUI
     public partial class CombatClassWindow : Window
     {
         private CombatLogic loadedLogic;
-
         private int prio;
-
         private BotManager BotManager { get; }
 
-        public CombatClassWindow()
+        public CombatClassWindow(BotManager botManager)
         {
             InitializeComponent();
-            BotManager = AmeisenBotManager.BotManager.Instance;
+            BotManager = botManager;
 
             string defaultCombatClass = BotManager.Settings.combatClassPath;
             if (defaultCombatClass != "none")

@@ -23,11 +23,13 @@ namespace AmeisenBotGUI
         private int newX;
         private int newY;
         private DispatcherTimer uiUpdateTimer;
+        private BotManager BotManager { get; set; }
 
-        public MapWindow()
+        public MapWindow(BotManager botManager)
         {
             InitializeComponent();
-            Topmost = BotManager.Instance.Settings.topMost;
+            BotManager = botManager;
+            Topmost = BotManager.Settings.topMost;
         }
 
         private static void DrawLine(int startX, int startY, int endX, int endY, int thickness, Color color, Canvas canvas)
@@ -91,7 +93,7 @@ namespace AmeisenBotGUI
         private void DrawMap(Map map)
         {
             mapCanvas.Children.Clear();
-            Vector3 myPos = AmeisenBotManager.BotManager.Instance.Me.pos;
+            Vector3 myPos = BotManager.Me.pos;
             Vector3 myCanvasMiddle = new Vector3
             {
                 X = Width / 2,
@@ -119,10 +121,10 @@ namespace AmeisenBotGUI
 
         private void LoadMap()
         {
-            Vector3 myPos = BotManager.Instance.Me.pos;
+            Vector3 myPos = BotManager.Me.pos;
             List<MapNode> nodelist = AmeisenDBManager.Instance.GetNodes(
-                BotManager.Instance.ZoneID,
-                BotManager.Instance.MapID,
+                BotManager.ZoneID,
+                BotManager.MapID,
                 (int)(myPos.X + ((Width / 2) - 20)), // Get the max drawing point x
                 (int)(myPos.X - ((Width / 2) + 20)), // Get the min drawing point x
                 (int)(myPos.Y + ((Height / 2) - 20)), // Get the max drawing point y
@@ -144,7 +146,7 @@ namespace AmeisenBotGUI
         {
             dbUpdateTimer = new DispatcherTimer();
             dbUpdateTimer.Tick += new EventHandler(DBUpdateTimer_Tick);
-            dbUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, AmeisenBotManager.BotManager.Instance.Settings.dataRefreshRate * 10);
+            dbUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, BotManager.Settings.dataRefreshRate * 10);
             dbUpdateTimer.Start();
         }
 

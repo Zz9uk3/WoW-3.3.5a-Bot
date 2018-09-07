@@ -1,4 +1,5 @@
-﻿using AmeisenBotFSM.Actions;
+﻿using AmeisenBotData;
+using AmeisenBotFSM.Actions;
 using AmeisenBotFSM.Enums;
 using AmeisenBotFSM.Interfaces;
 using AmeisenBotLogger;
@@ -30,16 +31,16 @@ namespace AmeisenBotFSM
 
         private Stack<BotState> StateStack { get; set; }
 
-        public AmeisenStateMachine()
+        public AmeisenStateMachine(AmeisenDataHolder ameisenDataHolder)
         {
             StateStack = new Stack<BotState>();
             StateActionMap = new Dictionary<BotState, IAction>
             {
                 { BotState.Idle, new ActionIdle() },
-                { BotState.Follow, new ActionFollow() },
-                { BotState.Moving, new ActionMoving() },
+                { BotState.Follow, new ActionFollow(ameisenDataHolder) },
+                { BotState.Moving, new ActionMoving(ameisenDataHolder) },
                 { BotState.Combat, new ActionCombat() },
-                { BotState.Dead, new ActionDead() }
+                { BotState.Dead, new ActionDead(ameisenDataHolder) }
             };
         }
 

@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AmeisenBotGUI"
         mc:Ignorable="d"
         Title="CombatClassEditor" Height="450" Width="800" WindowStyle="None" ResizeMode="NoResize" Padding="0" BorderThickness="2" MouseDown="GuiCombatClassEditor_MouseDown" Loaded="GuiCombatClassEditor_Loaded" Icon="Icon.ico">
     <Window.BorderBrush>

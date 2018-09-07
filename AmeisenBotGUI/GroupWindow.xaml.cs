@@ -14,14 +14,16 @@ namespace AmeisenBotGUI
     public partial class GroupWindow : Window
     {
         private List<BotView> botViews;
-
         private DispatcherTimer uiUpdateTimer;
+        private BotManager BotManager { get; set; }
 
-        public GroupWindow()
+        public GroupWindow(BotManager botManager)
         {
             InitializeComponent();
+            BotManager = botManager;
+
             botViews = new List<BotView>();
-            Topmost = AmeisenBotManager.BotManager.Instance.Settings.topMost;
+            Topmost = BotManager.Settings.topMost;
         }
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
@@ -44,11 +46,11 @@ namespace AmeisenBotGUI
 
         private void UIUpdateTimer_Tick(object sender, EventArgs e)
         {
-            if (BotManager.Instance.IsRegisteredAtServer)
+            if (BotManager.IsRegisteredAtServer)
             {
                 botViewPanel.Children.Clear();
 
-                List<NetworkBot> networkBots = BotManager.Instance.NetworkBots;
+                List<NetworkBot> networkBots = BotManager.NetworkBots;
                 if (networkBots != null)
                     foreach (NetworkBot bot in networkBots)
                     {

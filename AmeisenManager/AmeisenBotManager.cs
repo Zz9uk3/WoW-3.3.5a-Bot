@@ -17,28 +17,10 @@ namespace AmeisenBotManager
     /// </summary>
     public class BotManager
     {
-        private static readonly object padlock = new object();
-        private static BotManager instance;
         private readonly string sqlConnectionString =
                 "server={0};port={1};database={2};uid={3};password={4};";
 
-        public static BotManager Instance
-        {
-            get
-            {
-                lock (padlock)
-                {
-                    if (instance == null)
-                    {
-                        instance = new BotManager();
-                    }
-
-                    return instance;
-                }
-            }
-        }
-
-        public List<WowObject> ActiveWoWObjects { get { return AmeisenDataHolder.Instance.ActiveWoWObjects; } }
+        private AmeisenDataHolder AmeisenDataHolder { get; set; }
         private AmeisenClient AmeisenClient { get; set; }
         private AmeisenDBManager AmeisenDBManager { get; set; }
         private AmeisenHook AmeisenHook { get; set; }
@@ -46,72 +28,74 @@ namespace AmeisenBotManager
         private AmeisenSettings AmeisenSettings { get; set; }
         private AmeisenStateMachineManager AmeisenStateMachineManager { get; set; }
         private BlackMagic Blackmagic { get; set; }
+        public List<WowObject> ActiveWoWObjects { get { return AmeisenDataHolder.ActiveWoWObjects; } }
 
         public bool IsAllowedToAssistParty
         {
-            get { return AmeisenDataHolder.Instance.IsAllowedToAssistParty; }
-            set { AmeisenDataHolder.Instance.IsAllowedToAssistParty = value; }
+            get { return AmeisenDataHolder.IsAllowedToAssistParty; }
+            set { AmeisenDataHolder.IsAllowedToAssistParty = value; }
         }
 
         public bool IsAllowedToAttack
         {
-            get { return AmeisenDataHolder.Instance.IsAllowedToAttack; }
-            set { AmeisenDataHolder.Instance.IsAllowedToAttack = value; }
+            get { return AmeisenDataHolder.IsAllowedToAttack; }
+            set { AmeisenDataHolder.IsAllowedToAttack = value; }
         }
 
         public bool IsAllowedToBuff
         {
-            get { return AmeisenDataHolder.Instance.IsAllowedToBuff; }
-            set { AmeisenDataHolder.Instance.IsAllowedToBuff = value; }
+            get { return AmeisenDataHolder.IsAllowedToBuff; }
+            set { AmeisenDataHolder.IsAllowedToBuff = value; }
         }
 
         public bool IsAllowedToFollowParty
         {
-            get { return AmeisenDataHolder.Instance.IsAllowedToFollowParty; }
-            set { AmeisenDataHolder.Instance.IsAllowedToFollowParty = value; }
+            get { return AmeisenDataHolder.IsAllowedToFollowParty; }
+            set { AmeisenDataHolder.IsAllowedToFollowParty = value; }
         }
 
         public bool IsAllowedToHeal
         {
-            get { return AmeisenDataHolder.Instance.IsAllowedToHeal; }
-            set { AmeisenDataHolder.Instance.IsAllowedToHeal = value; }
+            get { return AmeisenDataHolder.IsAllowedToHeal; }
+            set { AmeisenDataHolder.IsAllowedToHeal = value; }
         }
 
         public bool IsAllowedToTank
         {
-            get { return AmeisenDataHolder.Instance.IsAllowedToTank; }
-            set { AmeisenDataHolder.Instance.IsAllowedToTank = value; }
+            get { return AmeisenDataHolder.IsAllowedToTank; }
+            set { AmeisenDataHolder.IsAllowedToTank = value; }
         }
 
         public bool IsAllowedToReleaseSpirit
         {
-            get { return AmeisenDataHolder.Instance.IsAllowedToReleaseSpirit; }
-            set { AmeisenDataHolder.Instance.IsAllowedToReleaseSpirit = value; }
+            get { return AmeisenDataHolder.IsAllowedToReleaseSpirit; }
+            set { AmeisenDataHolder.IsAllowedToReleaseSpirit = value; }
         }
 
         public bool IsAllowedToRevive
         {
-            get { return AmeisenDataHolder.Instance.IsAllowedToRevive; }
-            set { AmeisenDataHolder.Instance.IsAllowedToRevive = value; }
+            get { return AmeisenDataHolder.IsAllowedToRevive; }
+            set { AmeisenDataHolder.IsAllowedToRevive = value; }
         }
 
         public bool IsAttached { get; private set; }
         public bool IsHooked { get; private set; }
-        public Me Me { get { return AmeisenDataHolder.Instance.Me; } }
+        public Me Me { get { return AmeisenDataHolder.Me; } }
         public List<WowExe> RunningWoWs { get { return AmeisenCore.GetRunningWoWs(); } }
         public Settings Settings { get { return AmeisenSettings.Settings; } }
-        public Unit Target { get { return AmeisenDataHolder.Instance.Target; } }
+        public Unit Target { get { return AmeisenDataHolder.Target; } }
         public WowExe WowExe { get; private set; }
         public List<WowObject> WoWObjects { get { return AmeisenObjectManager.GetObjects(); } }
         public Process WowProcess { get; private set; }
 
-        private BotManager()
+        public BotManager()
         {
             IsAttached = false;
             IsHooked = false;
 
+            AmeisenDataHolder = new AmeisenDataHolder();
             AmeisenSettings = AmeisenSettings.Instance;
-            AmeisenClient = AmeisenClient.Instance;
+            AmeisenClient = new AmeisenClient(AmeisenDataHolder);
             AmeisenDBManager = AmeisenDBManager.Instance;
         }
 
@@ -194,11 +178,11 @@ namespace AmeisenBotManager
             IsHooked = AmeisenHook.isHooked;
 
             // Start our object updates
-            AmeisenObjectManager = AmeisenObjectManager.Instance;
+            AmeisenObjectManager = new AmeisenObjectManager(AmeisenDataHolder);
             AmeisenObjectManager.Start();
 
             // Start the StateMachine
-            AmeisenStateMachineManager = new AmeisenStateMachineManager();
+            AmeisenStateMachineManager = new AmeisenStateMachineManager(AmeisenDataHolder);
             AmeisenStateMachineManager.StateMachine.PushAction(BotState.Idle);
             AmeisenStateMachineManager.StateMachine.PushAction(BotState.Follow);
             AmeisenStateMachineManager.Start();

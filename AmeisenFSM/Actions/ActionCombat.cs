@@ -13,17 +13,18 @@ namespace AmeisenBotFSM.Actions
         public DoThings StartDoThings { get { return DoThings; } }
         public Exit StartExit { get { return Stop; } }
         private AmeisenCombatManager combatManager;
+        private AmeisenDataHolder AmeisenDataHolder { get; set; }
 
         private Me Me
         {
-            get { return AmeisenDataHolder.Instance.Me; }
-            set { AmeisenDataHolder.Instance.Me = value; }
+            get { return AmeisenDataHolder.Me; }
+            set { AmeisenDataHolder.Me = value; }
         }
 
         private Unit Target
         {
-            get { return AmeisenDataHolder.Instance.Target; }
-            set { AmeisenDataHolder.Instance.Target = value; }
+            get { return AmeisenDataHolder.Target; }
+            set { AmeisenDataHolder.Target = value; }
         }
 
         public ActionCombat() { combatManager = new AmeisenCombatManager(); }

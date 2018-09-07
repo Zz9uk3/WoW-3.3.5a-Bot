@@ -10,15 +10,15 @@ namespace AmeisenBotFSM.Actions
         public override Start StartAction { get { return Start; } }
         public override DoThings StartDoThings { get { return DoThings; } }
         public override Exit StartExit { get { return Stop; } }
-
         private Unit ActiveUnit { get; set; }
-
         private List<Unit> ActiveUnits { get; set; }
+
+        public ActionFollow(AmeisenDataHolder ameisenDataHolder) : base(ameisenDataHolder) { }
 
         private Me Me
         {
-            get { return AmeisenDataHolder.Instance.Me; }
-            set { AmeisenDataHolder.Instance.Me = value; }
+            get { return AmeisenDataHolder.Me; }
+            set { AmeisenDataHolder.Me = value; }
         }
 
         public override void DoThings()
@@ -53,7 +53,7 @@ namespace AmeisenBotFSM.Actions
         /// <returns>Player that you want to get</returns>
         public WowObject GetWoWObjectFromGUID(ulong guid)
         {
-            foreach (WowObject p in AmeisenDataHolder.Instance.ActiveWoWObjects)
+            foreach (WowObject p in AmeisenDataHolder.ActiveWoWObjects)
             {
                 if (p.Guid == guid)
                 {
@@ -84,7 +84,7 @@ namespace AmeisenBotFSM.Actions
         {
             List<Unit> tempList = new List<Unit>();
 
-            if (AmeisenDataHolder.Instance.IsAllowedToFollowParty)
+            if (AmeisenDataHolder.IsAllowedToFollowParty)
             {
                 List<ulong> partymembers = Me.PartymemberGuids;
                 foreach (ulong guid in partymembers)

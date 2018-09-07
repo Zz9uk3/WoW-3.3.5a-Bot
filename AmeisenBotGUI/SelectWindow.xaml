@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AmeisenBotGUI"
         mc:Ignorable="d"
         Title="AmeisenBot - Select WoW" Height="150" Width="528" ResizeMode="NoResize" Loaded="LoadingForm_Loaded" WindowStyle="None" Topmost="True" MouseDown="LoadingForm_MouseDown" Icon="Icon.ico" BorderThickness="2">
     <Window.BorderBrush>

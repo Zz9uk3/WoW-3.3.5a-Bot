@@ -21,12 +21,12 @@ namespace AmeisenBotGUI
         private readonly string extension = ".json";
         private bool autologinIsPossible = false;
 
-        private BotManager BotManager { get; }
+        private BotManager BotManager { get; set; }
 
         public SelectWindow()
         {
             InitializeComponent();
-            BotManager = AmeisenBotManager.BotManager.Instance;
+            BotManager = new BotManager();
 
             if (File.Exists(autoLoginExe))
             {
@@ -64,7 +64,7 @@ namespace AmeisenBotGUI
                     Application.Current.Resources["MeNodeColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.meNodeColor);
 
                     // Show the Mainscreen
-                    new BotWindow((WowExe)comboBoxWoWs.SelectedItem).Show();
+                    new BotWindow((WowExe)comboBoxWoWs.SelectedItem, BotManager).Show();
                     Close();
                 }
             }

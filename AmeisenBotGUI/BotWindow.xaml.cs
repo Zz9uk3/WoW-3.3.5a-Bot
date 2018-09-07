@@ -18,15 +18,13 @@ namespace AmeisenBotGUI
     public partial class BotWindow : Window
     {
         private string lastImgPath;
-
         private DispatcherTimer uiUpdateTimer;
-
         private BotManager BotManager { get; }
 
-        public BotWindow(WowExe wowExe)
+        public BotWindow(WowExe wowExe, BotManager botManager)
         {
             InitializeComponent();
-            BotManager = AmeisenBotManager.BotManager.Instance;
+            BotManager = botManager;
 
             // Load Settings
             BotManager.LoadSettingsFromFile(wowExe.characterName);
@@ -54,7 +52,7 @@ namespace AmeisenBotGUI
 
         private void ButtonCobatClassEditor_Click(object sender, RoutedEventArgs e)
         {
-            new CombatClassWindow().Show();
+            new CombatClassWindow(BotManager).Show();
         }
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
@@ -65,17 +63,17 @@ namespace AmeisenBotGUI
 
         private void ButtonExtendedDebugUI_Click(object sender, RoutedEventArgs e)
         {
-            new DebugWindow().Show();
+            new DebugWindow(BotManager).Show();
         }
 
         private void ButtonGroup_Click(object sender, RoutedEventArgs e)
         {
-            new GroupWindow().Show();
+            new GroupWindow(BotManager).Show();
         }
 
         private void ButtonMap_Click(object sender, RoutedEventArgs e)
         {
-            new MapWindow().Show();
+            new MapWindow(BotManager).Show();
         }
 
         private void ButtonMinimize_Click(object sender, RoutedEventArgs e)
@@ -94,13 +92,13 @@ namespace AmeisenBotGUI
 
             if (openFileDialog.ShowDialog() == true)
             {
-                AmeisenBotManager.BotManager.Instance.LoadCombatClass(openFileDialog.FileName);
+                BotManager.LoadCombatClass(openFileDialog.FileName);
             }
         }
 
         private void ButtonSettings_Click(object sender, RoutedEventArgs e)
         {
-            new SettingsWindow().ShowDialog();
+            new SettingsWindow(BotManager).ShowDialog();
         }
 
         private void CheckBoxAssistGroup_Click(object sender, RoutedEventArgs e)

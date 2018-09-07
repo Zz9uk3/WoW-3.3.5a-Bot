@@ -5,26 +5,6 @@ namespace AmeisenBotData
 {
     public class AmeisenDataHolder
     {
-        private static readonly object padlock = new object();
-
-        private static AmeisenDataHolder instance = null;
-
-        public static AmeisenDataHolder Instance
-        {
-            get
-            {
-                lock (padlock)
-                {
-                    if (instance == null)
-                    {
-                        instance = new AmeisenDataHolder();
-                    }
-
-                    return instance;
-                }
-            }
-        }
-
         public List<WowObject> ActiveWoWObjects { get; set; }
         public double FollowDistance { get; set; }
         public bool IsAllowedToAssistParty { get; set; }
@@ -38,7 +18,7 @@ namespace AmeisenBotData
         public bool IsAllowedToReleaseSpirit { get; set; }
         public bool IsAllowedToRevive { get; set; }
 
-        private AmeisenDataHolder()
+        public AmeisenDataHolder()
         {
         }
     }

@@ -22,49 +22,32 @@ namespace AmeisenBotManager
     /// </summary>
     public class AmeisenObjectManager
     {
-        private static readonly object padlock = new object();
-
-        private static AmeisenObjectManager instance;
-
         private Thread objectUpdateThread;
-
         private System.Timers.Timer objectUpdateTimer;
-
         private DateTime timestampObjects;
-
-        public static AmeisenObjectManager Instance
-        {
-            get
-            {
-                lock (padlock)
-                {
-                    if (instance == null)
-                        instance = new AmeisenObjectManager();
-                    return instance;
-                }
-            }
-        }
+        private AmeisenDataHolder AmeisenDataHolder { get; set; }
 
         private List<WowObject> ActiveWoWObjects
         {
-            get { return AmeisenDataHolder.Instance.ActiveWoWObjects; }
-            set { AmeisenDataHolder.Instance.ActiveWoWObjects = value; }
+            get { return AmeisenDataHolder.ActiveWoWObjects; }
+            set { AmeisenDataHolder.ActiveWoWObjects = value; }
         }
 
         private Me Me
         {
-            get { return AmeisenDataHolder.Instance.Me; }
-            set { AmeisenDataHolder.Instance.Me = value; }
+            get { return AmeisenDataHolder.Me; }
+            set { AmeisenDataHolder.Me = value; }
         }
 
         private Unit Target
         {
-            get { return AmeisenDataHolder.Instance.Target; }
-            set { AmeisenDataHolder.Instance.Target = value; }
+            get { return AmeisenDataHolder.Target; }
+            set { AmeisenDataHolder.Target = value; }
         }
 
-        private AmeisenObjectManager()
+        public AmeisenObjectManager(AmeisenDataHolder ameisenDataHolder)
         {
+            AmeisenDataHolder = ameisenDataHolder;
             RefreshObjects();
         }
 
