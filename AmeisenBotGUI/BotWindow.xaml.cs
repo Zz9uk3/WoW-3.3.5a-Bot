@@ -73,7 +73,7 @@ namespace AmeisenBotGUI
 
         private void ButtonMap_Click(object sender, RoutedEventArgs e)
         {
-            new MapWindow(BotManager).Show();
+            new MapWindow(BotManager, BotManager.AmeisenDBManager).Show();
         }
 
         private void ButtonMinimize_Click(object sender, RoutedEventArgs e)

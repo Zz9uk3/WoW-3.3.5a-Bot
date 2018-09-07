@@ -16,44 +16,16 @@ namespace AmeisenBotCore
     {
         public bool isHooked = false;
         public bool isInjectionUsed = false;
-
-        private static readonly object padlock = new object();
-
-        private static AmeisenHook instance;
-
         private uint codeCave;
-
         private uint codeCaveForInjection;
-
         private uint codeToExecute;
-
         private uint endsceneReturnAddress;
-
         private ConcurrentQueue<HookJob> hookJobs;
-
         private Thread hookWorker;
-
         private byte[] originalEndscene = new byte[] { 0xB8, 0x51, 0xD7, 0xCA, 0x64 };
-
         private uint returnAdress;
 
-        public static AmeisenHook Instance
-        {
-            get
-            {
-                lock (padlock)
-                {
-                    if (instance == null)
-                    {
-                        instance = new AmeisenHook();
-                    }
-
-                    return instance;
-                }
-            }
-        }
-
-        private AmeisenHook()
+        public AmeisenHook()
         {
             Hook();
             hookJobs = new ConcurrentQueue<HookJob>();

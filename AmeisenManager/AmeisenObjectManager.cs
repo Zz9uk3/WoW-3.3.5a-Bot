@@ -26,6 +26,7 @@ namespace AmeisenBotManager
         private System.Timers.Timer objectUpdateTimer;
         private DateTime timestampObjects;
         private AmeisenDataHolder AmeisenDataHolder { get; set; }
+        private AmeisenDBManager AmeisenDBManager { get; set; }
 
         private List<WowObject> ActiveWoWObjects
         {
@@ -45,9 +46,10 @@ namespace AmeisenBotManager
             set { AmeisenDataHolder.Target = value; }
         }
 
-        public AmeisenObjectManager(AmeisenDataHolder ameisenDataHolder)
+        public AmeisenObjectManager(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager)
         {
             AmeisenDataHolder = ameisenDataHolder;
+            AmeisenDBManager = ameisenDBManager;
             RefreshObjects();
         }
 
@@ -181,9 +183,9 @@ namespace AmeisenBotManager
             Vector3 activeNode = new Vector3((int)me.pos.X, (int)me.pos.Y, (int)me.pos.Z);
             //if (activeNode.X != lastNode.X && activeNode.Y != lastNode.Y && activeNode.Z != lastNode.Z)
             //{
-            int zoneID = AmeisenBotCore.AmeisenCore.GetZoneID();
-            int mapID = AmeisenBotCore.AmeisenCore.GetMapID();
-            AmeisenDBManager.Instance.UpdateOrAddNode(new MapNode(activeNode, zoneID, mapID));
+            int zoneID = AmeisenCore.GetZoneID();
+            int mapID = AmeisenCore.GetMapID();
+            AmeisenDBManager.UpdateOrAddNode(new MapNode(activeNode, zoneID, mapID));
             //}
             //lastNode = activeNode;
         }

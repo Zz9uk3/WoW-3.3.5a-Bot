@@ -18,6 +18,7 @@ namespace AmeisenBotCore
     public abstract class AmeisenCore
     {
         public static BlackMagic BlackMagic { get; set; }
+        public static AmeisenHook AmeisenHook { get; set; }
 
         /// <summary>
         /// AntiAFK
@@ -238,7 +239,7 @@ namespace AmeisenBotCore
                 HookJob hookJobLocaltext = new HookJob(asmLocalText, true);
                 ReturnHookJob hookJobDoString = new ReturnHookJob(asmDoString, false, hookJobLocaltext);
 
-                AmeisenHook.Instance.AddHookJob(ref hookJobDoString);
+                AmeisenHook.AddHookJob(ref hookJobDoString);
 
                 while (!hookJobDoString.IsFinished || !hookJobDoString.IsFinished) { Thread.Sleep(5); }
 
@@ -442,7 +443,7 @@ namespace AmeisenBotCore
             };
 
             HookJob hookJob = new HookJob(asm, false);
-            AmeisenHook.Instance.AddHookJob(ref hookJob);
+            AmeisenHook.AddHookJob(ref hookJob);
 
             while (!hookJob.IsFinished) { Thread.Sleep(1); }
 
@@ -576,7 +577,7 @@ namespace AmeisenBotCore
             };
 
             HookJob hookJob = new HookJob(asm, false);
-            AmeisenHook.Instance.AddHookJob(ref hookJob);
+            AmeisenHook.AddHookJob(ref hookJob);
         }
 
         private static void CharacterJump()

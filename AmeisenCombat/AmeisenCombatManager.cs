@@ -6,17 +6,19 @@ namespace AmeisenBotCombat
 {
     public class AmeisenCombatManager
     {
-        private AmeisenCombatEngine combatEngine;
+        private AmeisenCombatEngine CombatEngine { get; set; }
+        private AmeisenDataHolder AmeisenDataHolder { get; set; }
 
         private Me Me
         {
-            get { return AmeisenDataHolder.Instance.Me; }
-            set { AmeisenDataHolder.Instance.Me = value; }
+            get { return AmeisenDataHolder.Me; }
+            set { AmeisenDataHolder.Me = value; }
         }
 
-        public AmeisenCombatManager()
+        public AmeisenCombatManager(AmeisenDataHolder ameisenDataHolder)
         {
-            combatEngine = new AmeisenCombatEngine();
+            AmeisenDataHolder = ameisenDataHolder;
+            CombatEngine = new AmeisenCombatEngine(AmeisenDataHolder);
             ReloadCombatClass();
         }
 
@@ -25,14 +27,14 @@ namespace AmeisenBotCombat
         /// </summary>
         public void ReloadCombatClass()
         {
-            string defaultCombatClass = AmeisenSettings.Instance.Settings.combatClassPath;
+            string defaultCombatClass = AmeisenDataHolder.Settings.combatClassPath;
             if (defaultCombatClass != "none")
-                combatEngine.CurrentCombatLogic = AmeisenCombatEngine.LoadCombatLogicFromFile(defaultCombatClass);
+                CombatEngine.CurrentCombatLogic = AmeisenCombatEngine.LoadCombatLogicFromFile(defaultCombatClass);
         }
 
         public void DoWork()
         {
-            combatEngine.ExecuteNextStep();
+            CombatEngine.ExecuteNextStep();
         }
     }
 }

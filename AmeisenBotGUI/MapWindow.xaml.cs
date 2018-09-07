@@ -24,11 +24,13 @@ namespace AmeisenBotGUI
         private int newY;
         private DispatcherTimer uiUpdateTimer;
         private BotManager BotManager { get; set; }
+        private AmeisenDBManager AmeisenDBManager { get; set; }
 
-        public MapWindow(BotManager botManager)
+        public MapWindow(BotManager botManager, AmeisenDBManager ameisenDBManager)
         {
             InitializeComponent();
             BotManager = botManager;
+            AmeisenDBManager = ameisenDBManager;
             Topmost = BotManager.Settings.topMost;
         }
 
@@ -122,7 +124,7 @@ namespace AmeisenBotGUI
         private void LoadMap()
         {
             Vector3 myPos = BotManager.Me.pos;
-            List<MapNode> nodelist = AmeisenDBManager.Instance.GetNodes(
+            List<MapNode> nodelist = AmeisenDBManager.GetNodes(
                 BotManager.ZoneID,
                 BotManager.MapID,
                 (int)(myPos.X + ((Width / 2) - 20)), // Get the max drawing point x

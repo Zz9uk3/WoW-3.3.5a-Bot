@@ -22,7 +22,7 @@ namespace AmeisenBotManager
 
         private AmeisenDataHolder AmeisenDataHolder { get; set; }
         private AmeisenClient AmeisenClient { get; set; }
-        private AmeisenDBManager AmeisenDBManager { get; set; }
+        public AmeisenDBManager AmeisenDBManager { get; private set; }
         private AmeisenHook AmeisenHook { get; set; }
         private AmeisenObjectManager AmeisenObjectManager { get; set; }
         private AmeisenSettings AmeisenSettings { get; set; }
@@ -96,7 +96,7 @@ namespace AmeisenBotManager
             AmeisenDataHolder = new AmeisenDataHolder();
             AmeisenSettings = new AmeisenSettings(AmeisenDataHolder);
             AmeisenClient = new AmeisenClient(AmeisenDataHolder);
-            AmeisenDBManager = AmeisenDBManager.Instance;
+            AmeisenDBManager = new AmeisenDBManager();
         }
 
         public int MapID { get { return AmeisenCore.GetMapID(); } }
@@ -174,11 +174,11 @@ namespace AmeisenBotManager
             AmeisenCore.BlackMagic = Blackmagic;
 
             // Hook EndScene
-            AmeisenHook = AmeisenHook.Instance;
+            AmeisenHook = new AmeisenHook();
             IsHooked = AmeisenHook.isHooked;
 
             // Start our object updates
-            AmeisenObjectManager = new AmeisenObjectManager(AmeisenDataHolder);
+            AmeisenObjectManager = new AmeisenObjectManager(AmeisenDataHolder, AmeisenDBManager);
             AmeisenObjectManager.Start();
 
             // Start the StateMachine
@@ -221,7 +221,7 @@ namespace AmeisenBotManager
             AmeisenLogger.Instance.StopLogging();
 
             //Close SQL Connection
-            AmeisenDBManager.Instance.Disconnect();
+            AmeisenDBManager.Disconnect();
         }
     }
 }

@@ -16,34 +16,32 @@ namespace AmeisenBotCombat
         private static readonly string combatclassesPath = AppDomain.CurrentDomain.BaseDirectory + "/combatclasses/";
 
         private int posAt;
-
         public bool AttackShit { get; private set; }
-
         public CombatLogic CurrentCombatLogic { get; set; }
-
         public List<ulong> GuidsToKill { get; set; }
-
         public List<ulong> GuidsWithPotentialLoot { get; set; }
+        private AmeisenDataHolder AmeisenDataHolder { get; set; }
 
         private List<WowObject> ActiveWoWObjects
         {
-            get { return AmeisenDataHolder.Instance.ActiveWoWObjects; }
+            get { return AmeisenDataHolder.ActiveWoWObjects; }
         }
 
         private Me Me
         {
-            get { return AmeisenDataHolder.Instance.Me; }
-            set { AmeisenDataHolder.Instance.Me = value; }
+            get { return AmeisenDataHolder.Me; }
+            set { AmeisenDataHolder.Me = value; }
         }
 
         private Unit Target
         {
-            get { return AmeisenDataHolder.Instance.Target; }
-            set { AmeisenDataHolder.Instance.Target = value; }
+            get { return AmeisenDataHolder.Target; }
+            set { AmeisenDataHolder.Target = value; }
         }
 
-        public AmeisenCombatEngine()
+        public AmeisenCombatEngine(AmeisenDataHolder ameisenDataHolder)
         {
+            AmeisenDataHolder = ameisenDataHolder;
             GuidsToKill = new List<ulong>();
             GuidsWithPotentialLoot = new List<ulong>();
         }
@@ -293,16 +291,16 @@ namespace AmeisenBotCombat
 
             // Check that we are allowed to perform that action
             if (entry.ActionType == CombatActionType.ATTACK
-                && !AmeisenDataHolder.Instance.IsAllowedToAttack)
+                && !AmeisenDataHolder.IsAllowedToAttack)
                 return false;
             if (entry.ActionType == CombatActionType.TANK
-                && !AmeisenDataHolder.Instance.IsAllowedToTank)
+                && !AmeisenDataHolder.IsAllowedToTank)
                 return false;
             if (entry.ActionType == CombatActionType.HEAL
-                && !AmeisenDataHolder.Instance.IsAllowedToHeal)
+                && !AmeisenDataHolder.IsAllowedToHeal)
                 return false;
             if (entry.ActionType == CombatActionType.BUFF
-                && !AmeisenDataHolder.Instance.IsAllowedToBuff)
+                && !AmeisenDataHolder.IsAllowedToBuff)
                 return false;
 
             // Make sure we are not dead or casting
@@ -372,7 +370,7 @@ namespace AmeisenBotCombat
                 Me.Update();
             if (Target != null)
                 Target.Update();
-            
+
             switch (condition.conditionValues[id])
             {
                 case CombatLogicValues.HP:
