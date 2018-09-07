@@ -39,7 +39,7 @@ namespace AmeisenBotFSM
                 { BotState.Idle, new ActionIdle() },
                 { BotState.Follow, new ActionFollow(ameisenDataHolder) },
                 { BotState.Moving, new ActionMoving(ameisenDataHolder) },
-                { BotState.Combat, new ActionCombat() },
+                { BotState.Combat, new ActionCombat(ameisenDataHolder) },
                 { BotState.Dead, new ActionDead(ameisenDataHolder) }
             };
         }

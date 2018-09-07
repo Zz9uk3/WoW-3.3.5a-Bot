@@ -54,6 +54,8 @@ namespace AmeisenBotGUI
                 {
                     AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Selected WoW: " + ((WowExe)comboBoxWoWs.SelectedItem).ToString(), this);
 
+                    BotManager.LoadSettingsFromFile(((WowExe)comboBoxWoWs.SelectedItem).characterName);
+
                     // Apply our colors defined in the config file
                     Application.Current.Resources["AccentColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.accentColor);
                     Application.Current.Resources["BackgroundColor"] = (Color)ColorConverter.ConvertFromString(BotManager.Settings.backgroundColor);

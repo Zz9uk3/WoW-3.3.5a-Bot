@@ -176,6 +176,7 @@ namespace AmeisenBotManager
             // Hook EndScene
             AmeisenHook = new AmeisenHook();
             IsHooked = AmeisenHook.isHooked;
+            AmeisenCore.AmeisenHook = AmeisenHook;
 
             // Start our object updates
             AmeisenObjectManager = new AmeisenObjectManager(AmeisenDataHolder, AmeisenDBManager);
