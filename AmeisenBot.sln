@@ -3,33 +3,33 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Core", "AmeisenCore\AmeisenBot.Core.csproj", "{567F9DF2-E2D0-4BC8-A295-B7913CC1303E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Core", "AmeisenBot.Core\AmeisenBot.Core.csproj", "{567F9DF2-E2D0-4BC8-A295-B7913CC1303E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Server", "AmeisenServer\AmeisenBot.Server.csproj", "{0F5350C6-755B-4D32-8DFD-4057C925EF0D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Server", "AmeisenBot.Server\AmeisenBot.Server.csproj", "{0F5350C6-755B-4D32-8DFD-4057C925EF0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.GUI", "AmeisenBotGUI\AmeisenBot.GUI.csproj", "{54601391-C520-4EB3-A13E-7FD9B036389A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.GUI", "AmeisenBot.BotGUI\AmeisenBot.GUI.csproj", "{54601391-C520-4EB3-A13E-7FD9B036389A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Logger", "AmeisenLogger\AmeisenBot.Logger.csproj", "{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Logger", "AmeisenBot.Logger\AmeisenBot.Logger.csproj", "{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Manager", "AmeisenManager\AmeisenBot.Manager.csproj", "{6CA2C759-3166-4B71-A56D-E9BA28E72E33}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Manager", "AmeisenBot.Manager\AmeisenBot.Manager.csproj", "{6CA2C759-3166-4B71-A56D-E9BA28E72E33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Data", "AmeisenData\AmeisenBot.Data.csproj", "{4B6AB536-AF35-4970-89FB-B45BC495F8BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Data", "AmeisenBot.Data\AmeisenBot.Data.csproj", "{4B6AB536-AF35-4970-89FB-B45BC495F8BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Utilities", "AmeisenUtilities\AmeisenBot.Utilities.csproj", "{5369E077-2DC4-4DE5-9020-2C7DDB41686F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Utilities", "AmeisenBot.Utilities\AmeisenBot.Utilities.csproj", "{5369E077-2DC4-4DE5-9020-2C7DDB41686F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.DB", "AmeisenDB\AmeisenBot.DB.csproj", "{9B3F7A78-0A9B-492A-8299-9C86D2E297ED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.DB", "AmeisenBot.DB\AmeisenBot.DB.csproj", "{9B3F7A78-0A9B-492A-8299-9C86D2E297ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Mapping", "AmeisenMapping\AmeisenBot.Mapping.csproj", "{08DB57D7-287A-4C12-AB76-F5EE4A0F3395}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Mapping", "AmeisenBot.Mapping\AmeisenBot.Mapping.csproj", "{08DB57D7-287A-4C12-AB76-F5EE4A0F3395}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenPathLib", "AmeisenPath\AmeisenPathLib\AmeisenPathLib.csproj", "{DA582835-AC0B-4C1D-ADD7-1A272057BDE6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WoWLoginAutomator", "WoW-LoginAutomator\WoW-LoginAutomator\WoWLoginAutomator.csproj", "{14811D57-C812-4651-85FA-7C65B974724B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WoWLoginAutomator", "WoWLoginAutomator\WoW-LoginAutomator\WoWLoginAutomator.csproj", "{14811D57-C812-4651-85FA-7C65B974724B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.FSM", "AmeisenFSM\AmeisenBot.FSM.csproj", "{C93B8F0C-8CFA-45F6-9B2C-43B72E1CFE0F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.FSM", "AmeisenBot.FSM\AmeisenBot.FSM.csproj", "{C93B8F0C-8CFA-45F6-9B2C-43B72E1CFE0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Test", "AmeisenTest\AmeisenBot.Test.csproj", "{C65BFBD3-FD59-418B-8A36-F6406248DB5A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Test", "AmeisenBot.Test\AmeisenBot.Test.csproj", "{C65BFBD3-FD59-418B-8A36-F6406248DB5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Combat", "AmeisenCombat\AmeisenBot.Combat.csproj", "{CD72AD54-7C40-4EC0-8878-0771922A2961}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Combat", "AmeisenBot.Combat\AmeisenBot.Combat.csproj", "{CD72AD54-7C40-4EC0-8878-0771922A2961}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
