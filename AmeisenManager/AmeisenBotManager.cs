@@ -94,7 +94,7 @@ namespace AmeisenBotManager
             IsHooked = false;
 
             AmeisenDataHolder = new AmeisenDataHolder();
-            AmeisenSettings = AmeisenSettings.Instance;
+            AmeisenSettings = new AmeisenSettings(AmeisenDataHolder);
             AmeisenClient = new AmeisenClient(AmeisenDataHolder);
             AmeisenDBManager = AmeisenDBManager.Instance;
         }

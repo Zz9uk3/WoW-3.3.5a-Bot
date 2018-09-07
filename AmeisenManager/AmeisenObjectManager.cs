@@ -96,7 +96,7 @@ namespace AmeisenBotManager
                     break;
                 }
 
-            objectUpdateTimer = new System.Timers.Timer(AmeisenSettings.Instance.Settings.dataRefreshRate);
+            objectUpdateTimer = new System.Timers.Timer(AmeisenDataHolder.Settings.dataRefreshRate);
             objectUpdateTimer.Elapsed += ObjectUpdateTimer;
             objectUpdateThread = new Thread(new ThreadStart(StartTimer));
             objectUpdateThread.Start();

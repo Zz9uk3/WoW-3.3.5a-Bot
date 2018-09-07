@@ -67,7 +67,7 @@ namespace AmeisenBotFSM
             {
                 // Do the Actions
                 StateMachine.Update();
-                Thread.Sleep(AmeisenSettings.Instance.Settings.stateMachineUpdateMillis);
+                Thread.Sleep(AmeisenDataHolder.Settings.stateMachineUpdateMillis);
             }
         }
 
@@ -89,7 +89,7 @@ namespace AmeisenBotFSM
 
                 AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"FSM: {StateMachine.GetCurrentState()}", this);
 
-                Thread.Sleep(AmeisenSettings.Instance.Settings.stateMachineStateUpdateMillis);
+                Thread.Sleep(AmeisenDataHolder.Settings.stateMachineStateUpdateMillis);
             }
         }
 

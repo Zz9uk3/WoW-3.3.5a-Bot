@@ -33,7 +33,7 @@ namespace AmeisenBotFSM.Actions
                 return;
 
             if (Utils.GetDistance(Me.pos, ActiveUnit.pos)
-                > AmeisenSettings.Instance.Settings.followDistance)
+                > AmeisenDataHolder.Settings.followDistance)
             {
                 // Dont add waypoints twice
                 if (!WaypointQueue.Contains(ActiveUnit.pos))

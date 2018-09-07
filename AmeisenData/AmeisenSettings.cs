@@ -15,28 +15,19 @@ namespace AmeisenBotData
     public class AmeisenSettings
     {
         public string loadedconfName;
-
         private static readonly string configPath = AppDomain.CurrentDomain.BaseDirectory + "config/";
-
         private static readonly string extension = ".json";
+        private AmeisenDataHolder AmeisenDataHolder { get; set; }
 
-        private static AmeisenSettings instance;
-
-        public static AmeisenSettings Instance
+        public Settings Settings
         {
-            get
-            {
-                if (instance == null)
-                    instance = new AmeisenSettings();
-                return instance;
-            }
+            get { return AmeisenDataHolder.Settings; }
+            set { AmeisenDataHolder.Settings = value; }
         }
 
-        public Settings Settings { get; private set; }
-
-        private AmeisenSettings()
+        public AmeisenSettings(AmeisenDataHolder ameisenDataHolder)
         {
-            Settings = new Settings();
+            AmeisenDataHolder = ameisenDataHolder;
         }
 
         /// <summary>

@@ -74,7 +74,7 @@ namespace AmeisenBotFSM.Actions
 
                 // Check if we are close enough to the node to dequeue it, otherwise move to it
                 if (Utils.GetDistance(initialPosition, targetPosition)
-                    > AmeisenSettings.Instance.Settings.followDistance)
+                    > AmeisenDataHolder.Settings.followDistance)
                 {
                     //Vector3 posToGoTo = RebaseVector(targetPosition, 0);
                     AmeisenCore.MovePlayerToXYZ(targetPosition, InteractionType.MOVE);

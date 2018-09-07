@@ -51,10 +51,10 @@ namespace AmeisenBotManager
                 Port = port;
 
                 string base64Image = "";
-                if (AmeisenSettings.Instance.Settings.picturePath.Length > 0)
+                if (AmeisenDataHolder.Settings.picturePath.Length > 0)
                     base64Image = Convert.ToBase64String(
                             Utils.ImageToByte(
-                                new Bitmap(AmeisenSettings.Instance.Settings.picturePath)
+                                new Bitmap(AmeisenDataHolder.Settings.picturePath)
                                 )
                             );
 
