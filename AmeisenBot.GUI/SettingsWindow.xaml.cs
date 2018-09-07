@@ -168,7 +168,7 @@ namespace AmeisenBotGUI
 
         private void SelectColor(string resourceColor)
         {
-            ColorPickWindow colorpicker = new ColorPickWindow();
+            ColorPickWindow colorpicker = new ColorPickWindow((Color)Application.Current.Resources[resourceColor]);
             colorpicker.ShowDialog();
             if (colorpicker.ApplyColor)
                 Application.Current.Resources[resourceColor] = colorpicker.ActiveColor;
