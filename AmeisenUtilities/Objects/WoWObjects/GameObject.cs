@@ -1,7 +1,7 @@
 ﻿using Magic;
 using System.Text;
 
-namespace AmeisenUtilities
+namespace AmeisenBotUtilities
 {
     public class GameObject : WowObject
     {

@@ -1,4 +1,4 @@
-﻿namespace AmeisenUtilities
+﻿namespace AmeisenBotUtilities
 {
     /// <summary>
     /// Spell info

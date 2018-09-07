@@ -1,12 +1,12 @@
-﻿using AmeisenCoreUtils;
-using AmeisenData;
-using AmeisenFSM.Interfaces;
-using AmeisenUtilities;
+﻿using AmeisenBotCore;
+using AmeisenBotData;
+using AmeisenBotFSM.Interfaces;
+using AmeisenBotUtilities;
 using System;
 using System.Collections.Generic;
-using static AmeisenFSM.Objects.Delegates;
+using static AmeisenBotFSM.Objects.Delegates;
 
-namespace AmeisenFSM.Actions
+namespace AmeisenBotFSM.Actions
 {
     public class ActionMoving : IAction
     {

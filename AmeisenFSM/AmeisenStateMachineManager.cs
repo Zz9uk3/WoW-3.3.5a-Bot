@@ -1,11 +1,11 @@
-﻿using AmeisenCoreUtils;
-using AmeisenData;
-using AmeisenFSM.Enums;
-using AmeisenLogging;
-using AmeisenUtilities;
+﻿using AmeisenBotCore;
+using AmeisenBotData;
+using AmeisenBotFSM.Enums;
+using AmeisenBotLogger;
+using AmeisenBotUtilities;
 using System.Threading;
 
-namespace AmeisenFSM
+namespace AmeisenBotFSM
 {
     public class AmeisenStateMachineManager
     {

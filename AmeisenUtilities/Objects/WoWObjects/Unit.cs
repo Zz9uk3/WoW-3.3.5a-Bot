@@ -2,7 +2,7 @@
 using System.Collections.Specialized;
 using System.Text;
 
-namespace AmeisenUtilities
+namespace AmeisenBotUtilities
 {
     public partial class Unit : WowObject
     {

@@ -1,9 +1,9 @@
-﻿using AmeisenUtilities;
+﻿using AmeisenBotUtilities;
 using Newtonsoft.Json;
 using System;
 using System.IO;
 
-namespace AmeisenData
+namespace AmeisenBotData
 {
     /// <summary>
     /// Singleton class to manage our currently loaded settings.

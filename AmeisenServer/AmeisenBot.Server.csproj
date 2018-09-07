@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CD72AD54-7C40-4EC0-8878-0771922A2961}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AmeisenCombatEngine</RootNamespace>
-    <AssemblyName>AmeisenCombatEngine</AssemblyName>
+    <ProjectGuid>{0F5350C6-755B-4D32-8DFD-4057C925EF0D}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>AmeisenBotServer</RootNamespace>
+    <AssemblyName>AmeisenBotServer</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -20,15 +21,23 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -38,43 +47,40 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AmeisenCombatManager.cs" />
-    <Compile Include="AmeisenCombatEngine.cs" />
-    <Compile Include="Objects\CombatActionType.cs" />
-    <Compile Include="Objects\CombatLogic.cs" />
-    <Compile Include="Objects\CombatLogicActions.cs" />
-    <Compile Include="Objects\CombatLogicEntry.cs" />
-    <Compile Include="Objects\CombatLogicStatement.cs" />
-    <Compile Include="Objects\CombatLogicValues.cs" />
-    <Compile Include="Objects\IAmeisenCombatClass.cs" />
+    <Compile Include="AmeisenServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebServer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmeisenCore\AmeisenCore.csproj">
-      <Project>{567F9DF2-E2D0-4BC8-A295-B7913CC1303E}</Project>
-      <Name>AmeisenCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmeisenData\AmeisenData.csproj">
-      <Project>{4B6AB536-AF35-4970-89FB-B45BC495F8BE}</Project>
-      <Name>AmeisenData</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmeisenLogger\AmeisenLogger.csproj">
-      <Project>{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}</Project>
-      <Name>AmeisenLogger</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmeisenUtilities\AmeisenUtilities.csproj">
-      <Project>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</Project>
-      <Name>AmeisenUtilities</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="app.manifest" />
     <None Include="packages.config" />
+    <None Include="web\groessterMuellEUWest.javashit">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="icon.ico" />
+    <Content Include="web\index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AmeisenUtilities\AmeisenBot.Utilities.csproj">
+      <Project>{5369e077-2dc4-4de5-9020-2c7ddb41686f}</Project>
+      <Name>AmeisenBot.Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="AfterBuild">
+    <ItemGroup>
+      <MoveToLibFolder Include="$(OutputPath)*.dll ; $(OutputPath)*.pdb ; $(OutputPath)*.xml" />
+    </ItemGroup>
+    <Move SourceFiles="@(MoveToLibFolder)" DestinationFolder="$(OutputPath)lib" OverwriteReadOnlyFiles="true" />
+  </Target>
 </Project>

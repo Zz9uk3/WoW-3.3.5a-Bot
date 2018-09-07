@@ -1,6 +1,6 @@
-﻿using static AmeisenFSM.Objects.Delegates;
+﻿using static AmeisenBotFSM.Objects.Delegates;
 
-namespace AmeisenFSM.Interfaces
+namespace AmeisenBotFSM.Interfaces
 {
     public interface IAction
     {

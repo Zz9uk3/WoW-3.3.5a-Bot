@@ -1,11 +1,11 @@
-﻿using AmeisenCombat;
-using AmeisenCoreUtils;
-using AmeisenData;
-using AmeisenFSM.Interfaces;
-using AmeisenUtilities;
-using static AmeisenFSM.Objects.Delegates;
+﻿using AmeisenBotCombat;
+using AmeisenBotCore;
+using AmeisenBotData;
+using AmeisenBotFSM.Interfaces;
+using AmeisenBotUtilities;
+using static AmeisenBotFSM.Objects.Delegates;
 
-namespace AmeisenFSM.Actions
+namespace AmeisenBotFSM.Actions
 {
     internal class ActionCombat : IAction
     {

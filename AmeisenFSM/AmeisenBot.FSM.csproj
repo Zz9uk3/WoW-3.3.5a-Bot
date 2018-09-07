@@ -7,8 +7,8 @@
     <ProjectGuid>{C93B8F0C-8CFA-45F6-9B2C-43B72E1CFE0F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AmeisenFSM</RootNamespace>
-    <AssemblyName>AmeisenFSM</AssemblyName>
+    <RootNamespace>AmeisenBotFSM</RootNamespace>
+    <AssemblyName>AmeisenBot.FSM</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -54,25 +54,25 @@
     <Compile Include="Interfaces\IAction.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmeisenCombat\AmeisenCombat.csproj">
+    <ProjectReference Include="..\AmeisenCombat\AmeisenBot.Combat.csproj">
       <Project>{CD72AD54-7C40-4EC0-8878-0771922A2961}</Project>
-      <Name>AmeisenCombat</Name>
+      <Name>AmeisenBot.Combat</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenCore\AmeisenCore.csproj">
+    <ProjectReference Include="..\AmeisenCore\AmeisenBot.Core.csproj">
       <Project>{567f9df2-e2d0-4bc8-a295-b7913cc1303e}</Project>
-      <Name>AmeisenCore</Name>
+      <Name>AmeisenBot.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenData\AmeisenData.csproj">
+    <ProjectReference Include="..\AmeisenData\AmeisenBot.Data.csproj">
       <Project>{4B6AB536-AF35-4970-89FB-B45BC495F8BE}</Project>
-      <Name>AmeisenData</Name>
+      <Name>AmeisenBot.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenLogger\AmeisenLogger.csproj">
+    <ProjectReference Include="..\AmeisenLogger\AmeisenBot.Logger.csproj">
       <Project>{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}</Project>
-      <Name>AmeisenLogger</Name>
+      <Name>AmeisenBot.Logger</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenUtilities\AmeisenUtilities.csproj">
+    <ProjectReference Include="..\AmeisenUtilities\AmeisenBot.Utilities.csproj">
       <Project>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</Project>
-      <Name>AmeisenUtilities</Name>
+      <Name>AmeisenBot.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

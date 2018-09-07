@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AmeisenUtilities
+namespace AmeisenBotUtilities
 {
     public class Me : Player
     {

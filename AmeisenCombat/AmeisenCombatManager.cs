@@ -1,8 +1,8 @@
-﻿using AmeisenData;
-using AmeisenUtilities;
+﻿using AmeisenBotData;
+using AmeisenBotUtilities;
 using System.Threading;
 
-namespace AmeisenCombat
+namespace AmeisenBotCombat
 {
     public class AmeisenCombatManager
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AmeisenCombat.Objects
+namespace AmeisenBotCombat.Objects
 {
     public class CombatLogic
     {

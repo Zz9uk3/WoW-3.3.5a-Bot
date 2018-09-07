@@ -1,15 +1,15 @@
-﻿using AmeisenCombat.Objects;
-using AmeisenCoreUtils;
-using AmeisenData;
-using AmeisenLogging;
-using AmeisenUtilities;
+﻿using AmeisenBotCombat.Objects;
+using AmeisenBotCore;
+using AmeisenBotData;
+using AmeisenBotLogger;
+using AmeisenBotUtilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 
-namespace AmeisenCombat
+namespace AmeisenBotCombat
 {
     public class AmeisenCombatEngine
     {

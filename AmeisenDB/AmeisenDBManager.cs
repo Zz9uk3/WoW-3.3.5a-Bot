@@ -1,10 +1,10 @@
-﻿using AmeisenMapping.objects;
+﻿using AmeisenBotMapping.objects;
 using Dapper;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AmeisenDB
+namespace AmeisenBotDB
 {
     public class AmeisenDBManager
     {

@@ -1,4 +1,4 @@
-﻿namespace AmeisenCoreUtils
+﻿namespace AmeisenBotCore
 {
     public struct CastingInfo
     {

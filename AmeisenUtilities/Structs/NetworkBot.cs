@@ -1,4 +1,4 @@
-﻿namespace AmeisenUtilities
+﻿namespace AmeisenBotUtilities
 {
     /// <summary>
     /// A Bot received from the server

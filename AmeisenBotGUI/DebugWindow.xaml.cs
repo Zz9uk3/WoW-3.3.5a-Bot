@@ -1,5 +1,5 @@
-﻿using AmeisenManager;
-using AmeisenUtilities;
+﻿using AmeisenBotManager;
+using AmeisenBotUtilities;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,12 +14,12 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class DebugWindow : Window
     {
-        private AmeisenBotManager BotManager { get; }
+        private BotManager BotManager { get; }
 
         public DebugWindow()
         {
             InitializeComponent();
-            BotManager = AmeisenBotManager.Instance;
+            BotManager = AmeisenBotManager.BotManager.Instance;
             Topmost = BotManager.Settings.topMost;
         }
 

@@ -1,5 +1,5 @@
-﻿using AmeisenData;
-using AmeisenUtilities;
+﻿using AmeisenBotData;
+using AmeisenBotUtilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Timers;
 
-namespace AmeisenManager
+namespace AmeisenBotManager
 {
     public class AmeisenClient
     {
@@ -69,10 +69,10 @@ namespace AmeisenManager
                 Port = port;
 
                 string base64Image = "";
-                if (AmeisenBotManager.Instance.Settings.picturePath.Length > 0)
+                if (BotManager.Instance.Settings.picturePath.Length > 0)
                     base64Image = Convert.ToBase64String(
                             Utils.ImageToByte(
-                                new Bitmap(AmeisenBotManager.Instance.Settings.picturePath)
+                                new Bitmap(BotManager.Instance.Settings.picturePath)
                                 )
                             );
 

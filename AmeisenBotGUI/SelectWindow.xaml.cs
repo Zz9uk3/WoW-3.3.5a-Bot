@@ -1,6 +1,6 @@
-﻿using AmeisenLogging;
-using AmeisenManager;
-using AmeisenUtilities;
+﻿using AmeisenBotLogger;
+using AmeisenBotManager;
+using AmeisenBotUtilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,12 +21,12 @@ namespace AmeisenBotGUI
         private readonly string extension = ".json";
         private bool autologinIsPossible = false;
 
-        private AmeisenBotManager BotManager { get; }
+        private BotManager BotManager { get; }
 
         public SelectWindow()
         {
             InitializeComponent();
-            BotManager = AmeisenBotManager.Instance;
+            BotManager = AmeisenBotManager.BotManager.Instance;
 
             if (File.Exists(autoLoginExe))
             {

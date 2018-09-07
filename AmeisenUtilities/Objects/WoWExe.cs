@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace AmeisenUtilities
+namespace AmeisenBotUtilities
 {
     public class WowExe
     {

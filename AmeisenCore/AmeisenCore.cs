@@ -1,5 +1,5 @@
-﻿using AmeisenLogging;
-using AmeisenUtilities;
+﻿using AmeisenBotLogger;
+using AmeisenBotUtilities;
 using Magic;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
-namespace AmeisenCoreUtils
+namespace AmeisenBotCore
 {
     /// <summary>
     /// Abstract class that contains various static method's to interact with WoW's memory and the

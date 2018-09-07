@@ -1,7 +1,7 @@
-﻿using AmeisenMapping.objects;
+﻿using AmeisenBotMapping.objects;
 using System.Collections.Generic;
 
-namespace AmeisenMapping
+namespace AmeisenBotMapping
 {
     public class Map
     {

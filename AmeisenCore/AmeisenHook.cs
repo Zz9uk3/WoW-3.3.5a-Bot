@@ -1,11 +1,11 @@
-﻿using AmeisenLogging;
-using AmeisenUtilities;
+﻿using AmeisenBotLogger;
+using AmeisenBotUtilities;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace AmeisenCoreUtils
+namespace AmeisenBotCore
 {
     /// <summary>
     /// Class that manages the hooking of WoW's EndScene

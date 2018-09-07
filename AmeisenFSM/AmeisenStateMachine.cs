@@ -1,11 +1,11 @@
-﻿using AmeisenFSM.Actions;
-using AmeisenFSM.Enums;
-using AmeisenFSM.Interfaces;
-using AmeisenLogging;
+﻿using AmeisenBotFSM.Actions;
+using AmeisenBotFSM.Enums;
+using AmeisenBotFSM.Interfaces;
+using AmeisenBotLogger;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace AmeisenFSM
+namespace AmeisenBotFSM
 {
     /// <summary>
     /// This is a Stack based FSM that will manage our bots actions

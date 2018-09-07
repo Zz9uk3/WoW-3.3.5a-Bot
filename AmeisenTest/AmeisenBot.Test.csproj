@@ -7,8 +7,8 @@
     <ProjectGuid>{C65BFBD3-FD59-418B-8A36-F6406248DB5A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AmeisenTest</RootNamespace>
-    <AssemblyName>AmeisenTest</AssemblyName>
+    <RootNamespace>AmeisenBotTest</RootNamespace>
+    <AssemblyName>AmeisenBot.Test</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -28,6 +28,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -54,9 +55,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmeisenFSM\AmeisenFSM.csproj">
+    <ProjectReference Include="..\AmeisenFSM\AmeisenBot.FSM.csproj">
       <Project>{C93B8F0C-8CFA-45F6-9B2C-43B72E1CFE0F}</Project>
-      <Name>AmeisenFSM</Name>
+      <Name>AmeisenBot.FSM</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

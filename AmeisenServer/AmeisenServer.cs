@@ -1,4 +1,4 @@
-﻿using AmeisenUtilities;
+﻿using AmeisenBotUtilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -7,7 +7,7 @@ using System.Net;
 using System.Text;
 using System.Timers;
 
-namespace AmeisenServer
+namespace AmeisenBotServer
 {
     internal class AmeisenServer
     {

@@ -1,4 +1,4 @@
-﻿namespace AmeisenFSM.Enums
+﻿namespace AmeisenBotFSM.Enums
 {
     public enum BotState
     {

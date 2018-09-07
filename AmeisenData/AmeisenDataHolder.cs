@@ -1,7 +1,7 @@
-﻿using AmeisenUtilities;
+﻿using AmeisenBotUtilities;
 using System.Collections.Generic;
 
-namespace AmeisenData
+namespace AmeisenBotData
 {
     public class AmeisenDataHolder
     {

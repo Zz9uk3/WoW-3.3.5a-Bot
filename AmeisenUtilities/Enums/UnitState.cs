@@ -1,4 +1,4 @@
-﻿namespace AmeisenUtilities
+﻿namespace AmeisenBotUtilities
 {
     /// <summary>
     /// Weird values, need to investigate this crap but hey its working...

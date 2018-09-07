@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6CA2C759-3166-4B71-A56D-E9BA28E72E33}</ProjectGuid>
+    <ProjectGuid>{08DB57D7-287A-4C12-AB76-F5EE4A0F3395}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AmeisenManager</RootNamespace>
-    <AssemblyName>AmeisenManager</AssemblyName>
+    <RootNamespace>AmeisenBotMapping</RootNamespace>
+    <AssemblyName>AmeisenBot.Mapping</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,18 +29,30 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BlackMagic">
-      <HintPath>..\Blackmagic\BlackMagic.dll</HintPath>
+    <Reference Include="Dapper, Version=1.50.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.50.5\lib\net451\Dapper.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Google.Protobuf, Version=3.6.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Protobuf.3.6.1\lib\net45\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=8.0.12.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.8.0.12\lib\net452\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,43 +62,19 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AmeisenBotManager.cs" />
-    <Compile Include="AmeisenClient.cs" />
-    <Compile Include="AmeisenObjectManager.cs" />
+    <Compile Include="Map.cs" />
+    <Compile Include="Objects\MapNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmeisenCore\AmeisenCore.csproj">
-      <Project>{567f9df2-e2d0-4bc8-a295-b7913cc1303e}</Project>
-      <Name>AmeisenCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmeisenData\AmeisenData.csproj">
-      <Project>{4b6ab536-af35-4970-89fb-b45bc495f8be}</Project>
-      <Name>AmeisenData</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmeisenDB\AmeisenDB.csproj">
-      <Project>{9B3F7A78-0A9B-492A-8299-9C86D2E297ED}</Project>
-      <Name>AmeisenDB</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmeisenFSM\AmeisenFSM.csproj">
-      <Project>{c93b8f0c-8cfa-45f6-9b2c-43b72e1cfe0f}</Project>
-      <Name>AmeisenFSM</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmeisenLogger\AmeisenLogger.csproj">
-      <Project>{017a67a9-f7bd-46e3-b716-e1d601afca4b}</Project>
-      <Name>AmeisenLogger</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmeisenMapping\AmeisenMapping.csproj">
-      <Project>{08DB57D7-287A-4C12-AB76-F5EE4A0F3395}</Project>
-      <Name>AmeisenMapping</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmeisenUtilities\AmeisenUtilities.csproj">
-      <Project>{5369e077-2dc4-4de5-9020-2c7ddb41686f}</Project>
-      <Name>AmeisenUtilities</Name>
-    </ProjectReference>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\AmeisenUtilities\AmeisenBot.Utilities.csproj">
+      <Project>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</Project>
+      <Name>AmeisenBot.Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

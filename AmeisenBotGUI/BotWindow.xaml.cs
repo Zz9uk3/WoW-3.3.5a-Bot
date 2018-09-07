@@ -1,6 +1,6 @@
-﻿using AmeisenLogging;
-using AmeisenManager;
-using AmeisenUtilities;
+﻿using AmeisenBotLogger;
+using AmeisenBotManager;
+using AmeisenBotUtilities;
 using Microsoft.Win32;
 using System;
 using System.IO;
@@ -21,12 +21,12 @@ namespace AmeisenBotGUI
 
         private DispatcherTimer uiUpdateTimer;
 
-        private AmeisenBotManager BotManager { get; }
+        private BotManager BotManager { get; }
 
         public BotWindow(WowExe wowExe)
         {
             InitializeComponent();
-            BotManager = AmeisenBotManager.Instance;
+            BotManager = AmeisenBotManager.BotManager.Instance;
 
             // Load Settings
             BotManager.LoadSettingsFromFile(wowExe.characterName);
@@ -94,7 +94,7 @@ namespace AmeisenBotGUI
 
             if (openFileDialog.ShowDialog() == true)
             {
-                AmeisenBotManager.Instance.LoadCombatClass(openFileDialog.FileName);
+                AmeisenBotManager.BotManager.Instance.LoadCombatClass(openFileDialog.FileName);
             }
         }
 
@@ -163,7 +163,7 @@ namespace AmeisenBotGUI
 
             checkBoxRevive.IsChecked = BotManager.Settings.revive;
             BotManager.IsAllowedToRevive = BotManager.Settings.revive;
-            
+
             sliderDistance.Value = BotManager.Settings.followDistance;
 
             checkBoxTopMost.IsChecked = BotManager.Settings.topMost;
@@ -179,7 +179,7 @@ namespace AmeisenBotGUI
         {
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Loaded MainScreen", this);
 
-            Title = $"AmeisenBot - {BotManager.GetWowExe().characterName} [{BotManager.GetWowExe().process.Id}]";
+            Title = $"AmeisenBot - {BotManager.WowExe.characterName} [{BotManager.WowExe.process.Id}]";
 
             UpdateUI();
             StartUIUpdateTime();
@@ -205,7 +205,7 @@ namespace AmeisenBotGUI
             BotManager.Settings.followMaster = (bool)checkBoxFollowParty.IsChecked;
             BotManager.Settings.releaseSpirit = (bool)checkBoxReleaseSpirit.IsChecked;
             BotManager.Settings.revive = (bool)checkBoxRevive.IsChecked;
-            BotManager.SaveSettingsToFile(BotManager.GetLoadedConfigName());
+            BotManager.SaveSettingsToFile(BotManager.LoadedConfigName);
         }
 
         private void SetTopMost()
@@ -219,7 +219,7 @@ namespace AmeisenBotGUI
             try
             {
                 labelDistance.Content = $"Follow Distance: {Math.Round(sliderDistance.Value, 2)}m";
-                BotManager.AmeisenSettings.Settings.followDistance = Math.Round(sliderDistance.Value, 2);
+                BotManager.Settings.followDistance = Math.Round(sliderDistance.Value, 2);
             }
             catch { }
         }
@@ -235,7 +235,7 @@ namespace AmeisenBotGUI
 
         private void UIUpdateTimer_Tick(object sender, EventArgs e)
         {
-            if (BotManager.IsBotIngame())
+            if (BotManager.IsIngame)
             {
                 UpdateUI();
             }

@@ -1,4 +1,4 @@
-﻿using AmeisenManager;
+﻿using AmeisenBotManager;
 using Microsoft.Win32;
 using System;
 using System.IO;
@@ -13,12 +13,12 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class SettingsWindow : Window
     {
-        private AmeisenBotManager BotManager { get; }
+        private BotManager BotManager { get; }
 
         public SettingsWindow()
         {
             InitializeComponent();
-            BotManager = AmeisenBotManager.Instance;
+            BotManager = BotManager.Instance;
             Topmost = BotManager.Settings.topMost;
         }
 
@@ -162,7 +162,7 @@ namespace AmeisenBotGUI
             SaveMapUISettings();
             SaveMainUISettings();
 
-            BotManager.SaveSettingsToFile(BotManager.GetLoadedConfigName());
+            BotManager.SaveSettingsToFile(BotManager.LoadedConfigName);
         }
 
         private void SelectColor(string resourceColor)

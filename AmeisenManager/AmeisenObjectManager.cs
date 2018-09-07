@@ -1,15 +1,15 @@
-﻿using AmeisenCoreUtils;
-using AmeisenData;
-using AmeisenDB;
-using AmeisenLogging;
-using AmeisenMapping.objects;
-using AmeisenUtilities;
+﻿using AmeisenBotCore;
+using AmeisenBotData;
+using AmeisenBotDB;
+using AmeisenBotLogger;
+using AmeisenBotMapping.objects;
+using AmeisenBotUtilities;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Timers;
 
-namespace AmeisenManager
+namespace AmeisenBotManager
 {
     /// <summary>
     /// Singleton class to hold important things like
@@ -198,8 +198,8 @@ namespace AmeisenManager
             Vector3 activeNode = new Vector3((int)me.pos.X, (int)me.pos.Y, (int)me.pos.Z);
             //if (activeNode.X != lastNode.X && activeNode.Y != lastNode.Y && activeNode.Z != lastNode.Z)
             //{
-            int zoneID = AmeisenCoreUtils.AmeisenCore.GetZoneID();
-            int mapID = AmeisenCoreUtils.AmeisenCore.GetMapID();
+            int zoneID = AmeisenBotCore.AmeisenCore.GetZoneID();
+            int mapID = AmeisenBotCore.AmeisenCore.GetMapID();
             AmeisenDBManager.Instance.UpdateOrAddNode(new MapNode(activeNode, zoneID, mapID));
             //}
             //lastNode = activeNode;

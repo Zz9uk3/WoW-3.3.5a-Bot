@@ -1,11 +1,11 @@
-﻿using AmeisenCoreUtils;
-using AmeisenData;
-using AmeisenUtilities;
+﻿using AmeisenBotCore;
+using AmeisenBotData;
+using AmeisenBotUtilities;
 using System.Collections.Generic;
 using System.Threading;
-using static AmeisenFSM.Objects.Delegates;
+using static AmeisenBotFSM.Objects.Delegates;
 
-namespace AmeisenFSM.Actions
+namespace AmeisenBotFSM.Actions
 {
     public class ActionDead : ActionMoving
     {

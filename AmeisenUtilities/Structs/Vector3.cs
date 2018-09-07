@@ -1,4 +1,4 @@
-﻿namespace AmeisenUtilities
+﻿namespace AmeisenBotUtilities
 {
     /// <summary> Simple X,Y & Z struct </summary>
     public struct Vector3

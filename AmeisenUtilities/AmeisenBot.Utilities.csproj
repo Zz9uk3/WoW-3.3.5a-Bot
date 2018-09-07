@@ -4,14 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9B3F7A78-0A9B-492A-8299-9C86D2E297ED}</ProjectGuid>
+    <ProjectGuid>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AmeisenDB</RootNamespace>
-    <AssemblyName>AmeisenDB</AssemblyName>
+    <RootNamespace>AmeisenBotUtilities</RootNamespace>
+    <AssemblyName>AmeisenBot.Utilities</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,54 +30,58 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dapper, Version=1.50.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dapper.1.50.5\lib\net451\Dapper.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Protobuf, Version=3.6.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Protobuf.3.6.1\lib\net45\Google.Protobuf.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Data, Version=8.0.12.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.8.0.12\lib\net452\MySql.Data.dll</HintPath>
+    <Reference Include="BlackMagic">
+      <HintPath>..\Blackmagic\BlackMagic.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Drawing.Design" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AmeisenDBManager.cs" />
+    <Compile Include="Enums\DynamicUnitFlags.cs" />
+    <Compile Include="Enums\InteractionType.cs" />
+    <Compile Include="Enums\LuaUnit.cs" />
+    <Compile Include="Structs\CastingInfo.cs" />
+    <Compile Include="Structs\NetworkBot.cs" />
+    <Compile Include="Objects\NetworkRegData.cs" />
+    <Compile Include="Objects\SendableMe.cs" />
+    <Compile Include="Enums\UnitFlags.cs" />
+    <Compile Include="Enums\UnitState.cs" />
+    <Compile Include="Enums\WowObjectType.cs" />
+    <Compile Include="Objects\Settings.cs" />
+    <Compile Include="Objects\WoWClass.cs" />
+    <Compile Include="Objects\WoWExe.cs" />
+    <Compile Include="Objects\WoWObjects\Container.cs" />
+    <Compile Include="Objects\WoWObjects\Corpse.cs" />
+    <Compile Include="Objects\WoWObjects\DynObject.cs" />
+    <Compile Include="Objects\WoWObjects\GameObject.cs" />
+    <Compile Include="Objects\WoWObjects\Item.cs" />
+    <Compile Include="Objects\WoWObjects\Me.cs" />
+    <Compile Include="Objects\WoWObjects\Player.cs" />
+    <Compile Include="Objects\WoWObjects\Unit.cs" />
+    <Compile Include="Objects\WoWObjects\WoWObject.cs" />
+    <Compile Include="Structs\Credentials.cs" />
+    <Compile Include="Structs\Vector3.cs" />
+    <Compile Include="Structs\AuraInfo.cs" />
+    <Compile Include="Structs\SpellInfo.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="Offsets.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\AmeisenLogger\AmeisenLogger.csproj">
-      <Project>{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}</Project>
-      <Name>AmeisenLogger</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AmeisenMapping\AmeisenMapping.csproj">
-      <Project>{08DB57D7-287A-4C12-AB76-F5EE4A0F3395}</Project>
-      <Name>AmeisenMapping</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

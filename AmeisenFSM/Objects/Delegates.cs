@@ -1,4 +1,4 @@
-﻿namespace AmeisenFSM.Objects
+﻿namespace AmeisenBotFSM.Objects
 {
     public abstract class Delegates
     {

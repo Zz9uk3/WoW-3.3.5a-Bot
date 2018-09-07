@@ -1,6 +1,6 @@
-﻿using AmeisenUtilities;
+﻿using AmeisenBotUtilities;
 
-namespace AmeisenMapping.objects
+namespace AmeisenBotMapping.objects
 {
     public class MapNode
     {

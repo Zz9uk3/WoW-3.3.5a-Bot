@@ -7,8 +7,8 @@
     <ProjectGuid>{567F9DF2-E2D0-4BC8-A295-B7913CC1303E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AmeisenCore</RootNamespace>
-    <AssemblyName>AmeisenCore</AssemblyName>
+    <RootNamespace>AmeisenBotCore</RootNamespace>
+    <AssemblyName>AmeisenBot.Core</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -58,13 +58,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmeisenLogger\AmeisenLogger.csproj">
+    <ProjectReference Include="..\AmeisenLogger\AmeisenBot.Logger.csproj">
       <Project>{017a67a9-f7bd-46e3-b716-e1d601afca4b}</Project>
-      <Name>AmeisenLogger</Name>
+      <Name>AmeisenBot.Logger</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenUtilities\AmeisenUtilities.csproj">
+    <ProjectReference Include="..\AmeisenUtilities\AmeisenBot.Utilities.csproj">
       <Project>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</Project>
-      <Name>AmeisenUtilities</Name>
+      <Name>AmeisenBot.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

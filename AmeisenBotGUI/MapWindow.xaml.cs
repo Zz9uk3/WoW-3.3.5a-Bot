@@ -1,8 +1,8 @@
-﻿using AmeisenDB;
-using AmeisenManager;
-using AmeisenMapping;
-using AmeisenMapping.objects;
-using AmeisenUtilities;
+﻿using AmeisenBotDB;
+using AmeisenBotManager;
+using AmeisenBotMapping;
+using AmeisenBotMapping.objects;
+using AmeisenBotUtilities;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -19,19 +19,15 @@ namespace AmeisenBotGUI
     public partial class MapWindow : Window
     {
         private Map currentMap;
-
         private DispatcherTimer dbUpdateTimer;
-
         private int newX;
-
         private int newY;
-
         private DispatcherTimer uiUpdateTimer;
 
         public MapWindow()
         {
             InitializeComponent();
-            Topmost = AmeisenBotManager.Instance.Settings.topMost;
+            Topmost = BotManager.Instance.Settings.topMost;
         }
 
         private static void DrawLine(int startX, int startY, int endX, int endY, int thickness, Color color, Canvas canvas)
@@ -95,7 +91,7 @@ namespace AmeisenBotGUI
         private void DrawMap(Map map)
         {
             mapCanvas.Children.Clear();
-            Vector3 myPos = AmeisenBotManager.Instance.Me.pos;
+            Vector3 myPos = AmeisenBotManager.BotManager.Instance.Me.pos;
             Vector3 myCanvasMiddle = new Vector3
             {
                 X = Width / 2,
@@ -123,10 +119,10 @@ namespace AmeisenBotGUI
 
         private void LoadMap()
         {
-            Vector3 myPos = AmeisenBotManager.Instance.Me.pos;
+            Vector3 myPos = BotManager.Instance.Me.pos;
             List<MapNode> nodelist = AmeisenDBManager.Instance.GetNodes(
-                AmeisenBotManager.GetZoneID(),
-                AmeisenBotManager.GetMapID(),
+                BotManager.Instance.ZoneID,
+                BotManager.Instance.MapID,
                 (int)(myPos.X + ((Width / 2) - 20)), // Get the max drawing point x
                 (int)(myPos.X - ((Width / 2) + 20)), // Get the min drawing point x
                 (int)(myPos.Y + ((Height / 2) - 20)), // Get the max drawing point y
@@ -148,7 +144,7 @@ namespace AmeisenBotGUI
         {
             dbUpdateTimer = new DispatcherTimer();
             dbUpdateTimer.Tick += new EventHandler(DBUpdateTimer_Tick);
-            dbUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, AmeisenBotManager.Instance.Settings.dataRefreshRate * 10);
+            dbUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, AmeisenBotManager.BotManager.Instance.Settings.dataRefreshRate * 10);
             dbUpdateTimer.Start();
         }
 

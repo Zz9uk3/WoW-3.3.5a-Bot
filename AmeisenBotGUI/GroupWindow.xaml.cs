@@ -1,5 +1,5 @@
-﻿using AmeisenManager;
-using AmeisenUtilities;
+﻿using AmeisenBotManager;
+using AmeisenBotUtilities;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -21,7 +21,7 @@ namespace AmeisenBotGUI
         {
             InitializeComponent();
             botViews = new List<BotView>();
-            Topmost = AmeisenBotManager.Instance.Settings.topMost;
+            Topmost = AmeisenBotManager.BotManager.Instance.Settings.topMost;
         }
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
@@ -44,11 +44,11 @@ namespace AmeisenBotGUI
 
         private void UIUpdateTimer_Tick(object sender, EventArgs e)
         {
-            if (AmeisenBotManager.Instance.AmeisenClient.IsRegistered)
+            if (BotManager.Instance.IsRegisteredAtServer)
             {
                 botViewPanel.Children.Clear();
 
-                List<NetworkBot> networkBots = AmeisenBotManager.Instance.GetNetworkBots();
+                List<NetworkBot> networkBots = BotManager.Instance.NetworkBots;
                 if (networkBots != null)
                     foreach (NetworkBot bot in networkBots)
                     {

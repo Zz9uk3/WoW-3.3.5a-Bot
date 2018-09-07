@@ -1,8 +1,8 @@
-﻿using AmeisenUtilities;
+﻿using AmeisenBotUtilities;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AmeisenCombat.Objects
+namespace AmeisenBotCombat.Objects
 {
     public class CombatLogicEntry
     {

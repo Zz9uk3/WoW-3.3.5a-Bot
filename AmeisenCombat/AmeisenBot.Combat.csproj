@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{08DB57D7-287A-4C12-AB76-F5EE4A0F3395}</ProjectGuid>
+    <ProjectGuid>{CD72AD54-7C40-4EC0-8878-0771922A2961}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AmeisenMapping</RootNamespace>
-    <AssemblyName>AmeisenMapping</AssemblyName>
+    <RootNamespace>AmeisenBotCombat</RootNamespace>
+    <AssemblyName>AmeisenBot.Combat</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>7.3</LangVersion>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,55 +29,52 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dapper, Version=1.50.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dapper.1.50.5\lib\net451\Dapper.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Protobuf, Version=3.6.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Protobuf.3.6.1\lib\net45\Google.Protobuf.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Data, Version=8.0.12.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.8.0.12\lib\net452\MySql.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Drawing.Design" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Map.cs" />
-    <Compile Include="Objects\MapNode.cs" />
+    <Compile Include="AmeisenCombatManager.cs" />
+    <Compile Include="AmeisenCombatEngine.cs" />
+    <Compile Include="Objects\CombatActionType.cs" />
+    <Compile Include="Objects\CombatLogic.cs" />
+    <Compile Include="Objects\CombatLogicActions.cs" />
+    <Compile Include="Objects\CombatLogicEntry.cs" />
+    <Compile Include="Objects\CombatLogicStatement.cs" />
+    <Compile Include="Objects\CombatLogicValues.cs" />
+    <Compile Include="Objects\IAmeisenCombatClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\AmeisenUtilities\AmeisenUtilities.csproj">
-      <Project>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</Project>
-      <Name>AmeisenUtilities</Name>
+    <ProjectReference Include="..\AmeisenCore\AmeisenBot.Core.csproj">
+      <Project>{567F9DF2-E2D0-4BC8-A295-B7913CC1303E}</Project>
+      <Name>AmeisenBot.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AmeisenData\AmeisenBot.Data.csproj">
+      <Project>{4B6AB536-AF35-4970-89FB-B45BC495F8BE}</Project>
+      <Name>AmeisenBot.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmeisenLogger\AmeisenBot.Logger.csproj">
+      <Project>{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}</Project>
+      <Name>AmeisenBot.Logger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmeisenUtilities\AmeisenBot.Utilities.csproj">
+      <Project>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</Project>
+      <Name>AmeisenBot.Utilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

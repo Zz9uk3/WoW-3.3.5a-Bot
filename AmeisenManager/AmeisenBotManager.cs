@@ -1,30 +1,28 @@
-﻿using AmeisenCoreUtils;
-using AmeisenData;
-using AmeisenDB;
-using AmeisenFSM;
-using AmeisenFSM.Enums;
-using AmeisenLogging;
-using AmeisenUtilities;
+﻿using AmeisenBotCore;
+using AmeisenBotData;
+using AmeisenBotDB;
+using AmeisenBotFSM;
+using AmeisenBotFSM.Enums;
+using AmeisenBotLogger;
+using AmeisenBotUtilities;
 using Magic;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 
-namespace AmeisenManager
+namespace AmeisenBotManager
 {
     /// <summary>
     /// This Singleton provides an Interface to the bot at a single point
     /// </summary>
-    public class AmeisenBotManager
+    public class BotManager
     {
         private static readonly object padlock = new object();
-
-        private static AmeisenBotManager instance;
-
+        private static BotManager instance;
         private readonly string sqlConnectionString =
                 "server={0};port={1};database={2};uid={3};password={4};";
 
-        public static AmeisenBotManager Instance
+        public static BotManager Instance
         {
             get
             {
@@ -32,7 +30,7 @@ namespace AmeisenManager
                 {
                     if (instance == null)
                     {
-                        instance = new AmeisenBotManager();
+                        instance = new BotManager();
                     }
 
                     return instance;
@@ -41,13 +39,13 @@ namespace AmeisenManager
         }
 
         public List<WowObject> ActiveWoWObjects { get { return AmeisenDataHolder.Instance.ActiveWoWObjects; } }
-        public AmeisenClient AmeisenClient { get; private set; }
-        public AmeisenDBManager AmeisenDBManager { get; private set; }
-        public AmeisenHook AmeisenHook { get; private set; }
-        public AmeisenObjectManager AmeisenObjectManager { get; private set; }
-        public AmeisenSettings AmeisenSettings { get; private set; }
-        public AmeisenStateMachineManager AmeisenStateMachineManager { get; private set; }
-        public BlackMagic Blackmagic { get; private set; }
+        private AmeisenClient AmeisenClient { get; set; }
+        private AmeisenDBManager AmeisenDBManager { get; set; }
+        private AmeisenHook AmeisenHook { get; set; }
+        private AmeisenObjectManager AmeisenObjectManager { get; set; }
+        private AmeisenSettings AmeisenSettings { get; set; }
+        private AmeisenStateMachineManager AmeisenStateMachineManager { get; set; }
+        private BlackMagic Blackmagic { get; set; }
 
         public bool IsAllowedToAssistParty
         {
@@ -107,7 +105,7 @@ namespace AmeisenManager
         public List<WowObject> WoWObjects { get { return AmeisenObjectManager.GetObjects(); } }
         public Process WowProcess { get; private set; }
 
-        private AmeisenBotManager()
+        private BotManager()
         {
             IsAttached = false;
             IsHooked = false;
@@ -117,43 +115,35 @@ namespace AmeisenManager
             AmeisenDBManager = AmeisenDBManager.Instance;
         }
 
-        public static int GetMapID()
-        {
-            return AmeisenCore.GetMapID();
-        }
+        public int MapID { get { return AmeisenCore.GetMapID(); } }
+        public int ZoneID { get { return AmeisenCore.GetZoneID(); } }
+        public string LoadedConfigName { get { return AmeisenSettings.loadedconfName; } }
 
-        public static int GetZoneID()
+        public List<NetworkBot> NetworkBots
         {
-            return AmeisenCore.GetZoneID();
-        }
-
-        public string GetLoadedConfigName()
-        {
-            return AmeisenSettings.loadedconfName;
-        }
-
-        public List<NetworkBot> GetNetworkBots()
-        {
-            if (AmeisenClient.IsRegistered)
+            get
             {
-                return AmeisenClient.BotList;
-            }
-            else
-            {
-                return null;
+                if (AmeisenClient.IsRegistered)
+                {
+                    return AmeisenClient.BotList;
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 
-        public WowExe GetWowExe()
+        public bool IsIngame
         {
-            return WowExe;
+            get
+            {
+                return AmeisenCore.CheckWorldLoaded()
+                   && !AmeisenCore.CheckLoadingScreen();
+            }
         }
 
-        public bool IsBotIngame()
-        {
-            return AmeisenCore.CheckWorldLoaded()
-               && !AmeisenCore.CheckLoadingScreen();
-        }
+        public bool IsRegisteredAtServer { get { return AmeisenClient.IsRegistered; } }
 
         public void LoadCombatClass(string fileName)
         {
@@ -207,10 +197,6 @@ namespace AmeisenManager
             AmeisenObjectManager = AmeisenObjectManager.Instance;
             AmeisenObjectManager.Start();
 
-            // Start the AI
-            //AmeisenAIManager = AmeisenAIManager.Instance;
-            //AmeisenAIManager.Start(AmeisenSettings.Settings.botMaxThreads);
-
             // Start the StateMachine
             AmeisenStateMachineManager = new AmeisenStateMachineManager();
             AmeisenStateMachineManager.StateMachine.PushAction(BotState.Idle);
@@ -238,16 +224,14 @@ namespace AmeisenManager
             // Stop object updates
             AmeisenObjectManager.Stop();
 
-            // Stop the combatmanager
+            // Stop the statemachine
             AmeisenStateMachineManager.Stop();
-
-            // Stop the AI
-            //AmeisenAIManager.Stop();
 
             // Unhook the EndScene
             AmeisenHook.DisposeHooking();
 
-            // Detach BlackMagic Blackmagic.Close();
+            // Detach BlackMagic, causing weird crash right now...
+            //Blackmagic.Close();
 
             // Stop logging
             AmeisenLogger.Instance.StopLogging();

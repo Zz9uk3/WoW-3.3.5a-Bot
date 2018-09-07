@@ -1,7 +1,7 @@
-﻿using AmeisenFSM.Interfaces;
-using static AmeisenFSM.Objects.Delegates;
+﻿using AmeisenBotFSM.Interfaces;
+using static AmeisenBotFSM.Objects.Delegates;
 
-namespace AmeisenFSM.Actions
+namespace AmeisenBotFSM.Actions
 {
     public class ActionIdle : IAction
     {

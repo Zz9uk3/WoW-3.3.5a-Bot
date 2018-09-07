@@ -1,9 +1,9 @@
-﻿using AmeisenData;
-using AmeisenUtilities;
+﻿using AmeisenBotData;
+using AmeisenBotUtilities;
 using System.Collections.Generic;
-using static AmeisenFSM.Objects.Delegates;
+using static AmeisenBotFSM.Objects.Delegates;
 
-namespace AmeisenFSM.Actions
+namespace AmeisenBotFSM.Actions
 {
     public class ActionFollow : ActionMoving
     {
