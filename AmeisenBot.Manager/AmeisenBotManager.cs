@@ -184,7 +184,7 @@ namespace AmeisenBotManager
             AmeisenObjectManager.Start();
 
             // Start the StateMachine
-            AmeisenStateMachineManager = new AmeisenStateMachineManager(AmeisenDataHolder);
+            AmeisenStateMachineManager = new AmeisenStateMachineManager(AmeisenDataHolder, AmeisenDBManager);
             AmeisenStateMachineManager.StateMachine.PushAction(BotState.Idle);
             AmeisenStateMachineManager.StateMachine.PushAction(BotState.Follow);
             AmeisenStateMachineManager.Start();

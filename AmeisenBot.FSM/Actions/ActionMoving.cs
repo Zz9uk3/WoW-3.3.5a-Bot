@@ -5,7 +5,6 @@ using AmeisenBotFSM.Interfaces;
 using AmeisenBotMapping;
 using AmeisenBotMapping.objects;
 using AmeisenBotUtilities;
-using AmeisenPathLib;
 using System;
 using System.Collections.Generic;
 using static AmeisenBotFSM.Objects.Delegates;

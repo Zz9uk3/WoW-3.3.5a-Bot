@@ -120,19 +120,6 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </CheckBox.BorderBrush>
         </CheckBox>
-        <Label x:Name="labelThreadsActive" Content="⚡ Threads: 0/0" HorizontalAlignment="Left" Margin="6,259,0,0" Background="{x:Null}" FontSize="11" Width="88" Height="29" VerticalAlignment="Top">
-            <Label.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}" />
-            </Label.Foreground>
-        </Label>
-        <ProgressBar x:Name="progressBarBusyAIThreads" HorizontalAlignment="Left" Margin="99,267,0,0" Width="60" Background="{x:Null}" BorderThickness="2" Height="10" VerticalAlignment="Top">
-            <ProgressBar.Foreground>
-                <SolidColorBrush Color="{DynamicResource ThreadsColor}" />
-            </ProgressBar.Foreground>
-            <ProgressBar.BorderBrush>
-                <SolidColorBrush Color="{DynamicResource AccentColor}" />
-            </ProgressBar.BorderBrush>
-        </ProgressBar>
         <Button x:Name="buttonSettings" Content="🛠" HorizontalAlignment="Right" Margin="0,0,-2,269" VerticalAlignment="Bottom" Width="60" Height="60" Click="ButtonSettings_Click" Background="{x:Null}" FontSize="32" BorderThickness="2">
             <Button.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />

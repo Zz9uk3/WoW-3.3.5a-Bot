@@ -1,5 +1,6 @@
 ﻿using AmeisenBotCore;
 using AmeisenBotData;
+using AmeisenBotDB;
 using AmeisenBotFSM.Enums;
 using AmeisenBotLogger;
 using AmeisenBotUtilities;
@@ -13,6 +14,7 @@ namespace AmeisenBotFSM
         public bool PushedCombat { get; private set; }
         public AmeisenStateMachine StateMachine { get; private set; }
         private AmeisenDataHolder AmeisenDataHolder { get; set; }
+        private AmeisenDBManager AmeisenDBManager { get; set; }
         private Thread MainWorker { get; set; }
 
         private Me Me
@@ -23,13 +25,14 @@ namespace AmeisenBotFSM
 
         private Thread StateWatcherWorker { get; set; }
 
-        public AmeisenStateMachineManager(AmeisenDataHolder ameisenDataHolder)
+        public AmeisenStateMachineManager(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager)
         {
             Active = false;
             AmeisenDataHolder = ameisenDataHolder;
+            AmeisenDBManager = ameisenDBManager;
             MainWorker = new Thread(new ThreadStart(DoWork));
             StateWatcherWorker = new Thread(new ThreadStart(WatchForStateChanges));
-            StateMachine = new AmeisenStateMachine(ameisenDataHolder);
+            StateMachine = new AmeisenStateMachine(ameisenDataHolder, ameisenDBManager);
         }
 
         /// <summary>

@@ -66,9 +66,17 @@
       <Project>{4B6AB536-AF35-4970-89FB-B45BC495F8BE}</Project>
       <Name>AmeisenBot.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AmeisenBot.DB\AmeisenBot.DB.csproj">
+      <Project>{9B3F7A78-0A9B-492A-8299-9C86D2E297ED}</Project>
+      <Name>AmeisenBot.DB</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AmeisenBot.Logger\AmeisenBot.Logger.csproj">
       <Project>{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}</Project>
       <Name>AmeisenBot.Logger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AmeisenBot.Mapping\AmeisenBot.Mapping.csproj">
+      <Project>{08DB57D7-287A-4C12-AB76-F5EE4A0F3395}</Project>
+      <Name>AmeisenBot.Mapping</Name>
     </ProjectReference>
     <ProjectReference Include="..\AmeisenBot.Utilities\AmeisenBot.Utilities.csproj">
       <Project>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</Project>
