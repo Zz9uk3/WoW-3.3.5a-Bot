@@ -44,7 +44,6 @@ namespace AmeisenBotFSM.Actions
                 if (!WaypointQueue.Contains(ActiveUnit.pos))
                 {
                     WaypointQueue.Enqueue(ActiveUnit.pos);
-                    Thread.Sleep(100);
                 }
             }
 

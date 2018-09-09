@@ -67,22 +67,14 @@ namespace AmeisenBotFSM.Actions
 
         private void MoveToNode()
         {
-            if (WaypointQueue.Count > 0){
+            if (WaypointQueue.Count > 0)
+            {
                 Me.Update();
                 Vector3 initialPosition = Me.pos;
                 Vector3 targetPosition = WaypointQueue.Peek();
 
-                // Check if we are close enough to the node to dequeue it, otherwise move to it
-                if (Utils.GetDistance(initialPosition, targetPosition)
-                    > AmeisenDataHolder.Settings.followDistance)
-                {
-                    //Vector3 posToGoTo = RebaseVector(targetPosition, 0);
-                    AmeisenCore.MovePlayerToXYZ(targetPosition, InteractionType.MOVE);
-                }
-                else
-                {
-                    WaypointQueue.Dequeue();
-                }
+                AmeisenCore.MovePlayerToXYZ(targetPosition, InteractionType.MOVE);
+                WaypointQueue.Dequeue();
             }
         }
 

@@ -128,6 +128,7 @@ namespace AmeisenBotManager
         }
 
         public bool IsRegisteredAtServer { get { return AmeisenClient.IsRegistered; } }
+        public object CurrentFSMState { get { return AmeisenStateMachineManager.StateMachine.GetCurrentState(); } }
 
         public void LoadCombatClass(string fileName)
         {

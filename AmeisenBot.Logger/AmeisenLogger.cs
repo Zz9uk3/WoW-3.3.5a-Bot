@@ -82,7 +82,7 @@ namespace AmeisenBotLogger
             entries = new ConcurrentQueue<AmeisenLogEntry>();
             loggingThread = new Thread(new ThreadStart(WorkOnQueue));
             loggingThread.Start();
-            logName = $"{Process.GetCurrentProcess().Id}-{DateTime.Now.ToString("dd-MM-yyyy")}_{DateTime.Now.ToString("HH-mm")}.txt";
+            logName = $"{DateTime.Now.ToString("dd-MM-yyyy")}_{DateTime.Now.ToString("HH-mm")}-{Process.GetCurrentProcess().Id}.txt";
         }
 
         /// <summary>

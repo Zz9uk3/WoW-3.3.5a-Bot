@@ -52,7 +52,8 @@ namespace AmeisenBotGUI
 
         private void ButtonCobatClassEditor_Click(object sender, RoutedEventArgs e)
         {
-            new CombatClassWindow(BotManager).Show();
+            // Going to be reworked
+            //new CombatClassWindow(BotManager).Show();
         }
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
@@ -283,7 +284,12 @@ namespace AmeisenBotGUI
             progressBarEnergyTarget.Maximum = BotManager.Target.MaxEnergy;
             progressBarEnergyTarget.Value = BotManager.Target.Energy;
 
-            labelTargetDistance.Content = $"Distance: {BotManager.Target.Distance}m";
+            labelTargetDistance.Content = $"Distance: {Math.Round(BotManager.Target.Distance, 2)}m";
+        }
+
+        private void UpdateFSMViews()
+        {
+            labelFSMState.Content = $"FSM state: {BotManager.CurrentFSMState}";
         }
 
         /// <summary>
@@ -300,6 +306,7 @@ namespace AmeisenBotGUI
             {
                 try
                 {
+                    UpdateFSMViews();
                     UpdateMyViews();
 
                     if (BotManager.Target != null)

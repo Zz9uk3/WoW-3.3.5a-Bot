@@ -97,7 +97,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Label x:Name="labelNameTarget" Content="..." HorizontalAlignment="Left" Margin="172,219,0,0" FontWeight="Bold" Width="297" Height="26" VerticalAlignment="Top">
+        <Label x:Name="labelNameTarget" Content="..." HorizontalAlignment="Left" Margin="172,218,0,0" FontWeight="Bold" Width="297" Height="26" VerticalAlignment="Top">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
@@ -306,5 +306,15 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </CheckBox.BorderBrush>
         </CheckBox>
+        <Label x:Name="labelFSMState" Content="FSM State: none" HorizontalAlignment="Left" Margin="172,296,0,0" VerticalAlignment="Top">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+            </Label.Foreground>
+        </Label>
+        <Label Content="🧠" HorizontalAlignment="Left" Margin="168,254,0,0" VerticalAlignment="Top" FontSize="30" RenderTransformOrigin="4.267,0.515" Height="50" Width="50">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Label.Foreground>
+        </Label>
     </Grid>
 </Window>

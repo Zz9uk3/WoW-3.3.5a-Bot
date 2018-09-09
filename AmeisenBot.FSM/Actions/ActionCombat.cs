@@ -1,5 +1,4 @@
-﻿using AmeisenBotCombat;
-using AmeisenBotCore;
+﻿using AmeisenBotCore;
 using AmeisenBotData;
 using AmeisenBotFSM.Interfaces;
 using AmeisenBotUtilities;
@@ -12,7 +11,6 @@ namespace AmeisenBotFSM.Actions
         public Start StartAction { get { return Start; } }
         public DoThings StartDoThings { get { return DoThings; } }
         public Exit StartExit { get { return Stop; } }
-        private AmeisenCombatManager combatManager;
         private AmeisenDataHolder AmeisenDataHolder { get; set; }
 
         private Me Me
@@ -27,13 +25,13 @@ namespace AmeisenBotFSM.Actions
             set { AmeisenDataHolder.Target = value; }
         }
 
-        public ActionCombat(AmeisenDataHolder ameisenDataHolder) {
+        public ActionCombat(AmeisenDataHolder ameisenDataHolder)
+        {
             AmeisenDataHolder = ameisenDataHolder;
-            combatManager = new AmeisenCombatManager(AmeisenDataHolder); }
+        }
 
         public void DoThings()
         {
-            combatManager.DoWork();
         }
 
         public void Start()

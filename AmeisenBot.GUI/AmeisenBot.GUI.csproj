@@ -86,9 +86,6 @@
     <Compile Include="ColorPickWindow.xaml.cs">
       <DependentUpon>ColorPickWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CombatClassWindow.xaml.cs">
-      <DependentUpon>CombatClassWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="DebugWindow.xaml.cs">
       <DependentUpon>DebugWindow.xaml</DependentUpon>
     </Compile>
@@ -106,10 +103,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ColorPickWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CombatClassWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
