@@ -1,7 +1,11 @@
 ﻿using AmeisenBotCore;
 using AmeisenBotData;
+using AmeisenBotDB;
 using AmeisenBotFSM.Interfaces;
+using AmeisenBotMapping;
+using AmeisenBotMapping.objects;
 using AmeisenBotUtilities;
+using AmeisenPathLib;
 using System;
 using System.Collections.Generic;
 using static AmeisenBotFSM.Objects.Delegates;
@@ -15,6 +19,7 @@ namespace AmeisenBotFSM.Actions
         public virtual Exit StartExit { get { return Stop; } }
         public Queue<Vector3> WaypointQueue { get; set; }
         private AmeisenDataHolder AmeisenDataHolder { get; set; }
+        private AmeisenDBManager AmeisenDBManager { get; set; }
 
         private Me Me
         {
@@ -22,9 +27,10 @@ namespace AmeisenBotFSM.Actions
             set { AmeisenDataHolder.Me = value; }
         }
 
-        public ActionMoving(AmeisenDataHolder ameisenDataHolder)
+        public ActionMoving(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager)
         {
             AmeisenDataHolder = ameisenDataHolder;
+            AmeisenDBManager = ameisenDBManager;
         }
 
         public virtual void DoThings()
@@ -76,6 +82,23 @@ namespace AmeisenBotFSM.Actions
                 AmeisenCore.MovePlayerToXYZ(targetPosition, InteractionType.MOVE);
                 WaypointQueue.Dequeue();
             }
+        }
+
+        private List<MapNode> FindWayToNode(Vector3 initialPosition, Vector3 targetPosition)
+        {
+            int maxX = initialPosition.X >= targetPosition.X ? (int)initialPosition.X : (int)targetPosition.X;
+            int minX = initialPosition.X <= targetPosition.X ? (int)initialPosition.X : (int)targetPosition.X;
+
+            int maxY = initialPosition.Y >= targetPosition.Y ? (int)initialPosition.Y : (int)targetPosition.Y;
+            int minY = initialPosition.Y <= targetPosition.Y ? (int)initialPosition.Y : (int)targetPosition.Y;
+
+            List<MapNode> route = new List<MapNode>();
+            List<MapNode> nodes = AmeisenDBManager.GetNodes(Me.ZoneID, Me.MapID, maxX, minX, maxY, minY);
+            Map map = new Map(nodes);
+
+            //AmeisenPath.FindPathAStar();
+
+            return route;
         }
 
         /// <summary> Modify our go-to-position by a small factor to provide "naturality" </summary>

@@ -1,4 +1,5 @@
 ﻿using AmeisenBotData;
+using AmeisenBotDB;
 using AmeisenBotUtilities;
 using System.Collections.Generic;
 using System.Threading;
@@ -14,10 +15,12 @@ namespace AmeisenBotFSM.Actions
         private Unit ActiveUnit { get; set; }
         private List<Unit> ActiveUnits { get; set; }
         private AmeisenDataHolder AmeisenDataHolder { get; set; }
+        private AmeisenDBManager AmeisenDBManager { get; set; }
 
-        public ActionFollow(AmeisenDataHolder ameisenDataHolder) : base(ameisenDataHolder)
+        public ActionFollow(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager) : base(ameisenDataHolder, ameisenDBManager)
         {
             AmeisenDataHolder = ameisenDataHolder;
+            AmeisenDBManager = ameisenDBManager;
         }
 
         private Me Me
