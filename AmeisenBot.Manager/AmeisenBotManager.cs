@@ -241,6 +241,7 @@ namespace AmeisenBotManager
             parameters.ReferencedAssemblies.Add("./lib/AmeisenBot.Combat.dll");
             parameters.ReferencedAssemblies.Add("./lib/AmeisenBot.Utilities.dll");
             parameters.ReferencedAssemblies.Add("./lib/AmeisenBot.Logger.dll");
+            parameters.ReferencedAssemblies.Add("./lib/AmeisenBot.Data.dll");
             parameters.GenerateInMemory = true;
             parameters.GenerateExecutable = false;
 
