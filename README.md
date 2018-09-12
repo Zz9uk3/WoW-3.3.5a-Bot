@@ -31,25 +31,97 @@ Place the "WoW-LoginAutomator.exe" in the same folder as the bot, thats all...
 To use this piece of turd, junk, trash, don't know how to call this thing, Open the "index.html" thats hidden deep in the shittiest corner of this project...
 💡 *Pro Tip: look for a file called: "groessterMuellEUWest.javashit"*
 
+🔪 **How to make a CombatClass**
+Template \*.cs file:
+```c#
+using System;
+using AmeisenCombatEngine.Interfaces;
+using AmeisenBotLogger;
+using AmeisenBotUtilities;
+using AmeisenBotData;
+
+namespace AmeisenBotCombat
+{
+    public class CombatClass : IAmeisenCombatClass
+    {
+        private AmeisenDataHolder AmeisenDataHolder { get; set; }
+        private Me Me
+        {
+            get { return AmeisenDataHolder.Me; }
+            set { AmeisenDataHolder.Me = value; }
+        }
+        private Unit Target
+        {
+            get { return AmeisenDataHolder.Target; }
+            set { AmeisenDataHolder.Target = value; }
+        }
+
+        // will be called once when we enter combat
+        public void Init()
+        {
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "CombatClass: In combat now", this);
+        }
+
+        // will be called once when we leave combat
+        public void Exit()
+        {
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "CombatClass: Out of combat now", this);
+        }
+
+        // will be called while we are in combat and allowed to attack
+        public void HandleAttacking()
+        {
+            if (Me.Energy >= 500)
+                CombatUtillities.CastSpellByName("SPELLNAME", false);
+        }
+
+        // will be called while we are in combat and allowed to buff
+        public void HandleBuffs()
+        {
+        }
+
+        // will be called while we are in combat and allowed to heal
+        public void HandleHealing()
+        {
+        }
+
+        // will be called while we are in combat and allowed to tank
+        public void HandleTanking()
+        {
+        }
+    }
+}
+```
+
 ---
 ## Modules
+**AmeisenBot.Combat**: CombatClass utilities & template
 
-**AmeisenBotGUI**: This is the bot's GUI (C# WPF), what did you expect? :D
+**AmeisenBot.Core**: Collection of some static object-reading/casting/lua functions
 
-**AmeisenManager**: Bot Interaction-Point or something like this...
+**AmeisenBot.Data**: "DataHolder" to hold things like our playerobject, our target object & active WoWObjects
 
-**AmeisenCore**: This is where the memory magic happens.
+**AmeisenBot.DB**: Database connection manager, from this thing the map is beeing read/saved
 
-**AmeisenUtilities**: Memory offsets and data structs can be foud here.
+**AmeisenBot.FSM**: StateMachine of the Bot executing all actions
 
-**AmeisenData**: This thing holds the Me, Target and WoWObjects.
+**AmeisenBot.GUI**: WPF GUI
 
-**AmeisenAI**: The bots "Brain" to work on its queue and make decisions etc.
+**AmeisenBot.Logger**: Basic logging class
 
-**AmeisenLogging**: Basic logging class
+**AmeisenBot.Manager**: Create a new Bot instance here and manage it
 
-**AmeisenServer**: This thing is planned to be a server for the bots to communicate to each other.
+**AmeisenBot.Mapping**: Mapping related stuff like loading/saving nodes
 
+**AmeisenBot.Server**: This thing is planned to be a server for the bots to communicate to each other.
+
+**AmeisenBot.Test**: Maybe some tests will appear in this module in the near future
+
+**AmeisenBot.Utilities**: Memory offsets, data structs and a few math related funtions
+
+
+**AmeisenPathLib**: Pathfinding using A*
+**WoWLoginAutomator**: Auto-Login into WoW 3.3.5a
 
 ---
 ## Screenshots
