@@ -121,6 +121,7 @@ namespace AmeisenBotCombat
 
 
 **AmeisenPathLib**: Pathfinding using A*
+
 **WoWLoginAutomator**: Auto-Login into WoW 3.3.5a
 
 ---
