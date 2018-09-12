@@ -4,6 +4,7 @@ using AmeisenBotDB;
 using AmeisenBotFSM.Enums;
 using AmeisenBotLogger;
 using AmeisenBotUtilities;
+using AmeisenCombatEngine.Interfaces;
 using System.Threading;
 
 namespace AmeisenBotFSM
@@ -25,14 +26,14 @@ namespace AmeisenBotFSM
 
         private Thread StateWatcherWorker { get; set; }
 
-        public AmeisenStateMachineManager(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager)
+        public AmeisenStateMachineManager(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager, IAmeisenCombatClass combatClass)
         {
             Active = false;
             AmeisenDataHolder = ameisenDataHolder;
             AmeisenDBManager = ameisenDBManager;
             MainWorker = new Thread(new ThreadStart(DoWork));
             StateWatcherWorker = new Thread(new ThreadStart(WatchForStateChanges));
-            StateMachine = new AmeisenStateMachine(ameisenDataHolder, ameisenDBManager);
+            StateMachine = new AmeisenStateMachine(ameisenDataHolder, ameisenDBManager, combatClass);
         }
 
         /// <summary>
@@ -90,7 +91,7 @@ namespace AmeisenBotFSM
                 // Am I dead?
                 DeadCheck();
 
-                AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"FSM: {StateMachine.GetCurrentState()}", this);
+                AmeisenLogger.Instance.Log(LogLevel.VERBOSE, $"FSM: {StateMachine.GetCurrentState()}", this);
 
                 Thread.Sleep(AmeisenDataHolder.Settings.stateMachineStateUpdateMillis);
             }

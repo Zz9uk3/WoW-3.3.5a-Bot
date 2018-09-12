@@ -1,7 +1,7 @@
-﻿using AmeisenBotCore;
-using AmeisenBotData;
+﻿using AmeisenBotData;
 using AmeisenBotFSM.Interfaces;
 using AmeisenBotUtilities;
+using AmeisenCombatEngine.Interfaces;
 using static AmeisenBotFSM.Objects.Delegates;
 
 namespace AmeisenBotFSM.Actions
@@ -12,6 +12,7 @@ namespace AmeisenBotFSM.Actions
         public DoThings StartDoThings { get { return DoThings; } }
         public Exit StartExit { get { return Stop; } }
         private AmeisenDataHolder AmeisenDataHolder { get; set; }
+        private IAmeisenCombatClass CombatClass { get; set; }
 
         private Me Me
         {
@@ -25,44 +26,32 @@ namespace AmeisenBotFSM.Actions
             set { AmeisenDataHolder.Target = value; }
         }
 
-        public ActionCombat(AmeisenDataHolder ameisenDataHolder)
+        public ActionCombat(AmeisenDataHolder ameisenDataHolder, IAmeisenCombatClass combatClass)
         {
             AmeisenDataHolder = ameisenDataHolder;
+            CombatClass = combatClass;
         }
 
         public void DoThings()
         {
+            if (AmeisenDataHolder.IsAllowedToAttack)
+                CombatClass.HandleAttacking();
+            if (AmeisenDataHolder.IsAllowedToTank)
+                CombatClass.HandleTanking();
+            if (AmeisenDataHolder.IsAllowedToHeal)
+                CombatClass.HandleHealing();
+            if (AmeisenDataHolder.IsAllowedToBuff)
+                CombatClass.HandleBuffs();
         }
 
         public void Start()
         {
+            CombatClass.Init();
         }
 
         public void Stop()
         {
-        }
-
-        private void CastSpellByName(string name, bool onMyself)
-        {
-            AmeisenCore.CastSpellByName(name, onMyself);
-        }
-
-        private void FaceTarget()
-        {
-            if (Target != null)
-            {
-                Target.Update();
-                AmeisenCore.InteractWithGUID(
-                    Target.pos,
-                    Target.Guid,
-                    InteractionType.FACETARGET
-                    );
-            }
-        }
-
-        private SpellInfo GetSpellInfo(string name, bool onMyself)
-        {
-            return AmeisenCore.GetSpellInfo(name);
+            CombatClass.Exit();
         }
     }
 }

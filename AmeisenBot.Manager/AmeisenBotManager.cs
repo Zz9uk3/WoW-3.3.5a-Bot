@@ -5,10 +5,18 @@ using AmeisenBotFSM;
 using AmeisenBotFSM.Enums;
 using AmeisenBotLogger;
 using AmeisenBotUtilities;
+using AmeisenCombatEngine.Interfaces;
 using Magic;
+using Microsoft.CSharp;
+using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
+using System.Reflection;
+using System.Text;
+using System.Windows;
 
 namespace AmeisenBotManager
 {
@@ -130,10 +138,11 @@ namespace AmeisenBotManager
         public bool IsRegisteredAtServer { get { return AmeisenClient.IsRegistered; } }
         public object CurrentFSMState { get { return AmeisenStateMachineManager.StateMachine.GetCurrentState(); } }
 
-        public void LoadCombatClass(string fileName)
+        public void LoadCombatClassFromFile(string fileName)
         {
             AmeisenSettings.Settings.combatClassPath = fileName;
             AmeisenSettings.SaveToFile(AmeisenSettings.loadedconfName);
+            CompileAndLoadCombatClass(fileName);
 
             //TODO: replace AmeisenCombatManager.ReloadCombatClass();
         }
@@ -183,8 +192,11 @@ namespace AmeisenBotManager
             AmeisenObjectManager = new AmeisenObjectManager(AmeisenDataHolder, AmeisenDBManager);
             AmeisenObjectManager.Start();
 
+            // Load the combatclass
+            IAmeisenCombatClass combatClass = CompileAndLoadCombatClass(AmeisenSettings.Settings.combatClassPath);
+
             // Start the StateMachine
-            AmeisenStateMachineManager = new AmeisenStateMachineManager(AmeisenDataHolder, AmeisenDBManager);
+            AmeisenStateMachineManager = new AmeisenStateMachineManager(AmeisenDataHolder, AmeisenDBManager, combatClass);
             AmeisenStateMachineManager.StateMachine.PushAction(BotState.Idle);
             AmeisenStateMachineManager.StateMachine.PushAction(BotState.Follow);
             AmeisenStateMachineManager.Start();
@@ -197,6 +209,60 @@ namespace AmeisenBotManager
                     IPAddress.Parse(AmeisenSettings.Settings.ameisenServerIP),
                     AmeisenSettings.Settings.ameisenServerPort);
             }
+        }
+
+        private IAmeisenCombatClass CompileAndLoadCombatClass(string combatclassPath)
+        {
+            if (File.Exists(combatclassPath))
+            {
+                try
+                {
+                    return CompileCombatClass(combatclassPath);
+                }
+                catch (Exception e)
+                {
+                    //MessageBox.Show(e.Message, "Compiler error");
+                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Error while compiling CombatClass: {Path.GetFileName(combatclassPath)}", this);
+                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"{e.Message}", this);
+                }
+            }
+
+            return null;
+        }
+
+        private IAmeisenCombatClass CompileCombatClass(string combatclassPath)
+        {
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Compiling CombatClass: {Path.GetFileName(combatclassPath)}", this);
+
+            CSharpCodeProvider provider = new CSharpCodeProvider();
+            CompilerParameters parameters = new CompilerParameters();
+            
+            parameters.ReferencedAssemblies.Add("System.dll");
+            parameters.ReferencedAssemblies.Add("./lib/AmeisenBot.Combat.dll");
+            parameters.ReferencedAssemblies.Add("./lib/AmeisenBot.Utilities.dll");
+            parameters.ReferencedAssemblies.Add("./lib/AmeisenBot.Logger.dll");
+            parameters.GenerateInMemory = true;
+            parameters.GenerateExecutable = false;
+
+            CompilerResults results = provider.CompileAssemblyFromSource(parameters, File.ReadAllText(combatclassPath));
+
+            if (results.Errors.HasErrors)
+            {
+                StringBuilder sb = new StringBuilder();
+
+                foreach (CompilerError error in results.Errors)
+                {
+                    sb.AppendLine($"Error ({error.ErrorNumber}): {error.ErrorText}");
+                }
+
+                throw new InvalidOperationException(sb.ToString());
+            }
+
+            Assembly assembly = results.CompiledAssembly;
+            IAmeisenCombatClass result = (IAmeisenCombatClass)assembly.CreateInstance("AmeisenBotCombat.CombatClass");
+
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Successfully compiled CombatClass: {Path.GetFileName(combatclassPath)}", this);
+            return result;
         }
 
         public void StopBot()

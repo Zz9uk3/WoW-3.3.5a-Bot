@@ -88,12 +88,12 @@ namespace AmeisenBotGUI
             {
                 AddExtension = true,
                 RestoreDirectory = true,
-                Filter = "CombatClass JSON|*.json"
+                Filter = "CombatClass *.cs|*.cs"
             };
 
             if (openFileDialog.ShowDialog() == true)
             {
-                BotManager.LoadCombatClass(openFileDialog.FileName);
+                BotManager.LoadCombatClassFromFile(openFileDialog.FileName);
             }
         }
 

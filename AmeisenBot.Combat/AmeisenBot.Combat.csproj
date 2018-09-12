@@ -44,7 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Objects\IAmeisenCombatClass.cs" />
+    <Compile Include="CombatClassTemplate.cs" />
+    <Compile Include="CombatUtillities.cs" />
+    <Compile Include="Interfaces\IAmeisenCombatClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

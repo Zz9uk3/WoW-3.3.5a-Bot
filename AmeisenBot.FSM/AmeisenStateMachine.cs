@@ -4,6 +4,7 @@ using AmeisenBotFSM.Actions;
 using AmeisenBotFSM.Enums;
 using AmeisenBotFSM.Interfaces;
 using AmeisenBotLogger;
+using AmeisenCombatEngine.Interfaces;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -32,7 +33,7 @@ namespace AmeisenBotFSM
 
         private Stack<BotState> StateStack { get; set; }
 
-        public AmeisenStateMachine(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager)
+        public AmeisenStateMachine(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager, IAmeisenCombatClass combatClass)
         {
             StateStack = new Stack<BotState>();
             StateActionMap = new Dictionary<BotState, IAction>
@@ -40,7 +41,7 @@ namespace AmeisenBotFSM
                 { BotState.Idle, new ActionIdle() },
                 { BotState.Follow, new ActionFollow(ameisenDataHolder,ameisenDBManager) },
                 { BotState.Moving, new ActionMoving(ameisenDataHolder,ameisenDBManager) },
-                { BotState.Combat, new ActionCombat(ameisenDataHolder) },
+                { BotState.Combat, new ActionCombat(ameisenDataHolder,combatClass) },
                 { BotState.Dead, new ActionDead(ameisenDataHolder,ameisenDBManager) }
             };
         }
@@ -61,7 +62,7 @@ namespace AmeisenBotFSM
         /// <param name="botState">the state you want to change to</param>
         public BotState PopAction([CallerMemberName]string functionName = "")
         {
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"FSM Pop called by: {functionName}", this);
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, $"FSM Pop called by: {functionName}", this);
             GetCurrentStateAction(GetCurrentState())?.StartExit.Invoke();
             BotState tmpState = StateStack.Pop();
             GetCurrentStateAction(GetCurrentState())?.StartAction.Invoke();
@@ -77,7 +78,7 @@ namespace AmeisenBotFSM
         {
             if (GetCurrentState() != botState)
             {
-                AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"FSM Push [{botState}] called by: {functionName}", this);
+                AmeisenLogger.Instance.Log(LogLevel.VERBOSE, $"FSM Push [{botState}] called by: {functionName}", this);
                 GetCurrentStateAction(GetCurrentState())?.StartExit.Invoke();
                 StateStack.Push(botState);
                 GetCurrentStateAction(GetCurrentState())?.StartAction.Invoke();

@@ -38,6 +38,7 @@
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -56,6 +57,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AmeisenBot.Combat\AmeisenBot.Combat.csproj">
+      <Project>{CD72AD54-7C40-4EC0-8878-0771922A2961}</Project>
+      <Name>AmeisenBot.Combat</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AmeisenBot.Core\AmeisenBot.Core.csproj">
       <Project>{567f9df2-e2d0-4bc8-a295-b7913cc1303e}</Project>
       <Name>AmeisenBot.Core</Name>
