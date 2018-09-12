@@ -27,11 +27,11 @@ Start the "AmeisenServer.exe", it will open a sketchy HTTP-Api at port 16200...
 🌵 **How to enable AutoLogin:**
 Place the "WoW-LoginAutomator.exe" in the same folder as the bot, thats all...
 
-💩 **Web Interface**
+💩 **Web Interface:**
 To use this piece of turd, junk, trash, don't know how to call this thing, Open the "index.html" thats hidden deep in the shittiest corner of this project...
 💡 *Pro Tip: look for a file called: "groessterMuellEUWest.javashit"*
 
-🔪 **How to make a CombatClass**
+🔪 **How to make a CombatClass:**
 Template \*.cs file:
 ```c#
 using System;
