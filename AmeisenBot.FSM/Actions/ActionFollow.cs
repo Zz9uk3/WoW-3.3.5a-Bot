@@ -17,6 +17,9 @@ namespace AmeisenBotFSM.Actions
         private AmeisenDataHolder AmeisenDataHolder { get; set; }
         private AmeisenDBManager AmeisenDBManager { get; set; }
 
+        private double XOffset { get; set; }
+        private double YOffset { get; set; }
+
         public ActionFollow(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager) : base(ameisenDataHolder, ameisenDBManager)
         {
             AmeisenDataHolder = ameisenDataHolder;
@@ -51,7 +54,7 @@ namespace AmeisenBotFSM.Actions
             posToMoveTo = CalculateMovementOffset(
                 posToMoveTo,
                 GetFollowAngle(
-                    GetPartymemberCount(), 
+                    GetPartymemberCount(),
                     GetMyPartyPosition()),
                 AmeisenDataHolder.Settings.followDistance);
 
@@ -72,25 +75,27 @@ namespace AmeisenBotFSM.Actions
 
         private int GetMyPartyPosition()
         {
-            int pos = 0;
-            foreach (ulong guid in Me.PartymemberGuids)
-            {
-                if (guid == Me.Guid)
+            int pos = 1;
+
+            if (AmeisenDataHolder.ActiveNetworkBots != null)
+                foreach (NetworkBot bot in AmeisenDataHolder.ActiveNetworkBots)
                 {
-                    return pos;
+                    if (bot.me.Guid == Me.Guid)
+                    {
+                        return pos;
+                    }
+                    else
+                    {
+                        pos++;
+                    }
                 }
-                else
-                {
-                    pos++;
-                }
-            }
 
             return pos;
         }
 
         private int GetPartymemberCount()
         {
-            int count = -1; // subtract ourself
+            int count = 0; // subtract ourself
             foreach (ulong guid in Me.PartymemberGuids)
             {
                 if (guid != 0)
@@ -110,8 +115,8 @@ namespace AmeisenBotFSM.Actions
         private Vector3 CalculateMovementOffset(Vector3 posToMoveTo, double angle, double distance)
         {
             return new Vector3(
-                posToMoveTo.X + (Math.Cos(angle) * distance),
-                posToMoveTo.Y + (Math.Sin(angle) * distance),
+                posToMoveTo.X + (Math.Cos(angle) * (distance / 2) - XOffset),
+                posToMoveTo.Y + (Math.Sin(angle) * (distance / 2) - YOffset),
                 posToMoveTo.Z);
         }
 
@@ -137,6 +142,10 @@ namespace AmeisenBotFSM.Actions
         {
             base.Start();
             ActiveUnits = GetUnitsToFollow();
+
+            Random rnd = new Random();
+            XOffset = rnd.NextDouble() * AmeisenDataHolder.Settings.followDistance;
+            YOffset = rnd.NextDouble() * AmeisenDataHolder.Settings.followDistance;
         }
 
         public override void Stop()

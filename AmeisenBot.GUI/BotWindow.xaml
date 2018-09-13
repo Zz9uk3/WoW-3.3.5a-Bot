@@ -219,7 +219,7 @@
             </Button.Foreground>
         </Button>
         <Image x:Name="botPicture" HorizontalAlignment="Left" Height="137" VerticalAlignment="Top" Width="137" Margin="6,6,0,0" />
-        <Slider x:Name="sliderDistance" HorizontalAlignment="Left" Margin="299,330,0,0" VerticalAlignment="Top" Width="170" Minimum="3" Maximum="12" Value="2" ValueChanged="SliderDistance_ValueChanged">
+        <Slider x:Name="sliderDistance" HorizontalAlignment="Left" Margin="299,330,0,0" VerticalAlignment="Top" Width="170" Minimum="3" Maximum="12" Value="3" ValueChanged="SliderDistance_ValueChanged">
             <Slider.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Slider.BorderBrush>
@@ -230,7 +230,7 @@
                 <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
             </Slider.Foreground>
         </Slider>
-        <Label x:Name="labelDistance" Content="Follow Distance: 3m" HorizontalAlignment="Left" Margin="172,326,0,0" VerticalAlignment="Top" Width="117">
+        <Label x:Name="labelDistance" Content="Follow Distance: 3m" HorizontalAlignment="Left" Margin="172,326,0,0" VerticalAlignment="Top" Width="124">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>

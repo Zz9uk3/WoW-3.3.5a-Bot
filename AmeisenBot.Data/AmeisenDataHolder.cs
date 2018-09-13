@@ -6,6 +6,7 @@ namespace AmeisenBotData
     public class AmeisenDataHolder
     {
         public List<WowObject> ActiveWoWObjects { get; set; }
+        public List<NetworkBot> ActiveNetworkBots { get; set; }
         public double FollowDistance { get; set; }
         public bool IsAllowedToAssistParty { get; set; }
         public bool IsAllowedToAttack { get; set; }

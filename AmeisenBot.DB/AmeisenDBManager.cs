@@ -1,6 +1,8 @@
-﻿using AmeisenBotMapping.objects;
+﻿using AmeisenBotLogger;
+using AmeisenBotMapping.objects;
 using Dapper;
 using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -76,16 +78,8 @@ namespace AmeisenBotDB
 
                 sqlQuery.Append(";");
 
-                try
-                {
-                    List<MapNode> nodeList = sqlConnection.Query<MapNode>(sqlQuery.ToString()).AsList();
-                    return nodeList;
-                }
-                catch
-                {
-                    //AmeisenLogger.Instance.Log(LogLevel.ERROR, "Query error: " + e.ToString(), this);
-                    return new List<MapNode>();
-                }
+                List<MapNode> nodeList = sqlConnection.Query<MapNode>(sqlQuery.ToString()).AsList();
+                return nodeList;
             }
             else
             {

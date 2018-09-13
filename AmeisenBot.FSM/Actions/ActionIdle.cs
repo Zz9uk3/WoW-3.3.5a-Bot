@@ -28,6 +28,7 @@ namespace AmeisenBotFSM.Actions
         public ActionIdle(AmeisenDataHolder ameisenDataHolder)
         {
             AmeisenDataHolder = ameisenDataHolder;
+            TickCountToExecuteRandomEmote = Environment.TickCount + new Random().Next(60000, 600000);
         }
 
         public void DoThings()
@@ -40,7 +41,7 @@ namespace AmeisenBotFSM.Actions
 
         public void Start()
         {
-            TickCountToExecuteRandomEmote = new Random().Next(60000, 600000);
+
         }
 
         public void Stop() { }
@@ -50,7 +51,7 @@ namespace AmeisenBotFSM.Actions
             if (Environment.TickCount >= TickCountToExecuteRandomEmote)
             {
                 AmeisenCore.LuaDoString($"DoEmote(\"{randomEmoteList[new Random().Next(randomEmoteList.Length)]}\");");
-                TickCountToExecuteRandomEmote = new Random().Next(60000, 600000);
+                TickCountToExecuteRandomEmote = Environment.TickCount + new Random().Next(60000, 600000);
             }
         }
     }

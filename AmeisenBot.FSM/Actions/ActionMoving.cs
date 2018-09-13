@@ -2,12 +2,14 @@
 using AmeisenBotData;
 using AmeisenBotDB;
 using AmeisenBotFSM.Interfaces;
+using AmeisenBotLogger;
 using AmeisenBotMapping.objects;
 using AmeisenBotUtilities;
 using AmeisenPathLib;
 using AmeisenPathLib.objects;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using static AmeisenBotFSM.Objects.Delegates;
 
 namespace AmeisenBotFSM.Actions
@@ -27,6 +29,8 @@ namespace AmeisenBotFSM.Actions
             get { return AmeisenDataHolder.Me; }
             set { AmeisenDataHolder.Me = value; }
         }
+
+        public bool PathCalculated { get; private set; }
 
         public ActionMoving(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager)
         {
@@ -63,12 +67,16 @@ namespace AmeisenBotFSM.Actions
         /// <returns>if we havent moved 0.5m in the 2 vectors, jump and return true</returns>
         private bool CheckIfWeAreStuckIfYesJump(Vector3 initialPosition, Vector3 activePosition)
         {
+            double movedSinceLastTick = Utils.GetDistance(initialPosition, activePosition);
+
             // we are possibly stuck at a fence or something alike
-            if (Utils.GetDistance(initialPosition, activePosition) < AmeisenDataHolder.Settings.MovementJumpThreshold)
-            {
-                AmeisenCore.CharacterJumpAsync();
-                return true;
-            }
+            if (movedSinceLastTick != 0 && movedSinceLastTick < 1000)
+                if (movedSinceLastTick < AmeisenDataHolder.Settings.MovementJumpThreshold)
+                {
+                    AmeisenCore.CharacterJumpAsync();
+                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Jumping: {movedSinceLastTick}", this);
+                    return true;
+                }
             return false;
         }
 
@@ -82,10 +90,16 @@ namespace AmeisenBotFSM.Actions
 
                 if (Utils.GetDistance(initialPosition, targetPosition) > AmeisenDataHolder.Settings.PathfindingUsageThreshold)
                 {
-                    WaypointQueue.Dequeue();
-                    foreach (Node node in FindWayToNode(initialPosition, targetPosition))
+                    if (!PathCalculated)
                     {
-                        WaypointQueue.Enqueue(new Vector3(node.Position.X, node.Position.Y, node.Position.Z));
+                        WaypointQueue.Dequeue();
+                        List<Node> path = FindWayToNode(initialPosition, new Vector3(initialPosition.X + 1.0, initialPosition.Y, initialPosition.Z));
+
+                        if (path != null)
+                            foreach (Node node in path)
+                            {
+                                WaypointQueue.Enqueue(new Vector3(node.Position.X, node.Position.Y, node.Position.Z));
+                            }
                     }
                 }
                 else
@@ -93,25 +107,47 @@ namespace AmeisenBotFSM.Actions
                     CheckIfWeAreStuckIfYesJump(targetPosition, LastPosition);
                     AmeisenCore.MovePlayerToXYZ(targetPosition, InteractionType.MOVE);
                     LastPosition = WaypointQueue.Dequeue();
+                    Thread.Sleep(100);
                 }
             }
+            else { PathCalculated = false; }
         }
 
         private List<Node> FindWayToNode(Vector3 initialPosition, Vector3 targetPosition)
         {
+            int offsetX = 0;
+            int offsetY = 0;
+
             int distance = (int)Utils.GetDistance(initialPosition, targetPosition);
             int maxX = (int)initialPosition.X + (distance * AmeisenDataHolder.Settings.PathfindingSearchRadius);
             int minX = (int)initialPosition.X - (distance * AmeisenDataHolder.Settings.PathfindingSearchRadius);
             int maxY = (int)initialPosition.Y + (distance * AmeisenDataHolder.Settings.PathfindingSearchRadius);
             int minY = (int)initialPosition.Y - (distance * AmeisenDataHolder.Settings.PathfindingSearchRadius);
 
-            List<MapNode> nodes = AmeisenDBManager.GetNodes(Me.ZoneID, Me.MapID, maxX, minX, maxY, minY);
-            
+            offsetX = minX * -1;
+            minX += offsetX;
+            maxX += offsetX;
+
+            offsetY = minY * -1;
+            minY += offsetY;
+            maxY += offsetY;
+
+            List<MapNode> nodes = AmeisenDBManager.GetNodes(
+                Me.ZoneID,
+                Me.MapID,
+                maxX - offsetX,
+                minX - offsetX,
+                maxY - offsetY,
+                minY - offsetY);
+
+            if (nodes.Count < 1)
+                return null;
+
             Node[,] map = new Node[maxX + 1, maxY + 1];
 
-            for (int x = 0; x <= maxX; x++)
+            for (int x = minX; x <= maxX; x++)
             {
-                for (int y = 0; y <= maxY; y++)
+                for (int y = minY; y <= maxY; y++)
                 {
                     map[x, y] = new Node(new NodePosition(x, y, 0), true);
                 }
@@ -119,12 +155,29 @@ namespace AmeisenBotFSM.Actions
 
             foreach (MapNode node in nodes)
             {
-                map[node.X, node.Y] = new Node(new NodePosition(node.X, node.Y, node.Z), false);
+                map[node.X + offsetX, node.Y + offsetY] = new Node(new NodePosition(node.X + offsetX, node.Y + offsetY, node.Z), false);
             }
 
-            return AmeisenPath.FindPathAStar(map,
-                                             new NodePosition((int)initialPosition.X, (int)initialPosition.Y, (int)initialPosition.Z),
-                                             new NodePosition((int)targetPosition.X, (int)targetPosition.Y, (int)targetPosition.Z));
+            List<Node> path = AmeisenPath.FindPathAStar(map,
+                                             new NodePosition((int)initialPosition.X + offsetX, (int)initialPosition.Y + offsetY, (int)initialPosition.Z),
+                                             new NodePosition((int)targetPosition.X + offsetX, (int)targetPosition.Y + offsetY, (int)targetPosition.Z));
+
+            if (path == null)
+                return null;
+
+            List<Node> rebasedPath = new List<Node>();
+            foreach (Node node in path)
+                rebasedPath.Add(
+                    new Node(
+                        new NodePosition(
+                            node.Position.X - offsetX,
+                            node.Position.Y - offsetY,
+                            node.Position.Z),
+                        false));
+
+            PathCalculated = true;
+
+            return rebasedPath;
         }
 
         /// <summary> Modify our go-to-position by a small factor to provide "naturality" </summary>

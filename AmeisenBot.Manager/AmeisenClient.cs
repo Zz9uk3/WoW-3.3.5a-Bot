@@ -121,6 +121,7 @@ namespace AmeisenBotManager
                 HttpResponseMessage response = await client.GetAsync($"http://{IPAddress}:{Port}/activeBots/");
                 string responseString = await response.Content.ReadAsStringAsync();
                 BotList = JsonConvert.DeserializeObject<List<NetworkBot>>(responseString);
+                AmeisenDataHolder.ActiveNetworkBots = BotList;
             }
             catch { }
         }
