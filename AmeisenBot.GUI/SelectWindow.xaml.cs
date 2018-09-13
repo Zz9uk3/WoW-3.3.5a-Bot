@@ -75,8 +75,9 @@ namespace AmeisenBotGUI
         private void ButtonGoAuto_Click(object sender, RoutedEventArgs e)
         {
             Credentials credentials;
+            WowExe activeExe = ((WowExe)comboBoxWoWs.SelectedItem);
 
-            if (autologinIsPossible && ((WowExe)comboBoxWoWs.SelectedItem).characterName == "")
+            if (activeExe != null && autologinIsPossible && activeExe.characterName == "")
             {
                 if (!Directory.Exists(configPath))
                     Directory.CreateDirectory(configPath);

@@ -18,6 +18,8 @@ namespace AmeisenBotData
         public bool IsAllowedToReleaseSpirit { get; set; }
         public bool IsAllowedToRevive { get; set; }
         public Settings Settings { get; set; }
+        public bool IsAllowedToDoRandomEmotes { get; set; }
+        public bool IsAllowedToDoOwnStuff { get; set; }
 
         public AmeisenDataHolder()
         {

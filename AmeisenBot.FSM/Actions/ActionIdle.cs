@@ -1,4 +1,7 @@
-﻿using AmeisenBotFSM.Interfaces;
+﻿using AmeisenBotCore;
+using AmeisenBotData;
+using AmeisenBotFSM.Interfaces;
+using System;
 using static AmeisenBotFSM.Objects.Delegates;
 
 namespace AmeisenBotFSM.Actions
@@ -8,14 +11,47 @@ namespace AmeisenBotFSM.Actions
         public Start StartAction { get { return Start; } }
         public DoThings StartDoThings { get { return DoThings; } }
         public Exit StartExit { get { return Stop; } }
+        private long TickCountToExecuteRandomEmote { get; set; }
+        private AmeisenDataHolder AmeisenDataHolder { get; set; }
 
-        // Idle DoThings code here
-        public void DoThings() { }
+        private string[] randomEmoteList = {
+            "dance",
+            "shrug",
+            "laugh",
+            "train",
+            "joke",
+            "fart",
+            "bravo",
+            "chicken"
+        };
 
-        // Idle Start code here
-        public void Start() { }
+        public ActionIdle(AmeisenDataHolder ameisenDataHolder)
+        {
+            AmeisenDataHolder = ameisenDataHolder;
+        }
 
-        // Idle Stop code here
+        public void DoThings()
+        {
+            if (AmeisenDataHolder.IsAllowedToDoRandomEmotes)
+            {
+                DoRandomEmote();
+            }
+        }
+
+        public void Start()
+        {
+            TickCountToExecuteRandomEmote = new Random().Next(60000, 600000);
+        }
+
         public void Stop() { }
+
+        private void DoRandomEmote()
+        {
+            if (Environment.TickCount >= TickCountToExecuteRandomEmote)
+            {
+                AmeisenCore.LuaDoString($"DoEmote(\"{randomEmoteList[new Random().Next(randomEmoteList.Length)]}\");");
+                TickCountToExecuteRandomEmote = new Random().Next(60000, 600000);
+            }
+        }
     }
 }

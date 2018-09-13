@@ -5,6 +5,7 @@ using AmeisenBotFSM.Enums;
 using AmeisenBotFSM.Interfaces;
 using AmeisenBotLogger;
 using AmeisenCombatEngine.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -38,12 +39,19 @@ namespace AmeisenBotFSM
             StateStack = new Stack<BotState>();
             StateActionMap = new Dictionary<BotState, IAction>
             {
-                { BotState.Idle, new ActionIdle() },
+                { BotState.Idle, new ActionIdle(ameisenDataHolder) },
                 { BotState.Follow, new ActionFollow(ameisenDataHolder,ameisenDBManager) },
                 { BotState.Moving, new ActionMoving(ameisenDataHolder,ameisenDBManager) },
                 { BotState.Combat, new ActionCombat(ameisenDataHolder,combatClass) },
-                { BotState.Dead, new ActionDead(ameisenDataHolder,ameisenDBManager) }
+                { BotState.Dead, new ActionDead(ameisenDataHolder,ameisenDBManager) },
+                { BotState.BotStuff, new ActionDoBotStuff(ameisenDataHolder, GetBotStuffToDo()) }
             };
+        }
+
+        private List<IBotStuff> GetBotStuffToDo()
+        {
+            // TODO: implement this
+            return new List<IBotStuff>();
         }
 
         /// <summary>
@@ -101,7 +109,10 @@ namespace AmeisenBotFSM
         private IAction GetCurrentStateAction(BotState state)
         {
             if (state == BotState.None)
+            {
                 return null;
+            }
+
             return StateActionMap[state];
         }
     }

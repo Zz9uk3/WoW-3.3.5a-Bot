@@ -44,5 +44,10 @@
         public bool revive = false;
         public int stateMachineUpdateMillis = 10;
         public int stateMachineStateUpdateMillis = 250;
+        public int PathfindingSearchRadius = 2;
+        public double PathfindingUsageThreshold = 50;
+        public double MovementJumpThreshold = 0.5;
+        public bool randomEmotes = true;
+        public bool doOwnStuff = false;
     }
 }

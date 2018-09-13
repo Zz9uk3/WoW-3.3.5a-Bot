@@ -159,6 +159,12 @@ namespace AmeisenBotGUI
 
             checkBoxReleaseSpirit.IsChecked = BotManager.Settings.releaseSpirit;
             BotManager.IsAllowedToReleaseSpirit = BotManager.Settings.releaseSpirit;
+            
+            checkBoxRandomEmotes.IsChecked = BotManager.Settings.randomEmotes;
+            BotManager.IsAllowedToDoRandomEmotes = BotManager.Settings.randomEmotes;
+
+            checkBoxDoBotStuff.IsChecked = BotManager.Settings.doOwnStuff;
+            BotManager.IsAllowedToDoOwnStuff = BotManager.Settings.doOwnStuff;
 
             checkBoxRevive.IsChecked = BotManager.Settings.revive;
             BotManager.IsAllowedToRevive = BotManager.Settings.revive;

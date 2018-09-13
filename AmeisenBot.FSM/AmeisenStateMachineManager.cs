@@ -17,14 +17,13 @@ namespace AmeisenBotFSM
         private AmeisenDataHolder AmeisenDataHolder { get; set; }
         private AmeisenDBManager AmeisenDBManager { get; set; }
         private Thread MainWorker { get; set; }
+        private Thread StateWatcherWorker { get; set; }
 
         private Me Me
         {
             get { return AmeisenDataHolder.Me; }
             set { AmeisenDataHolder.Me = value; }
         }
-
-        private Thread StateWatcherWorker { get; set; }
 
         public AmeisenStateMachineManager(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager, IAmeisenCombatClass combatClass)
         {
@@ -82,6 +81,12 @@ namespace AmeisenBotFSM
         {
             while (Active)
             {
+                // Is me supposed to follow
+                FollowCheck();
+
+                // Bot stuff check
+                BotStuffCheck();
+
                 // Am I in combat
                 InCombatCheck();
 
@@ -92,37 +97,74 @@ namespace AmeisenBotFSM
                 DeadCheck();
 
                 AmeisenLogger.Instance.Log(LogLevel.VERBOSE, $"FSM: {StateMachine.GetCurrentState()}", this);
-
                 Thread.Sleep(AmeisenDataHolder.Settings.stateMachineStateUpdateMillis);
+            }
+        }
+
+        private void BotStuffCheck()
+        {
+            if (AmeisenDataHolder.IsAllowedToDoOwnStuff)
+            {
+                StateMachine.PushAction(BotState.BotStuff);
+            }
+            else if (StateMachine.GetCurrentState() == BotState.BotStuff)
+            {
+                StateMachine.PopAction();
+            }
+        }
+
+        private void FollowCheck()
+        {
+            if (AmeisenDataHolder.IsAllowedToFollowParty)
+            {
+                StateMachine.PushAction(BotState.Follow);
+            }
+            else if (StateMachine.GetCurrentState() == BotState.Follow)
+            {
+                StateMachine.PopAction();
             }
         }
 
         private void InCombatCheck()
         {
             if (Me != null)
+            {
                 if (Me.InCombat || (PartymembersInCombat() && AmeisenDataHolder.IsAllowedToAssistParty))
+                {
                     StateMachine.PushAction(BotState.Combat);
+                }
                 else if (StateMachine.GetCurrentState() == BotState.Combat)
+                {
                     StateMachine.PopAction();
+                }
+            }
         }
 
         private void ReleaseSpiritCheck()
         {
             if (AmeisenDataHolder.IsAllowedToReleaseSpirit)
+            {
                 if (Me.Health == 0)
                 {
                     AmeisenCore.ReleaseSpirit();
                     Thread.Sleep(2000);
                 }
+            }
         }
 
         private void DeadCheck()
         {
             if (AmeisenDataHolder.IsAllowedToRevive)
+            {
                 if (Me.IsDead)
+                {
                     StateMachine.PushAction(BotState.Dead);
+                }
                 else if (StateMachine.GetCurrentState() == BotState.Dead)
+                {
                     StateMachine.PopAction();
+                }
+            }
         }
 
         /// <summary>
@@ -134,13 +176,20 @@ namespace AmeisenBotFSM
             try
             {
                 foreach (ulong guid in Me.PartymemberGuids)
+                {
                     foreach (WowObject obj in AmeisenDataHolder.ActiveWoWObjects)
+                    {
                         if (guid == obj.Guid)
                         {
                             if (((Unit)obj).InCombat)
+                            {
                                 return true;
+                            }
+
                             break;
                         }
+                    }
+                }
             }
             catch { }
             return false;

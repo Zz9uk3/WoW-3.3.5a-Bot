@@ -186,12 +186,12 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Label x:Name="labelLoadedCombatClass" Content="CombatClass: " HorizontalAlignment="Left" Margin="314,148,0,0" FontSize="9" Width="155" Height="26" VerticalAlignment="Top">
+        <Label x:Name="labelLoadedCombatClass" Content="CombatClass: " HorizontalAlignment="Left" Margin="0,296,0,0" Width="149" Height="26" VerticalAlignment="Top">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Button x:Name="buttonOpenFile" Content="📂 Open CombatClass" HorizontalAlignment="Left" Margin="319,123,0,0" VerticalAlignment="Top" Width="150" BorderThickness="2" Click="ButtonOpenFile_Click">
+        <Button x:Name="buttonOpenFile" Content="📂 Open CombatClass" HorizontalAlignment="Left" Margin="2,328,0,0" VerticalAlignment="Top" Width="161" BorderThickness="2" Click="ButtonOpenFile_Click">
             <Button.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Button.Foreground>
@@ -219,7 +219,7 @@
             </Button.Foreground>
         </Button>
         <Image x:Name="botPicture" HorizontalAlignment="Left" Height="137" VerticalAlignment="Top" Width="137" Margin="6,6,0,0" />
-        <Slider x:Name="sliderDistance" HorizontalAlignment="Left" Margin="179,150,0,0" VerticalAlignment="Top" Width="120" Minimum="3" Maximum="12" Value="2" ValueChanged="SliderDistance_ValueChanged">
+        <Slider x:Name="sliderDistance" HorizontalAlignment="Left" Margin="299,330,0,0" VerticalAlignment="Top" Width="170" Minimum="3" Maximum="12" Value="2" ValueChanged="SliderDistance_ValueChanged">
             <Slider.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Slider.BorderBrush>
@@ -230,7 +230,7 @@
                 <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
             </Slider.Foreground>
         </Slider>
-        <Label x:Name="labelDistance" Content="Follow Distance: 3m" HorizontalAlignment="Left" Margin="174,126,0,0" VerticalAlignment="Top" Width="140">
+        <Label x:Name="labelDistance" Content="Follow Distance: 3m" HorizontalAlignment="Left" Margin="172,326,0,0" VerticalAlignment="Top" Width="117">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
@@ -299,6 +299,27 @@
             </Label.Foreground>
         </Label>
         <Label Content="🧠" HorizontalAlignment="Left" Margin="168,254,0,0" VerticalAlignment="Top" FontSize="30" RenderTransformOrigin="4.267,0.515" Height="50" Width="50">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Label.Foreground>
+        </Label>
+        <CheckBox x:Name="checkBoxRandomEmotes" Content="🤷 Emotes" Margin="270,110,0,0" Background="White" HorizontalAlignment="Left" Width="129" BorderThickness="2" Height="20" VerticalAlignment="Top" Click="CheckBoxAssistPartyBuff_Click" FontSize="14">
+            <CheckBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </CheckBox.Foreground>
+            <CheckBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
+            </CheckBox.BorderBrush>
+        </CheckBox>
+        <CheckBox x:Name="checkBoxDoBotStuff" Content="👾 Do own stuff" Margin="270,135,0,0" Background="White" HorizontalAlignment="Left" Width="129" BorderThickness="2" Height="20" VerticalAlignment="Top" Click="CheckBoxAssistPartyBuff_Click" FontSize="14">
+            <CheckBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </CheckBox.Foreground>
+            <CheckBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
+            </CheckBox.BorderBrush>
+        </CheckBox>
+        <Label Content="⚔" HorizontalAlignment="Left" Margin="0,254,0,0" VerticalAlignment="Top" FontSize="30" RenderTransformOrigin="4.267,0.515" Height="50" Width="50">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>

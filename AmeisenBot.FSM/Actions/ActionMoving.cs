@@ -2,9 +2,10 @@
 using AmeisenBotData;
 using AmeisenBotDB;
 using AmeisenBotFSM.Interfaces;
-using AmeisenBotMapping;
 using AmeisenBotMapping.objects;
 using AmeisenBotUtilities;
+using AmeisenPathLib;
+using AmeisenPathLib.objects;
 using System;
 using System.Collections.Generic;
 using static AmeisenBotFSM.Objects.Delegates;
@@ -19,6 +20,7 @@ namespace AmeisenBotFSM.Actions
         public Queue<Vector3> WaypointQueue { get; set; }
         private AmeisenDataHolder AmeisenDataHolder { get; set; }
         private AmeisenDBManager AmeisenDBManager { get; set; }
+        private Vector3 LastPosition { get; set; }
 
         private Me Me
         {
@@ -43,6 +45,7 @@ namespace AmeisenBotFSM.Actions
         public virtual void Start()
         {
             WaypointQueue = new Queue<Vector3>();
+            LastPosition = new Vector3(int.MaxValue, int.MaxValue, int.MaxValue);
         }
 
         public virtual void Stop()
@@ -60,13 +63,12 @@ namespace AmeisenBotFSM.Actions
         /// <returns>if we havent moved 0.5m in the 2 vectors, jump and return true</returns>
         private bool CheckIfWeAreStuckIfYesJump(Vector3 initialPosition, Vector3 activePosition)
         {
-            // we are possibly stuck at a fence or so
-            if (Utils.GetDistance(initialPosition, activePosition) < 0.5)
+            // we are possibly stuck at a fence or something alike
+            if (Utils.GetDistance(initialPosition, activePosition) < AmeisenDataHolder.Settings.MovementJumpThreshold)
             {
                 AmeisenCore.CharacterJumpAsync();
                 return true;
             }
-            // Here comes the Obstacle-Avoid-System/Pathfinding-System in the future
             return false;
         }
 
@@ -78,26 +80,51 @@ namespace AmeisenBotFSM.Actions
                 Vector3 initialPosition = Me.pos;
                 Vector3 targetPosition = WaypointQueue.Peek();
 
-                AmeisenCore.MovePlayerToXYZ(targetPosition, InteractionType.MOVE);
-                WaypointQueue.Dequeue();
+                if (Utils.GetDistance(initialPosition, targetPosition) > AmeisenDataHolder.Settings.PathfindingUsageThreshold)
+                {
+                    WaypointQueue.Dequeue();
+                    foreach (Node node in FindWayToNode(initialPosition, targetPosition))
+                    {
+                        WaypointQueue.Enqueue(new Vector3(node.Position.X, node.Position.Y, node.Position.Z));
+                    }
+                }
+                else
+                {
+                    CheckIfWeAreStuckIfYesJump(targetPosition, LastPosition);
+                    AmeisenCore.MovePlayerToXYZ(targetPosition, InteractionType.MOVE);
+                    LastPosition = WaypointQueue.Dequeue();
+                }
             }
         }
 
-        private List<MapNode> FindWayToNode(Vector3 initialPosition, Vector3 targetPosition)
+        private List<Node> FindWayToNode(Vector3 initialPosition, Vector3 targetPosition)
         {
-            int maxX = initialPosition.X >= targetPosition.X ? (int)initialPosition.X : (int)targetPosition.X;
-            int minX = initialPosition.X <= targetPosition.X ? (int)initialPosition.X : (int)targetPosition.X;
+            int distance = (int)Utils.GetDistance(initialPosition, targetPosition);
+            int maxX = (int)initialPosition.X + (distance * AmeisenDataHolder.Settings.PathfindingSearchRadius);
+            int minX = (int)initialPosition.X - (distance * AmeisenDataHolder.Settings.PathfindingSearchRadius);
+            int maxY = (int)initialPosition.Y + (distance * AmeisenDataHolder.Settings.PathfindingSearchRadius);
+            int minY = (int)initialPosition.Y - (distance * AmeisenDataHolder.Settings.PathfindingSearchRadius);
 
-            int maxY = initialPosition.Y >= targetPosition.Y ? (int)initialPosition.Y : (int)targetPosition.Y;
-            int minY = initialPosition.Y <= targetPosition.Y ? (int)initialPosition.Y : (int)targetPosition.Y;
-
-            List<MapNode> route = new List<MapNode>();
             List<MapNode> nodes = AmeisenDBManager.GetNodes(Me.ZoneID, Me.MapID, maxX, minX, maxY, minY);
-            Map map = new Map(nodes);
+            
+            Node[,] map = new Node[maxX + 1, maxY + 1];
 
-            //AmeisenPath.FindPathAStar();
+            for (int x = 0; x <= maxX; x++)
+            {
+                for (int y = 0; y <= maxY; y++)
+                {
+                    map[x, y] = new Node(new NodePosition(x, y, 0), true);
+                }
+            }
 
-            return route;
+            foreach (MapNode node in nodes)
+            {
+                map[node.X, node.Y] = new Node(new NodePosition(node.X, node.Y, node.Z), false);
+            }
+
+            return AmeisenPath.FindPathAStar(map,
+                                             new NodePosition((int)initialPosition.X, (int)initialPosition.Y, (int)initialPosition.Z),
+                                             new NodePosition((int)targetPosition.X, (int)targetPosition.Y, (int)targetPosition.Z));
         }
 
         /// <summary> Modify our go-to-position by a small factor to provide "naturality" </summary>

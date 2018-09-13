@@ -16,7 +16,6 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Text;
-using System.Windows;
 
 namespace AmeisenBotManager
 {
@@ -44,12 +43,24 @@ namespace AmeisenBotManager
             set { AmeisenDataHolder.IsAllowedToAssistParty = value; }
         }
 
+        public bool IsAllowedToDoRandomEmotes
+        {
+            get { return AmeisenDataHolder.IsAllowedToDoRandomEmotes; }
+            set { AmeisenDataHolder.IsAllowedToDoRandomEmotes = value; }
+        }
+
         public bool IsAllowedToAttack
         {
             get { return AmeisenDataHolder.IsAllowedToAttack; }
             set { AmeisenDataHolder.IsAllowedToAttack = value; }
         }
 
+        public bool IsAllowedToDoOwnStuff
+        {
+            get { return AmeisenDataHolder.IsAllowedToDoOwnStuff; }
+            set { AmeisenDataHolder.IsAllowedToDoOwnStuff = value; }
+        }
+        
         public bool IsAllowedToBuff
         {
             get { return AmeisenDataHolder.IsAllowedToBuff; }
@@ -198,7 +209,6 @@ namespace AmeisenBotManager
             // Start the StateMachine
             AmeisenStateMachineManager = new AmeisenStateMachineManager(AmeisenDataHolder, AmeisenDBManager, combatClass);
             AmeisenStateMachineManager.StateMachine.PushAction(BotState.Idle);
-            AmeisenStateMachineManager.StateMachine.PushAction(BotState.Follow);
             AmeisenStateMachineManager.Start();
 
             // Connect to Server
@@ -236,7 +246,7 @@ namespace AmeisenBotManager
 
             CSharpCodeProvider provider = new CSharpCodeProvider();
             CompilerParameters parameters = new CompilerParameters();
-            
+
             parameters.ReferencedAssemblies.Add("System.dll");
             parameters.ReferencedAssemblies.Add("./lib/AmeisenBot.Combat.dll");
             parameters.ReferencedAssemblies.Add("./lib/AmeisenBot.Utilities.dll");

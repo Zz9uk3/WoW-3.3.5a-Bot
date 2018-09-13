@@ -1,8 +1,8 @@
 ﻿using AmeisenBotData;
 using AmeisenBotDB;
 using AmeisenBotUtilities;
+using System;
 using System.Collections.Generic;
-using System.Threading;
 using static AmeisenBotFSM.Objects.Delegates;
 
 namespace AmeisenBotFSM.Actions
@@ -36,22 +36,83 @@ namespace AmeisenBotFSM.Actions
             Me?.Update();
             ActiveUnit?.Update();
 
-            // When we are far enough away, follow
             if (Me == null || ActiveUnit == null)
+            {
                 return;
+            }
 
-            if (Utils.GetDistance(Me.pos, ActiveUnit.pos)
+            // When we are on different zones, stop following
+            if (Me.ZoneID != ActiveUnit.ZoneID)
+            {
+                return;
+            }
+
+            Vector3 posToMoveTo = ActiveUnit.pos;
+            posToMoveTo = CalculateMovementOffset(
+                posToMoveTo,
+                GetFollowAngle(
+                    GetPartymemberCount(), 
+                    GetMyPartyPosition()),
+                AmeisenDataHolder.Settings.followDistance);
+
+            // When we are far enough away, follow
+            if (Utils.GetDistance(Me.pos, posToMoveTo)
                 > AmeisenDataHolder.Settings.followDistance)
             {
                 // Dont add waypoints twice
-                if (!WaypointQueue.Contains(ActiveUnit.pos))
+                if (!WaypointQueue.Contains(posToMoveTo))
                 {
-                    WaypointQueue.Enqueue(ActiveUnit.pos);
+                    WaypointQueue.Enqueue(posToMoveTo);
                 }
             }
 
             // Do the movement stuff
             base.DoThings();
+        }
+
+        private int GetMyPartyPosition()
+        {
+            int pos = 0;
+            foreach (ulong guid in Me.PartymemberGuids)
+            {
+                if (guid == Me.Guid)
+                {
+                    return pos;
+                }
+                else
+                {
+                    pos++;
+                }
+            }
+
+            return pos;
+        }
+
+        private int GetPartymemberCount()
+        {
+            int count = -1; // subtract ourself
+            foreach (ulong guid in Me.PartymemberGuids)
+            {
+                if (guid != 0)
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        private double GetFollowAngle(int memberCount, int myPosition)
+        {
+            return 2 * Math.PI / (memberCount * myPosition);
+        }
+
+        private Vector3 CalculateMovementOffset(Vector3 posToMoveTo, double angle, double distance)
+        {
+            return new Vector3(
+                posToMoveTo.X + (Math.Cos(angle) * distance),
+                posToMoveTo.Y + (Math.Sin(angle) * distance),
+                posToMoveTo.Z);
         }
 
         /// <summary>
@@ -98,7 +159,9 @@ namespace AmeisenBotFSM.Actions
                 foreach (ulong guid in partymembers)
                 {
                     if (guid != 0)
+                    {
                         tempList.Add((Unit)GetWoWObjectFromGUID(guid));
+                    }
                 }
             }
 
