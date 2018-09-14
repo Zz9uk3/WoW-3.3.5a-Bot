@@ -91,28 +91,30 @@ namespace AmeisenBotCore
 
             //try
             //{
-                uint currentObjectManager = BlackMagic.ReadUInt(Offsets.currentClientConnection);
-                currentObjectManager = BlackMagic.ReadUInt(currentObjectManager + Offsets.currentManagerOffset);
+            uint currentObjectManager = BlackMagic.ReadUInt(Offsets.currentClientConnection);
+            currentObjectManager = BlackMagic.ReadUInt(currentObjectManager + Offsets.currentManagerOffset);
 
-                uint activeObj = BlackMagic.ReadUInt(currentObjectManager + Offsets.firstObjectOffset);
-                uint objType = BlackMagic.ReadUInt(activeObj + Offsets.gameobjectTypeOffset);
+            uint activeObj = BlackMagic.ReadUInt(currentObjectManager + Offsets.firstObjectOffset);
+            uint objType = BlackMagic.ReadUInt(activeObj + Offsets.gameobjectTypeOffset);
 
-                ulong myGUID = ReadPlayerGUID();
+            ulong myGUID = ReadPlayerGUID();
 
-                // loop through the objects until an object is bigger than 7 or lower than 1 to get
-                // all Objects from manager
-                while (objType <= 7 && objType > 0)
-                {
-                    //if (!(refreshOnlyUnits
-                    //    && (objType == (int)WoWObjectType.UNIT || objType == (int)WoWObjectType.PLAYER)))
-                    //{
-                    WowObject wowObject = ReadWoWObjectFromWoW(activeObj, (WowObjectType)objType);
-                    objects.Add(wowObject);
-                    //}
+            // loop through the objects until an object is bigger than 7 or lower than 1 to get
+            // all Objects from manager
+            while (objType <= 7 && objType > 0)
+            {
+                //if (!(refreshOnlyUnits
+                //    && (objType == (int)WoWObjectType.UNIT || objType == (int)WoWObjectType.PLAYER)))
+                //{
+                WowObject wowObject = ReadWoWObjectFromWoW(activeObj, (WowObjectType)objType);
+                wowObject.MapID = GetMapID();
+                wowObject.ZoneID = GetZoneID();
+                objects.Add(wowObject);
+                //}
 
-                    activeObj = BlackMagic.ReadUInt(activeObj + Offsets.nextObjectOffset);
-                    objType = BlackMagic.ReadUInt(activeObj + Offsets.gameobjectTypeOffset);
-                }
+                activeObj = BlackMagic.ReadUInt(activeObj + Offsets.nextObjectOffset);
+                objType = BlackMagic.ReadUInt(activeObj + Offsets.gameobjectTypeOffset);
+            }
             /*}
             catch (Exception e)
             {
@@ -629,7 +631,7 @@ namespace AmeisenBotCore
         {
             const float distance = 1.5f;
 
-            AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Writing: X [{pos.X},{pos.Y},{pos.Z}] Action [{action}] Distance [{distance}]", "AmeisenCore", functionName);
+            AmeisenLogger.Instance.Log(LogLevel.VERBOSE, $"Writing: X [{pos.X},{pos.Y},{pos.Z}] Action [{action}] Distance [{distance}]", "AmeisenCore", functionName);
             BlackMagic.WriteFloat(Offsets.ctmX, (float)pos.X);
             BlackMagic.WriteFloat(Offsets.ctmY, (float)pos.Y);
             BlackMagic.WriteFloat(Offsets.ctmZ, (float)pos.Z);

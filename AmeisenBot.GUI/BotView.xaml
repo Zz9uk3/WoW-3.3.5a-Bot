@@ -51,7 +51,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
-        <Label x:Name="botLevel" Content="0" HorizontalAlignment="Left" Margin="10,84,0,0" VerticalAlignment="Top" Width="100">
+        <Label x:Name="botLevel" Content="0" HorizontalAlignment="Left" Margin="10,92,0,0" VerticalAlignment="Top" Width="100">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>

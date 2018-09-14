@@ -92,7 +92,7 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </ProgressBar.BorderBrush>
         </ProgressBar>
-        <Label x:Name="labelName" Content="..." HorizontalAlignment="Left" VerticalAlignment="Top" Margin="6,148,0,0" FontWeight="Bold" Width="150">
+        <Label x:Name="labelName" Content="..." HorizontalAlignment="Left" VerticalAlignment="Top" Margin="6,148,0,0" FontWeight="Bold" Width="151">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
@@ -218,8 +218,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Button.Foreground>
         </Button>
-        <Image x:Name="botPicture" HorizontalAlignment="Left" Height="137" VerticalAlignment="Top" Width="137" Margin="6,6,0,0" />
-        <Slider x:Name="sliderDistance" HorizontalAlignment="Left" Margin="299,330,0,0" VerticalAlignment="Top" Width="170" Minimum="3" Maximum="12" Value="3" ValueChanged="SliderDistance_ValueChanged">
+        <Slider x:Name="sliderDistance" HorizontalAlignment="Left" Margin="319,330,0,0" VerticalAlignment="Top" Width="150" Minimum="3" Maximum="12" Value="3" ValueChanged="SliderDistance_ValueChanged">
             <Slider.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Slider.BorderBrush>
@@ -230,7 +229,7 @@
                 <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
             </Slider.Foreground>
         </Slider>
-        <Label x:Name="labelDistance" Content="Follow Distance: 3m" HorizontalAlignment="Left" Margin="172,326,0,0" VerticalAlignment="Top" Width="124">
+        <Label x:Name="labelDistance" Content="Follow Distance: 3m" HorizontalAlignment="Left" Margin="172,326,0,0" VerticalAlignment="Top" Width="142">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
@@ -303,6 +302,11 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
+        <Rectangle HorizontalAlignment="Left" Height="142" Margin="8,8,0,0" VerticalAlignment="Top" Width="142" StrokeThickness="2">
+            <Rectangle.Stroke>
+                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+            </Rectangle.Stroke>
+        </Rectangle>
         <CheckBox x:Name="checkBoxRandomEmotes" Content="🤷 Emotes" Margin="270,110,0,0" Background="White" HorizontalAlignment="Left" Width="129" BorderThickness="2" Height="20" VerticalAlignment="Top" Click="CheckBoxAssistPartyBuff_Click" FontSize="14">
             <CheckBox.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
@@ -324,5 +328,6 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
+        <Image x:Name="botPicture" HorizontalAlignment="Left" Height="137" VerticalAlignment="Top" Width="137" Margin="10,10,0,0" />
     </Grid>
 </Window>

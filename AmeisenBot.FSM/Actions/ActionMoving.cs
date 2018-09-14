@@ -30,7 +30,7 @@ namespace AmeisenBotFSM.Actions
             set { AmeisenDataHolder.Me = value; }
         }
 
-        public bool PathCalculated { get; private set; }
+        public bool PathCalculated { get; set; }
 
         public ActionMoving(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager)
         {
@@ -93,13 +93,20 @@ namespace AmeisenBotFSM.Actions
                     if (!PathCalculated)
                     {
                         WaypointQueue.Dequeue();
-                        List<Node> path = FindWayToNode(initialPosition, new Vector3(initialPosition.X + 1.0, initialPosition.Y, initialPosition.Z));
+                        List<Node> path = FindWayToNode(initialPosition, targetPosition);
 
                         if (path != null)
+                        {
+                            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Found path: " + path.ToString(), this);
                             foreach (Node node in path)
                             {
                                 WaypointQueue.Enqueue(new Vector3(node.Position.X, node.Position.Y, node.Position.Z));
                             }
+                        }
+                        else
+                        {
+                            Thread.Sleep(1000);
+                        }
                     }
                 }
                 else
@@ -123,6 +130,8 @@ namespace AmeisenBotFSM.Actions
             int minX = (int)initialPosition.X - (distance * AmeisenDataHolder.Settings.PathfindingSearchRadius);
             int maxY = (int)initialPosition.Y + (distance * AmeisenDataHolder.Settings.PathfindingSearchRadius);
             int minY = (int)initialPosition.Y - (distance * AmeisenDataHolder.Settings.PathfindingSearchRadius);
+            
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Trying to find path from {initialPosition.X},{initialPosition.Y},{initialPosition.Z} to: {targetPosition.X},{targetPosition.Y},{targetPosition.Z} Distance: {distance}", this);
 
             offsetX = minX * -1;
             minX += offsetX;

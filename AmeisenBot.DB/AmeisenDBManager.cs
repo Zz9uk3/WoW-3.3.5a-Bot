@@ -14,6 +14,7 @@ namespace AmeisenBotDB
         public string DBName = "ameisenbot";
         private MySqlConnection sqlConnection;
         public bool IsConnected { get; private set; }
+        private string MysqlConnectionString { get; set; }
 
         public AmeisenDBManager()
         {
@@ -30,7 +31,7 @@ namespace AmeisenBotDB
             if (!IsConnected)
             {
                 sqlConnection = new MySqlConnection(mysqlConnectionString);
-
+                MysqlConnectionString = mysqlConnectionString;
                 try
                 {
                     sqlConnection.Open();
@@ -60,6 +61,9 @@ namespace AmeisenBotDB
         /// <returns>list containing all the MapNodes</returns>
         public List<MapNode> GetNodes(int zoneID, int mapID, int maxX = 0, int minX = 0, int maxY = 0, int minY = 0)
         {
+            MySqlConnection sqlConnection = new MySqlConnection(MysqlConnectionString);
+            sqlConnection.Open();
+
             if (IsConnected)
             {
                 StringBuilder sqlQuery = new StringBuilder();
@@ -110,6 +114,7 @@ namespace AmeisenBotDB
                 dbInit.Append("ENGINE = InnoDB AUTO_INCREMENT = 0 DEFAULT CHARSET = utf8;");
 
                 sqlConnection.Execute(dbInit.ToString());
+                sqlConnection.Close();
             }
         }
 
@@ -120,6 +125,9 @@ namespace AmeisenBotDB
         /// <returns>affected SQL rows</returns>
         public int UpdateOrAddNode(MapNode mapNode)
         {
+            MySqlConnection sqlConnection = new MySqlConnection(MysqlConnectionString);
+            sqlConnection.Open();
+
             if (IsConnected)
             {
                 string sqlQuery =

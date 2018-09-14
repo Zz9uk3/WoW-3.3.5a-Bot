@@ -7,15 +7,10 @@ namespace AmeisenBotUtilities
     public class Me : Player
     {
         public UnitState CurrentState { get; set; }
-
         public int Exp { get; set; }
-
         public int MaxExp { get; set; }
-
         public ulong PartyleaderGUID { get; set; }
-
         public List<ulong> PartymemberGuids { get; set; }
-
         public uint PlayerBase { get; set; }
 
         public Me(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
@@ -69,35 +64,39 @@ namespace AmeisenBotUtilities
         {
             base.Update();
 
-            if (PlayerBase == 0)
+            try
             {
-                PlayerBase = BlackMagicInstance.ReadUInt(Offsets.playerBase);
-                PlayerBase = BlackMagicInstance.ReadUInt(PlayerBase + 0x34);
-                PlayerBase = BlackMagicInstance.ReadUInt(PlayerBase + 0x24);
+                if (PlayerBase == 0)
+                {
+                    PlayerBase = BlackMagicInstance.ReadUInt(Offsets.playerBase);
+                    PlayerBase = BlackMagicInstance.ReadUInt(PlayerBase + 0x34);
+                    PlayerBase = BlackMagicInstance.ReadUInt(PlayerBase + 0x24);
+                }
+
+                Name = BlackMagicInstance.ReadASCIIString(Offsets.playerName, 12);
+                Exp = BlackMagicInstance.ReadInt(PlayerBase + 0x3794);
+                MaxExp = BlackMagicInstance.ReadInt(PlayerBase + 0x3798);
+
+                // Somehow this is really sketchy, need to replace this...
+                //uint castingState = BlackMagicInstance.ReadUInt((uint)BlackMagicInstance.MainModule.BaseAddress + Offsets.localPlayerCharacterState);
+                //castingState = BlackMagicInstance.ReadUInt(castingState + Offsets.localPlayerCharacterStateOffset1);
+                //castingState = BlackMagicInstance.ReadUInt(castingState + Offsets.localPlayerCharacterStateOffset2);
+                //CurrentState = (UnitState)BlackMagicInstance.ReadInt(castingState + Offsets.localPlayerCharacterStateOffset3);
+
+                TargetGuid = BlackMagicInstance.ReadUInt64(Descriptor + 0x48);
+
+                PartymemberGuids = new List<ulong>();
+                PartyleaderGUID = BlackMagicInstance.ReadUInt64(Offsets.partyLeader);
+
+                if (PartyleaderGUID != 0)
+                {
+                    PartymemberGuids?.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer1));
+                    PartymemberGuids?.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer2));
+                    PartymemberGuids?.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer3));
+                    PartymemberGuids?.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer4));
+                }
             }
-
-            Name = BlackMagicInstance.ReadASCIIString(Offsets.playerName, 12);
-            Exp = BlackMagicInstance.ReadInt(PlayerBase + 0x3794);
-            MaxExp = BlackMagicInstance.ReadInt(PlayerBase + 0x3798);
-
-            // Somehow this is really sketchy, need to replace this...
-            //uint castingState = BlackMagicInstance.ReadUInt((uint)BlackMagicInstance.MainModule.BaseAddress + Offsets.localPlayerCharacterState);
-            //castingState = BlackMagicInstance.ReadUInt(castingState + Offsets.localPlayerCharacterStateOffset1);
-            //castingState = BlackMagicInstance.ReadUInt(castingState + Offsets.localPlayerCharacterStateOffset2);
-            //CurrentState = (UnitState)BlackMagicInstance.ReadInt(castingState + Offsets.localPlayerCharacterStateOffset3);
-
-            TargetGuid = BlackMagicInstance.ReadUInt64(Descriptor + 0x48);
-
-            PartymemberGuids = new List<ulong>();
-            PartyleaderGUID = BlackMagicInstance.ReadUInt64(Offsets.partyLeader);
-
-            if (PartyleaderGUID != 0)
-            {
-                PartymemberGuids?.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer1));
-                PartymemberGuids?.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer2));
-                PartymemberGuids?.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer3));
-                PartymemberGuids?.Add(BlackMagicInstance.ReadUInt64(Offsets.partyPlayer4));
-            }
+            catch { }
         }
     }
 }
