@@ -63,7 +63,7 @@ namespace AmeisenBotGUI
                 new SolidColorBrush(
                     ActiveColor
                     );
-            
+
             InteractionPossible = true;
         }
     }

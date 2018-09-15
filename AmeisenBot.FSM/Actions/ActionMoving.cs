@@ -56,23 +56,6 @@ namespace AmeisenBotFSM.Actions
             WaypointQueue.Clear();
         }
 
-        private static List<Node> GetNeighbours(Node[,] map, NodePosition currentPosition)
-        {
-            List<Node> neighbours = new List<Node>();
-
-            int xStart = currentPosition.X > 0 ? currentPosition.X - 1 : currentPosition.X;
-            int xEnd = currentPosition.X < map.GetLength(0) - 1 ? currentPosition.X + 1 : currentPosition.X;
-
-            int yStart = currentPosition.Y > 0 ? currentPosition.Y - 1 : currentPosition.Y;
-            int yEnd = currentPosition.Y < map.GetLength(1) - 1 ? currentPosition.Y + 1 : currentPosition.Y;
-
-            for (int x = xStart; x <= xEnd; x++)
-                for (int y = yStart; y <= yEnd; y++)
-                    neighbours.Add(map[x, y]);
-
-            return neighbours;
-        }
-
         /// <summary>
         /// Very basic Obstacle avoidance.
         ///
@@ -106,7 +89,6 @@ namespace AmeisenBotFSM.Actions
 
                 if (!PathCalculated && Utils.GetDistance(initialPosition, targetPosition) > AmeisenDataHolder.Settings.PathfindingUsageThreshold)
                 {
-
                     WaypointQueue.Dequeue();
                     List<Node> path = FindWayToNode(initialPosition, targetPosition);
 
@@ -121,6 +103,7 @@ namespace AmeisenBotFSM.Actions
                     }
                     else
                     {
+                        // When path calculation was unsuccessful, wait a bit to retry
                         Thread.Sleep(1000);
                     }
                 }
@@ -160,28 +143,27 @@ namespace AmeisenBotFSM.Actions
 
         private List<Node> FindWayToNode(Vector3 initialPosition, Vector3 targetPosition)
         {
-            Console.WriteLine("Finding Path...");
-
-            int offsetX = 0;
-            int offsetY = 0;
-
             int distance = (int)Utils.GetDistance(initialPosition, targetPosition);
+
+            // Get the map boundaries... limit nodes that we get from database... X
             int maxX = targetPosition.X >= initialPosition.X ? (int)targetPosition.X : (int)initialPosition.X;
             int minX = initialPosition.X <= targetPosition.X ? (int)initialPosition.X : (int)targetPosition.X;
-
+            // Y
             int maxY = targetPosition.Y >= initialPosition.Y ? (int)targetPosition.Y : (int)initialPosition.Y;
             int minY = initialPosition.Y <= targetPosition.Y ? (int)initialPosition.Y : (int)targetPosition.Y;
 
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Trying to find path from {initialPosition.X},{initialPosition.Y},{initialPosition.Z} to: {targetPosition.X},{targetPosition.Y},{targetPosition.Z} Distance: {distance}", this);
 
-            offsetX = minX * -1;
+            // Offsets to rebase nodes from negative values to positive X
+            int offsetX = minX * -1;
             minX += offsetX;
             maxX += offsetX;
-
-            offsetY = minY * -1;
+            // Y
+            int offsetY = minY * -1;
             minY += offsetY;
             maxY += offsetY;
 
+            // Get our nodes from the batabase
             List<MapNode> nodes = AmeisenDBManager.GetNodes(
                 Me.ZoneID,
                 Me.MapID,
@@ -190,11 +172,43 @@ namespace AmeisenBotFSM.Actions
                 maxY - offsetY,
                 minY - offsetY);
 
+            // We cant find ay path if there are no known nodes
             if (nodes.Count < 1)
                 return null;
 
             Node[,] map = new Node[maxX + 1, maxY + 1];
 
+            // Init map with all things blocked and Rebase negative nodes to be positive
+            InitMap(ref map, maxX, minX, maxY, minY);
+            RebaseNodes(ref map, nodes, offsetX, offsetY);
+
+            // Fill path-gaps
+            map = ThinkenPathsOnMap(map, maxX, maxY);
+
+            // Find the path
+            List<Node> path = AmeisenPath.FindPathAStar(map,
+                                             new NodePosition((int)initialPosition.X + offsetX, (int)initialPosition.Y + offsetY, (int)initialPosition.Z),
+                                             new NodePosition((int)targetPosition.X + offsetX, (int)targetPosition.Y + offsetY, (int)targetPosition.Z));
+
+            if (path == null)
+                return null;
+            else
+            {
+                PathCalculated = true;
+                return RebasePath(path, offsetX, offsetY);
+            }
+        }
+
+        /// <summary>
+        /// Init a map with all fields blocked
+        /// </summary>
+        /// <param name="map">map to init</param>
+        /// <param name="maxX">max X</param>
+        /// <param name="minX">min X</param>
+        /// <param name="maxY">max Y</param>
+        /// <param name="minY">min Y</param>
+        private void InitMap(ref Node[,] map, int maxX, int minX, int maxY, int minY)
+        {
             for (int x = minX; x <= maxX; x++)
             {
                 for (int y = minY; y <= maxY; y++)
@@ -202,21 +216,25 @@ namespace AmeisenBotFSM.Actions
                     map[x, y] = new Node(new NodePosition(x, y, 0), true);
                 }
             }
+        }
 
+        /// <summary>
+        /// Add the offset to our map to eliminate negative coordinates
+        /// </summary>
+        /// <param name="map">the map to update</param>
+        /// <param name="nodes">nodes to add to our map</param>
+        /// <param name="offsetX">X offset</param>
+        /// <param name="offsetY">Y offset</param>
+        private void RebaseNodes(ref Node[,] map, List<MapNode> nodes, int offsetX, int offsetY)
+        {
             foreach (MapNode node in nodes)
             {
                 map[node.X + offsetX, node.Y + offsetY] = new Node(new NodePosition(node.X + offsetX, node.Y + offsetY, node.Z), false);
             }
+        }
 
-            map = ThinkenPathsOnMap(map, maxX, maxY);
-
-            List<Node> path = AmeisenPath.FindPathAStar(map,
-                                             new NodePosition((int)initialPosition.X + offsetX, (int)initialPosition.Y + offsetY, (int)initialPosition.Z),
-                                             new NodePosition((int)targetPosition.X + offsetX, (int)targetPosition.Y + offsetY, (int)targetPosition.Z));
-
-            if (path == null)
-                return null;
-
+        private List<Node> RebasePath(List<Node> path, int offsetX, int offsetY)
+        {
             List<Node> rebasedPath = new List<Node>();
             foreach (Node node in path)
                 rebasedPath.Add(
@@ -226,12 +244,16 @@ namespace AmeisenBotFSM.Actions
                             node.Position.Y - offsetY,
                             node.Position.Z),
                         false));
-
-            PathCalculated = true;
-
             return rebasedPath;
         }
 
+        /// <summary>
+        /// Make our path thicker to fill small gaps
+        /// </summary>
+        /// <param name="map">map to thicken</param>
+        /// <param name="maxX">map max X</param>
+        /// <param name="maxY">map max Y</param>
+        /// <returns></returns>
         private Node[,] ThinkenPathsOnMap(Node[,] map, int maxX, int maxY)
         {
             Node[,] newMap = new Node[map.GetLength(0), map.GetLength(1)];
@@ -241,7 +263,7 @@ namespace AmeisenBotFSM.Actions
                 for (int x = 0; x <= maxX; x++)
                 {
                     if (!map[x, y].IsBlocked)
-                        foreach (Node node in GetNeighbours(map, new NodePosition(x, y)))
+                        foreach (Node node in AmeisenPath.GetNeighbours(map, new NodePosition(x, y)))
                         {
                             newMap[node.Position.X, node.Position.Y] = new Node(
                                 new NodePosition(

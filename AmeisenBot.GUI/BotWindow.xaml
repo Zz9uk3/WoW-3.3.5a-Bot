@@ -294,7 +294,7 @@
         </CheckBox>
         <Label x:Name="labelFSMState" Content="FSM State: none" HorizontalAlignment="Left" Margin="172,296,0,0" VerticalAlignment="Top">
             <Label.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
         <Label Content="🧠" HorizontalAlignment="Left" Margin="168,254,0,0" VerticalAlignment="Top" FontSize="30" RenderTransformOrigin="4.267,0.515" Height="50" Width="50">
@@ -304,7 +304,7 @@
         </Label>
         <Rectangle HorizontalAlignment="Left" Height="142" Margin="8,8,0,0" VerticalAlignment="Top" Width="142" StrokeThickness="2">
             <Rectangle.Stroke>
-                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Rectangle.Stroke>
         </Rectangle>
         <CheckBox x:Name="checkBoxRandomEmotes" Content="🤷 Emotes" Margin="270,110,0,0" Background="White" HorizontalAlignment="Left" Width="129" BorderThickness="2" Height="20" VerticalAlignment="Top" Click="CheckBoxAssistPartyBuff_Click" FontSize="14">

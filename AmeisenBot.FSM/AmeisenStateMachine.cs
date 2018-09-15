@@ -5,7 +5,6 @@ using AmeisenBotFSM.Enums;
 using AmeisenBotFSM.Interfaces;
 using AmeisenBotLogger;
 using AmeisenCombatEngine.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -46,12 +45,6 @@ namespace AmeisenBotFSM
                 { BotState.Dead, new ActionDead(ameisenDataHolder,ameisenDBManager) },
                 { BotState.BotStuff, new ActionDoBotStuff(ameisenDataHolder, GetBotStuffToDo()) }
             };
-        }
-
-        private List<IBotStuff> GetBotStuffToDo()
-        {
-            // TODO: implement this
-            return new List<IBotStuff>();
         }
 
         /// <summary>
@@ -99,6 +92,12 @@ namespace AmeisenBotFSM
         public void Update()
         {
             GetCurrentStateAction(GetCurrentState())?.StartDoThings.Invoke();
+        }
+
+        private List<IBotStuff> GetBotStuffToDo()
+        {
+            // TODO: implement this
+            return new List<IBotStuff>();
         }
 
         /// <summary>

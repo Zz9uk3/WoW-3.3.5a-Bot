@@ -1,6 +1,5 @@
 ﻿using AmeisenBotData;
 using AmeisenBotFSM.Interfaces;
-using System;
 using System.Collections.Generic;
 using static AmeisenBotFSM.Objects.Delegates;
 
@@ -31,21 +30,20 @@ namespace AmeisenBotFSM.Actions
             GetPossibleThingsToDo();
         }
 
-        public void Stop() { }
+        public void Stop()
+        {
+        }
 
         private void DoBotStuff()
         {
-
         }
 
         private void DecideWhatToDo()
         {
-
         }
 
         private void GetPossibleThingsToDo()
         {
-
         }
     }
 }

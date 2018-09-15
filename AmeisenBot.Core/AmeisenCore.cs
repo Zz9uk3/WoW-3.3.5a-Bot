@@ -99,8 +99,8 @@ namespace AmeisenBotCore
 
             ulong myGUID = ReadPlayerGUID();
 
-            // loop through the objects until an object is bigger than 7 or lower than 1 to get
-            // all Objects from manager
+            // loop through the objects until an object is bigger than 7 or lower than 1 to get all
+            // Objects from manager
             while (objType <= 7 && objType > 0)
             {
                 //if (!(refreshOnlyUnits

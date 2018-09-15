@@ -3,7 +3,6 @@ using AmeisenBotData;
 using AmeisenBotDB;
 using AmeisenBotUtilities;
 using System.Collections.Generic;
-using System.Threading;
 using static AmeisenBotFSM.Objects.Delegates;
 
 namespace AmeisenBotFSM.Actions
@@ -18,16 +17,16 @@ namespace AmeisenBotFSM.Actions
         private AmeisenDataHolder AmeisenDataHolder { get; set; }
         private AmeisenDBManager AmeisenDBManager { get; set; }
 
-        public ActionDead(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager) : base(ameisenDataHolder,ameisenDBManager)
-        {
-            AmeisenDataHolder = ameisenDataHolder;
-            AmeisenDBManager = ameisenDBManager;
-        }
-
         private Me Me
         {
             get { return AmeisenDataHolder.Me; }
             set { AmeisenDataHolder.Me = value; }
+        }
+
+        public ActionDead(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager) : base(ameisenDataHolder, ameisenDBManager)
+        {
+            AmeisenDataHolder = ameisenDataHolder;
+            AmeisenDBManager = ameisenDBManager;
         }
 
         public override void DoThings()
@@ -55,7 +54,7 @@ namespace AmeisenBotFSM.Actions
                     WaypointQueue.Enqueue(corpsePosition);
 
             if (Utils.GetDistance(Me.pos, corpsePosition) < 10.0)
-                AmeisenCore.RetrieveCorpse();            
+                AmeisenCore.RetrieveCorpse();
         }
     }
 }

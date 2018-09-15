@@ -1,5 +1,4 @@
-﻿using AmeisenBotUtilities;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AmeisenBotUtilities.Tests
 {
@@ -30,7 +29,7 @@ namespace AmeisenBotUtilities.Tests
         [TestMethod()]
         public void ByteArrayToStringTest()
         {
-            Assert.AreEqual("0102030405060708", Utils.ByteArrayToString(new byte[] {01, 02, 03, 04, 05, 06, 07, 08}));
+            Assert.AreEqual("0102030405060708", Utils.ByteArrayToString(new byte[] { 01, 02, 03, 04, 05, 06, 07, 08 }));
         }
     }
 }

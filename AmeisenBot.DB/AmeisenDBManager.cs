@@ -1,8 +1,6 @@
-﻿using AmeisenBotLogger;
-using AmeisenBotMapping.objects;
+﻿using AmeisenBotMapping.objects;
 using Dapper;
 using MySql.Data.MySqlClient;
-using System;
 using System.Collections.Generic;
 using System.Text;
 

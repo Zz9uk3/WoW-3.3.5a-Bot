@@ -20,16 +20,16 @@ namespace AmeisenBotFSM.Actions
         private double XOffset { get; set; }
         private double YOffset { get; set; }
 
-        public ActionFollow(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager) : base(ameisenDataHolder, ameisenDBManager)
-        {
-            AmeisenDataHolder = ameisenDataHolder;
-            AmeisenDBManager = ameisenDBManager;
-        }
-
         private Me Me
         {
             get { return AmeisenDataHolder.Me; }
             set { AmeisenDataHolder.Me = value; }
+        }
+
+        public ActionFollow(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager) : base(ameisenDataHolder, ameisenDBManager)
+        {
+            AmeisenDataHolder = ameisenDataHolder;
+            AmeisenDBManager = ameisenDBManager;
         }
 
         public override void DoThings()
@@ -73,6 +73,39 @@ namespace AmeisenBotFSM.Actions
 
             // Do the movement stuff
             base.DoThings();
+        }
+
+        /// <summary>
+        /// Return a Player by the given GUID
+        /// </summary>
+        /// <param name="guid">guid of the player you want to get</param>
+        /// <returns>Player that you want to get</returns>
+        public WowObject GetWoWObjectFromGUID(ulong guid)
+        {
+            foreach (WowObject p in AmeisenDataHolder.ActiveWoWObjects)
+            {
+                if (p.Guid == guid)
+                {
+                    return p;
+                }
+            }
+
+            return null;
+        }
+
+        public override void Start()
+        {
+            base.Start();
+            ActiveUnits = GetUnitsToFollow();
+
+            Random rnd = new Random();
+            XOffset = rnd.NextDouble() * AmeisenDataHolder.Settings.followDistance;
+            YOffset = rnd.NextDouble() * AmeisenDataHolder.Settings.followDistance;
+        }
+
+        public override void Stop()
+        {
+            base.Stop();
         }
 
         private int GetMyPartyPosition()
@@ -120,39 +153,6 @@ namespace AmeisenBotFSM.Actions
                 posToMoveTo.X + (Math.Cos(angle) * (distance / 2) - XOffset),
                 posToMoveTo.Y + (Math.Sin(angle) * (distance / 2) - YOffset),
                 posToMoveTo.Z);
-        }
-
-        /// <summary>
-        /// Return a Player by the given GUID
-        /// </summary>
-        /// <param name="guid">guid of the player you want to get</param>
-        /// <returns>Player that you want to get</returns>
-        public WowObject GetWoWObjectFromGUID(ulong guid)
-        {
-            foreach (WowObject p in AmeisenDataHolder.ActiveWoWObjects)
-            {
-                if (p.Guid == guid)
-                {
-                    return p;
-                }
-            }
-
-            return null;
-        }
-
-        public override void Start()
-        {
-            base.Start();
-            ActiveUnits = GetUnitsToFollow();
-
-            Random rnd = new Random();
-            XOffset = rnd.NextDouble() * AmeisenDataHolder.Settings.followDistance;
-            YOffset = rnd.NextDouble() * AmeisenDataHolder.Settings.followDistance;
-        }
-
-        public override void Stop()
-        {
-            base.Stop();
         }
 
         /// <summary>

@@ -17,13 +17,14 @@ namespace AmeisenBotData
         public string loadedconfName;
         private static readonly string configPath = AppDomain.CurrentDomain.BaseDirectory + "config/";
         private static readonly string extension = ".json";
-        private AmeisenDataHolder AmeisenDataHolder { get; set; }
 
         public Settings Settings
         {
             get { return AmeisenDataHolder.Settings; }
             set { AmeisenDataHolder.Settings = value; }
         }
+
+        private AmeisenDataHolder AmeisenDataHolder { get; set; }
 
         public AmeisenSettings(AmeisenDataHolder ameisenDataHolder)
         {

@@ -119,7 +119,6 @@ namespace AmeisenBot.DebugConsole
             foreach (MapNode node in nodes)
             {
                 map[node.X, node.Y] = new Node(new NodePosition(node.X, node.Y, node.Z), false);
-
             }
 
             /*for (int y = 0; y <= maxY; y++)

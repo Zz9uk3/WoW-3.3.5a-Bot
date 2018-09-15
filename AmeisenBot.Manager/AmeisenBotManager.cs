@@ -27,14 +27,7 @@ namespace AmeisenBotManager
         private readonly string sqlConnectionString =
                 "server={0};port={1};database={2};uid={3};password={4};";
 
-        private AmeisenDataHolder AmeisenDataHolder { get; set; }
-        private AmeisenClient AmeisenClient { get; set; }
         public AmeisenDBManager AmeisenDBManager { get; private set; }
-        private AmeisenHook AmeisenHook { get; set; }
-        private AmeisenObjectManager AmeisenObjectManager { get; set; }
-        private AmeisenSettings AmeisenSettings { get; set; }
-        private AmeisenStateMachineManager AmeisenStateMachineManager { get; set; }
-        private BlackMagic Blackmagic { get; set; }
         public List<WowObject> ActiveWoWObjects { get { return AmeisenDataHolder.ActiveWoWObjects; } }
 
         public bool IsAllowedToAssistParty
@@ -60,7 +53,7 @@ namespace AmeisenBotManager
             get { return AmeisenDataHolder.IsAllowedToDoOwnStuff; }
             set { AmeisenDataHolder.IsAllowedToDoOwnStuff = value; }
         }
-        
+
         public bool IsAllowedToBuff
         {
             get { return AmeisenDataHolder.IsAllowedToBuff; }
@@ -106,18 +99,6 @@ namespace AmeisenBotManager
         public WowExe WowExe { get; private set; }
         public List<WowObject> WoWObjects { get { return AmeisenObjectManager.GetObjects(); } }
         public Process WowProcess { get; private set; }
-
-        public BotManager()
-        {
-            IsAttached = false;
-            IsHooked = false;
-
-            AmeisenDataHolder = new AmeisenDataHolder();
-            AmeisenSettings = new AmeisenSettings(AmeisenDataHolder);
-            AmeisenClient = new AmeisenClient(AmeisenDataHolder);
-            AmeisenDBManager = new AmeisenDBManager();
-        }
-
         public int MapID { get { return AmeisenCore.GetMapID(); } }
         public int ZoneID { get { return AmeisenCore.GetZoneID(); } }
         public string LoadedConfigName { get { return AmeisenSettings.loadedconfName; } }
@@ -148,6 +129,24 @@ namespace AmeisenBotManager
 
         public bool IsRegisteredAtServer { get { return AmeisenClient.IsRegistered; } }
         public object CurrentFSMState { get { return AmeisenStateMachineManager.StateMachine.GetCurrentState(); } }
+        private AmeisenDataHolder AmeisenDataHolder { get; set; }
+        private AmeisenClient AmeisenClient { get; set; }
+        private AmeisenHook AmeisenHook { get; set; }
+        private AmeisenObjectManager AmeisenObjectManager { get; set; }
+        private AmeisenSettings AmeisenSettings { get; set; }
+        private AmeisenStateMachineManager AmeisenStateMachineManager { get; set; }
+        private BlackMagic Blackmagic { get; set; }
+
+        public BotManager()
+        {
+            IsAttached = false;
+            IsHooked = false;
+
+            AmeisenDataHolder = new AmeisenDataHolder();
+            AmeisenSettings = new AmeisenSettings(AmeisenDataHolder);
+            AmeisenClient = new AmeisenClient(AmeisenDataHolder);
+            AmeisenDBManager = new AmeisenDBManager();
+        }
 
         public void LoadCombatClassFromFile(string fileName)
         {
@@ -221,6 +220,33 @@ namespace AmeisenBotManager
             }
         }
 
+        public void StopBot()
+        {
+            // Disconnect from Server
+            if (AmeisenClient.IsRegistered)
+            {
+                AmeisenClient.Unregister();
+            }
+
+            // Stop object updates
+            AmeisenObjectManager.Stop();
+
+            // Stop the statemachine
+            AmeisenStateMachineManager.Stop();
+
+            // Unhook the EndScene
+            AmeisenHook.DisposeHooking();
+
+            // Detach BlackMagic, causing weird crash right now...
+            //Blackmagic.Close();
+
+            // Stop logging
+            AmeisenLogger.Instance.StopLogging();
+
+            //Close SQL Connection
+            AmeisenDBManager.Disconnect();
+        }
+
         private IAmeisenCombatClass CompileAndLoadCombatClass(string combatclassPath)
         {
             if (File.Exists(combatclassPath))
@@ -274,33 +300,6 @@ namespace AmeisenBotManager
 
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Successfully compiled CombatClass: {Path.GetFileName(combatclassPath)}", this);
             return result;
-        }
-
-        public void StopBot()
-        {
-            // Disconnect from Server
-            if (AmeisenClient.IsRegistered)
-            {
-                AmeisenClient.Unregister();
-            }
-
-            // Stop object updates
-            AmeisenObjectManager.Stop();
-
-            // Stop the statemachine
-            AmeisenStateMachineManager.Stop();
-
-            // Unhook the EndScene
-            AmeisenHook.DisposeHooking();
-
-            // Detach BlackMagic, causing weird crash right now...
-            //Blackmagic.Close();
-
-            // Stop logging
-            AmeisenLogger.Instance.StopLogging();
-
-            //Close SQL Connection
-            AmeisenDBManager.Disconnect();
         }
     }
 }

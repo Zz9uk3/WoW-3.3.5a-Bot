@@ -1,19 +1,20 @@
-﻿using System;
-using AmeisenCombatEngine.Interfaces;
+﻿using AmeisenBotData;
 using AmeisenBotLogger;
 using AmeisenBotUtilities;
-using AmeisenBotData;
+using AmeisenCombatEngine.Interfaces;
 
 namespace AmeisenBotCombat
 {
     public class CombatClass : IAmeisenCombatClass
     {
         private AmeisenDataHolder AmeisenDataHolder { get; set; }
+
         private Me Me
         {
             get { return AmeisenDataHolder.Me; }
             set { AmeisenDataHolder.Me = value; }
         }
+
         private Unit Target
         {
             get { return AmeisenDataHolder.Target; }

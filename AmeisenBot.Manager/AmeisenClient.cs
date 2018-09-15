@@ -25,6 +25,12 @@ namespace AmeisenBotManager
         public int Port { get; private set; }
         private AmeisenDataHolder AmeisenDataHolder { get; set; }
 
+        private Me Me
+        {
+            get { return AmeisenDataHolder.Me; }
+            set { AmeisenDataHolder.Me = value; }
+        }
+
         public AmeisenClient(AmeisenDataHolder ameisenDataHolder)
         {
             AmeisenDataHolder = ameisenDataHolder;
@@ -35,12 +41,6 @@ namespace AmeisenBotManager
 
             botListUpdateTimer = new System.Timers.Timer(1000);
             botListUpdateTimer.Elapsed += UpdateBotList;
-        }
-
-        private Me Me
-        {
-            get { return AmeisenDataHolder.Me; }
-            set { AmeisenDataHolder.Me = value; }
         }
 
         public async void Register(Me me, IPAddress ip, int port = 16200)
