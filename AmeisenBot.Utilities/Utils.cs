@@ -102,7 +102,7 @@ namespace AmeisenBotUtilities
         /// <returns>faded color</returns>
         public static System.Windows.Media.Color InterpolateColors(System.Windows.Media.Color[] colors, double factor)
         {
-            double r = 0.0, g = 0.0, b = 0.0;
+            double r = 0.0, g = 0.0, b = 0.0, a = 0.0;
             double total = 0.0;
             double step = 1.0 / (double)(colors.Length - 1);
             double mu = 0.0;
@@ -120,12 +120,13 @@ namespace AmeisenBotUtilities
                 double percent = Math.Exp(-(factor - mu) * (factor - mu) / (2.0 * sigma_2)) / Math.Sqrt(2.0 * Math.PI * sigma_2);
                 mu += step;
 
+                a += color.A * percent / total;
                 r += color.R * percent / total;
                 g += color.G * percent / total;
                 b += color.B * percent / total;
             }
 
-            return System.Windows.Media.Color.FromArgb(255, (byte)r, (byte)g, (byte)b);
+            return System.Windows.Media.Color.FromArgb((byte)a, (byte)r, (byte)g, (byte)b);
         }
 
         /// <summary>
