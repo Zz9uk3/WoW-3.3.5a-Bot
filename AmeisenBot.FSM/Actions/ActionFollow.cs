@@ -59,7 +59,7 @@ namespace AmeisenBotFSM.Actions
                 AmeisenDataHolder.Settings.followDistance);
 
             // When we are far enough away, follow
-            if (Utils.GetDistance(Me.pos, posToMoveTo)
+            if (Utils.GetDistance(Me.pos, ActiveUnit.pos)
                 > AmeisenDataHolder.Settings.followDistance)
             {
                 // Dont add waypoints twice
@@ -111,6 +111,7 @@ namespace AmeisenBotFSM.Actions
         private int GetMyPartyPosition()
         {
             int pos = 1;
+            Random rnd = new Random();
 
             if (AmeisenDataHolder.ActiveNetworkBots != null)
                 foreach (NetworkBot bot in AmeisenDataHolder.ActiveNetworkBots)
@@ -124,6 +125,8 @@ namespace AmeisenBotFSM.Actions
                         pos++;
                     }
                 }
+            else
+                return rnd.Next(1, 17);
 
             return pos;
         }

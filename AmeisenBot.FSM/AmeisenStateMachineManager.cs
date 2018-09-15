@@ -25,6 +25,13 @@ namespace AmeisenBotFSM
             set { AmeisenDataHolder.Me = value; }
         }
 
+        private Unit Target
+        {
+            get { return AmeisenDataHolder.Target; }
+            set { AmeisenDataHolder.Target = value; }
+        }
+
+
         public AmeisenStateMachineManager(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager, IAmeisenCombatClass combatClass)
         {
             Active = false;
@@ -105,6 +112,8 @@ namespace AmeisenBotFSM
         {
             if (AmeisenDataHolder.IsAllowedToDoOwnStuff)
             {
+                if (StateMachine.GetCurrentState() != BotState.Idle)
+                    StateMachine.PopAction();
                 StateMachine.PushAction(BotState.BotStuff);
             }
             else if (StateMachine.GetCurrentState() == BotState.BotStuff)
@@ -115,13 +124,32 @@ namespace AmeisenBotFSM
 
         private void FollowCheck()
         {
-            if (AmeisenDataHolder.IsAllowedToFollowParty)
+            if (Me.PartyleaderGUID != 0)
             {
-                StateMachine.PushAction(BotState.Follow);
-            }
-            else if (StateMachine.GetCurrentState() == BotState.Follow)
-            {
-                StateMachine.PopAction();
+                Unit activeUnit = null;
+                foreach (WowObject p in AmeisenDataHolder.ActiveWoWObjects)
+                {
+                    if (p.Guid == Me.PartyleaderGUID)
+                    {
+                        activeUnit = (Unit)p;
+                    }
+                }
+
+                Me.Update();
+                activeUnit.Update();
+                double distance = Utils.GetDistance(Me.pos, activeUnit.pos);
+
+                if (AmeisenDataHolder.IsAllowedToFollowParty && distance > AmeisenDataHolder.Settings.followDistance)
+                {
+                    if (StateMachine.GetCurrentState() != BotState.Idle)
+                        StateMachine.PopAction();
+                    if (StateMachine.GetCurrentState() == BotState.Idle)
+                        StateMachine.PushAction(BotState.Follow);
+                }
+                else if (StateMachine.GetCurrentState() == BotState.Follow)
+                {
+                    StateMachine.PopAction();
+                }
             }
         }
 
@@ -131,6 +159,8 @@ namespace AmeisenBotFSM
             {
                 if (Me.InCombat || (PartymembersInCombat() && AmeisenDataHolder.IsAllowedToAssistParty))
                 {
+                    if (StateMachine.GetCurrentState() != BotState.Idle)
+                        StateMachine.PopAction();
                     StateMachine.PushAction(BotState.Combat);
                 }
                 else if (StateMachine.GetCurrentState() == BotState.Combat)
@@ -158,6 +188,8 @@ namespace AmeisenBotFSM
             {
                 if (Me.IsDead)
                 {
+                    if (StateMachine.GetCurrentState() != BotState.Idle)
+                        StateMachine.PopAction();
                     StateMachine.PushAction(BotState.Dead);
                 }
                 else if (StateMachine.GetCurrentState() == BotState.Dead)
