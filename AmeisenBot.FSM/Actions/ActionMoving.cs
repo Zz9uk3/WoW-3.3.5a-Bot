@@ -20,6 +20,7 @@ namespace AmeisenBotFSM.Actions
         public virtual DoThings StartDoThings { get { return DoThings; } }
         public virtual Exit StartExit { get { return Stop; } }
         public Queue<Vector3> WaypointQueue { get; set; }
+        public bool PathCalculated { get; set; }
         private AmeisenDataHolder AmeisenDataHolder { get; set; }
         private AmeisenDBManager AmeisenDBManager { get; set; }
         private Vector3 LastPosition { get; set; }
@@ -29,8 +30,6 @@ namespace AmeisenBotFSM.Actions
             get { return AmeisenDataHolder.Me; }
             set { AmeisenDataHolder.Me = value; }
         }
-
-        public bool PathCalculated { get; set; }
 
         public ActionMoving(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager)
         {
@@ -55,6 +54,23 @@ namespace AmeisenBotFSM.Actions
         public virtual void Stop()
         {
             WaypointQueue.Clear();
+        }
+
+        private static List<Node> GetNeighbours(Node[,] map, NodePosition currentPosition)
+        {
+            List<Node> neighbours = new List<Node>();
+
+            int xStart = currentPosition.X > 0 ? currentPosition.X - 1 : currentPosition.X;
+            int xEnd = currentPosition.X < map.GetLength(0) - 1 ? currentPosition.X + 1 : currentPosition.X;
+
+            int yStart = currentPosition.Y > 0 ? currentPosition.Y - 1 : currentPosition.Y;
+            int yEnd = currentPosition.Y < map.GetLength(1) - 1 ? currentPosition.Y + 1 : currentPosition.Y;
+
+            for (int x = xStart; x <= xEnd; x++)
+                for (int y = yStart; y <= yEnd; y++)
+                    neighbours.Add(map[x, y]);
+
+            return neighbours;
         }
 
         /// <summary>
@@ -88,25 +104,24 @@ namespace AmeisenBotFSM.Actions
                 Vector3 initialPosition = Me.pos;
                 Vector3 targetPosition = WaypointQueue.Peek();
 
-                if (Utils.GetDistance(initialPosition, targetPosition) > AmeisenDataHolder.Settings.PathfindingUsageThreshold)
+                if (!PathCalculated && Utils.GetDistance(initialPosition, targetPosition) > AmeisenDataHolder.Settings.PathfindingUsageThreshold)
                 {
-                    if (!PathCalculated)
-                    {
-                        WaypointQueue.Dequeue();
-                        List<Node> path = FindWayToNode(initialPosition, targetPosition);
 
-                        if (path != null)
+                    WaypointQueue.Dequeue();
+                    List<Node> path = FindWayToNode(initialPosition, targetPosition);
+
+                    if (path != null)
+                    {
+                        PathCalculated = true;
+                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Found path: " + path.ToString(), this);
+                        foreach (Node node in path)
                         {
-                            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Found path: " + path.ToString(), this);
-                            foreach (Node node in path)
-                            {
-                                WaypointQueue.Enqueue(new Vector3(node.Position.X, node.Position.Y, node.Position.Z));
-                            }
+                            WaypointQueue.Enqueue(new Vector3(node.Position.X, node.Position.Y, node.Position.Z));
                         }
-                        else
-                        {
-                            Thread.Sleep(1000);
-                        }
+                    }
+                    else
+                    {
+                        Thread.Sleep(1000);
                     }
                 }
                 else
@@ -120,17 +135,43 @@ namespace AmeisenBotFSM.Actions
             else { PathCalculated = false; }
         }
 
+        private List<Node> SimplifyPath(List<Node> path)
+        {
+            if (path == null)
+                return null;
+
+            List<Node> simplePath = new List<Node>();
+            double oldX = 0.0;
+            double oldY = 0.0;
+
+            for (int x = 1; x < path.Count; x++)
+            {
+                double newX = path[x - 1].Position.X - path[x].Position.X;
+                double newY = path[x - 1].Position.Y - path[x].Position.Y;
+
+                if (newX != oldX && newY != oldY)
+                    simplePath.Add(path[x]);
+
+                oldX = newX;
+                oldY = newY;
+            }
+            return simplePath;
+        }
+
         private List<Node> FindWayToNode(Vector3 initialPosition, Vector3 targetPosition)
         {
+            Console.WriteLine("Finding Path...");
+
             int offsetX = 0;
             int offsetY = 0;
 
             int distance = (int)Utils.GetDistance(initialPosition, targetPosition);
-            int maxX = (int)initialPosition.X + (distance * AmeisenDataHolder.Settings.PathfindingSearchRadius);
-            int minX = (int)initialPosition.X - (distance * AmeisenDataHolder.Settings.PathfindingSearchRadius);
-            int maxY = (int)initialPosition.Y + (distance * AmeisenDataHolder.Settings.PathfindingSearchRadius);
-            int minY = (int)initialPosition.Y - (distance * AmeisenDataHolder.Settings.PathfindingSearchRadius);
-            
+            int maxX = targetPosition.X >= initialPosition.X ? (int)targetPosition.X : (int)initialPosition.X;
+            int minX = initialPosition.X <= targetPosition.X ? (int)initialPosition.X : (int)targetPosition.X;
+
+            int maxY = targetPosition.Y >= initialPosition.Y ? (int)targetPosition.Y : (int)initialPosition.Y;
+            int minY = initialPosition.Y <= targetPosition.Y ? (int)initialPosition.Y : (int)targetPosition.Y;
+
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Trying to find path from {initialPosition.X},{initialPosition.Y},{initialPosition.Z} to: {targetPosition.X},{targetPosition.Y},{targetPosition.Z} Distance: {distance}", this);
 
             offsetX = minX * -1;
@@ -167,6 +208,8 @@ namespace AmeisenBotFSM.Actions
                 map[node.X + offsetX, node.Y + offsetY] = new Node(new NodePosition(node.X + offsetX, node.Y + offsetY, node.Z), false);
             }
 
+            map = ThinkenPathsOnMap(map, maxX, maxY);
+
             List<Node> path = AmeisenPath.FindPathAStar(map,
                                              new NodePosition((int)initialPosition.X + offsetX, (int)initialPosition.Y + offsetY, (int)initialPosition.Z),
                                              new NodePosition((int)targetPosition.X + offsetX, (int)targetPosition.Y + offsetY, (int)targetPosition.Z));
@@ -187,6 +230,32 @@ namespace AmeisenBotFSM.Actions
             PathCalculated = true;
 
             return rebasedPath;
+        }
+
+        private Node[,] ThinkenPathsOnMap(Node[,] map, int maxX, int maxY)
+        {
+            Node[,] newMap = new Node[map.GetLength(0), map.GetLength(1)];
+
+            for (int y = 0; y <= maxY; y++)
+            {
+                for (int x = 0; x <= maxX; x++)
+                {
+                    if (!map[x, y].IsBlocked)
+                        foreach (Node node in GetNeighbours(map, new NodePosition(x, y)))
+                        {
+                            newMap[node.Position.X, node.Position.Y] = new Node(
+                                new NodePosition(
+                                    map[node.Position.X, node.Position.Y].Position.X,
+                                    map[node.Position.X, node.Position.Y].Position.Y,
+                                    map[node.Position.X, node.Position.Y].Position.Z),
+                                    false);
+                        }
+                    else
+                        newMap[x, y] = map[x, y];
+                }
+            }
+
+            return newMap;
         }
 
         /// <summary> Modify our go-to-position by a small factor to provide "naturality" </summary>

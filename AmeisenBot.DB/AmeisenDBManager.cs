@@ -71,14 +71,15 @@ namespace AmeisenBotDB
                 sqlQuery.Append($"WHERE zone_id = {zoneID} AND ");
                 sqlQuery.Append($"map_id = {mapID} ");
 
-                if (maxX != 0)
-                    sqlQuery.Append($"AND x < {maxX} ");
-                if (maxY != 0)
-                    sqlQuery.Append($"AND y < {maxY} ");
-                if (minX != 0)
-                    sqlQuery.Append($"AND x > {minX} ");
-                if (minY != 0)
-                    sqlQuery.Append($"AND y > {minY} ");
+                if (maxX >= minX)
+                    sqlQuery.Append($"AND (x BETWEEN {minX} AND {maxX})");
+                else
+                    sqlQuery.Append($"AND (x BETWEEN {maxX} AND {minX})");
+
+                if (maxX >= minX)
+                    sqlQuery.Append($"AND (y BETWEEN {minY} AND {maxY})");
+                else
+                    sqlQuery.Append($"AND (y BETWEEN {maxY} AND {minY})");
 
                 sqlQuery.Append(";");
 

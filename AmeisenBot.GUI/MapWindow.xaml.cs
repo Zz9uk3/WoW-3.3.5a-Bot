@@ -5,6 +5,7 @@ using AmeisenBotMapping.objects;
 using AmeisenBotUtilities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -116,9 +117,35 @@ namespace AmeisenBotGUI
                 DrawRectangle(newX - 2, newY - 2, 4, 4, nodeColor, mapCanvas);
             }
 
+            foreach (ulong guid in BotManager.Me.PartymemberGuids)
+            {
+                if (guid == 0)
+                    continue;
+
+                string unitName = "";
+                Vector3 position = new Vector3(0, 0, 0);
+                foreach (WowObject p in BotManager.ActiveWoWObjects)
+                    if (p.Guid == guid)
+                    {
+                        p.Update();
+                        position = p.pos;
+                        unitName = p.Name;
+                    }
+
+                if (Utils.GetDistance(BotManager.Me.pos, position) < 200)
+                {
+                    Vector3 tempPos = NodePosToCanvasPos(new Vector3(position.X, position.Y, position.Z), myPos);
+                    newX = (int)(myCanvasMiddle.X + tempPos.X);
+                    newY = (int)(myCanvasMiddle.Y + tempPos.Y);
+                    DrawRectangle(newX - 2, newY - 2, 4, 4, Colors.Orange, mapCanvas);
+                    DrawText(newX + 6, newY - 8, unitName, Colors.White, mapCanvas);
+                }
+            }
+
             DrawRectangle((int)myCanvasMiddle.X, (int)myCanvasMiddle.Y, 4, 4,
                 (Color)Application.Current.Resources["MeNodeColor"],
                 mapCanvas);
+            DrawText((int)myCanvasMiddle.X + 6, (int)myCanvasMiddle.Y - 6, "Me", Colors.White, mapCanvas);
         }
 
         private void LoadMap()
