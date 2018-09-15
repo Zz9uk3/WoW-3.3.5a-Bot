@@ -36,6 +36,14 @@ namespace AmeisenBotFSM.Actions
         {
             if (CombatClass != null)
             {
+                if (AmeisenDataHolder.IsAllowedToAttack)
+                    CombatClass.HandleAttacking();
+                if (AmeisenDataHolder.IsAllowedToTank)
+                    CombatClass.HandleTanking();
+                if (AmeisenDataHolder.IsAllowedToHeal)
+                    CombatClass.HandleHealing();
+                if (AmeisenDataHolder.IsAllowedToBuff)
+                    CombatClass.HandleBuffs();
             }
         }
 
