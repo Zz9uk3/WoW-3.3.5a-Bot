@@ -53,6 +53,8 @@
     <Compile Include="Enums\DynamicUnitFlags.cs" />
     <Compile Include="Enums\InteractionType.cs" />
     <Compile Include="Enums\LuaUnit.cs" />
+    <Compile Include="Enums\UnitTrait.cs" />
+    <Compile Include="Objects\RememberedUnit.cs" />
     <Compile Include="Structs\CastingInfo.cs" />
     <Compile Include="Structs\NetworkBot.cs" />
     <Compile Include="Objects\NetworkRegData.cs" />

@@ -136,19 +136,22 @@ namespace AmeisenBotFSM
                 }
 
                 Me.Update();
-                activeUnit.Update();
-                double distance = Utils.GetDistance(Me.pos, activeUnit.pos);
+                activeUnit?.Update();
+                if (activeUnit != null)
+                {
+                    double distance = Utils.GetDistance(Me.pos, activeUnit.pos);
 
-                if (AmeisenDataHolder.IsAllowedToFollowParty && distance > AmeisenDataHolder.Settings.followDistance)
-                {
-                    if (StateMachine.GetCurrentState() != BotState.Idle)
+                    if (AmeisenDataHolder.IsAllowedToFollowParty && distance > AmeisenDataHolder.Settings.followDistance)
+                    {
+                        if (StateMachine.GetCurrentState() != BotState.Idle)
+                            StateMachine.PopAction();
+                        if (StateMachine.GetCurrentState() == BotState.Idle)
+                            StateMachine.PushAction(BotState.Follow);
+                    }
+                    else if (StateMachine.GetCurrentState() == BotState.Follow)
+                    {
                         StateMachine.PopAction();
-                    if (StateMachine.GetCurrentState() == BotState.Idle)
-                        StateMachine.PushAction(BotState.Follow);
-                }
-                else if (StateMachine.GetCurrentState() == BotState.Follow)
-                {
-                    StateMachine.PopAction();
+                    }
                 }
             }
         }

@@ -77,6 +77,10 @@
       <Project>{08DB57D7-287A-4C12-AB76-F5EE4A0F3395}</Project>
       <Name>AmeisenBot.Mapping</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AmeisenBot.Utilities\AmeisenBot.Utilities.csproj">
+      <Project>{5369E077-2DC4-4DE5-9020-2C7DDB41686F}</Project>
+      <Name>AmeisenBot.Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

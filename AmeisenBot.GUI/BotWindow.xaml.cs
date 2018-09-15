@@ -1,9 +1,13 @@
 ﻿using AmeisenBotLogger;
 using AmeisenBotManager;
 using AmeisenBotUtilities;
+using AmeisenBotUtilities.Enums;
+using AmeisenBotUtilities.Objects;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -17,9 +21,20 @@ namespace AmeisenBotGUI
     /// </summary>
     public partial class BotWindow : Window
     {
+        public static Dictionary<UnitTrait, string> UnitTraitSymbols =
+            new Dictionary<UnitTrait, string> {
+                { UnitTrait.SELL, "💰" },
+                { UnitTrait.REPAIR, "🔧" },
+                { UnitTrait.FOOD, "🍖" },
+                { UnitTrait.DRINK, "🥛" },
+                { UnitTrait.FLIGHTMASTER, "🛫" },
+                { UnitTrait.AUCTIONMASTER, "💸" },
+            };
+
         private string lastImgPath;
         private DispatcherTimer uiUpdateTimer;
         private BotManager BotManager { get; }
+        private ulong LastGuid { get; set; }
 
         public BotWindow(WowExe wowExe, BotManager botManager)
         {
@@ -291,6 +306,33 @@ namespace AmeisenBotGUI
             progressBarEnergyTarget.Value = BotManager.Target.Energy;
 
             labelTargetDistance.Content = $"Distance: {Math.Round(BotManager.Target.Distance, 2)}m";
+
+            Unit target = BotManager.Target;
+
+            if (target != null && target.Guid != 0)
+            {
+                if (target.Guid != LastGuid)
+                {
+                    target.Update();
+                    RememberedUnit rememberedUnit = BotManager.CheckForRememberedUnit(target.Name, target.ZoneID, target.MapID);
+
+                    if (rememberedUnit != null)
+                    {
+                        labelRemember.Content = "I know this Unit";
+
+                        StringBuilder sb = new StringBuilder();
+                        foreach (UnitTrait u in rememberedUnit.UnitTraits)
+                            sb.Append($"{UnitTraitSymbols[u]} ");
+                        labelUnitTraits.Content = sb.ToString();
+                    }
+                    else
+                    {
+                        labelRemember.Content = "I don't know this Unit";
+                        labelUnitTraits.Content = "-";
+                    }
+                    LastGuid = target.Guid;
+                }
+            }
         }
 
         private void UpdateFSMViews()
@@ -337,6 +379,23 @@ namespace AmeisenBotGUI
         private void CheckBoxReleaseSpirit_Copy_Click(object sender, RoutedEventArgs e)
         {
             BotManager.IsAllowedToRevive = (bool)checkBoxRevive.IsChecked;
+        }
+
+        private void ButtonRememberUnit_Click(object sender, RoutedEventArgs e)
+        {
+            if (BotManager.Target != null && BotManager.Target.Guid != 0)
+            {
+                RememberUnitWindow rememberUnitWindow = new RememberUnitWindow(BotManager.Target)
+                {
+                    Topmost = BotManager.Settings.topMost
+                };
+                rememberUnitWindow.ShowDialog();
+
+                if (rememberUnitWindow.ShouldRemember)
+                {
+                    BotManager.RememberUnit(rememberUnitWindow.UnitToRemmeber);
+                }
+            }
         }
     }
 }
