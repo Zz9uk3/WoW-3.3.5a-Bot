@@ -6,6 +6,7 @@ using AmeisenBotUtilities.Objects;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -45,6 +46,11 @@ namespace AmeisenBotGUI
             BotManager.LoadSettingsFromFile(wowExe.characterName);
             ApplyConfigColors();
             BotManager.StartBot(wowExe);
+
+            if (BotManager.Settings.oldXindowPosX != 0)
+                Left = BotManager.Settings.oldXindowPosX;
+            if (BotManager.Settings.oldXindowPosY != 0)
+                Top = BotManager.Settings.oldXindowPosY;
         }
 
         private void ApplyConfigColors()
@@ -73,6 +79,8 @@ namespace AmeisenBotGUI
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
+            BotManager.Settings.oldXindowPosX = Left;
+            BotManager.Settings.oldXindowPosY = Top;
             Close();
             BotManager.StopBot();
         }
@@ -248,7 +256,7 @@ namespace AmeisenBotGUI
         {
             uiUpdateTimer = new DispatcherTimer();
             uiUpdateTimer.Tick += new EventHandler(UIUpdateTimer_Tick);
-            uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, BotManager.Settings.dataRefreshRate);
+            uiUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 1000);
             uiUpdateTimer.Start();
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Started UI-Update-Timer", this);
         }
@@ -348,6 +356,12 @@ namespace AmeisenBotGUI
             // TODO: find a better way to update this
             //AmeisenManager.Instance.GetObjects();
 
+            Process currentProcess = Process.GetCurrentProcess();
+            long memoryUsageMB = currentProcess.WorkingSet64 / 1000000;
+
+            labelRAM.Content = memoryUsageMB;
+            labelCPU.Content = GetCPUUsage(Process.GetCurrentProcess());
+
             labelLoadedCombatClass.Content = $"CombatClass: {Path.GetFileName(BotManager.Settings.combatClassPath)}";
 
             if (BotManager.Me != null)
@@ -369,6 +383,13 @@ namespace AmeisenBotGUI
             }
 
             UpdateAIView();
+        }
+
+        private double GetCPUUsage(Process process)
+        {
+            PerformanceCounter counter = new PerformanceCounter("Process", "% Processor Time", process.ProcessName);
+            counter.NextValue();
+            return Math.Round(counter.NextValue(), 0) / 100;
         }
 
         private void CheckBoxReleaseSpirit_Click(object sender, RoutedEventArgs e)

@@ -1,19 +1,9 @@
 ﻿using AmeisenBotUtilities;
 using AmeisenBotUtilities.Enums;
 using AmeisenBotUtilities.Objects;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace AmeisenBotGUI
 {
@@ -24,10 +14,10 @@ namespace AmeisenBotGUI
     {
         public bool ShouldRemember { get; private set; }
         public RememberedUnit UnitToRemmeber { get; private set; }
-        private string UnitName { get; set; }
         public int ZoneID { get; private set; }
         public int MapID { get; private set; }
         public Vector3 Position { get; private set; }
+        private string UnitName { get; set; }
 
         public RememberUnitWindow(Unit unit)
         {

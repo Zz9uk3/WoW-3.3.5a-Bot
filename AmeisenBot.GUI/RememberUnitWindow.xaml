@@ -6,13 +6,13 @@
         mc:Ignorable="d"
         Title="RememberUnitWindow" Height="132" Width="240" WindowStyle="None" ResizeMode="NoResize" Icon="Icon.ico" BorderThickness="2" MouseLeftButtonDown="Window_MouseLeftButtonDown" Loaded="Window_Loaded">
     <Window.Foreground>
-        <SolidColorBrush Color="{DynamicResource TextColor}"/>
+        <SolidColorBrush Color="{DynamicResource TextColor}" />
     </Window.Foreground>
     <Window.BorderBrush>
-        <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+        <SolidColorBrush Color="{DynamicResource AccentColor}" />
     </Window.BorderBrush>
     <Window.Background>
-        <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+        <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
     </Window.Background>
     <Grid>
         <Button x:Name="buttonExit" Content="X" VerticalAlignment="Top" FontFamily="Consolas" Click="ButtonExit_Click" FontWeight="Bold" Background="{x:Null}" BorderThickness="2" HorizontalAlignment="Right" Width="20" Margin="0,-2,-2,0">
@@ -33,61 +33,60 @@
         </Button>
         <Label x:Name="labelName" Content="..." HorizontalAlignment="Left" VerticalAlignment="Top" Margin="6,6,0,0">
             <Label.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
         <CheckBox x:Name="checkboxIsVendor" Content="💰 Vendor" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top">
             <CheckBox.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </CheckBox.Foreground>
         </CheckBox>
         <CheckBox x:Name="checkboxSellsFood" Content="🍖 Food" HorizontalAlignment="Left" Margin="10,57,0,0" VerticalAlignment="Top">
             <CheckBox.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </CheckBox.Foreground>
         </CheckBox>
         <CheckBox x:Name="checkboxIsRepair" Content="🔧 Repair" HorizontalAlignment="Left" Margin="120,37,0,0" VerticalAlignment="Top">
             <CheckBox.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </CheckBox.Foreground>
         </CheckBox>
         <CheckBox x:Name="checkboxSellsDrink" Content="🥛 Drinks" HorizontalAlignment="Left" Margin="120,57,0,0" VerticalAlignment="Top">
             <CheckBox.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </CheckBox.Foreground>
         </CheckBox>
         <CheckBox x:Name="checkboxIsFlightmaster" Content="🛫 Flightmaster" HorizontalAlignment="Left" Margin="10,77,0,0" VerticalAlignment="Top">
             <CheckBox.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </CheckBox.Foreground>
         </CheckBox>
         <Button x:Name="buttonAdd" Content="Remember Unit" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" Width="105" Click="ButtonAdd_Click" BorderThickness="2">
             <Button.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Button.Foreground>
             <Button.BorderBrush>
-                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Button.BorderBrush>
             <Button.Background>
-                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
             </Button.Background>
         </Button>
         <Button x:Name="buttonCancel" Content="Cancel" HorizontalAlignment="Left" Margin="120,100,0,0" VerticalAlignment="Top" Width="105" Click="ButtonCancel_Click" BorderThickness="2">
             <Button.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Button.Foreground>
             <Button.BorderBrush>
-                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Button.BorderBrush>
             <Button.Background>
-                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
             </Button.Background>
         </Button>
         <CheckBox x:Name="checkboxIsAuctionmaster" Content="💸 Auctionhouse" HorizontalAlignment="Left" Margin="120,77,0,0" VerticalAlignment="Top">
             <CheckBox.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </CheckBox.Foreground>
         </CheckBox>
-
     </Grid>
 </Window>

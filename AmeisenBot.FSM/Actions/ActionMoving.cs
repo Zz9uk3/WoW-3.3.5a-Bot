@@ -83,39 +83,65 @@ namespace AmeisenBotFSM.Actions
         {
             if (WaypointQueue.Count > 0)
             {
-                Me.Update();
-                Vector3 initialPosition = Me.pos;
-                Vector3 targetPosition = WaypointQueue.Peek();
-
-                if (!PathCalculated && Utils.GetDistance(initialPosition, targetPosition) > AmeisenDataHolder.Settings.PathfindingUsageThreshold)
+                try
                 {
-                    WaypointQueue.Dequeue();
-                    List<Node> path = FindWayToNode(initialPosition, targetPosition);
+                    Me.Update();
+                    Vector3 initialPosition = Me.pos;
+                    Vector3 targetPosition = WaypointQueue.Peek();
 
-                    if (path != null)
+                    if (!PathCalculated && Utils.GetDistance(initialPosition, targetPosition) > AmeisenDataHolder.Settings.PathfindingUsageThreshold)
                     {
-                        PathCalculated = true;
-                        AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Found path: " + path.ToString(), this);
-                        foreach (Node node in path)
+                        List<Node> path = FindWayToNode(initialPosition, targetPosition);
+
+                        if (path != null)
                         {
-                            WaypointQueue.Enqueue(new Vector3(node.Position.X, node.Position.Y, node.Position.Z));
+                            ProcessPath(path);
+                        }
+                        else
+                        {
+                            // retry with thicker path
+                            path = FindWayToNode(initialPosition, targetPosition, true);
+
+                            ProcessPath(path);
+
+                            // When path calculation was unsuccessful, wait a bit to retry
+                            Thread.Sleep(1000);
                         }
                     }
                     else
                     {
-                        // When path calculation was unsuccessful, wait a bit to retry
-                        Thread.Sleep(1000);
+                        MoveToNode(targetPosition);
+                        WaypointQueue.Dequeue();
                     }
                 }
-                else
-                {
-                    CheckIfWeAreStuckIfYesJump(targetPosition, LastPosition);
-                    AmeisenCore.MovePlayerToXYZ(targetPosition, InteractionType.MOVE);
-                    LastPosition = WaypointQueue.Dequeue();
-                    Thread.Sleep(100);
-                }
+                catch { return; }
             }
             else { PathCalculated = false; }
+        }
+
+        private void ProcessPath(List<Node> path)
+        {
+            PathCalculated = true;
+            AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Found path: " + path.ToString(), this);
+            foreach (Node node in path)
+            {
+                Me.Update();
+                MoveToNode(new Vector3(node.Position.X, node.Position.Y, node.Position.Z));
+            }
+        }
+
+        private void MoveToNode(Vector3 targetPosition)
+        {
+            while (Utils.GetDistance(Me.pos, targetPosition) > 5.0)
+            {
+                CheckIfWeAreStuckIfYesJump(targetPosition, LastPosition);
+                if (targetPosition.Z == 0)
+                    targetPosition.Z = Me.pos.Z;
+                AmeisenCore.MovePlayerToXYZ(targetPosition, InteractionType.MOVE);
+                Thread.Sleep(250);
+                Me.Update();
+                LastPosition = Me.pos;
+            }
         }
 
         private List<Node> SimplifyPath(List<Node> path)
@@ -141,7 +167,7 @@ namespace AmeisenBotFSM.Actions
             return simplePath;
         }
 
-        private List<Node> FindWayToNode(Vector3 initialPosition, Vector3 targetPosition)
+        private List<Node> FindWayToNode(Vector3 initialPosition, Vector3 targetPosition, bool thickenPath = false)
         {
             int distance = (int)Utils.GetDistance(initialPosition, targetPosition);
 
@@ -183,7 +209,8 @@ namespace AmeisenBotFSM.Actions
             RebaseNodes(ref map, nodes, offsetX, offsetY);
 
             // Fill path-gaps
-            map = ThinkenPathsOnMap(map, maxX, maxY);
+            if (thickenPath)
+                map = ThinkenPathsOnMap(map, maxX, maxY);
 
             // Find the path
             List<Node> path = AmeisenPath.FindPathAStar(map,

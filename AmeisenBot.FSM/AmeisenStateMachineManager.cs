@@ -31,7 +31,6 @@ namespace AmeisenBotFSM
             set { AmeisenDataHolder.Target = value; }
         }
 
-
         public AmeisenStateMachineManager(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager, IAmeisenCombatClass combatClass)
         {
             Active = false;

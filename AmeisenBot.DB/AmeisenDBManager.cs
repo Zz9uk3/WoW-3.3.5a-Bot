@@ -5,7 +5,6 @@ using AmeisenBotUtilities.Objects;
 using Dapper;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

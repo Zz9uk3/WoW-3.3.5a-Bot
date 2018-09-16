@@ -248,6 +248,16 @@ namespace AmeisenBotManager
             AmeisenDBManager.Disconnect();
         }
 
+        public void RememberUnit(RememberedUnit rememberedUnit)
+        {
+            AmeisenDBManager.RememberUnit(rememberedUnit);
+        }
+
+        public RememberedUnit CheckForRememberedUnit(string name, int zoneID, int mapID)
+        {
+            return AmeisenDBManager.CheckForRememberedUnit(name, zoneID, mapID);
+        }
+
         private IAmeisenCombatClass CompileAndLoadCombatClass(string combatclassPath)
         {
             if (File.Exists(combatclassPath))
@@ -301,16 +311,6 @@ namespace AmeisenBotManager
 
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Successfully compiled CombatClass: {Path.GetFileName(combatclassPath)}", this);
             return result;
-        }
-
-        public void RememberUnit(RememberedUnit rememberedUnit)
-        {
-            AmeisenDBManager.RememberUnit(rememberedUnit);
-        }
-
-        public RememberedUnit CheckForRememberedUnit(string name, int zoneID, int mapID)
-        {
-            return AmeisenDBManager.CheckForRememberedUnit(name, zoneID, mapID);
         }
     }
 }

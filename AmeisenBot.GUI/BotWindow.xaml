@@ -331,23 +331,59 @@
         <Image x:Name="botPicture" HorizontalAlignment="Left" Height="137" VerticalAlignment="Top" Width="137" Margin="10,10,0,0" />
         <Button x:Name="buttonRememberUnit" Content="💡 Add Unit to DB" HorizontalAlignment="Left" Margin="350,227,0,0" VerticalAlignment="Top" Width="121" BorderThickness="2" Click="ButtonRememberUnit_Click">
             <Button.Background>
-                <SolidColorBrush Color="{DynamicResource BackgroundColor}"/>
+                <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
             </Button.Background>
             <Button.BorderBrush>
-                <SolidColorBrush Color="{DynamicResource AccentColor}"/>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
             </Button.BorderBrush>
             <Button.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Button.Foreground>
         </Button>
         <Label x:Name="labelRemember" Content="I don't know this Unit" HorizontalAlignment="Left" Margin="345,178,0,0" VerticalAlignment="Top" Width="133">
             <Label.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
         <Label x:Name="labelUnitTraits" Content="" HorizontalAlignment="Left" Margin="345,201,0,0" VerticalAlignment="Top" Width="133">
             <Label.Foreground>
-                <SolidColorBrush Color="{DynamicResource TextColor}"/>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Label.Foreground>
+        </Label>
+        <Label Content="CPU" HorizontalAlignment="Left" Margin="350,252,0,0" VerticalAlignment="Top">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Label.Foreground>
+        </Label>
+        <Label Content="RAM" HorizontalAlignment="Left" Margin="350,268,0,0" VerticalAlignment="Top">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Label.Foreground>
+        </Label>
+        <Label Content=":" HorizontalAlignment="Left" Margin="382,252,0,0" VerticalAlignment="Top">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Label.Foreground>
+        </Label>
+        <Label Content=":" HorizontalAlignment="Left" Margin="382,268,0,0" VerticalAlignment="Top">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Label.Foreground>
+        </Label>
+        <Label x:Name="labelCPU" Content="CPU" HorizontalAlignment="Left" Margin="391,252,0,0" VerticalAlignment="Top" Foreground="White" />
+        <Label x:Name="labelRAM" Content="RAM" HorizontalAlignment="Left" Margin="391,268,0,0" VerticalAlignment="Top">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Label.Foreground>
+        </Label>
+        <Label Content="%" HorizontalAlignment="Left" Margin="448,252,0,0" VerticalAlignment="Top">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Label.Foreground>
+        </Label>
+        <Label Content="MB" HorizontalAlignment="Left" Margin="448,268,0,0" VerticalAlignment="Top">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Label.Foreground>
         </Label>
     </Grid>

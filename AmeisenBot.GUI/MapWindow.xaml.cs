@@ -113,7 +113,7 @@ namespace AmeisenBotGUI
                             (Color)Application.Current.Resources["WalkableNodeColorHigh"],
                             }, tempPos.Z / 100.0);
 
-                DrawRectangle(newX - 2, newY - 2, 4, 4, nodeColor, mapCanvas);
+                DrawRectangle(newX - 1, newY - 1, 3, 3, nodeColor, mapCanvas);
             }
 
             foreach (ulong guid in BotManager.Me.PartymemberGuids)
