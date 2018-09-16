@@ -66,5 +66,15 @@ namespace AmeisenBotGUI
 
             InteractionPossible = true;
         }
+
+        private void ButtonExit_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void ButtonMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
     }
 }

@@ -80,11 +80,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BotView.xaml.cs">
+    <Compile Include="Views\BotView.xaml.cs">
       <DependentUpon>BotView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ColorPickWindow.xaml.cs">
-      <DependentUpon>ColorPickWindow.xaml</DependentUpon>
+    <Compile Include="Dialogs\ColorPickDialog.xaml.cs">
+      <DependentUpon>ColorPickDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="DebugWindow.xaml.cs">
       <DependentUpon>DebugWindow.xaml</DependentUpon>
@@ -95,17 +95,17 @@
     <Compile Include="MapWindow.xaml.cs">
       <DependentUpon>MapWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RememberUnitWindow.xaml.cs">
-      <DependentUpon>RememberUnitWindow.xaml</DependentUpon>
+    <Compile Include="Dialogs\RememberUnitDialog.xaml.cs">
+      <DependentUpon>RememberUnitDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="BotView.xaml">
+    <Page Include="Views\BotView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ColorPickWindow.xaml">
+    <Page Include="Dialogs\ColorPickDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -125,7 +125,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="RememberUnitWindow.xaml">
+    <Page Include="Dialogs\RememberUnitDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

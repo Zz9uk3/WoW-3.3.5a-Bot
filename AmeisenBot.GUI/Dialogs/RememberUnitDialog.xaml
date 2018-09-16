@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="RememberUnitWindow" Height="132" Width="240" WindowStyle="None" ResizeMode="NoResize" Icon="Icon.ico" BorderThickness="2" MouseLeftButtonDown="Window_MouseLeftButtonDown" Loaded="Window_Loaded">
+        Title="RememberUnitWindow" Height="136" Width="240" WindowStyle="None" ResizeMode="NoResize" Icon="Icon.ico" BorderThickness="2" MouseLeftButtonDown="Window_MouseLeftButtonDown" Loaded="Window_Loaded">
     <Window.Foreground>
         <SolidColorBrush Color="{DynamicResource TextColor}" />
     </Window.Foreground>
@@ -61,7 +61,7 @@
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </CheckBox.Foreground>
         </CheckBox>
-        <Button x:Name="buttonAdd" Content="Remember Unit" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" Width="105" Click="ButtonAdd_Click" BorderThickness="2">
+        <Button x:Name="buttonAdd" Content="Remember Unit" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" Width="106" Click="ButtonAdd_Click" BorderThickness="2">
             <Button.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Button.Foreground>
@@ -72,7 +72,7 @@
                 <SolidColorBrush Color="{DynamicResource BackgroundColor}" />
             </Button.Background>
         </Button>
-        <Button x:Name="buttonCancel" Content="Cancel" HorizontalAlignment="Left" Margin="120,100,0,0" VerticalAlignment="Top" Width="105" Click="ButtonCancel_Click" BorderThickness="2">
+        <Button x:Name="buttonCancel" Content="Cancel" HorizontalAlignment="Left" Margin="121,100,0,0" VerticalAlignment="Top" Width="105" Click="ButtonCancel_Click" BorderThickness="2">
             <Button.Foreground>
                 <SolidColorBrush Color="{DynamicResource TextColor}" />
             </Button.Foreground>
