@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AmeisenCore.cs" />
+    <Compile Include="AmeisenEventHook.cs" />
     <Compile Include="AmeisenHook.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

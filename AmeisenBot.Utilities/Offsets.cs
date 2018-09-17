@@ -10,6 +10,7 @@
         public static readonly uint arenaPlayer3 = arenaPlayer2 + 0x8;
         public static readonly uint arenaPlayer4 = arenaPlayer3 + 0x8;
         public static readonly uint arenaPlayer5 = arenaPlayer4 + 0x8;
+        public static readonly uint battlegroundStatus = 0xBEA4D0;
         public static readonly uint characterSlotSelected = 0x6C436C;
         public static readonly uint clientGameUITarget = 0x524BF0;
         public static readonly uint clientObjectManagerGetActivePlayerObject = 0x4038F0;
@@ -41,6 +42,7 @@
         public static readonly uint gameState = 0xB6A9E0;
         public static readonly uint isBattlegroundOver = 0xBEA588;
         public static readonly uint isLoading = 0xB6AA30;
+        public static readonly uint isIndoor = 0xB4AA94;
         public static readonly uint localComboPoint = 0xBD0845;
         public static readonly uint localLastTarget = 0xBD07B0;
         public static readonly uint localLootWindowOpen = 0xBFA8D0;
@@ -53,7 +55,7 @@
         public static readonly uint localTargetGUID = 0xBD07B0;
         public static readonly uint luaDoString = 0x819210;
         public static readonly uint luaGetLocalizedText = 0x7225E0;
-        public static readonly uint mapID = 0xBD0804;
+        public static readonly uint mapID = 0xAB63BC;
         public static readonly uint nameBase = 0x1C;
         public static readonly uint nameMask = 0x24;
         public static readonly uint nameStore = 0xC5D938 + 0x8;
@@ -85,5 +87,6 @@
         public static readonly uint wowChatNextMsg = 0x17C0;
         public static readonly uint zoneID = 0xBD080C;
         public static readonly uint zoneText = 0xBD0788;
+        public static readonly uint zoneNamePointer = 0xBD0780;
     }
 }

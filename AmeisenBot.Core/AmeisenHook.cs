@@ -249,11 +249,8 @@ namespace AmeisenBotCore
     public class HookJob
     {
         public string[] Asm { get; set; }
-
         public bool IsFinished { get; set; }
-
         public bool ReadReturnBytes { get; set; }
-
         public object ReturnValue { get; set; }
 
         /// <summary>
