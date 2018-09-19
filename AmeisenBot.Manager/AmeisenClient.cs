@@ -11,9 +11,9 @@ using System.Timers;
 
 namespace AmeisenBotManager
 {
-    public class AmeisenClient
+    public class AmeisenClient : IDisposable
     {
-        private static readonly HttpClient client = new HttpClient();
+        private static readonly HttpClient httpClient = new HttpClient();
         private Thread botListUpdateThread;
         private System.Timers.Timer botListUpdateTimer;
         private Thread botUpdateThread;
@@ -62,7 +62,7 @@ namespace AmeisenBotManager
                 string content = JsonConvert.SerializeObject(new NetworkRegData(base64Image, meSendable));
 
                 HttpContent contentToSend = new StringContent(content);
-                HttpResponseMessage response = await client.PostAsync($"http://{ip}:{port}/botRegister/", contentToSend);
+                HttpResponseMessage response = await httpClient.PostAsync($"http://{ip}:{port}/botRegister/", contentToSend);
                 string responseString = await response.Content.ReadAsStringAsync();
 
                 if (responseString.Contains("addedBot"))
@@ -84,7 +84,7 @@ namespace AmeisenBotManager
         public async void Unregister()
         {
             HttpContent contentToSend = new StringContent($"unregisterBot[{BotID}]");
-            HttpResponseMessage response = await client.PostAsync($"http://{IPAddress}:{Port}/botUnregister/", contentToSend);
+            HttpResponseMessage response = await httpClient.PostAsync($"http://{IPAddress}:{Port}/botUnregister/", contentToSend);
             string responseString = await response.Content.ReadAsStringAsync();
 
             if (responseString.Contains("removedBot"))
@@ -108,7 +108,7 @@ namespace AmeisenBotManager
                     );
 
                 HttpContent contentToSend = new StringContent($"{BotID}]{jsonData}");
-                HttpResponseMessage response = await client.PostAsync($"http://{IPAddress}:{Port}/botUpdate/{BotID}/", contentToSend);
+                HttpResponseMessage response = await httpClient.PostAsync($"http://{IPAddress}:{Port}/botUpdate/{BotID}/", contentToSend);
                 string responseString = await response.Content.ReadAsStringAsync();
             }
             catch { }
@@ -118,12 +118,28 @@ namespace AmeisenBotManager
         {
             try
             {
-                HttpResponseMessage response = await client.GetAsync($"http://{IPAddress}:{Port}/activeBots/");
+                HttpResponseMessage response = await httpClient.GetAsync($"http://{IPAddress}:{Port}/activeBots/");
                 string responseString = await response.Content.ReadAsStringAsync();
                 BotList = JsonConvert.DeserializeObject<List<NetworkBot>>(responseString);
                 AmeisenDataHolder.ActiveNetworkBots = BotList;
             }
             catch { }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                ((IDisposable)botListUpdateTimer).Dispose();
+                ((IDisposable)botUpdateTimer).Dispose();
+                ((IDisposable)httpClient).Dispose();
+            }
         }
     }
 }

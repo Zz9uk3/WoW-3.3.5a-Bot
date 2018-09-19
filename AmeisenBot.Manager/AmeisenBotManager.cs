@@ -195,7 +195,7 @@ namespace AmeisenBotManager
             AmeisenCore.BlackMagic = Blackmagic;
 
             // Hook EndScene
-            AmeisenHook = new AmeisenHook();
+            AmeisenHook = new AmeisenHook(Blackmagic);
             IsHooked = AmeisenHook.isHooked;
             AmeisenCore.AmeisenHook = AmeisenHook;
 
@@ -243,9 +243,6 @@ namespace AmeisenBotManager
 
             // Stop logging
             AmeisenLogger.Instance.StopLogging();
-
-            //Close SQL Connection
-            AmeisenDBManager.Disconnect();
         }
 
         public void RememberUnit(RememberedUnit rememberedUnit)

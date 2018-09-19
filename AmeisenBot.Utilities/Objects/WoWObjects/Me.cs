@@ -13,10 +13,7 @@ namespace AmeisenBotUtilities
         public List<ulong> PartymemberGuids { get; set; }
         public uint PlayerBase { get; set; }
 
-        public Me(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
-        {
-            Update();
-        }
+        public Me(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic) { }
 
         public override string ToString()
         {
@@ -36,9 +33,14 @@ namespace AmeisenBotUtilities
             sb.Append($" >> ZoneID: {ZoneID}");
 
             if (TargetGuid != 0)
+            {
                 sb.Append($" >> TargetGUID: {TargetGuid.ToString()}");
+            }
             else
+            {
                 sb.Append(" >> Target: none");
+            }
+
             sb.Append($" >> currentState: {CurrentState}");
             sb.Append($" >> level: {Level}");
             sb.Append($" >> health: {Health}");

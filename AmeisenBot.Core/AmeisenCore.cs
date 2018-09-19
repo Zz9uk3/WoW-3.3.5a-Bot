@@ -78,8 +78,6 @@ namespace AmeisenBotCore
             return BlackMagic.ReadInt(Offsets.worldLoaded) == 1;
         }
 
-        [DllImport("user32.dll")]
-        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
         /// <summary>
         /// Reads all WoWObject out of WoW's ObjectManager
@@ -465,9 +463,6 @@ namespace AmeisenBotCore
             //}
         }
 
-        [DllImport("user32.dll")]
-        public static extern IntPtr PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-
         /// <summary>
         /// Get the bot's char's GUID
         /// </summary>
@@ -558,9 +553,6 @@ namespace AmeisenBotCore
             LuaDoString($"DEFAULT_CHAT_FRAME.editBox:SetText(\"{slashCommand}\") ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)");
         }
 
-        [DllImport("user32.dll")]
-        public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-
         /// <summary>
         /// Target a GUID
         /// </summary>
@@ -613,15 +605,9 @@ namespace AmeisenBotCore
             IntPtr windowHandle = BlackMagic.WindowHandle;
 
             // 0x20 = Spacebar (VK_SPACE)
-            SendMessage(windowHandle, KEYDOWN, vKey, new IntPtr(0));
+            SafeNativeMethods.SendMessage(windowHandle, KEYDOWN, vKey, new IntPtr(0));
             Thread.Sleep(new Random().Next(20, 40)); // make it look more human-like :^)
-            SendMessage(windowHandle, KEYUP, vKey, new IntPtr(0));
-        }
-
-        private static void StopMovement()
-        {
-            //SendKey(new IntPtr(0x26));
-            //SendKey(new IntPtr(0x28));
+            SafeNativeMethods.SendMessage(windowHandle, KEYUP, vKey, new IntPtr(0));
         }
 
         /// <summary> Write the coordinates and action to the memory. </summary> <param

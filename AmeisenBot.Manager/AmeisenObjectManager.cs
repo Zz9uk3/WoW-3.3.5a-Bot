@@ -20,7 +20,7 @@ namespace AmeisenBotManager
     /// - get the state by isHooked boolean
     /// - Me: all character information
     /// </summary>
-    public class AmeisenObjectManager
+    public class AmeisenObjectManager : IDisposable
     {
         private Thread objectUpdateThread;
         private System.Timers.Timer objectUpdateTimer;
@@ -188,6 +188,20 @@ namespace AmeisenBotManager
             AmeisenDBManager.UpdateOrAddNode(new MapNode(activeNode, zoneID, mapID));
             //}
             //lastNode = activeNode;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                ((IDisposable)objectUpdateTimer).Dispose();
+            }
         }
     }
 }

@@ -16,7 +16,6 @@ namespace AmeisenBotDB
         public const string TABLE_NAME_NODES = "ameisenbot_map_nodes";
         public const string TABLE_NAME_REMEMBERED_UNITS = "ameisenbot_remembered_units";
         public string DBName = "ameisenbot";
-        private MySqlConnection sqlConnection;
         public bool IsConnected { get; private set; }
         private string MysqlConnectionString { get; set; }
 
@@ -34,30 +33,18 @@ namespace AmeisenBotDB
         {
             if (!IsConnected)
             {
-                sqlConnection = new MySqlConnection(mysqlConnectionString);
+                MySqlConnection sqlConnection = new MySqlConnection(mysqlConnectionString);
                 MysqlConnectionString = mysqlConnectionString;
                 try
                 {
                     sqlConnection.Open();
                     IsConnected = true;
                     InitDB();
+                    sqlConnection.Close();
                 }
                 catch { }
             }
             return IsConnected;
-        }
-
-        /// <summary>
-        /// Disconnect if we are connected
-        /// </summary>
-        public void Disconnect()
-        {
-            if (IsConnected)
-            {
-                sqlConnection.Close();
-            }
-
-            IsConnected = false;
         }
 
         /// <summary> Get all saved nodes by the zone & map id </summary> <param name="zoneID">zone
@@ -103,6 +90,7 @@ namespace AmeisenBotDB
         {
             if (IsConnected)
             {
+                MySqlConnection sqlConnection = new MySqlConnection(MysqlConnectionString);
                 StringBuilder dbInit = new StringBuilder();
 
                 dbInit.Append($"CREATE DATABASE IF NOT EXISTS `{sqlConnection.Database}` /*!40100 DEFAULT CHARACTER SET utf8 */;");
@@ -159,9 +147,14 @@ namespace AmeisenBotDB
                     return sqlConnection.Execute(sqlQuery, mapNode);
                 }
                 catch { return 0; }
+                finally
+                {
+                    sqlConnection.Close();
+                }
             }
             else
             {
+                sqlConnection.Close();
                 return 0;
             }
         }
@@ -191,6 +184,7 @@ namespace AmeisenBotDB
                 }
                 catch { }
             }
+            sqlConnection.Close();
         }
 
         public RememberedUnit CheckForRememberedUnit(string name, int zoneID, int mapID)
@@ -220,10 +214,14 @@ namespace AmeisenBotDB
                     };
 
                     rememberedUnit.UnitTraits = JsonConvert.DeserializeObject<List<UnitTrait>>(rememberedUnit.UnitTraitsString);
+
+                    sqlConnection.Close();
                     return rememberedUnit;
                 }
                 catch { }
             }
+
+            sqlConnection.Close();
             return null;
         }
     }

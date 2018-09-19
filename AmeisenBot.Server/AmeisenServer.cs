@@ -66,7 +66,10 @@ namespace AmeisenBotServer
             foreach (NetworkBot b in activeBots)
             {
                 if (b.id == botID)
+                {
                     return count;
+                }
+
                 count++;
             }
             return -1;
@@ -84,7 +87,9 @@ namespace AmeisenBotServer
             StringBuilder fancyBar = new StringBuilder();
 
             foreach (char c in serverRunning)
+            {
                 fancyBar.Append("-");
+            }
 
             Console.WindowWidth = fancyBar.Length + 1;
             Console.BufferWidth = fancyBar.Length + 1;
@@ -112,7 +117,9 @@ namespace AmeisenBotServer
             {
                 cmd = Console.ReadLine();
                 if (!cmd.ToLower().Equals("stop"))
+                {
                     Console.WriteLine($"unknown: {cmd}");
+                }
             }
             timeoutTimer.Stop();
         }
@@ -125,11 +132,16 @@ namespace AmeisenBotServer
         private static string ReadBody(HttpListenerRequest request)
         {
             if (!request.HasEntityBody)
-                return null;
+            {
+                return "";
+            }
 
-            using (Stream body = request.InputStream)
-            using (StreamReader reader = new StreamReader(body, request.ContentEncoding))
-                return reader.ReadToEnd();
+            string body = "";
+            using (StreamReader reader = new StreamReader(request.InputStream, request.ContentEncoding))
+            {
+                body = reader.ReadToEnd();
+            }
+            return body;
         }
 
         private static int RemoveBot(HttpListenerRequest request)
@@ -143,11 +155,13 @@ namespace AmeisenBotServer
         private static void RemoveBotByID(int idToRemove)
         {
             foreach (NetworkBot b in activeBots)
+            {
                 if (b.id == idToRemove)
                 {
                     activeBots.Remove(b);
                     break;
                 }
+            }
         }
 
         private static string SendResponse(HttpListenerRequest request)
@@ -161,7 +175,9 @@ namespace AmeisenBotServer
                     return JsonConvert.SerializeObject(copyOfBotList);
                 }
                 else
+                {
                     return string.Format("Go to the ./web/ folder and open index.html for a webview lmao, this kind of \"shit\" will never get through here >:)");
+                }
             }
             // Bot REGISTER
             else if (request.HttpMethod == "POST")
@@ -184,17 +200,25 @@ namespace AmeisenBotServer
                 }
                 // UNKNOWN
                 else
+                {
                     return "unknown command";
+                }
             }
             else
+            {
                 return "AyyLMAO";
+            }
         }
 
         private static void TimeoutCheck(object sender, ElapsedEventArgs e)
         {
             foreach (NetworkBot bot in activeBots)
+            {
                 if (DateTimeOffset.Now.ToUnixTimeMilliseconds() - bot.lastUpdate > 5000)
+                {
                     RemoveBotByID(bot.id);
+                }
+            }
         }
 
         private static int UpdateBot(HttpListenerRequest request)
