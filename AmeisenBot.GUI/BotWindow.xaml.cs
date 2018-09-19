@@ -1,4 +1,5 @@
-﻿using AmeisenBotLogger;
+﻿using AmeisenBotCore;
+using AmeisenBotLogger;
 using AmeisenBotManager;
 using AmeisenBotUtilities;
 using AmeisenBotUtilities.Enums;
