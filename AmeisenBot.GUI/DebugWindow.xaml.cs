@@ -52,8 +52,8 @@ namespace AmeisenBotGUI
         private void ObjectUpdateTimer_Tick(object sender, EventArgs e)
         {
             listboxObjects.Items.Clear();
-            if (BotManager.WoWObjects != null)
-                foreach (WowObject obj in BotManager.WoWObjects)
+            if (BotManager.ActiveWoWObjects != null)
+                foreach (WowObject obj in BotManager.ActiveWoWObjects)
                 {
                     if (obj == null)
                         break;

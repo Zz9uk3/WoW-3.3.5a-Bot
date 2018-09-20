@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Test", "AmeisenB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Combat", "AmeisenBot.Combat\AmeisenBot.Combat.csproj", "{CD72AD54-7C40-4EC0-8878-0771922A2961}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenMovement", "AmeisenMovement\AmeisenMovement\AmeisenMovement.csproj", "{1B4E7E1F-CCD0-4506-AC22-B314E64CE88C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -209,6 +211,18 @@ Global
 		{CD72AD54-7C40-4EC0-8878-0771922A2961}.Release|x64.Build.0 = Release|Any CPU
 		{CD72AD54-7C40-4EC0-8878-0771922A2961}.Release|x86.ActiveCfg = Release|Any CPU
 		{CD72AD54-7C40-4EC0-8878-0771922A2961}.Release|x86.Build.0 = Release|Any CPU
+		{1B4E7E1F-CCD0-4506-AC22-B314E64CE88C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B4E7E1F-CCD0-4506-AC22-B314E64CE88C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B4E7E1F-CCD0-4506-AC22-B314E64CE88C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1B4E7E1F-CCD0-4506-AC22-B314E64CE88C}.Debug|x64.Build.0 = Debug|Any CPU
+		{1B4E7E1F-CCD0-4506-AC22-B314E64CE88C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1B4E7E1F-CCD0-4506-AC22-B314E64CE88C}.Debug|x86.Build.0 = Debug|Any CPU
+		{1B4E7E1F-CCD0-4506-AC22-B314E64CE88C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B4E7E1F-CCD0-4506-AC22-B314E64CE88C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B4E7E1F-CCD0-4506-AC22-B314E64CE88C}.Release|x64.ActiveCfg = Release|Any CPU
+		{1B4E7E1F-CCD0-4506-AC22-B314E64CE88C}.Release|x64.Build.0 = Release|Any CPU
+		{1B4E7E1F-CCD0-4506-AC22-B314E64CE88C}.Release|x86.ActiveCfg = Release|Any CPU
+		{1B4E7E1F-CCD0-4506-AC22-B314E64CE88C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

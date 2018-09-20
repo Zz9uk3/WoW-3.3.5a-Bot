@@ -4,3 +4,6 @@
 [submodule "AmeisenPath"]
 	path = AmeisenPath
 	url = https://github.com/Jnnshschl/AmeisenPath.git
+[submodule "AmeisenMovement"]
+	path = AmeisenMovement
+	url = https://github.com/Jnnshschl/AmeisenMovement

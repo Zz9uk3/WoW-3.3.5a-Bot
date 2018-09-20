@@ -5,6 +5,7 @@ using AmeisenBotFSM.Enums;
 using AmeisenBotLogger;
 using AmeisenBotUtilities;
 using AmeisenCombatEngine.Interfaces;
+using AmeisenMovement;
 using System.Threading;
 
 namespace AmeisenBotFSM
@@ -31,14 +32,18 @@ namespace AmeisenBotFSM
             set { AmeisenDataHolder.Target = value; }
         }
 
-        public AmeisenStateMachineManager(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager, IAmeisenCombatClass combatClass)
+        public AmeisenStateMachineManager(
+            AmeisenDataHolder ameisenDataHolder, 
+            AmeisenDBManager ameisenDBManager,
+            AmeisenMovementEngine ameisenMovementEngine,
+            IAmeisenCombatClass combatClass)
         {
             Active = false;
             AmeisenDataHolder = ameisenDataHolder;
             AmeisenDBManager = ameisenDBManager;
             MainWorker = new Thread(new ThreadStart(DoWork));
             StateWatcherWorker = new Thread(new ThreadStart(WatchForStateChanges));
-            StateMachine = new AmeisenStateMachine(ameisenDataHolder, ameisenDBManager, combatClass);
+            StateMachine = new AmeisenStateMachine(ameisenDataHolder, ameisenDBManager, ameisenMovementEngine, combatClass);
         }
 
         /// <summary>

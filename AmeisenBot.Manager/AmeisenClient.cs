@@ -138,7 +138,7 @@ namespace AmeisenBotManager
             {
                 ((IDisposable)botListUpdateTimer).Dispose();
                 ((IDisposable)botUpdateTimer).Dispose();
-                ((IDisposable)httpClient).Dispose();
+                httpClient.Dispose();
             }
         }
     }

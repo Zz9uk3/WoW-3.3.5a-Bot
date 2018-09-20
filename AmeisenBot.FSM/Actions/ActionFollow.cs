@@ -1,6 +1,7 @@
 ﻿using AmeisenBotData;
 using AmeisenBotDB;
 using AmeisenBotUtilities;
+using AmeisenMovement;
 using System;
 using System.Collections.Generic;
 using static AmeisenBotFSM.Objects.Delegates;
@@ -16,6 +17,7 @@ namespace AmeisenBotFSM.Actions
         private List<Unit> ActiveUnits { get; set; }
         private AmeisenDataHolder AmeisenDataHolder { get; set; }
         private AmeisenDBManager AmeisenDBManager { get; set; }
+        private AmeisenMovementEngine AmeisenMovementEngine { get; set; }
 
         private double XOffset { get; set; }
         private double YOffset { get; set; }
@@ -26,10 +28,14 @@ namespace AmeisenBotFSM.Actions
             set { AmeisenDataHolder.Me = value; }
         }
 
-        public ActionFollow(AmeisenDataHolder ameisenDataHolder, AmeisenDBManager ameisenDBManager) : base(ameisenDataHolder, ameisenDBManager)
+        public ActionFollow(
+            AmeisenDataHolder ameisenDataHolder, 
+            AmeisenDBManager ameisenDBManager, 
+            AmeisenMovementEngine ameisenMovementEngine) : base(ameisenDataHolder, ameisenDBManager)
         {
             AmeisenDataHolder = ameisenDataHolder;
             AmeisenDBManager = ameisenDBManager;
+            AmeisenMovementEngine = ameisenMovementEngine;
         }
 
         public override void DoThings()
@@ -69,7 +75,9 @@ namespace AmeisenBotFSM.Actions
                 }
             }
             else
+            {
                 PathCalculated = false;
+            }
 
             // Do the movement stuff
             base.DoThings();
@@ -114,6 +122,7 @@ namespace AmeisenBotFSM.Actions
             Random rnd = new Random();
 
             if (AmeisenDataHolder.ActiveNetworkBots != null)
+            {
                 foreach (NetworkBot bot in AmeisenDataHolder.ActiveNetworkBots)
                 {
                     if (bot.me.Guid == Me.Guid)
@@ -125,8 +134,11 @@ namespace AmeisenBotFSM.Actions
                         pos++;
                     }
                 }
+            }
             else
+            {
                 return rnd.Next(1, 17);
+            }
 
             return pos;
         }

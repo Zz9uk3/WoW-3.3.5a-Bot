@@ -92,6 +92,10 @@
       <Project>{5369e077-2dc4-4de5-9020-2c7ddb41686f}</Project>
       <Name>AmeisenBot.Utilities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AmeisenMovement\AmeisenMovement\AmeisenMovement.csproj">
+      <Project>{1B4E7E1F-CCD0-4506-AC22-B314E64CE88C}</Project>
+      <Name>AmeisenMovement</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -181,7 +181,7 @@ namespace AmeisenBotGUI
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Searching for WoW's", this);
 
             comboBoxWoWs.Items.Clear();
-            List<WowExe> wowList = BotManager.RunningWoWs;
+            List<WowExe> wowList = BotManager.RunningWows;
 
             foreach (WowExe w in wowList)
                 comboBoxWoWs.Items.Add(w);

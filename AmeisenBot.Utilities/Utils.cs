@@ -1,25 +1,30 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Windows.Media.Imaging;
 
 namespace AmeisenBotUtilities
 {
-    public abstract class Utils
+    public static class Utils
     {
         /// <summary>
         /// Decode base64 image to BitmapImage
         /// </summary>
         /// <param name="base64String">input base64 image string</param>
         /// <returns>BitmapImage</returns>
-        public static BitmapImage Base64ToBitmapImage(string base64String)
+        public static BitmapImage Base64ToBitmapImage(string base64String, bool compressionUsed = true)
         {
             byte[] imageBytes = Convert.FromBase64String(base64String);
-            using (var stream = new MemoryStream(imageBytes))
+
+            if (compressionUsed)
+                imageBytes = GZipDecompressBytes(imageBytes);
+
+            using (MemoryStream stream = new MemoryStream(imageBytes))
             {
-                var bitmap = new BitmapImage();
+                BitmapImage bitmap = new BitmapImage();
                 bitmap.BeginInit();
                 bitmap.StreamSource = stream;
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
@@ -38,7 +43,10 @@ namespace AmeisenBotUtilities
         {
             StringBuilder hex = new StringBuilder(inputBytes.Length * 2);
             foreach (byte b in inputBytes)
+            {
                 hex.AppendFormat("{0:x2}", b);
+            }
+
             return hex.ToString();
         }
 
@@ -50,9 +58,13 @@ namespace AmeisenBotUtilities
         public static string FirstCharToUpper(string input)
         {
             if (input.Length > 1)
+            {
                 return input?.First().ToString().ToUpper() + input?.Substring(1);
+            }
             else
+            {
                 return input.ToUpper();
+            }
         }
 
         /// <summary>
@@ -66,7 +78,10 @@ namespace AmeisenBotUtilities
             Random rnd = new Random();
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < lenght; i++)
+            {
                 sb.Append(chars[rnd.Next(0, chars.Length - 1)]);
+            }
+
             return sb.ToString();
         }
 
@@ -88,10 +103,50 @@ namespace AmeisenBotUtilities
         /// </summary>
         /// <param name="img">input image</param>
         /// <returns>bytes of the input image</returns>
-        public static byte[] ImageToByte(Image img)
+        public static byte[] ImageToByte(Image img, bool compressionUsed = true)
         {
-            ImageConverter converter = new ImageConverter();
-            return (byte[])converter.ConvertTo(img, typeof(byte[]));
+            byte[] imageBytes = (byte[])new ImageConverter().ConvertTo(img, typeof(byte[]));
+
+            if (compressionUsed) imageBytes = GZipDecompressBytes(imageBytes);
+
+            return imageBytes;
+        }
+
+        /// <summary>
+        /// Compress bytes using GZip
+        /// </summary>
+        /// <param name="bytesToCompress">byte[] to compress using GZip</param>
+        /// <returns>GZip-Compressed byte[]</returns>
+        private static byte[] GZipCompressBytes(byte[] bytesToCompress)
+        {
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                using (GZipStream gzipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
+                {
+                    gzipStream.Write(bytesToCompress, 0, bytesToCompress.Length);
+                }
+                return memoryStream.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Decompress a GZip-Compressed byte[]
+        /// </summary>
+        /// <param name="compressedBytes">GZip-Compressed byte[]</param>
+        /// <returns>Decompressed byte[]</returns>
+        private static byte[] GZipDecompressBytes(byte[] compressedBytes)
+        {
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                using (MemoryStream byteStream = new MemoryStream(compressedBytes))
+                {
+                    using (GZipStream gzipStream = new GZipStream(byteStream, CompressionMode.Decompress))
+                    {
+                        gzipStream.CopyTo(memoryStream);
+                    }
+                }
+                return memoryStream.ToArray();
+            }
         }
 
         /// <summary>
@@ -104,7 +159,7 @@ namespace AmeisenBotUtilities
         {
             double r = 0.0, g = 0.0, b = 0.0, a = 0.0;
             double total = 0.0;
-            double step = 1.0 / (double)(colors.Length - 1);
+            double step = 1.0 / (colors.Length - 1);
             double mu = 0.0;
             double sigma_2 = 0.035;
 
@@ -141,9 +196,13 @@ namespace AmeisenBotUtilities
             float f = (float)Math.Atan2(targetPosition.Y - myPosition.Y, targetPosition.X - myPosition.X);
 
             if (f < 0.0f)
+            {
                 f = f + (float)Math.PI * 2.0f;
+            }
             else if (f > (float)Math.PI * 2)
+            {
                 f = f - (float)Math.PI * 2.0f;
+            }
 
             return (f >= (myRotation * 0.7)) && (f <= (myRotation * 1.3)) ? true : false;
         }

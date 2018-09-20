@@ -176,7 +176,7 @@ namespace AmeisenBotServer
                 }
                 else
                 {
-                    return string.Format("Go to the ./web/ folder and open index.html for a webview lmao, this kind of \"shit\" will never get through here >:)");
+                    return string.Format("Go to the ./web/ folder and open index.html for a webview lmao, this \"shit\" will never get through here >:)");
                 }
             }
             // Bot REGISTER

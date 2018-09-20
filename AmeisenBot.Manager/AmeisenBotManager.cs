@@ -7,6 +7,8 @@ using AmeisenBotLogger;
 using AmeisenBotUtilities;
 using AmeisenBotUtilities.Objects;
 using AmeisenCombatEngine.Interfaces;
+using AmeisenMovement;
+using AmeisenMovement.Formations;
 using Magic;
 using Microsoft.CSharp;
 using System;
@@ -15,8 +17,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Reflection;
 using System.Text;
+using System.Windows;
 
 namespace AmeisenBotManager
 {
@@ -91,14 +93,13 @@ namespace AmeisenBotManager
             set { AmeisenDataHolder.IsAllowedToRevive = value; }
         }
 
-        public bool IsAttached { get; private set; }
-        public bool IsHooked { get; private set; }
+        public bool IsBlackmagicAttached { get; private set; }
+        public bool IsEndsceneHooked { get; private set; }
         public Me Me { get { return AmeisenDataHolder.Me; } }
-        public List<WowExe> RunningWoWs { get { return AmeisenCore.GetRunningWoWs(); } }
+        public List<WowExe> RunningWows { get { return AmeisenCore.GetRunningWows(); } }
         public Settings Settings { get { return AmeisenSettings.Settings; } }
         public Unit Target { get { return AmeisenDataHolder.Target; } }
         public WowExe WowExe { get; private set; }
-        public List<WowObject> WoWObjects { get { return AmeisenObjectManager.GetObjects(); } }
         public Process WowProcess { get; private set; }
         public int MapID { get { return AmeisenCore.GetMapID(); } }
         public int ZoneID { get { return AmeisenCore.GetZoneID(); } }
@@ -124,7 +125,7 @@ namespace AmeisenBotManager
             get
             {
                 return AmeisenCore.CheckWorldLoaded()
-                   && !AmeisenCore.CheckLoadingScreen();
+                   && !AmeisenCore.CheckLoadingScreen(); // TODO: implement this
             }
         }
 
@@ -136,12 +137,16 @@ namespace AmeisenBotManager
         private AmeisenObjectManager AmeisenObjectManager { get; set; }
         private AmeisenSettings AmeisenSettings { get; set; }
         private AmeisenStateMachineManager AmeisenStateMachineManager { get; set; }
+        private AmeisenMovementEngine AmeisenMovementEngine { get; set; }
         private BlackMagic Blackmagic { get; set; }
 
+        /// <summary>
+        /// Create a new AmeisenBotManager to manage the bot's functionality
+        /// </summary>
         public BotManager()
         {
-            IsAttached = false;
-            IsHooked = false;
+            IsBlackmagicAttached = false;
+            IsEndsceneHooked = false;
 
             AmeisenDataHolder = new AmeisenDataHolder();
             AmeisenSettings = new AmeisenSettings(AmeisenDataHolder);
@@ -149,25 +154,39 @@ namespace AmeisenBotManager
             AmeisenDBManager = new AmeisenDBManager();
         }
 
+        /// <summary>
+        /// Load a given CombatClass *.cs file into the CombatManager by compiling it at runtime
+        /// </summary>
+        /// <param name="fileName">*.cs CombatClass file</param>
         public void LoadCombatClassFromFile(string fileName)
         {
             AmeisenSettings.Settings.combatClassPath = fileName;
             AmeisenSettings.SaveToFile(AmeisenSettings.loadedconfName);
             CompileAndLoadCombatClass(fileName);
-
-            //TODO: replace AmeisenCombatManager.ReloadCombatClass();
         }
 
+        /// <summary>
+        /// Loads the Settings from a given file
+        /// </summary>
+        /// <param name="filename">file to load the Settings from</param>
         public void LoadSettingsFromFile(string filename)
         {
             AmeisenSettings.LoadFromFile(filename);
         }
 
+        /// <summary>
+        /// Save the current Settings to the given file
+        /// </summary>
+        /// <param name="filename">file to save the Settings to</param>
         public void SaveSettingsToFile(string filename)
         {
             AmeisenSettings.SaveToFile(filename);
         }
 
+        /// <summary>
+        /// Starts the bots mechanisms, hooks, ...
+        /// </summary>
+        /// <param name="wowExe">WowExe to start the bot on</param>
         public void StartBot(WowExe wowExe)
         {
             WowExe = wowExe;
@@ -190,13 +209,14 @@ namespace AmeisenBotManager
 
             // Attach to Proccess
             Blackmagic = new BlackMagic(wowExe.process.Id);
-            IsAttached = Blackmagic.IsProcessOpen;
-            // TODO: make this better
+            IsBlackmagicAttached = Blackmagic.IsProcessOpen;
+            // TODO: make this non static
             AmeisenCore.BlackMagic = Blackmagic;
 
             // Hook EndScene
             AmeisenHook = new AmeisenHook(Blackmagic);
-            IsHooked = AmeisenHook.isHooked;
+            IsEndsceneHooked = AmeisenHook.isHooked;
+            // TODO: make this non static
             AmeisenCore.AmeisenHook = AmeisenHook;
 
             // Start our object updates
@@ -206,8 +226,16 @@ namespace AmeisenBotManager
             // Load the combatclass
             IAmeisenCombatClass combatClass = CompileAndLoadCombatClass(AmeisenSettings.Settings.combatClassPath);
 
+            // Init our MovementEngine to hposition ourself according to our formation
+            AmeisenMovementEngine = new AmeisenMovementEngine(new DefaultFormation());
+
             // Start the StateMachine
-            AmeisenStateMachineManager = new AmeisenStateMachineManager(AmeisenDataHolder, AmeisenDBManager, combatClass);
+            AmeisenStateMachineManager = new AmeisenStateMachineManager(
+                AmeisenDataHolder,
+                AmeisenDBManager,
+                AmeisenMovementEngine,
+                combatClass);
+            // Deafult Idle state
             AmeisenStateMachineManager.StateMachine.PushAction(BotState.Idle);
             AmeisenStateMachineManager.Start();
 
@@ -221,6 +249,9 @@ namespace AmeisenBotManager
             }
         }
 
+        /// <summary>
+        /// Stops the bots mechanisms, hooks, ...
+        /// </summary>
         public void StopBot()
         {
             // Disconnect from Server
@@ -245,16 +276,32 @@ namespace AmeisenBotManager
             AmeisenLogger.Instance.StopLogging();
         }
 
+        /// <summary>
+        /// Add a RememberedUnit to the RememberedUnits Database to remember its position and UnitTraits
+        /// </summary>
+        /// <param name="rememberedUnit">Unit that you want to remember</param>
         public void RememberUnit(RememberedUnit rememberedUnit)
         {
             AmeisenDBManager.RememberUnit(rememberedUnit);
         }
 
+        /// <summary>
+        /// Check if we remember a Unit by its Name, ZoneID and MapID
+        /// </summary>
+        /// <param name="name">name of the npc</param>
+        /// <param name="zoneID">zoneid of the npc</param>
+        /// <param name="mapID">mapid of the npc</param>
+        /// <returns>RememberedUnit with if we remember it, its UnitTraits and position</returns>
         public RememberedUnit CheckForRememberedUnit(string name, int zoneID, int mapID)
         {
             return AmeisenDBManager.CheckForRememberedUnit(name, zoneID, mapID);
         }
 
+        /// <summary>
+        /// Compile a CombatClass *.cs file and return its Instance
+        /// </summary>
+        /// <param name="combatclassPath">*.cs CombatClass file</param>
+        /// <returns>Instance of the built Class, if its null somethings gone wrong</returns>
         private IAmeisenCombatClass CompileAndLoadCombatClass(string combatclassPath)
         {
             if (File.Exists(combatclassPath))
@@ -265,7 +312,7 @@ namespace AmeisenBotManager
                 }
                 catch (Exception e)
                 {
-                    //MessageBox.Show(e.Message, "Compiler error");
+                    MessageBox.Show(e.Message, "Compilation error", MessageBoxButton.OK, MessageBoxImage.Error);
                     AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Error while compiling CombatClass: {Path.GetFileName(combatclassPath)}", this);
                     AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"{e.Message}", this);
                 }
@@ -274,22 +321,27 @@ namespace AmeisenBotManager
             return null;
         }
 
+        /// <summary>
+        /// Compile a combatclass *.cs file at runtime and load it into the bot
+        /// </summary>
+        /// <param name="combatclassPath">path to the *.cs file</param>
+        /// <returns></returns>
         private IAmeisenCombatClass CompileCombatClass(string combatclassPath)
         {
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Compiling CombatClass: {Path.GetFileName(combatclassPath)}", this);
 
-            CSharpCodeProvider provider = new CSharpCodeProvider();
             CompilerParameters parameters = new CompilerParameters();
-
+            // Include dependencies
             parameters.ReferencedAssemblies.Add("System.dll");
             parameters.ReferencedAssemblies.Add("./lib/AmeisenBot.Combat.dll");
             parameters.ReferencedAssemblies.Add("./lib/AmeisenBot.Utilities.dll");
             parameters.ReferencedAssemblies.Add("./lib/AmeisenBot.Logger.dll");
             parameters.ReferencedAssemblies.Add("./lib/AmeisenBot.Data.dll");
-            parameters.GenerateInMemory = true;
-            parameters.GenerateExecutable = false;
+            parameters.GenerateInMemory = true; // generate no file
+            parameters.GenerateExecutable = false; // to output a *.dll not a *.exe
 
-            CompilerResults results = provider.CompileAssemblyFromSource(parameters, File.ReadAllText(combatclassPath));
+            // compile it
+            CompilerResults results = new CSharpCodeProvider().CompileAssemblyFromSource(parameters, File.ReadAllText(combatclassPath));
 
             if (results.Errors.HasErrors)
             {
@@ -303,8 +355,8 @@ namespace AmeisenBotManager
                 throw new InvalidOperationException(sb.ToString());
             }
 
-            Assembly assembly = results.CompiledAssembly;
-            IAmeisenCombatClass result = (IAmeisenCombatClass)assembly.CreateInstance("AmeisenBotCombat.CombatClass");
+            // Create Instance of CombatClass
+            IAmeisenCombatClass result = (IAmeisenCombatClass)results.CompiledAssembly.CreateInstance("AmeisenBotCombat.CombatClass");
 
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Successfully compiled CombatClass: {Path.GetFileName(combatclassPath)}", this);
             return result;
