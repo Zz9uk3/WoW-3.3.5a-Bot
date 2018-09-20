@@ -51,5 +51,11 @@
         public bool doOwnStuff = false;
         public double oldXindowPosX = 0;
         public double oldXindowPosY = 0;
+        public double wowRectT = 0;
+        public double wowRectB = 0;
+        public double wowRectL = 0;
+        public double wowRectR = 0;
+        public bool saveWoWWindowPosition = true;
+        public bool saveBotWindowPosition = true;
     }
 }

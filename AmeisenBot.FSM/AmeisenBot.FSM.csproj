@@ -85,7 +85,7 @@
       <Name>AmeisenBot.Utilities</Name>
     </ProjectReference>
     <ProjectReference Include="..\AmeisenMovement\AmeisenMovement\AmeisenMovement.csproj">
-      <Project>{1B4E7E1F-CCD0-4506-AC22-B314E64CE88C}</Project>
+      <Project>{1b4e7e1f-ccd0-4506-ac22-b314e64ce88c}</Project>
       <Name>AmeisenMovement</Name>
     </ProjectReference>
     <ProjectReference Include="..\AmeisenPath\AmeisenPathLib\AmeisenPathLib.csproj">

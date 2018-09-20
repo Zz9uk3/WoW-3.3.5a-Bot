@@ -2,6 +2,7 @@
 using AmeisenBotDB;
 using AmeisenBotUtilities;
 using AmeisenMovement;
+using AmeisenMovement.Structs;
 using System;
 using System.Collections.Generic;
 using static AmeisenBotFSM.Objects.Delegates;
@@ -29,8 +30,8 @@ namespace AmeisenBotFSM.Actions
         }
 
         public ActionFollow(
-            AmeisenDataHolder ameisenDataHolder, 
-            AmeisenDBManager ameisenDBManager, 
+            AmeisenDataHolder ameisenDataHolder,
+            AmeisenDBManager ameisenDBManager,
             AmeisenMovementEngine ameisenMovementEngine) : base(ameisenDataHolder, ameisenDBManager)
         {
             AmeisenDataHolder = ameisenDataHolder;
@@ -56,13 +57,21 @@ namespace AmeisenBotFSM.Actions
                 return;
             }
 
-            Vector3 posToMoveTo = ActiveUnit.pos;
+            /*Vector3 posToMoveTo = ActiveUnit.pos;
             posToMoveTo = CalculateMovementOffset(
                 posToMoveTo,
                 GetFollowAngle(
                     GetPartymemberCount(),
                     GetMyPartyPosition()),
-                AmeisenDataHolder.Settings.followDistance);
+                AmeisenDataHolder.Settings.followDistance);*/
+
+            //AmeisenMovementEngine.MemberCount = GetPartymemberCount();
+            Vector4 targetPos = AmeisenMovementEngine.GetPosition(
+                                    new Vector4(ActiveUnit.pos.X, ActiveUnit.pos.Y, ActiveUnit.pos.Z, ActiveUnit.Rotation),
+                                    AmeisenDataHolder.Settings.followDistance,
+                                    GetMyPartyPosition());
+
+            Vector3 posToMoveTo = new Vector3(targetPos.X, targetPos.Y, targetPos.Z);
 
             // When we are far enough away, follow
             if (Utils.GetDistance(Me.pos, ActiveUnit.pos)
@@ -137,7 +146,7 @@ namespace AmeisenBotFSM.Actions
             }
             else
             {
-                return rnd.Next(1, 17);
+                return rnd.Next(1, 6);
             }
 
             return pos;
@@ -179,17 +188,21 @@ namespace AmeisenBotFSM.Actions
         {
             List<Unit> tempList = new List<Unit>();
 
-            if (AmeisenDataHolder.IsAllowedToFollowParty)
+            try
             {
-                List<ulong> partymembers = Me.PartymemberGuids;
-                foreach (ulong guid in partymembers)
+                if (AmeisenDataHolder.IsAllowedToFollowParty)
                 {
-                    if (guid != 0)
+                    List<ulong> partymembers = Me.PartymemberGuids;
+                    foreach (ulong guid in partymembers)
                     {
-                        tempList.Add((Unit)GetWoWObjectFromGUID(guid));
+                        if (guid != 0)
+                        {
+                            tempList.Add((Unit)GetWoWObjectFromGUID(guid));
+                        }
                     }
                 }
             }
+            catch { }
 
             return tempList;
         }

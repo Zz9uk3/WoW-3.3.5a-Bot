@@ -75,17 +75,24 @@ namespace AmeisenBotGUI
             string imageDir = AppDomain.CurrentDomain.BaseDirectory + "config/img/";
 
             if (!Directory.Exists(configDir))
+            {
                 Directory.CreateDirectory(configDir);
+            }
 
             if (!Directory.Exists(imageDir))
+            {
                 Directory.CreateDirectory(imageDir);
+            }
 
             string imagePath = $"{AppDomain.CurrentDomain.BaseDirectory}config\\\\img\\\\{Path.GetFileName(fileName)}";
 
             if (imagePath != fileName)
             {
                 if (File.Exists(imagePath))
+                {
                     File.Delete(imagePath);
+                }
+
                 File.Copy(fileName, imagePath);
             }
 
@@ -112,6 +119,9 @@ namespace AmeisenBotGUI
 
             LoadAmeisenServerSettings();
             LoadDatabaseSettings();
+
+            checkboxSaveBotPosition.IsChecked = BotManager.Settings.saveBotWindowPosition;
+            checkboxSaveWoWPosition.IsChecked = BotManager.Settings.saveWoWWindowPosition;
 
             // Colors are already loaded
         }
@@ -163,6 +173,9 @@ namespace AmeisenBotGUI
             SaveMapUISettings();
             SaveMainUISettings();
 
+            BotManager.Settings.saveBotWindowPosition = (bool)checkboxSaveBotPosition.IsChecked;
+            BotManager.Settings.saveWoWWindowPosition = (bool)checkboxSaveWoWPosition.IsChecked;
+
             BotManager.SaveSettingsToFile(BotManager.LoadedConfigName);
         }
 
@@ -174,7 +187,9 @@ namespace AmeisenBotGUI
             };
             colorpicker.ShowDialog();
             if (colorpicker.ApplyColor)
+            {
                 Application.Current.Resources[resourceColor] = colorpicker.ActiveColor;
+            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

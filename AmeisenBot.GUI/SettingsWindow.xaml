@@ -492,5 +492,32 @@
                 <SolidColorBrush Color="{DynamicResource WalkableNodeColorHigh}" />
             </Button.Background>
         </Button>
+        <Label Content="Remember Positions" HorizontalAlignment="Left" Margin="1,423,0,0" VerticalAlignment="Top" BorderBrush="White" BorderThickness="0,0,0,1" Cursor="None" FontSize="16" Width="160">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </Label.Foreground>
+        </Label>
+        <CheckBox x:Name="checkboxSaveBotPosition" Content="Bot" HorizontalAlignment="Left" Margin="10,460,0,0" VerticalAlignment="Top" BorderThickness="2">
+            <CheckBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </CheckBox.Foreground>
+            <CheckBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
+            </CheckBox.BorderBrush>
+            <CheckBox.Background>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </CheckBox.Background>
+        </CheckBox>
+        <CheckBox x:Name="checkboxSaveWoWPosition" Content="WoW" HorizontalAlignment="Left" Margin="109,460,0,0" VerticalAlignment="Top" BorderThickness="2">
+            <CheckBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </CheckBox.Foreground>
+            <CheckBox.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" />
+            </CheckBox.BorderBrush>
+            <CheckBox.Background>
+                <SolidColorBrush Color="{DynamicResource TextColor}" />
+            </CheckBox.Background>
+        </CheckBox>
     </Grid>
 </Window>

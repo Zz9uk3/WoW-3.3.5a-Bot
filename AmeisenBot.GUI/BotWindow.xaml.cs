@@ -1,5 +1,4 @@
-﻿using AmeisenBotCore;
-using AmeisenBotLogger;
+﻿using AmeisenBotLogger;
 using AmeisenBotManager;
 using AmeisenBotUtilities;
 using AmeisenBotUtilities.Enums;
@@ -48,10 +47,18 @@ namespace AmeisenBotGUI
             ApplyConfigColors();
             BotManager.StartBot(wowExe);
 
-            if (BotManager.Settings.oldXindowPosX != 0)
-                Left = BotManager.Settings.oldXindowPosX;
-            if (BotManager.Settings.oldXindowPosY != 0)
-                Top = BotManager.Settings.oldXindowPosY;
+            if (BotManager.Settings.saveBotWindowPosition)
+            {
+                if (BotManager.Settings.oldXindowPosX != 0)
+                {
+                    Left = BotManager.Settings.oldXindowPosX;
+                }
+
+                if (BotManager.Settings.oldXindowPosY != 0)
+                {
+                    Top = BotManager.Settings.oldXindowPosY;
+                }
+            }
         }
 
         private void ApplyConfigColors()
@@ -82,8 +89,8 @@ namespace AmeisenBotGUI
         {
             BotManager.Settings.oldXindowPosX = Left;
             BotManager.Settings.oldXindowPosY = Top;
-            Close();
             BotManager.StopBot();
+            Close();
         }
 
         private void ButtonExtendedDebugUI_Click(object sender, RoutedEventArgs e)
@@ -279,11 +286,13 @@ namespace AmeisenBotGUI
             try
             {
                 if (BotManager.Settings.picturePath != lastImgPath)
+                {
                     if (BotManager.Settings.picturePath.Length > 0)
                     {
                         botPicture.Source = new BitmapImage(new Uri(BotManager.Settings.picturePath));
                         lastImgPath = BotManager.Settings.picturePath;
                     }
+                }
             }
             catch { AmeisenLogger.Instance.Log(LogLevel.ERROR, "Failed to load picture...", this); }
 
@@ -331,7 +340,10 @@ namespace AmeisenBotGUI
 
                         StringBuilder sb = new StringBuilder();
                         foreach (UnitTrait u in rememberedUnit.UnitTraits)
+                        {
                             sb.Append($"{UnitTraitSymbols[u]} ");
+                        }
+
                         labelUnitTraits.Content = sb.ToString();
                     }
                     else

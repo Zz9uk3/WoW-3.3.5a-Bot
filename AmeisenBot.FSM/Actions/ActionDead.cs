@@ -54,7 +54,7 @@ namespace AmeisenBotFSM.Actions
                     WaypointQueue.Enqueue(corpsePosition);
 
             if (Utils.GetDistance(Me.pos, corpsePosition) < 10.0)
-                AmeisenCore.RetrieveCorpse();
+                AmeisenCore.RetrieveCorpse(true);
         }
     }
 }

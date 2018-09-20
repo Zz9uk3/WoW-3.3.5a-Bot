@@ -187,6 +187,18 @@ namespace AmeisenBotCore
             catch { return false; }
         }
 
+        public static void SetWindowPosition(IntPtr mainWindowHandle, int x, int y, int width, int height)
+        {
+            SafeNativeMethods.MoveWindow(mainWindowHandle, x, y, height, width, true);
+        }
+
+        public static SafeNativeMethods.Rect GetWowDiemsions(IntPtr mainWindowHandle)
+        {
+            SafeNativeMethods.Rect rect = new SafeNativeMethods.Rect();
+            SafeNativeMethods.GetWindowRect(mainWindowHandle, ref rect);
+            return rect;
+        }
+
         /// <summary>
         /// Get our active Corpse position
         /// </summary>

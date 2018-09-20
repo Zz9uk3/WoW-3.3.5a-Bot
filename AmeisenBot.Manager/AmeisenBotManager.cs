@@ -194,6 +194,23 @@ namespace AmeisenBotManager
             // Load Settings
             AmeisenSettings.LoadFromFile(wowExe.characterName);
 
+            // Load old WoW Position
+            if (AmeisenSettings.Settings.saveBotWindowPosition)
+            {
+                if (AmeisenSettings.Settings.wowRectL != 0
+                && AmeisenSettings.Settings.wowRectR != 0
+                && AmeisenSettings.Settings.wowRectT != 0
+                && AmeisenSettings.Settings.wowRectB != 0)
+                {
+                    AmeisenCore.SetWindowPosition(
+                    wowExe.process.MainWindowHandle,
+                    (int)AmeisenSettings.Settings.wowRectL,
+                    (int)AmeisenSettings.Settings.wowRectT,
+                    (int)AmeisenSettings.Settings.wowRectB - (int)AmeisenSettings.Settings.wowRectT,
+                    (int)AmeisenSettings.Settings.wowRectR - (int)AmeisenSettings.Settings.wowRectL);
+                }
+            }
+
             // Connect to DB
             if (AmeisenSettings.Settings.databaseAutoConnect)
             {
@@ -227,7 +244,10 @@ namespace AmeisenBotManager
             IAmeisenCombatClass combatClass = CompileAndLoadCombatClass(AmeisenSettings.Settings.combatClassPath);
 
             // Init our MovementEngine to hposition ourself according to our formation
-            AmeisenMovementEngine = new AmeisenMovementEngine(new DefaultFormation());
+            AmeisenMovementEngine = new AmeisenMovementEngine(new DefaultFormation())
+            {
+                MemberCount = 40
+            };
 
             // Start the StateMachine
             AmeisenStateMachineManager = new AmeisenStateMachineManager(
@@ -259,6 +279,13 @@ namespace AmeisenBotManager
             {
                 AmeisenClient.Unregister();
             }
+
+            // Save WoW's window positions
+            SafeNativeMethods.Rect wowRect = AmeisenCore.GetWowDiemsions(WowExe.process.MainWindowHandle);
+            AmeisenSettings.Settings.wowRectT = wowRect.Top;
+            AmeisenSettings.Settings.wowRectB = wowRect.Bottom;
+            AmeisenSettings.Settings.wowRectL = wowRect.Left;
+            AmeisenSettings.Settings.wowRectR = wowRect.Right;
 
             // Stop object updates
             AmeisenObjectManager.Stop();
