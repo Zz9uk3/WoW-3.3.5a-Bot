@@ -13,7 +13,7 @@ namespace AmeisenBotUtilities
         public List<ulong> PartymemberGuids { get; set; }
         public uint PlayerBase { get; set; }
 
-        public Me(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic) { }
+        public Me(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic) { Update(); }
 
         public override string ToString()
         {

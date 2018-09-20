@@ -43,7 +43,7 @@ using System.Windows;
 //
 // Sie können alle Werte angeben oder Standardwerte für die Build- und Revisionsnummern verwenden,
 // übernehmen, indem Sie "*" eingeben: [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.3.6833.19436")]
-[assembly: AssemblyFileVersion("1.3.6833.19436")]
+[assembly: AssemblyVersion("1.3.6837.32963")]
+[assembly: AssemblyFileVersion("1.3.6837.32963")]
 [assembly: NeutralResourcesLanguage("en")]
-[assembly: AssemblyInformationalVersion("1.3.6833.19436")]
+[assembly: AssemblyInformationalVersion("1.3.6837.32963")]
