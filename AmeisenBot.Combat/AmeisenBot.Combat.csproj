@@ -45,6 +45,7 @@
     <Compile Include="CombatUtils.cs" />
     <Compile Include="Interfaces\IAmeisenCombatClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SampleClasses\CCAutoAttackOnly.cs" />
     <Compile Include="SampleClasses\CCWarlockAffliction.cs" />
   </ItemGroup>
   <ItemGroup>

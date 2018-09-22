@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace AmeisenBotCombat.SampleClasses
 {
-    public class CCWarlockAffliction : IAmeisenCombatClass
+    public class CCAutoAttackOnly : IAmeisenCombatClass
     {
         public AmeisenDataHolder AmeisenDataHolder { get; set; }
 
@@ -66,16 +66,7 @@ namespace AmeisenBotCombat.SampleClasses
 
         public void HandleBuffs()
         {
-            List<string> myAuras = CombatUtils.GetAuras(LuaUnit.player);
 
-            if (!myAuras.Contains("demon armor"))
-            {
-                CombatUtils.CastSpellByName("Demon Armor", true);
-            }
-            if (!myAuras.Contains("blood pact"))
-            {
-                CombatUtils.CastSpellByName("Summon Imp", true);
-            }
         }
 
         public void HandleHealing()
@@ -88,44 +79,6 @@ namespace AmeisenBotCombat.SampleClasses
 
         private void DoAttackRoutine()
         {
-            List<string> targetAuras = CombatUtils.GetAuras(LuaUnit.target);
-
-            Me?.Update();
-            // Restore Mana
-            if (Me.EnergyPercentage < 30 && Me.HealthPercentage > 50)
-            {
-                CombatUtils.CastSpellByName("Life Tap", true);
-            }
-
-            Target?.Update();
-            // DoT's to apply
-            if (!targetAuras.Contains("curse of agony"))
-            {
-                CombatUtils.CastSpellByName("Curse of Agony", false);
-            }
-            if (!targetAuras.Contains("corruption"))
-            {
-                CombatUtils.CastSpellByName("Corruption", false);
-            }
-            if (!targetAuras.Contains("unstable affliction"))
-            {
-                CombatUtils.CastSpellByName("Unstable Affliction", false);
-            }
-            if (!targetAuras.Contains("haunt"))
-            {
-                CombatUtils.CastSpellByName("Haunt", false);
-            }
-
-            Target?.Update();
-            // Active-Damage Spell
-            if (Target?.HealthPercentage < 25)
-            {
-                CombatUtils.CastSpellByName("Drain Soul", false);
-            }
-            else
-            {
-                CombatUtils.CastSpellByName("Shadow Bolt", false);
-            }
         }
     }
 }

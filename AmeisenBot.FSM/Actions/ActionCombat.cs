@@ -34,7 +34,7 @@ namespace AmeisenBotFSM.Actions
             // TODO: Add Clas/Spec recognition
             if (combatClass == null)
             {
-                CombatClass = new CCWarlockAffliction
+                CombatClass = new CCAutoAttackOnly
                 {
                     AmeisenDataHolder = ameisenDataHolder
                 };
@@ -48,28 +48,27 @@ namespace AmeisenBotFSM.Actions
 
         public void DoThings()
         {
-            if (CombatClass != null)
+            try
             {
-                if (AmeisenDataHolder.IsAllowedToAttack)
+                if (CombatClass != null)
                 {
-                    CombatClass.HandleAttacking();
-                }
+                    if (AmeisenDataHolder.IsAllowedToAttack)
+                    {
+                        CombatClass.HandleAttacking();
+                    }
 
-                if (AmeisenDataHolder.IsAllowedToTank)
-                {
-                    CombatClass.HandleTanking();
-                }
+                    if (AmeisenDataHolder.IsAllowedToTank)
+                    {
+                        CombatClass.HandleTanking();
+                    }
 
-                if (AmeisenDataHolder.IsAllowedToHeal)
-                {
-                    CombatClass.HandleHealing();
-                }
-
-                if (AmeisenDataHolder.IsAllowedToBuff)
-                {
-                    CombatClass.HandleBuffs();
+                    if (AmeisenDataHolder.IsAllowedToHeal)
+                    {
+                        CombatClass.HandleHealing();
+                    }
                 }
             }
+            catch { }
         }
 
         public void Start()

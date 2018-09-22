@@ -18,6 +18,7 @@ namespace AmeisenBotFSM
         public AmeisenStateMachine StateMachine { get; private set; }
         private AmeisenDataHolder AmeisenDataHolder { get; set; }
         private AmeisenDBManager AmeisenDBManager { get; set; }
+        private IAmeisenCombatClass CombatClass { get; set; }
         private Thread MainWorker { get; set; }
         private Thread StateWatcherWorker { get; set; }
 
@@ -40,10 +41,14 @@ namespace AmeisenBotFSM
             IAmeisenCombatClass combatClass)
         {
             Active = false;
+
             AmeisenDataHolder = ameisenDataHolder;
             AmeisenDBManager = ameisenDBManager;
+            CombatClass = combatClass;
+
             MainWorker = new Thread(new ThreadStart(DoWork));
             StateWatcherWorker = new Thread(new ThreadStart(WatchForStateChanges));
+
             StateMachine = new AmeisenStateMachine(ameisenDataHolder, ameisenDBManager, ameisenMovementEngine, combatClass);
         }
 
@@ -107,6 +112,16 @@ namespace AmeisenBotFSM
 
                 // Am I dead?
                 DeadCheck();
+
+                // Do i need to buff
+                if (AmeisenDataHolder.IsAllowedToBuff)
+                {
+                    try
+                    {
+                        CombatClass.HandleBuffs();
+                    }
+                    catch { }
+                }
 
                 AmeisenLogger.Instance.Log(LogLevel.VERBOSE, $"FSM: {StateMachine.GetCurrentState()}", this);
                 Thread.Sleep(AmeisenDataHolder.Settings.stateMachineStateUpdateMillis);
