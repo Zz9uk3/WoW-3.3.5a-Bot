@@ -38,11 +38,15 @@ namespace AmeisenBotData
         public void LoadFromFile(string filename)
         {
             if (!Directory.Exists(configPath))
+            {
                 Directory.CreateDirectory(configPath);
+            }
 
             if (File.Exists(configPath + filename.ToLower() + extension))
+            {
                 // Deserialize our object with the help of NewtosoftJSON
                 Settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(configPath + filename.ToLower() + extension));
+            }
             else
             {
                 // Load default settings
@@ -61,7 +65,9 @@ namespace AmeisenBotData
         public void SaveToFile(string filename)
         {
             if (!Directory.Exists(configPath))
+            {
                 Directory.CreateDirectory(configPath);
+            }
 
             // Serialize our object with the help of NewtosoftJSON
             File.WriteAllText(configPath + filename.ToLower() + extension, JsonConvert.SerializeObject(Settings));

@@ -52,11 +52,13 @@ namespace AmeisenBotManager
 
                 string base64Image = "";
                 if (AmeisenDataHolder.Settings.picturePath.Length > 0)
+                {
                     base64Image = Convert.ToBase64String(
                             Utils.ImageToByte(
                                 new Bitmap(AmeisenDataHolder.Settings.picturePath)
                                 )
                             );
+                }
 
                 SendableMe meSendable = new SendableMe().ConvertFromMe(me);
                 string content = JsonConvert.SerializeObject(new NetworkRegData(base64Image, meSendable));
@@ -76,7 +78,9 @@ namespace AmeisenBotManager
                     botListUpdateThread.Start();
                 }
                 else
+                {
                     IsRegistered = false;
+                }
             }
             catch { IsRegistered = false; }
         }
@@ -96,6 +100,22 @@ namespace AmeisenBotManager
                 botListUpdateThread.Join();
 
                 IsRegistered = false;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                ((IDisposable)botListUpdateTimer).Dispose();
+                ((IDisposable)botUpdateTimer).Dispose();
+                httpClient.Dispose();
             }
         }
 
@@ -124,22 +144,6 @@ namespace AmeisenBotManager
                 AmeisenDataHolder.ActiveNetworkBots = BotList;
             }
             catch { }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                ((IDisposable)botListUpdateTimer).Dispose();
-                ((IDisposable)botUpdateTimer).Dispose();
-                httpClient.Dispose();
-            }
         }
     }
 }

@@ -17,6 +17,7 @@ namespace AmeisenBotCore
     {
         public bool isHooked = false;
         public bool isInjectionUsed = false;
+        private const uint ENDSCENE_HOOK_OFFSET = 0x2;
         private uint codeCave;
         private uint codeCaveForInjection;
         private uint codeToExecute;
@@ -25,7 +26,6 @@ namespace AmeisenBotCore
         private Thread hookWorker;
         private byte[] originalEndscene = new byte[] { 0xB8, 0x51, 0xD7, 0xCA, 0x64 };
         private uint returnAdress;
-        private const uint ENDSCENE_HOOK_OFFSET = 0x2;
         private BlackMagic BlackMagic { get; set; }
 
         public AmeisenHook(BlackMagic blackmagic)
@@ -90,7 +90,7 @@ namespace AmeisenBotCore
                                 ((ReturnHookJob)currentJob).ChainedJob.ReadReturnBytes
                                 );
                         }
-                        
+
                         currentJob.IsFinished = true;
                     }
                 }

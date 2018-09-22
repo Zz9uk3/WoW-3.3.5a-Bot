@@ -9,11 +9,13 @@ namespace AmeisenBotCombat.SampleClasses
     public class CCWarlockAffliction : IAmeisenCombatClass
     {
         public AmeisenDataHolder AmeisenDataHolder { get; set; }
+
         private Me Me
         {
             get { return AmeisenDataHolder.Me; }
             set { AmeisenDataHolder.Me = value; }
         }
+
         private Unit Target
         {
             get { return AmeisenDataHolder.Target; }
@@ -62,6 +64,28 @@ namespace AmeisenBotCombat.SampleClasses
             }
         }
 
+        public void HandleBuffs()
+        {
+            List<string> myAuras = CombatUtils.GetAuras(LuaUnit.player);
+
+            if (!myAuras.Contains("Demon Armor"))
+            {
+                CombatUtils.CastSpellByName("Demon Armor", true);
+            }
+            if (!myAuras.Contains("Blood Pact"))
+            {
+                CombatUtils.CastSpellByName("Summon Imp", true);
+            }
+        }
+
+        public void HandleHealing()
+        {
+        }
+
+        public void HandleTanking()
+        {
+        }
+
         private void DoAttackRoutine()
         {
             List<string> targetAuras = CombatUtils.GetAuras(LuaUnit.target);
@@ -102,28 +126,6 @@ namespace AmeisenBotCombat.SampleClasses
             {
                 CombatUtils.CastSpellByName("Shadow Bolt", false);
             }
-        }
-
-        public void HandleBuffs()
-        {
-            List<string> myAuras = CombatUtils.GetAuras(LuaUnit.player);
-
-            if (!myAuras.Contains("Demon Armor"))
-            {
-                CombatUtils.CastSpellByName("Demon Armor", true);
-            }
-            if (!myAuras.Contains("Blood Pact"))
-            {
-                CombatUtils.CastSpellByName("Summon Imp", true);
-            }
-        }
-
-        public void HandleHealing()
-        {
-        }
-
-        public void HandleTanking()
-        {
         }
     }
 }

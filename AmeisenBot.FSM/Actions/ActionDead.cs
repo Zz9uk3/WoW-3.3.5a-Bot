@@ -50,11 +50,17 @@ namespace AmeisenBotFSM.Actions
             Vector3 corpsePosition = AmeisenCore.GetCorpsePosition();
 
             if (corpsePosition.X != 0 && corpsePosition.Y != 0 && corpsePosition.Z != 0)
+            {
                 if (!WaypointQueue.Contains(corpsePosition))
+                {
                     WaypointQueue.Enqueue(corpsePosition);
+                }
+            }
 
             if (Utils.GetDistance(Me.pos, corpsePosition) < 10.0)
+            {
                 AmeisenCore.RetrieveCorpse(true);
+            }
         }
     }
 }

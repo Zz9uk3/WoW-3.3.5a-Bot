@@ -70,12 +70,15 @@ namespace AmeisenBotFSM.Actions
 
             // we are possibly stuck at a fence or something alike
             if (movedSinceLastTick != 0 && movedSinceLastTick < 1000)
+            {
                 if (movedSinceLastTick < AmeisenDataHolder.Settings.MovementJumpThreshold)
                 {
                     AmeisenCore.CharacterJumpAsync();
                     AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Jumping: {movedSinceLastTick}", this);
                     return true;
                 }
+            }
+
             return false;
         }
 
@@ -136,7 +139,10 @@ namespace AmeisenBotFSM.Actions
             {
                 CheckIfWeAreStuckIfYesJump(targetPosition, LastPosition);
                 if (targetPosition.Z == 0)
+                {
                     targetPosition.Z = Me.pos.Z;
+                }
+
                 AmeisenCore.MovePlayerToXYZ(targetPosition, InteractionType.MOVE);
                 Thread.Sleep(250);
                 Me.Update();
@@ -147,7 +153,9 @@ namespace AmeisenBotFSM.Actions
         private List<Node> SimplifyPath(List<Node> path)
         {
             if (path == null)
+            {
                 return null;
+            }
 
             List<Node> simplePath = new List<Node>();
             double oldX = 0.0;
@@ -159,7 +167,9 @@ namespace AmeisenBotFSM.Actions
                 double newY = path[x - 1].Position.Y - path[x].Position.Y;
 
                 if (newX != oldX && newY != oldY)
+                {
                     simplePath.Add(path[x]);
+                }
 
                 oldX = newX;
                 oldY = newY;
@@ -200,7 +210,9 @@ namespace AmeisenBotFSM.Actions
 
             // We cant find ay path if there are no known nodes
             if (nodes.Count < 1)
+            {
                 return null;
+            }
 
             Node[,] map = new Node[maxX + 1, maxY + 1];
 
@@ -210,7 +222,9 @@ namespace AmeisenBotFSM.Actions
 
             // Fill path-gaps
             if (thickenPath)
+            {
                 map = ThinkenPathsOnMap(map, maxX, maxY);
+            }
 
             // Find the path
             List<Node> path = AmeisenPath.FindPathAStar(map,
@@ -218,7 +232,9 @@ namespace AmeisenBotFSM.Actions
                                              new NodePosition((int)targetPosition.X + offsetX, (int)targetPosition.Y + offsetY, (int)targetPosition.Z));
 
             if (path == null)
+            {
                 return null;
+            }
             else
             {
                 PathCalculated = true;
@@ -264,6 +280,7 @@ namespace AmeisenBotFSM.Actions
         {
             List<Node> rebasedPath = new List<Node>();
             foreach (Node node in path)
+            {
                 rebasedPath.Add(
                     new Node(
                         new NodePosition(
@@ -271,6 +288,8 @@ namespace AmeisenBotFSM.Actions
                             node.Position.Y - offsetY,
                             node.Position.Z),
                         false));
+            }
+
             return rebasedPath;
         }
 
@@ -290,6 +309,7 @@ namespace AmeisenBotFSM.Actions
                 for (int x = 0; x <= maxX; x++)
                 {
                     if (!map[x, y].IsBlocked)
+                    {
                         foreach (Node node in AmeisenPath.GetNeighbours(map, new NodePosition(x, y)))
                         {
                             newMap[node.Position.X, node.Position.Y] = new Node(
@@ -299,8 +319,11 @@ namespace AmeisenBotFSM.Actions
                                     map[node.Position.X, node.Position.Y].Position.Z),
                                     false);
                         }
+                    }
                     else
+                    {
                         newMap[x, y] = map[x, y];
+                    }
                 }
             }
 

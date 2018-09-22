@@ -46,34 +46,57 @@ namespace AmeisenBotGUI
         private void ListboxObjects_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (listboxObjects.SelectedValue != null)
+            {
                 textboxSelectedItem.Text = ((DataItem)listboxObjects.SelectedValue).Text;
+            }
         }
 
         private void ObjectUpdateTimer_Tick(object sender, EventArgs e)
         {
             listboxObjects.Items.Clear();
             if (BotManager.ActiveWoWObjects != null)
+            {
                 foreach (WowObject obj in BotManager.ActiveWoWObjects)
                 {
                     if (obj == null)
+                    {
                         break;
+                    }
+
                     if (obj.GetType() == typeof(WowObject) && checkboxFilterWOWOBJECT.IsChecked == true)
+                    {
                         listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["WoWObjectColor"])));
+                    }
                     else if (obj.GetType() == typeof(GameObject) && checkboxFilterGAMEOBJECT.IsChecked == true)
+                    {
                         listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["GameObjectColor"])));
+                    }
                     else if (obj.GetType() == typeof(DynObject) && checkboxFilterDYNOBJECT.IsChecked == true)
+                    {
                         listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["DynObjectColor"])));
+                    }
                     else if (obj.GetType() == typeof(Container) && checkboxFilterCONTAINER.IsChecked == true)
+                    {
                         listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["ContainerColor"])));
+                    }
                     else if (obj.GetType() == typeof(Corpse) && checkboxFilterCORPSE.IsChecked == true)
+                    {
                         listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["CorpseColor"])));
+                    }
                     else if (obj.GetType() == typeof(Unit) && checkboxFilterUNIT.IsChecked == true)
+                    {
                         listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["UnitColor"])));
+                    }
                     else if (obj.GetType() == typeof(Player) && checkboxFilterPLAYER.IsChecked == true)
+                    {
                         listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["PlayerColor"])));
+                    }
                     else if (obj.GetType() == typeof(Me) && checkboxFilterME.IsChecked == true)
+                    {
                         listboxObjects.Items.Add(new DataItem(obj.ToString(), new SolidColorBrush((Color)Application.Current.Resources["MeColor"])));
+                    }
                 }
+            }
         }
 
         private void StartUIUpdatTimer()

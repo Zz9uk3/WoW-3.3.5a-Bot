@@ -64,17 +64,34 @@ namespace AmeisenBotGUI
             UnitToRemmeber.UnitTraits = new List<UnitTrait>();
 
             if (checkboxIsFlightmaster.IsChecked == true)
+            {
                 UnitToRemmeber.UnitTraits.Add(UnitTrait.FLIGHTMASTER);
+            }
+
             if (checkboxSellsFood.IsChecked == true)
+            {
                 UnitToRemmeber.UnitTraits.Add(UnitTrait.FOOD);
+            }
+
             if (checkboxSellsDrink.IsChecked == true)
+            {
                 UnitToRemmeber.UnitTraits.Add(UnitTrait.DRINK);
+            }
+
             if (checkboxIsRepair.IsChecked == true)
+            {
                 UnitToRemmeber.UnitTraits.Add(UnitTrait.REPAIR);
+            }
+
             if (checkboxIsVendor.IsChecked == true)
+            {
                 UnitToRemmeber.UnitTraits.Add(UnitTrait.SELL);
+            }
+
             if (checkboxIsAuctionmaster.IsChecked == true)
+            {
                 UnitToRemmeber.UnitTraits.Add(UnitTrait.AUCTIONMASTER);
+            }
 
             ShouldRemember = true;
             Close();

@@ -23,7 +23,9 @@ namespace AmeisenBotServer
             httpListener.Start();
         }
 
-        public WebServer(Func<HttpListenerRequest, string> method, params string[] prefixes) : this(prefixes, method) { }
+        public WebServer(Func<HttpListenerRequest, string> method, params string[] prefixes) : this(prefixes, method)
+        {
+        }
 
         public void Run()
         {

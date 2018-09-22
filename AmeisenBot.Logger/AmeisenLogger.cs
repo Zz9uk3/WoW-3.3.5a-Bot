@@ -69,7 +69,10 @@ namespace AmeisenBotLogger
                 lock (padlock)
                 {
                     if (instance == null)
+                    {
                         instance = new AmeisenLogger();
+                    }
+
                     return instance;
                 }
             }
@@ -129,7 +132,10 @@ namespace AmeisenBotLogger
         private void SaveLogToFile(AmeisenLogEntry entry)
         {
             if (!Directory.Exists(logPath))
+            {
                 Directory.CreateDirectory(logPath);
+            }
+
             File.AppendAllText(logPath + logName, entry.ToString() + Environment.NewLine);
         }
 

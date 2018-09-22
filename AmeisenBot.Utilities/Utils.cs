@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
@@ -21,7 +20,9 @@ namespace AmeisenBotUtilities
             byte[] imageBytes = Convert.FromBase64String(base64String);
 
             if (compressionUsed)
+            {
                 imageBytes = GZipDecompressBytes(imageBytes);
+            }
 
             using (MemoryStream stream = new MemoryStream(imageBytes))
             {
@@ -108,46 +109,12 @@ namespace AmeisenBotUtilities
         {
             byte[] imageBytes = (byte[])new ImageConverter().ConvertTo(img, typeof(byte[]));
 
-            if (compressionUsed) imageBytes = GZipDecompressBytes(imageBytes);
+            if (compressionUsed)
+            {
+                imageBytes = GZipDecompressBytes(imageBytes);
+            }
 
             return imageBytes;
-        }
-
-        /// <summary>
-        /// Compress bytes using GZip
-        /// </summary>
-        /// <param name="bytesToCompress">byte[] to compress using GZip</param>
-        /// <returns>GZip-Compressed byte[]</returns>
-        private static byte[] GZipCompressBytes(byte[] bytesToCompress)
-        {
-            using (MemoryStream memoryStream = new MemoryStream())
-            {
-                using (GZipStream gzipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
-                {
-                    gzipStream.Write(bytesToCompress, 0, bytesToCompress.Length);
-                }
-                return memoryStream.ToArray();
-            }
-        }
-
-        /// <summary>
-        /// Decompress a GZip-Compressed byte[]
-        /// </summary>
-        /// <param name="compressedBytes">GZip-Compressed byte[]</param>
-        /// <returns>Decompressed byte[]</returns>
-        private static byte[] GZipDecompressBytes(byte[] compressedBytes)
-        {
-            using (MemoryStream memoryStream = new MemoryStream())
-            {
-                using (MemoryStream byteStream = new MemoryStream(compressedBytes))
-                {
-                    using (GZipStream gzipStream = new GZipStream(byteStream, CompressionMode.Decompress))
-                    {
-                        gzipStream.CopyTo(memoryStream);
-                    }
-                }
-                return memoryStream.ToArray();
-            }
         }
 
         /// <summary>
@@ -206,6 +173,43 @@ namespace AmeisenBotUtilities
             }
 
             return (f >= (myRotation * 0.7)) && (f <= (myRotation * 1.3)) ? true : false;
+        }
+
+        /// <summary>
+        /// Compress bytes using GZip
+        /// </summary>
+        /// <param name="bytesToCompress">byte[] to compress using GZip</param>
+        /// <returns>GZip-Compressed byte[]</returns>
+        private static byte[] GZipCompressBytes(byte[] bytesToCompress)
+        {
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                using (GZipStream gzipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
+                {
+                    gzipStream.Write(bytesToCompress, 0, bytesToCompress.Length);
+                }
+                return memoryStream.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Decompress a GZip-Compressed byte[]
+        /// </summary>
+        /// <param name="compressedBytes">GZip-Compressed byte[]</param>
+        /// <returns>Decompressed byte[]</returns>
+        private static byte[] GZipDecompressBytes(byte[] compressedBytes)
+        {
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                using (MemoryStream byteStream = new MemoryStream(compressedBytes))
+                {
+                    using (GZipStream gzipStream = new GZipStream(byteStream, CompressionMode.Decompress))
+                    {
+                        gzipStream.CopyTo(memoryStream);
+                    }
+                }
+                return memoryStream.ToArray();
+            }
         }
     }
 }

@@ -52,6 +52,7 @@ namespace AmeisenBotGUI
 
                 List<NetworkBot> networkBots = BotManager.NetworkBots;
                 if (networkBots != null)
+                {
                     foreach (NetworkBot bot in networkBots)
                     {
                         BotView botView = new BotView();
@@ -72,6 +73,7 @@ namespace AmeisenBotGUI
                         botView.botImage.Source = Utils.Base64ToBitmapImage(bot.base64Image);
                         botViewPanel.Children.Add(botView);
                     }
+                }
             }
         }
 

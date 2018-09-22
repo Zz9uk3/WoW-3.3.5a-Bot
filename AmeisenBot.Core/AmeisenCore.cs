@@ -77,7 +77,6 @@ namespace AmeisenBotCore
             return BlackMagic.ReadInt(Offsets.worldLoaded) == 1;
         }
 
-
         /// <summary>
         /// Reads all WoWObject out of WoW's ObjectManager
         /// </summary>

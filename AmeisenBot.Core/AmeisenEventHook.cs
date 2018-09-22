@@ -7,10 +7,6 @@ namespace AmeisenBotCore
 {
     public class AmeisenEventHook
     {
-        private List<AmeisenEvent> SubscribedEvents { get; set; }
-        private Thread EventReader { get; set; }
-        public bool IsActive { get; private set; }
-
         private const string LUA_FRAME = "ameisenbotEventFrame";
         private const string LUA_TABLE = "ameisenbotEventTable";
         private const string LUA_REGISTER = "ameisenbotRegisterEvent";
@@ -20,6 +16,9 @@ namespace AmeisenBotCore
         private const string LUA_EVENTCOUNT = "ameisenbotGetEventCount";
         private const string LUA_EVENTREMOVE = "ameisenbotRemoveEvent";
         private const string LUA_EVENTNAME = "ameisenbotGetEventName";
+        public bool IsActive { get; private set; }
+        private List<AmeisenEvent> SubscribedEvents { get; set; }
+        private Thread EventReader { get; set; }
 
         public AmeisenEventHook()
         {
@@ -51,12 +50,10 @@ namespace AmeisenBotCore
 
         public void Subscribe()
         {
-
         }
 
         public void Unsubscribe()
         {
-
         }
 
         private void ReadEvents()
@@ -74,6 +71,7 @@ namespace AmeisenBotCore
     public class AmeisenEvent
     {
         private string WowEventName { get; set; }
+
         private delegate void OnWowEventReceived();
     }
 }

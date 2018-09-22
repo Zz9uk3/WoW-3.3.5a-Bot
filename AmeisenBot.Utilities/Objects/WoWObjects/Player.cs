@@ -77,7 +77,9 @@ namespace AmeisenBotUtilities
             base.Update();
 
             if (Name == null)
+            {
                 try { Name = GetPlayerNameFromGuid(Guid); } catch { }
+            }
         }
     }
 }

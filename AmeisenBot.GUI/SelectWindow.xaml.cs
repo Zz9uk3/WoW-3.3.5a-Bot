@@ -35,7 +35,9 @@ namespace AmeisenBotGUI
                 autologinIsPossible = true;
             }
             else
+            {
                 loadingForm.Height = 58;
+            }
         }
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
@@ -49,7 +51,9 @@ namespace AmeisenBotGUI
             if (((WowExe)comboBoxWoWs.SelectedItem) != null)
             {
                 if (((WowExe)comboBoxWoWs.SelectedItem).characterName == "")
+                {
                     MessageBox.Show("Please login first!", "Warning");
+                }
                 else
                 {
                     AmeisenLogger.Instance.Log(LogLevel.DEBUG, "Selected WoW: " + ((WowExe)comboBoxWoWs.SelectedItem).ToString(), this);
@@ -80,7 +84,9 @@ namespace AmeisenBotGUI
             if (activeExe != null && autologinIsPossible && activeExe.characterName == "")
             {
                 if (!Directory.Exists(configPath))
+                {
                     Directory.CreateDirectory(configPath);
+                }
 
                 string path = configPath + textboxCharactername.Text.ToLower() + extension;
 
@@ -90,7 +96,9 @@ namespace AmeisenBotGUI
                 credentials.charSlot = Convert.ToInt32(textboxCharSlot.Text);
 
                 if (checkboxSave.IsChecked == true)
+                {
                     File.WriteAllText(path, Newtonsoft.Json.JsonConvert.SerializeObject(credentials));
+                }
 
                 string charname = textboxCharactername.Text;
 
@@ -109,25 +117,35 @@ namespace AmeisenBotGUI
         private void ComboBoxAccounts_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (comboBoxAccounts.SelectedItem != null)
+            {
                 LoadAccount(comboBoxAccounts.SelectedValue.ToString().ToLower());
+            }
         }
 
         private void ComboBoxWoWs_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (comboBoxWoWs.SelectedItem != null)
+            {
                 LoadAccount(((WowExe)comboBoxWoWs.SelectedItem).characterName.ToLower());
+            }
         }
 
         private void GetAllAcoounts()
         {
             if (!Directory.Exists(configPath))
+            {
                 Directory.CreateDirectory(configPath);
+            }
 
             comboBoxAccounts.Items.Clear();
 
             foreach (string f in Directory.GetFiles(configPath))
+            {
                 if (f.Length > 0)
+                {
                     comboBoxAccounts.Items.Add(Path.GetFileNameWithoutExtension(f));
+                }
+            }
         }
 
         private void LoadAccount(string accountName)
@@ -135,7 +153,9 @@ namespace AmeisenBotGUI
             if (autologinIsPossible)
             {
                 if (!Directory.Exists(configPath))
+                {
                     Directory.CreateDirectory(configPath);
+                }
 
                 string path = configPath + accountName + extension;
                 Credentials credentials;
@@ -184,20 +204,28 @@ namespace AmeisenBotGUI
             List<WowExe> wowList = BotManager.RunningWows;
 
             foreach (WowExe w in wowList)
+            {
                 comboBoxWoWs.Items.Add(w);
+            }
 
             if (selectByCharname != "")
             {
                 foreach (WowExe i in comboBoxWoWs.Items)
+                {
                     if (i.characterName == selectByCharname)
+                    {
                         comboBoxWoWs.SelectedItem = i;
+                    }
+                }
             }
             else if (comboBoxWoWs.Items.Count > 0)
             {
                 if ((WowExe)comboBoxWoWs.SelectedItem == null
                 || ((WowExe)comboBoxWoWs.SelectedItem).characterName == ""
                 || ((WowExe)comboBoxWoWs.SelectedItem).process == null)
+                {
                     comboBoxWoWs.SelectedItem = comboBoxWoWs.Items[0];
+                }
             }
         }
     }

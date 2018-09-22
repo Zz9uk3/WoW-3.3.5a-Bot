@@ -62,7 +62,9 @@ namespace AmeisenBotManager
             AmeisenLogger.Instance.Log(LogLevel.VERBOSE, "Getting Objects", this);
 
             if (ActiveWoWObjects == null)
+            {
                 RefreshObjectsAsync();
+            }
 
             // need to do this only for specific objects, saving cpu usage
             //if (needToRefresh)
@@ -78,8 +80,12 @@ namespace AmeisenBotManager
         public WowObject GetWoWObjectFromGUID(ulong guid)
         {
             foreach (WowObject p in ActiveWoWObjects)
+            {
                 if (p.Guid == guid)
+                {
                     return p;
+                }
+            }
 
             return null;
         }
@@ -92,11 +98,13 @@ namespace AmeisenBotManager
             ActiveWoWObjects = AmeisenCore.GetAllWoWObjects();
 
             foreach (WowObject t in ActiveWoWObjects)
+            {
                 if (t.GetType() == typeof(Me))
                 {
                     Me = (Me)t;
                     break;
                 }
+            }
 
             objectUpdateTimer = new System.Timers.Timer(AmeisenDataHolder.Settings.dataRefreshRate);
             objectUpdateTimer.Elapsed += ObjectUpdateTimer;
@@ -111,6 +119,20 @@ namespace AmeisenBotManager
         {
             objectUpdateTimer.Stop();
             objectUpdateThread.Join();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                ((IDisposable)objectUpdateTimer).Dispose();
+            }
         }
 
         private void AntiAFK()
@@ -130,7 +152,10 @@ namespace AmeisenBotManager
             foreach (WowObject t in ActiveWoWObjects)
             {
                 if (t.GetType() == typeof(Me))
+                {
                     Me = (Me)t;
+                }
+
                 if (Me != null && t.Guid == Me.TargetGuid)
                 {
                     t.Update();
@@ -157,7 +182,9 @@ namespace AmeisenBotManager
             // Best place for this :^)
             AntiAFK();
             if (Me != null)
+            {
                 new Thread(new ThreadStart(() => UpdateNodeInDB(Me))).Start();
+            }
         }
 
         /// <summary>
@@ -188,20 +215,6 @@ namespace AmeisenBotManager
             AmeisenDBManager.UpdateOrAddNode(new MapNode(activeNode, zoneID, mapID));
             //}
             //lastNode = activeNode;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                ((IDisposable)objectUpdateTimer).Dispose();
-            }
         }
     }
 }

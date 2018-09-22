@@ -119,17 +119,21 @@ namespace AmeisenBotGUI
             foreach (ulong guid in BotManager.Me.PartymemberGuids)
             {
                 if (guid == 0)
+                {
                     continue;
+                }
 
                 string unitName = "";
                 Vector3 position = new Vector3(0, 0, 0);
                 foreach (WowObject p in BotManager.ActiveWoWObjects)
+                {
                     if (p.Guid == guid)
                     {
                         p.Update();
                         position = p.pos;
                         unitName = p.Name;
                     }
+                }
 
                 if (Utils.GetDistance(BotManager.Me.pos, position) < 200)
                 {
@@ -160,7 +164,9 @@ namespace AmeisenBotGUI
                 );
 
             if (nodelist.Count > 0)
+            {
                 currentMap = new Map(nodelist);
+            }
         }
 
         private Vector3 NodePosToCanvasPos(Vector3 canvasPos, Vector3 myPos)
