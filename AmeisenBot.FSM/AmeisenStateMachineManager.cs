@@ -1,4 +1,5 @@
-﻿using AmeisenBotCore;
+﻿using AmeisenBotCombat;
+using AmeisenBotCore;
 using AmeisenBotData;
 using AmeisenBotDB;
 using AmeisenBotFSM.Enums;
@@ -164,7 +165,9 @@ namespace AmeisenBotFSM
         {
             if (Me != null)
             {
-                if (Me.InCombat || (PartymembersInCombat() && AmeisenDataHolder.IsAllowedToAssistParty))
+                if (Me.InCombat 
+                    || (CombatUtils.PartymembersInCombat(Me, AmeisenDataHolder.ActiveWoWObjects).Count > 0 
+                    && AmeisenDataHolder.IsAllowedToAssistParty))
                 {
                     if (StateMachine.GetCurrentState() != BotState.Idle)
                         StateMachine.PopAction();
@@ -204,34 +207,6 @@ namespace AmeisenBotFSM
                     StateMachine.PopAction();
                 }
             }
-        }
-
-        /// <summary>
-        /// Check if any of our partymembers are in combat
-        /// </summary>
-        /// <returns>returns yes if one or more member/s is/are in combat</returns>
-        private bool PartymembersInCombat()
-        {
-            try
-            {
-                foreach (ulong guid in Me.PartymemberGuids)
-                {
-                    foreach (WowObject obj in AmeisenDataHolder.ActiveWoWObjects)
-                    {
-                        if (guid == obj.Guid)
-                        {
-                            if (((Unit)obj).InCombat)
-                            {
-                                return true;
-                            }
-
-                            break;
-                        }
-                    }
-                }
-            }
-            catch { }
-            return false;
         }
     }
 }

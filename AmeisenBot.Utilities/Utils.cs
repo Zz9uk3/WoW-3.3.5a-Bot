@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
@@ -15,7 +16,7 @@ namespace AmeisenBotUtilities
         /// </summary>
         /// <param name="base64String">input base64 image string</param>
         /// <returns>BitmapImage</returns>
-        public static BitmapImage Base64ToBitmapImage(string base64String, bool compressionUsed = true)
+        public static BitmapImage Base64ToBitmapImage(string base64String, bool compressionUsed = false)
         {
             byte[] imageBytes = Convert.FromBase64String(base64String);
 
@@ -103,7 +104,7 @@ namespace AmeisenBotUtilities
         /// </summary>
         /// <param name="img">input image</param>
         /// <returns>bytes of the input image</returns>
-        public static byte[] ImageToByte(Image img, bool compressionUsed = true)
+        public static byte[] ImageToByte(Image img, bool compressionUsed = false)
         {
             byte[] imageBytes = (byte[])new ImageConverter().ConvertTo(img, typeof(byte[]));
 

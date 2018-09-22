@@ -1,4 +1,5 @@
 ﻿using Magic;
+using System;
 using System.Collections.Specialized;
 using System.Text;
 
@@ -7,31 +8,20 @@ namespace AmeisenBotUtilities
     public partial class Unit : WowObject
     {
         public BitVector32 DynamicUFlags { get; set; }
-
         public int Energy { get; set; }
-
         public int Health { get; set; }
-
+        public int HealthPercentage { get { return (Health / MaxHealth) * 100; } }
+        public int EnergyPercentage { get { return (Energy / MaxEnergy) * 100; } }
         public bool InCombat { get { return UFlags[(int)UnitFlags.COMBAT]; } }
-
         public bool IsCasting { get; set; }
-
         public bool IsDead { get; set; }
-
         public bool IsLootable { get { return UFlags[(int)DynamicUnitFlags.LOOTABLE]; } }
-
         public int Level { get; set; }
-
         public int MaxEnergy { get; set; }
-
         public int MaxHealth { get; set; }
-
         public bool NeedToRevive { get { return Health == 0; } }
-
         public ulong TargetGuid { get; set; }
-
         public BitVector32 UFlags { get; set; }
-
         public BitVector32 UFlags2 { get; set; }
 
         public Unit(uint baseAddress, BlackMagic blackMagic) : base(baseAddress, blackMagic)
@@ -83,7 +73,9 @@ namespace AmeisenBotUtilities
             base.Update();
 
             if (Name == null)
+            {
                 try { Name = GetMobNameFromBase(BaseAddress); } catch { }
+            }
 
             pos.X = BlackMagicInstance.ReadFloat(BaseAddress + 0x798);
             pos.Y = BlackMagicInstance.ReadFloat(BaseAddress + 0x79C);
@@ -98,9 +90,13 @@ namespace AmeisenBotUtilities
             int combined = currentlyCastingID + currentlyChannelingID;
 
             if (combined > 0)
+            {
                 IsCasting = true;
+            }
             else
+            {
                 IsCasting = false;
+            }
 
             // too cpu heavy
             /*try

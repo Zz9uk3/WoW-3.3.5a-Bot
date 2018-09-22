@@ -7,7 +7,7 @@ namespace AmeisenBotCombat
 {
     public class CombatClass : IAmeisenCombatClass
     {
-        private AmeisenDataHolder AmeisenDataHolder { get; set; }
+        public AmeisenDataHolder AmeisenDataHolder { get; set; }
 
         private Me Me
         {

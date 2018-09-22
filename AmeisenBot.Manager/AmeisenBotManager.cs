@@ -339,7 +339,7 @@ namespace AmeisenBotManager
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show(e.Message, "Compilation error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(e.ToString(), "Compilation error", MessageBoxButton.OK, MessageBoxImage.Error);
                     AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Error while compiling CombatClass: {Path.GetFileName(combatclassPath)}", this);
                     AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"{e.Message}", this);
                 }
@@ -359,11 +359,12 @@ namespace AmeisenBotManager
 
             CompilerParameters parameters = new CompilerParameters();
             // Include dependencies
+            string ownPath = AppDomain.CurrentDomain.BaseDirectory;
             parameters.ReferencedAssemblies.Add("System.dll");
-            parameters.ReferencedAssemblies.Add("./lib/AmeisenBot.Combat.dll");
-            parameters.ReferencedAssemblies.Add("./lib/AmeisenBot.Utilities.dll");
-            parameters.ReferencedAssemblies.Add("./lib/AmeisenBot.Logger.dll");
-            parameters.ReferencedAssemblies.Add("./lib/AmeisenBot.Data.dll");
+            parameters.ReferencedAssemblies.Add(ownPath + "/lib/AmeisenBot.Combat.dll");
+            parameters.ReferencedAssemblies.Add(ownPath + "/lib/AmeisenBot.Utilities.dll");
+            parameters.ReferencedAssemblies.Add(ownPath + "/lib/AmeisenBot.Logger.dll");
+            parameters.ReferencedAssemblies.Add(ownPath + "/lib/AmeisenBot.Data.dll");
             parameters.GenerateInMemory = true; // generate no file
             parameters.GenerateExecutable = false; // to output a *.dll not a *.exe
 
@@ -376,7 +377,7 @@ namespace AmeisenBotManager
 
                 foreach (CompilerError error in results.Errors)
                 {
-                    sb.AppendLine($"Error ({error.ErrorNumber}): {error.ErrorText}");
+                    sb.AppendLine($"Error ({error.ErrorNumber}): {error.ErrorText}\nLine:{error.Line}");
                 }
 
                 throw new InvalidOperationException(sb.ToString());

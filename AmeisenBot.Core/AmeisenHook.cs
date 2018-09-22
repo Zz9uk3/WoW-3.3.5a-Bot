@@ -132,7 +132,7 @@ namespace AmeisenBotCore
                         endsceneReturnAddress = endscene + 0x5;
 
                         // Read our original EndScene
-                        originalEndscene = BlackMagic.ReadBytes(endscene, 5);
+                        //originalEndscene = BlackMagic.ReadBytes(endscene, 5);
 
                         codeToExecute = BlackMagic.AllocateMemory(4);
                         BlackMagic.WriteInt(codeToExecute, 0);

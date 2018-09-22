@@ -601,18 +601,7 @@ namespace AmeisenBotCore
         public static void TargetGUID(ulong guid)
         {
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"TargetGUID: {guid}", "AmeisenCore");
-            byte[] guidBytes = BitConverter.GetBytes(guid);
-
-            string[] asm = new string[]
-            {
-                $"PUSH {BitConverter.ToInt32(guidBytes, 4)}", // last 4 bytes
-                $"PUSH {BitConverter.ToInt32(guidBytes, 0)}", // first 4 bytes
-                $"CALL {(Offsets.clientGameUITarget)}",
-                "RETN",
-            };
-
-            HookJob hookJob = new HookJob(asm, false);
-            AmeisenHook.AddHookJob(ref hookJob);
+            BlackMagic.WriteUInt64(Offsets.localTargetGUID, guid);
         }
 
         /// <summary>

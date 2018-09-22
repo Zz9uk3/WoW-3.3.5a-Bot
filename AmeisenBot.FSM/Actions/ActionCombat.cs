@@ -1,4 +1,5 @@
-﻿using AmeisenBotData;
+﻿using AmeisenBotCombat.SampleClasses;
+using AmeisenBotData;
 using AmeisenBotFSM.Interfaces;
 using AmeisenBotUtilities;
 using AmeisenCombatEngine.Interfaces;
@@ -29,7 +30,20 @@ namespace AmeisenBotFSM.Actions
         public ActionCombat(AmeisenDataHolder ameisenDataHolder, IAmeisenCombatClass combatClass)
         {
             AmeisenDataHolder = ameisenDataHolder;
-            CombatClass = combatClass;
+
+            // TODO: Add Clas/Spec recognition
+            if (combatClass == null)
+            {
+                CombatClass = new CCWarlockAffliction
+                {
+                    AmeisenDataHolder = ameisenDataHolder
+                };
+            }
+            else
+            {
+                CombatClass = combatClass;
+                CombatClass.AmeisenDataHolder = ameisenDataHolder;
+            }
         }
 
         public void DoThings()
@@ -37,24 +51,35 @@ namespace AmeisenBotFSM.Actions
             if (CombatClass != null)
             {
                 if (AmeisenDataHolder.IsAllowedToAttack)
+                {
                     CombatClass.HandleAttacking();
+                }
+
                 if (AmeisenDataHolder.IsAllowedToTank)
+                {
                     CombatClass.HandleTanking();
+                }
+
                 if (AmeisenDataHolder.IsAllowedToHeal)
+                {
                     CombatClass.HandleHealing();
+                }
+
                 if (AmeisenDataHolder.IsAllowedToBuff)
+                {
                     CombatClass.HandleBuffs();
+                }
             }
         }
 
         public void Start()
         {
-            CombatClass.Init();
+            CombatClass?.Init();
         }
 
         public void Stop()
         {
-            CombatClass.Exit();
+            CombatClass?.Exit();
         }
     }
 }
