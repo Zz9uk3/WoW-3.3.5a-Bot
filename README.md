@@ -34,17 +34,17 @@ To use this piece of turd, junk, trash, don't know how to call this thing, Open 
 🔪 **How to make a CombatClass:**
 Template \*.cs file:
 ```c#
-using System;
-using AmeisenCombatEngine.Interfaces;
+using AmeisenBotData;
 using AmeisenBotLogger;
 using AmeisenBotUtilities;
-using AmeisenBotData;
+using AmeisenCombatEngine.Interfaces;
+using System.Collections.Generic;
 
 namespace AmeisenBotCombat
 {
     public class CombatClass : IAmeisenCombatClass
     {
-        private AmeisenDataHolder AmeisenDataHolder { get; set; }
+        public AmeisenDataHolder AmeisenDataHolder { get; set; }
         private Me Me
         {
             get { return AmeisenDataHolder.Me; }
@@ -56,41 +56,117 @@ namespace AmeisenBotCombat
             set { AmeisenDataHolder.Target = value; }
         }
 
-        // will be called once when we enter combat
         public void Init()
         {
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "CombatClass: In combat now", this);
         }
 
-        // will be called once when we leave combat
         public void Exit()
         {
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, "CombatClass: Out of combat now", this);
         }
 
-        // will be called while we are in combat and allowed to attack
         public void HandleAttacking()
         {
-            if (Me.Energy >= 500)
-                CombatUtillities.CastSpellByName("SPELLNAME", false);
+            if (Me != null)
+            {
+                Me.Update();
+            }
+            if (Target != null)
+            {
+                Target.Update();
+            }
+
+            Unit unitToAttack = Target;
+
+            // Get a target
+            if (Me.TargetGuid == 0)
+            {
+                unitToAttack = CombatUtils.AssistParty(Me, AmeisenDataHolder.ActiveWoWObjects);
+            }
+
+            if (unitToAttack != null)
+            {
+                // Start autoattack
+                if (!Me.InCombat)
+                {
+                    CombatUtils.FaceTarget(unitToAttack);
+                    CombatUtils.AttackTarget();
+                }
+
+                DoAttackRoutine();
+            }
         }
 
-        // will be called while we are in combat and allowed to buff
+        private void DoAttackRoutine()
+        {
+            List<string> targetAuras = CombatUtils.GetAuras(LuaUnit.target);
+
+            Me.Update();
+            // Restore Mana
+            if (Me.EnergyPercentage < 30 && Me.HealthPercentage > 50)
+            {
+                CombatUtils.CastSpellByName("Life Tap", true);
+            }
+
+            if(targetAuras != null)
+                Target.Update();
+            // DoT's to apply
+            if (!targetAuras.Contains("Curse of Agony"))
+            {
+                CombatUtils.CastSpellByName("Curse of Agony", false);
+            }
+            if (!targetAuras.Contains("Corruption"))
+            {
+                CombatUtils.CastSpellByName("Corruption", false);
+            }
+            if (!targetAuras.Contains("Unstable Affliction"))
+            {
+                CombatUtils.CastSpellByName("Unstable Affliction", false);
+            }
+            if (!targetAuras.Contains("Haunt"))
+            {
+                CombatUtils.CastSpellByName("Haunt", false);
+            }
+
+            if(targetAuras != null) {
+                Target.Update();
+                // Active-Damage Spell
+                if (Target.HealthPercentage < 25)
+                {
+                    CombatUtils.CastSpellByName("Drain Soul", false);
+                }
+                else
+                {
+                    CombatUtils.CastSpellByName("Shadow Bolt", false);
+                }
+            }
+        }
+
         public void HandleBuffs()
         {
+            List<string> myAuras = CombatUtils.GetAuras(LuaUnit.player);
+
+            if (!myAuras.Contains("Demon Armor"))
+            {
+                CombatUtils.CastSpellByName("Demon Armor", true);
+            }
+            if (!myAuras.Contains("Blood Pact"))
+            {
+                CombatUtils.CastSpellByName("Summon Imp", true);
+            }
         }
 
-        // will be called while we are in combat and allowed to heal
         public void HandleHealing()
         {
         }
 
-        // will be called while we are in combat and allowed to tank
         public void HandleTanking()
         {
         }
     }
 }
+
 ```
 
 ---
