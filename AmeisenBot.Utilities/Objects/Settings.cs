@@ -45,8 +45,8 @@
         public int stateMachineUpdateMillis = 10;
         public int stateMachineStateUpdateMillis = 250;
         public int PathfindingSearchRadius = 2;
-        public double PathfindingUsageThreshold = 50;
-        public double MovementJumpThreshold = 0.5;
+        public double PathfindingUsageThreshold = 20;
+        public double MovementJumpThreshold = 0.1;
         public bool randomEmotes = true;
         public bool doOwnStuff = false;
         public double oldXindowPosX = 0;

@@ -24,6 +24,7 @@ namespace AmeisenBotFSM.Actions
         private AmeisenDataHolder AmeisenDataHolder { get; set; }
         private AmeisenDBManager AmeisenDBManager { get; set; }
         private Vector3 LastPosition { get; set; }
+        private double MovedSinceLastTick { get; set; }
 
         private Me Me
         {
@@ -66,19 +67,18 @@ namespace AmeisenBotFSM.Actions
         /// <returns>if we havent moved 0.5m in the 2 vectors, jump and return true</returns>
         private bool CheckIfWeAreStuckIfYesJump(Vector3 initialPosition, Vector3 activePosition)
         {
-            double movedSinceLastTick = Utils.GetDistance(initialPosition, activePosition);
-
             // we are possibly stuck at a fence or something alike
-            if (movedSinceLastTick != 0 && movedSinceLastTick < 1000)
+            if (MovedSinceLastTick != 0 && MovedSinceLastTick < 1000)
             {
-                if (movedSinceLastTick < AmeisenDataHolder.Settings.MovementJumpThreshold)
+                if (MovedSinceLastTick < AmeisenDataHolder.Settings.MovementJumpThreshold)
                 {
                     AmeisenCore.CharacterJumpAsync();
-                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Jumping: {movedSinceLastTick}", this);
+                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Jumping: {MovedSinceLastTick}", this);
                     return true;
                 }
             }
 
+            MovedSinceLastTick = Utils.GetDistance(initialPosition, activePosition);
             return false;
         }
 
@@ -105,10 +105,15 @@ namespace AmeisenBotFSM.Actions
                             // retry with thicker path
                             path = FindWayToNode(initialPosition, targetPosition, true);
 
-                            ProcessPath(path);
-
-                            // When path calculation was unsuccessful, wait a bit to retry
-                            Thread.Sleep(1000);
+                            if (path != null)
+                            {
+                                ProcessPath(path);
+                            }
+                            else
+                            {
+                                // When path calculation was unsuccessful, wait a bit to retry
+                                Thread.Sleep(1000);
+                            }
                         }
                     }
                     else
@@ -131,11 +136,12 @@ namespace AmeisenBotFSM.Actions
                 Me.Update();
                 MoveToNode(new Vector3(node.Position.X, node.Position.Y, node.Position.Z));
             }
+            PathCalculated = false;
         }
 
         private void MoveToNode(Vector3 targetPosition)
         {
-            while (Utils.GetDistance(Me.pos, targetPosition) > 5.0)
+            while (Utils.GetDistance(Me.pos, targetPosition) > 7.0)
             {
                 CheckIfWeAreStuckIfYesJump(targetPosition, LastPosition);
                 if (targetPosition.Z == 0)
@@ -144,7 +150,7 @@ namespace AmeisenBotFSM.Actions
                 }
 
                 AmeisenCore.MovePlayerToXYZ(targetPosition, InteractionType.MOVE);
-                Thread.Sleep(250);
+                Thread.Sleep(10);
                 Me.Update();
                 LastPosition = Me.pos;
             }
@@ -189,6 +195,11 @@ namespace AmeisenBotFSM.Actions
             int minY = initialPosition.Y <= targetPosition.Y ? (int)initialPosition.Y : (int)targetPosition.Y;
 
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"Trying to find path from {initialPosition.X},{initialPosition.Y},{initialPosition.Z} to: {targetPosition.X},{targetPosition.Y},{targetPosition.Z} Distance: {distance}", this);
+
+            maxX += 100 * AmeisenDataHolder.Settings.PathfindingSearchRadius;
+            minX -= 100 * AmeisenDataHolder.Settings.PathfindingSearchRadius;
+            maxY += 100 * AmeisenDataHolder.Settings.PathfindingSearchRadius;
+            minY -= 100 * AmeisenDataHolder.Settings.PathfindingSearchRadius;
 
             // Offsets to rebase nodes from negative values to positive X
             int offsetX = minX * -1;
