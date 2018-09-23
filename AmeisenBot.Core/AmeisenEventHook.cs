@@ -1,21 +1,21 @@
 ﻿using AmeisenBotLogger;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 
 namespace AmeisenBotCore
 {
     public class AmeisenEventHook
     {
-        private const string LUA_FRAME = "ameisenbotEventFrame";
-        private const string LUA_TABLE = "ameisenbotEventTable";
-        private const string LUA_REGISTER = "ameisenbotRegisterEvent";
-        private const string LUA_UNREGISTER = "ameisenbotUnregisterEvent";
-        private const string LUA_INFO = "ameisenbotGetInfo";
-        private const string LUA_EVENTRECEIVED = "ameisenbotOnReceivedEvent";
-        private const string LUA_EVENTCOUNT = "ameisenbotGetEventCount";
-        private const string LUA_EVENTREMOVE = "ameisenbotRemoveEvent";
-        private const string LUA_EVENTNAME = "ameisenbotGetEventName";
+        private const string LUA_FRAME = "abotEventFrame";
+        private const string LUA_TABLE = "abotEventTable";
+        private const string LUA_REGISTER = "abotRegisterEvent";
+        private const string LUA_UNREGISTER = "abotUnregisterEvent";
+        private const string LUA_INFO = "abotGetInfo";
+        private const string LUA_EVENTRECEIVED = "abotOnReceivedEvent";
+        private const string LUA_EVENTCOUNT = "abotGetEventCount";
+        private const string LUA_EVENTREMOVE = "abotRemoveEvent";
+        private const string LUA_EVENTNAME = "abotGetEventName";
+
         public bool IsActive { get; private set; }
         private List<AmeisenEvent> SubscribedEvents { get; set; }
         private Thread EventReader { get; set; }
@@ -27,16 +27,16 @@ namespace AmeisenBotCore
 
         public void Init()
         {
-            StringBuilder luaStuff = new StringBuilder();
-            luaStuff.Append($"{LUA_FRAME} = CreateFrame('Frame','{LUA_FRAME}');{LUA_FRAME}:SetScript('OnEvent',{LUA_EVENTRECEIVED});{LUA_TABLE}={{}};");
-            luaStuff.Append($"function {LUA_REGISTER}(e){LUA_FRAME}:RegisterEvent(e);end");
-            luaStuff.Append($"function {LUA_UNREGISTER}(e){LUA_FRAME}:UnregisterEvent(e);end");
-            luaStuff.Append($"function {LUA_INFO}(e,d)table.insert({LUA_TABLE}, {{e,time(),d}});end");
-            luaStuff.Append($"function {LUA_EVENTRECEIVED}(s,e,...){LUA_INFO}(e,{{...}});end");
-            luaStuff.Append($"function {LUA_EVENTCOUNT}()return {LUA_TABLE}.count;end");
-            luaStuff.Append($"function {LUA_EVENTREMOVE}()table.wipe({LUA_TABLE});end");
-            luaStuff.Append($"function {LUA_EVENTNAME}(i)local ret;ret={LUA_TABLE}[i];{LUA_TABLE}.remove(i);return ret;end");
-            AmeisenCore.LuaDoString(luaStuff.ToString());
+            //StringBuilder luaStuff = new StringBuilder();
+            AmeisenCore.LuaDoString($"{LUA_FRAME} = CreateFrame('Frame','{LUA_FRAME}');{LUA_FRAME}:SetScript('OnEvent',{LUA_EVENTRECEIVED});{LUA_TABLE}={"{}"};");
+            AmeisenCore.LuaDoString($"function {LUA_REGISTER}(e){LUA_FRAME}:RegisterEvent(e);end");
+            AmeisenCore.LuaDoString($"function {LUA_UNREGISTER}(e){LUA_FRAME}:UnregisterEvent(e);end");
+            AmeisenCore.LuaDoString($"function {LUA_INFO}(e,d)table.insert({LUA_TABLE}, {"{e,time(),d}"});end");
+            AmeisenCore.LuaDoString($"function {LUA_EVENTRECEIVED}(s,e,...){LUA_INFO}(e,{"{...}"});end");
+            AmeisenCore.LuaDoString($"function {LUA_EVENTCOUNT}()return {LUA_TABLE}.count;end");
+            AmeisenCore.LuaDoString($"function {LUA_EVENTREMOVE}()table.wipe({LUA_TABLE});end");
+            AmeisenCore.LuaDoString($"function {LUA_EVENTNAME}(i)local ret;ret={LUA_TABLE}[i];{LUA_TABLE}.remove(i);return ret;end");
+            //AmeisenCore.LuaDoString(luaStuff.ToString());
 
             IsActive = true;
             EventReader.Start();
@@ -44,26 +44,34 @@ namespace AmeisenBotCore
 
         public void Stop()
         {
-            IsActive = false;
-            EventReader.Join();
+            if (IsActive)
+            {
+                IsActive = false;
+                EventReader.Join();
+            }
         }
 
-        public void Subscribe()
+        public void Subscribe(string eventName)
         {
+            AmeisenCore.LuaDoString($"{LUA_REGISTER}('{eventName}')");
         }
 
-        public void Unsubscribe()
+        public void Unsubscribe(string eventName)
         {
+            AmeisenCore.LuaDoString($"{LUA_UNREGISTER}('{eventName}')");
         }
 
         private void ReadEvents()
         {
-            while (!IsActive)
+            while (IsActive)
             {
-                string eventString = AmeisenCore.GetLocalizedText(LUA_EVENTNAME + "(1)", "lua.lua");
-                AmeisenLogger.Instance.Log(LogLevel.DEBUG, "LUA Event Fired: " + eventString, this);
+                string eventString = AmeisenCore.GetLocalizedText($"ameisenbotEvent = {LUA_EVENTNAME}(1)", "ameisenbotEvent");
+                if (eventString != "")
+                {
+                    AmeisenLogger.Instance.Log(LogLevel.DEBUG, "LUA Event Fired: " + eventString, this);
+                }
 
-                Thread.Sleep(100);
+                Thread.Sleep(500);
             }
         }
     }

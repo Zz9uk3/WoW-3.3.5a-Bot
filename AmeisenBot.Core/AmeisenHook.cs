@@ -209,9 +209,6 @@ namespace AmeisenBotCore
 
                 isInjectionUsed = true;
 
-                // There is code to be executed
-                BlackMagic.WriteInt(codeToExecute, 1);
-
                 // Inject the given ASM
                 BlackMagic.Asm.Clear();
                 foreach (string s in asm)
@@ -219,6 +216,9 @@ namespace AmeisenBotCore
                     BlackMagic.Asm.AddLine(s);
                 }
                 BlackMagic.Asm.Inject(codeCaveForInjection);
+                
+                // There is code to be executed
+                BlackMagic.WriteInt(codeToExecute, 1);
 
                 // We don't need this atm
                 //AmeisenManager.Instance().GetBlackMagic().Asm.AddLine("JMP " + (endsceneReturnAddress));
@@ -259,6 +259,9 @@ namespace AmeisenBotCore
             }
             catch (Exception e)
             {
+                // There is code to be executed
+                BlackMagic.WriteInt(codeToExecute, 0);
+
                 AmeisenLogger.Instance.Log(
                     LogLevel.ERROR,
                     $"Crash at InjectAndExecute: {e.ToString()}",

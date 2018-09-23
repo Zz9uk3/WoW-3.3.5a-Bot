@@ -139,6 +139,7 @@ namespace AmeisenBotManager
         private AmeisenStateMachineManager AmeisenStateMachineManager { get; set; }
         private AmeisenMovementEngine AmeisenMovementEngine { get; set; }
         private BlackMagic Blackmagic { get; set; }
+        private AmeisenEventHook AmeisenEventHook { get; set; }
 
         /// <summary>
         /// Create a new AmeisenBotManager to manage the bot's functionality
@@ -236,6 +237,11 @@ namespace AmeisenBotManager
             // TODO: make this non static
             AmeisenCore.AmeisenHook = AmeisenHook;
 
+            // Hook Events
+            /*AmeisenEventHook = new AmeisenEventHook();
+            AmeisenEventHook.Init();
+            AmeisenEventHook.Subscribe("UI_ERROR_MESSAGE");*/
+
             // Start our object updates
             AmeisenObjectManager = new AmeisenObjectManager(AmeisenDataHolder, AmeisenDBManager);
             AmeisenObjectManager.Start();
@@ -292,6 +298,9 @@ namespace AmeisenBotManager
 
             // Stop the statemachine
             AmeisenStateMachineManager.Stop();
+
+            // Unhook Events
+            AmeisenEventHook.Stop();
 
             // Unhook the EndScene
             AmeisenHook.DisposeHooking();
