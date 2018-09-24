@@ -281,13 +281,10 @@ namespace AmeisenBotManager
         public void StopBot()
         {
             // Disconnect from Server
-            if (AmeisenClient.IsRegistered)
-            {
-                AmeisenClient.Unregister(
-                    Me,
-                    IPAddress.Parse(AmeisenSettings.Settings.ameisenServerIP),
-                    AmeisenSettings.Settings.ameisenServerPort);
-            }
+            AmeisenClient.Unregister(
+                Me,
+                IPAddress.Parse(AmeisenSettings.Settings.ameisenServerIP),
+                AmeisenSettings.Settings.ameisenServerPort);
 
             // Save WoW's window positions
             SafeNativeMethods.Rect wowRect = AmeisenCore.GetWowDiemsions(WowExe.process.MainWindowHandle);
@@ -303,7 +300,7 @@ namespace AmeisenBotManager
             AmeisenStateMachineManager.Stop();
 
             // Unhook Events
-            AmeisenEventHook.Stop();
+            AmeisenEventHook?.Stop();
 
             // Unhook the EndScene
             AmeisenHook.DisposeHooking();

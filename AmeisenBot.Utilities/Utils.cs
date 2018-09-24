@@ -17,6 +17,9 @@ namespace AmeisenBotUtilities
         /// <returns>BitmapImage</returns>
         public static BitmapImage Base64ToBitmapImage(string base64String, bool compressionUsed = false)
         {
+            if (base64String == "")
+                return null;
+
             byte[] imageBytes = Convert.FromBase64String(base64String);
 
             if (compressionUsed)

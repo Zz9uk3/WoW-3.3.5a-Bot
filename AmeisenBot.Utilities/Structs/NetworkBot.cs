@@ -10,7 +10,7 @@ namespace AmeisenBotUtilities
         public string picture;
         public int id;
         public string ip;
-        public long lastUpdate;
+        public long lastActive;
         public string me;
         public string name;
 

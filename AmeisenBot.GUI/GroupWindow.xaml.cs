@@ -56,21 +56,26 @@ namespace AmeisenBotGUI
                     foreach (NetworkBot bot in networkBots)
                     {
                         BotView botView = new BotView();
-                        botView.botName.Content = bot.name;
-                        botView.botLevel.Content = bot.GetMe().Level;
+                        SendableMe me = bot.GetMe();
+                        botView.botName.Content = me.Name;
+                        botView.botLevel.Content = me.Level;
 
-                        botView.botHealth.Content = $"{bot.GetMe().Health} / {bot.GetMe().MaxHealth}";
-                        botView.botEnergy.Content = $"{bot.GetMe().Energy} / {bot.GetMe().MaxEnergy}";
-                        botView.botExp.Content = $"{bot.GetMe().Exp} / {bot.GetMe().MaxExp}";
+                        botView.botHealth.Content = $"{me.Health} / {me.MaxHealth}";
+                        botView.botEnergy.Content = $"{me.Energy} / {me.MaxEnergy}";
+                        botView.botExp.Content = $"{me.Exp} / {me.MaxExp}";
 
-                        botView.botHealthProgressbar.Maximum = bot.GetMe().MaxHealth;
-                        botView.botEnergyProgressbar.Maximum = bot.GetMe().MaxEnergy;
-                        botView.botExpProgressbar.Maximum = bot.GetMe().MaxExp;
-                        botView.botHealthProgressbar.Value = bot.GetMe().Health;
-                        botView.botEnergyProgressbar.Value = bot.GetMe().Energy;
-                        botView.botExpProgressbar.Value = bot.GetMe().Exp;
+                        botView.botHealthProgressbar.Maximum = me.MaxHealth;
+                        botView.botEnergyProgressbar.Maximum = me.MaxEnergy;
+                        botView.botExpProgressbar.Maximum = me.MaxExp;
+                        botView.botHealthProgressbar.Value = me.Health;
+                        botView.botEnergyProgressbar.Value = me.Energy;
+                        botView.botExpProgressbar.Value = me.Exp;
 
-                        botView.botImage.Source = Utils.Base64ToBitmapImage(bot.picture);
+                        if (bot.picture != "")
+                        {
+                            botView.botImage.Source = Utils.Base64ToBitmapImage(bot.picture);
+                        }
+
                         botViewPanel.Children.Add(botView);
                     }
                 }
