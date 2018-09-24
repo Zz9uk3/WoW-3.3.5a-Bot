@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Core", "AmeisenBot.Core\AmeisenBot.Core.csproj", "{567F9DF2-E2D0-4BC8-A295-B7913CC1303E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Server", "AmeisenBot.Server\AmeisenBot.Server.csproj", "{0F5350C6-755B-4D32-8DFD-4057C925EF0D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.GUI", "AmeisenBot.GUI\AmeisenBot.GUI.csproj", "{54601391-C520-4EB3-A13E-7FD9B036389A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmeisenBot.Logger", "AmeisenBot.Logger\AmeisenBot.Logger.csproj", "{017A67A9-F7BD-46E3-B716-E1D601AFCA4B}"
@@ -55,18 +53,6 @@ Global
 		{567F9DF2-E2D0-4BC8-A295-B7913CC1303E}.Release|x64.Build.0 = Release|Any CPU
 		{567F9DF2-E2D0-4BC8-A295-B7913CC1303E}.Release|x86.ActiveCfg = Release|Any CPU
 		{567F9DF2-E2D0-4BC8-A295-B7913CC1303E}.Release|x86.Build.0 = Release|Any CPU
-		{0F5350C6-755B-4D32-8DFD-4057C925EF0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0F5350C6-755B-4D32-8DFD-4057C925EF0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0F5350C6-755B-4D32-8DFD-4057C925EF0D}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{0F5350C6-755B-4D32-8DFD-4057C925EF0D}.Debug|x64.Build.0 = Debug|Any CPU
-		{0F5350C6-755B-4D32-8DFD-4057C925EF0D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{0F5350C6-755B-4D32-8DFD-4057C925EF0D}.Debug|x86.Build.0 = Debug|Any CPU
-		{0F5350C6-755B-4D32-8DFD-4057C925EF0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0F5350C6-755B-4D32-8DFD-4057C925EF0D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0F5350C6-755B-4D32-8DFD-4057C925EF0D}.Release|x64.ActiveCfg = Release|Any CPU
-		{0F5350C6-755B-4D32-8DFD-4057C925EF0D}.Release|x64.Build.0 = Release|Any CPU
-		{0F5350C6-755B-4D32-8DFD-4057C925EF0D}.Release|x86.ActiveCfg = Release|Any CPU
-		{0F5350C6-755B-4D32-8DFD-4057C925EF0D}.Release|x86.Build.0 = Release|Any CPU
 		{54601391-C520-4EB3-A13E-7FD9B036389A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{54601391-C520-4EB3-A13E-7FD9B036389A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54601391-C520-4EB3-A13E-7FD9B036389A}.Debug|x64.ActiveCfg = Debug|Any CPU

@@ -57,20 +57,20 @@ namespace AmeisenBotGUI
                     {
                         BotView botView = new BotView();
                         botView.botName.Content = bot.name;
-                        botView.botLevel.Content = bot.me.Level;
+                        botView.botLevel.Content = bot.GetMe().Level;
 
-                        botView.botHealth.Content = $"{bot.me.Health} / {bot.me.MaxHealth}";
-                        botView.botEnergy.Content = $"{bot.me.Energy} / {bot.me.MaxEnergy}";
-                        botView.botExp.Content = $"{bot.me.Exp} / {bot.me.MaxExp}";
+                        botView.botHealth.Content = $"{bot.GetMe().Health} / {bot.GetMe().MaxHealth}";
+                        botView.botEnergy.Content = $"{bot.GetMe().Energy} / {bot.GetMe().MaxEnergy}";
+                        botView.botExp.Content = $"{bot.GetMe().Exp} / {bot.GetMe().MaxExp}";
 
-                        botView.botHealthProgressbar.Maximum = bot.me.MaxHealth;
-                        botView.botEnergyProgressbar.Maximum = bot.me.MaxEnergy;
-                        botView.botExpProgressbar.Maximum = bot.me.MaxExp;
-                        botView.botHealthProgressbar.Value = bot.me.Health;
-                        botView.botEnergyProgressbar.Value = bot.me.Energy;
-                        botView.botExpProgressbar.Value = bot.me.Exp;
+                        botView.botHealthProgressbar.Maximum = bot.GetMe().MaxHealth;
+                        botView.botEnergyProgressbar.Maximum = bot.GetMe().MaxEnergy;
+                        botView.botExpProgressbar.Maximum = bot.GetMe().MaxExp;
+                        botView.botHealthProgressbar.Value = bot.GetMe().Health;
+                        botView.botEnergyProgressbar.Value = bot.GetMe().Energy;
+                        botView.botExpProgressbar.Value = bot.GetMe().Exp;
 
-                        botView.botImage.Source = Utils.Base64ToBitmapImage(bot.base64Image);
+                        botView.botImage.Source = Utils.Base64ToBitmapImage(bot.picture);
                         botViewPanel.Children.Add(botView);
                     }
                 }

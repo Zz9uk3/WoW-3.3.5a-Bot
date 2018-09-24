@@ -1,15 +1,19 @@
-﻿namespace AmeisenBotUtilities
+﻿using Newtonsoft.Json;
+
+namespace AmeisenBotUtilities
 {
     /// <summary>
     /// A Bot received from the server
     /// </summary>
     public struct NetworkBot
     {
-        public string base64Image;
+        public string picture;
         public int id;
         public string ip;
         public long lastUpdate;
-        public SendableMe me;
+        public string me;
         public string name;
+
+        public SendableMe GetMe() { return JsonConvert.DeserializeObject<SendableMe>(me); }
     }
 }

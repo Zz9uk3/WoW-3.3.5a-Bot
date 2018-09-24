@@ -1,6 +1,7 @@
 ﻿using AmeisenBotData;
 using AmeisenBotUtilities;
 using Newtonsoft.Json;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,15 +15,13 @@ namespace AmeisenBotManager
     public class AmeisenClient : IDisposable
     {
         private static readonly HttpClient httpClient = new HttpClient();
-        private Thread botListUpdateThread;
         private System.Timers.Timer botListUpdateTimer;
-        private Thread botUpdateThread;
         private System.Timers.Timer botUpdateTimer;
         public int BotID { get; private set; }
-        public List<NetworkBot> BotList { get; private set; }
-        public IPAddress IPAddress { get; private set; }
+        public List<NetworkBot> Bots { get; private set; }
         public bool IsRegistered { get; private set; }
-        public int Port { get; private set; }
+        public IPAddress ConnectedIP { get; private set; }
+        public int ConnectedPort { get; private set; }
         private AmeisenDataHolder AmeisenDataHolder { get; set; }
 
         private Me Me
@@ -43,63 +42,56 @@ namespace AmeisenBotManager
             botListUpdateTimer.Elapsed += UpdateBotList;
         }
 
-        public async void Register(Me me, IPAddress ip, int port = 16200)
+        public void Register(Me me, IPAddress ip, int port = 16200)
         {
-            try
-            {
-                IPAddress = ip;
-                Port = port;
-
-                string base64Image = "";
-                if (AmeisenDataHolder.Settings.picturePath.Length > 0)
-                {
-                    base64Image = Convert.ToBase64String(
-                            Utils.ImageToByte(
-                                new Bitmap(AmeisenDataHolder.Settings.picturePath)
-                                )
-                            );
-                }
-
-                SendableMe meSendable = new SendableMe().ConvertFromMe(me);
-                string content = JsonConvert.SerializeObject(new NetworkRegData(base64Image, meSendable));
-
-                HttpContent contentToSend = new StringContent(content);
-                HttpResponseMessage response = await httpClient.PostAsync($"http://{ip}:{port}/botRegister/", contentToSend);
-                string responseString = await response.Content.ReadAsStringAsync();
-
-                if (responseString.Contains("addedBot"))
-                {
-                    IsRegistered = true;
-                    BotID = Convert.ToInt32(responseString.Split('[')[1].Replace("]", ""));
-
-                    botUpdateThread = new Thread(new ThreadStart(() => { botUpdateTimer.Start(); }));
-                    botUpdateThread.Start();
-                    botListUpdateThread = new Thread(new ThreadStart(() => { botListUpdateTimer.Start(); }));
-                    botListUpdateThread.Start();
-                }
-                else
-                {
-                    IsRegistered = false;
-                }
-            }
-            catch { IsRegistered = false; }
+            SendRequest(me, ip, port, HttpMethod.Post);
         }
 
-        public async void Unregister()
+        private IRestResponse SendRequest(Me me, IPAddress ip, int port, HttpMethod post)
         {
-            HttpContent contentToSend = new StringContent($"unregisterBot[{BotID}]");
-            HttpResponseMessage response = await httpClient.PostAsync($"http://{IPAddress}:{Port}/botUnregister/", contentToSend);
-            string responseString = await response.Content.ReadAsStringAsync();
+            SendableMe meSendable = new SendableMe().ConvertFromMe(me);
+            string meSendableJSON = JsonConvert.SerializeObject(meSendable);
 
-            if (responseString.Contains("removedBot"))
+            string base64Image = "";
+            if (AmeisenDataHolder.Settings.picturePath.Length > 0)
             {
-                botUpdateTimer.Stop();
-                botListUpdateTimer.Stop();
+                base64Image = Convert.ToBase64String(
+                        Utils.ImageToByte(
+                            new Bitmap(AmeisenDataHolder.Settings.picturePath)));
+            }
 
-                botUpdateThread.Join();
-                botListUpdateThread.Join();
+            NetworkBot networkBot = new NetworkBot
+            {
+                id = 0,
+                ip = "0.0.0.0",
+                lastUpdate = Environment.TickCount,
+                name = AmeisenDataHolder.Settings.ameisenServerName,
+                me = meSendableJSON,
+                picture = base64Image
+            };
 
+            RestClient client = new RestClient($"http://{ip}:{port}");
+            // client.Authenticator = new HttpBasicAuthenticator(username, password);
+
+            RestRequest request = new RestRequest("bot/{name}", Method.POST);
+            request.AddUrlSegment("name", AmeisenDataHolder.Settings.ameisenServerName);
+            request.AddObject(networkBot);
+            request.AddParameter("name", "value");
+
+            return client.Execute(request);
+        }
+
+        public void Unregister(Me me, IPAddress ip, int port = 16200)
+        {
+            IRestResponse response = SendRequest(me, ip, port, HttpMethod.Delete);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
                 IsRegistered = false;
+                NetworkBot responseBot = JsonConvert.DeserializeObject<NetworkBot>(response.Content);
+                BotID = responseBot.id;
+
+                botUpdateTimer.Close();
+                botListUpdateTimer.Close();
             }
         }
 
@@ -119,31 +111,31 @@ namespace AmeisenBotManager
             }
         }
 
-        private async void UpdateBot(object source, ElapsedEventArgs e)
+        private void UpdateBot(object source, ElapsedEventArgs e)
         {
-            try
+            IRestResponse response = SendRequest(AmeisenDataHolder.Me, ConnectedIP, ConnectedPort, HttpMethod.Put);
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                string jsonData = JsonConvert.SerializeObject(
-                    new SendableMe().ConvertFromMe(Me)
-                    );
-
-                HttpContent contentToSend = new StringContent($"{BotID}]{jsonData}");
-                HttpResponseMessage response = await httpClient.PostAsync($"http://{IPAddress}:{Port}/botUpdate/{BotID}/", contentToSend);
-                string responseString = await response.Content.ReadAsStringAsync();
+                NetworkBot responseBot = JsonConvert.DeserializeObject<NetworkBot>(response.Content);
+                BotID = responseBot.id;
             }
-            catch { }
         }
 
-        private async void UpdateBotList(object source, ElapsedEventArgs e)
+        private void UpdateBotList(object source, ElapsedEventArgs e)
         {
-            try
+            IRestResponse response = GetAllBots(ConnectedIP, ConnectedPort, HttpMethod.Get);
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                HttpResponseMessage response = await httpClient.GetAsync($"http://{IPAddress}:{Port}/activeBots/");
-                string responseString = await response.Content.ReadAsStringAsync();
-                BotList = JsonConvert.DeserializeObject<List<NetworkBot>>(responseString);
-                AmeisenDataHolder.ActiveNetworkBots = BotList;
+                Bots = JsonConvert.DeserializeObject<List<NetworkBot>>(response.Content);
             }
-            catch { }
+        }
+
+        private IRestResponse GetAllBots(IPAddress ip, int port, HttpMethod get)
+        {
+            RestClient client = new RestClient($"http://{ip}:{port}");
+            // client.Authenticator = new HttpBasicAuthenticator(username, password);
+            RestRequest request = new RestRequest("bot/{name}", Method.POST);
+            return client.Execute(request);
         }
     }
 }

@@ -111,7 +111,7 @@ namespace AmeisenBotManager
             {
                 if (AmeisenClient.IsRegistered)
                 {
-                    return AmeisenClient.BotList;
+                    return AmeisenClient.Bots;
                 }
                 else
                 {
@@ -283,7 +283,10 @@ namespace AmeisenBotManager
             // Disconnect from Server
             if (AmeisenClient.IsRegistered)
             {
-                AmeisenClient.Unregister();
+                AmeisenClient.Unregister(
+                    Me,
+                    IPAddress.Parse(AmeisenSettings.Settings.ameisenServerIP),
+                    AmeisenSettings.Settings.ameisenServerPort);
             }
 
             // Save WoW's window positions

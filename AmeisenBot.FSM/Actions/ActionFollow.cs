@@ -134,7 +134,7 @@ namespace AmeisenBotFSM.Actions
             {
                 foreach (NetworkBot bot in AmeisenDataHolder.ActiveNetworkBots)
                 {
-                    if (bot.me.Guid == Me.Guid)
+                    if (bot.GetMe().Guid == Me.Guid)
                     {
                         return pos;
                     }
