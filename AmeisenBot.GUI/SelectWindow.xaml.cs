@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using WoWLoginAutomator;
 
 namespace AmeisenBotGUI
 {
@@ -102,7 +103,7 @@ namespace AmeisenBotGUI
 
                 string charname = textboxCharactername.Text;
 
-                WoWLoginAutomator.LoginAutomator.DoLogin(((WowExe)comboBoxWoWs.SelectedItem).process.Id, credentials.charSlot, credentials.username, credentials.password);
+                LoginAutomator.DoLogin(((WowExe)comboBoxWoWs.SelectedItem).process.Id, credentials.charSlot, credentials.username, credentials.password);
 
                 ((WowExe)comboBoxWoWs.SelectedItem).characterName = charname;
                 ButtonGo_Click(this, null);
