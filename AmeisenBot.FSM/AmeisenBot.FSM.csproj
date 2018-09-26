@@ -88,9 +88,9 @@
       <Project>{1b4e7e1f-ccd0-4506-ac22-b314e64ce88c}</Project>
       <Name>AmeisenMovement</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AmeisenPath\AmeisenPathLib\AmeisenPathLib.csproj">
-      <Project>{DA582835-AC0B-4C1D-ADD7-1A272057BDE6}</Project>
-      <Name>AmeisenPathLib</Name>
+    <ProjectReference Include="..\AmeisenPath\AmeisenPathLib\AmeisenPath.Core.csproj">
+      <Project>{da582835-ac0b-4c1d-add7-1a272057bde6}</Project>
+      <Name>AmeisenPath.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

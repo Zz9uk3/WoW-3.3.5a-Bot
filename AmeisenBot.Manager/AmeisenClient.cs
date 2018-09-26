@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
 using System.Timers;
 
 namespace AmeisenBotManager
@@ -15,8 +14,8 @@ namespace AmeisenBotManager
     public class AmeisenClient : IDisposable
     {
         private static readonly HttpClient httpClient = new HttpClient();
-        private System.Timers.Timer botListUpdateTimer;
-        private System.Timers.Timer botUpdateTimer;
+        private Timer botListUpdateTimer;
+        private Timer botUpdateTimer;
         public int BotID { get; private set; }
         public List<NetworkBot> Bots { get; private set; }
         public bool IsRegistered { get; private set; }
