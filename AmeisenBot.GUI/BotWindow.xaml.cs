@@ -400,9 +400,10 @@ namespace AmeisenBotGUI
 
         private double GetCPUUsage(Process process)
         {
-            PerformanceCounter counter = new PerformanceCounter("Process", "% Processor Time", process.ProcessName);
-            counter.NextValue();
-            return Math.Round(counter.NextValue(), 0) / 100;
+            //PerformanceCounter counter = new PerformanceCounter("Process", "% Processor Time", process.ProcessName);
+            //counter.NextValue();
+            //return Math.Round(counter.NextValue(), 0) / 100;
+            return 0.0;
         }
 
         private void CheckBoxReleaseSpirit_Click(object sender, RoutedEventArgs e)
