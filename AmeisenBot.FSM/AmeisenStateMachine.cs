@@ -31,7 +31,6 @@ namespace AmeisenBotFSM
     public class AmeisenStateMachine
     {
         private Dictionary<BotState, IAction> StateActionMap { get; set; }
-
         private Stack<BotState> StateStack { get; set; }
 
         public AmeisenStateMachine(

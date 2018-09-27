@@ -127,6 +127,12 @@ namespace AmeisenBotFSM.Actions
             else { PathCalculated = false; }
         }
 
+        /// <summary>
+        /// Process a path by adding all nodes to the QaypointQueue
+        /// 
+        /// will set PathCalculated to true
+        /// </summary>
+        /// <param name="path">path to process</param>
         private void ProcessPath(List<Node> path)
         {
             PathCalculated = true;
@@ -134,28 +140,41 @@ namespace AmeisenBotFSM.Actions
             foreach (Node node in path)
             {
                 Me.Update();
-                MoveToNode(new Vector3(node.Position.X, node.Position.Y, node.Position.Z));
+                WaypointQueue.Enqueue(new Vector3(node.Position.X, node.Position.Y, node.Position.Z));
             }
-            PathCalculated = false;
         }
 
+        /// <summary>
+        /// Move to a node with a max of 10 tries, if we aren't in the node range
+        /// after this, there is something fishy going on
+        /// </summary>
+        /// <param name="targetPosition">position to move to</param>
         private void MoveToNode(Vector3 targetPosition)
         {
-            while (Utils.GetDistance(Me.pos, targetPosition) > 7.0)
+            int currentTry = 0;
+            while (currentTry < 10 && Utils.GetDistance(Me.pos, targetPosition) > AmeisenDataHolder.Settings.followDistance)
             {
                 CheckIfWeAreStuckIfYesJump(targetPosition, LastPosition);
+
                 if (targetPosition.Z == 0)
                 {
                     targetPosition.Z = Me.pos.Z;
                 }
 
                 AmeisenCore.MovePlayerToXYZ(targetPosition, InteractionType.MOVE);
-                Thread.Sleep(10);
+                Thread.Sleep(100);
+            
                 Me.Update();
                 LastPosition = Me.pos;
+                currentTry++;
             }
         }
 
+        /// <summary>
+        /// Remove all nodes that are in a straight line to reduce node count
+        /// </summary>
+        /// <param name="path">path to simplify</param>
+        /// <returns>simplified path</returns>
         private List<Node> SimplifyPath(List<Node> path)
         {
             if (path == null)
@@ -183,6 +202,13 @@ namespace AmeisenBotFSM.Actions
             return simplePath;
         }
 
+        /// <summary>
+        /// Find a way to the given node and maybe thinken our path if wanted
+        /// </summary>
+        /// <param name="initialPosition">starting pos, you</param>
+        /// <param name="targetPosition">target pos, the position to go to</param>
+        /// <param name="thickenPath">if we should thinken our path, makes nodes connect better, but may be unsecure</param>
+        /// <returns>path that was found or not</returns>
         private List<Node> FindWayToNode(Vector3 initialPosition, Vector3 targetPosition, bool thickenPath = false)
         {
             int distance = (int)Utils.GetDistance(initialPosition, targetPosition);
@@ -240,7 +266,9 @@ namespace AmeisenBotFSM.Actions
             // Find the path
             List<Node> path = AmeisenPath.FindPathAStar(map,
                                              new NodePosition((int)initialPosition.X + offsetX, (int)initialPosition.Y + offsetY, (int)initialPosition.Z),
-                                             new NodePosition((int)targetPosition.X + offsetX, (int)targetPosition.Y + offsetY, (int)targetPosition.Z));
+                                             new NodePosition((int)targetPosition.X + offsetX, (int)targetPosition.Y + offsetY, (int)targetPosition.Z),
+                                             true,
+                                             4);
 
             if (path == null)
             {
@@ -287,6 +315,14 @@ namespace AmeisenBotFSM.Actions
             }
         }
 
+        /// <summary>
+        /// Remove the offset from our Path that we used to calculate the path to
+        /// reveal the wanted original coordinates
+        /// </summary>
+        /// <param name="path">path to rebase</param>
+        /// <param name="offsetX">rebasing X offset</param>
+        /// <param name="offsetY">rebasing Y offset</param>
+        /// <returns>rebased Path</returns>
         private List<Node> RebasePath(List<Node> path, int offsetX, int offsetY)
         {
             List<Node> rebasedPath = new List<Node>();
@@ -341,9 +377,12 @@ namespace AmeisenBotFSM.Actions
             return newMap;
         }
 
-        /// <summary> Modify our go-to-position by a small factor to provide "naturality" </summary>
-        /// <param name="targetPos">pos you want to go to/param> <param name="offset">distance to
-        /// keep to the target</param> <returns>modified position</returns>
+        /// <summary> 
+        /// Modify our go-to-position by a small random factor to provide "naturality" 
+        /// </summary>
+        /// <param name="targetPos">pos you want to go to/param> 
+        /// <param name="offset">distance to keep to the target</param> 
+        /// <returns>modified position</returns>
         private Vector3 RebaseVector(Vector3 targetPos, int offset)
         {
             Random rnd = new Random();
