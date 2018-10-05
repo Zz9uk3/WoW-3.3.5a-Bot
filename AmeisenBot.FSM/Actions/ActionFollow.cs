@@ -68,7 +68,7 @@ namespace AmeisenBotFSM.Actions
             //AmeisenMovementEngine.MemberCount = GetPartymemberCount();
             Vector4 targetPos = AmeisenMovementEngine.GetPosition(
                                     new Vector4(ActiveUnit.pos.X, ActiveUnit.pos.Y, ActiveUnit.pos.Z, ActiveUnit.Rotation),
-                                    AmeisenDataHolder.Settings.followDistance,
+                                    AmeisenDataHolder.Settings.followDistance / 2,
                                     GetMyPartyPosition());
 
             Vector3 posToMoveTo = new Vector3(targetPos.X, targetPos.Y, targetPos.Z);

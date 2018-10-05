@@ -11,19 +11,11 @@ using System.Timers;
 
 namespace AmeisenBotManager
 {
-    /// <summary>
-    /// Singleton class to hold important things like
-    /// - Proccess: WoW.exe we're attached to
-    /// - BlackMagic: instance that is attached to WoW.exe
-    /// - get the state by isAttached boolean
-    /// - AmeisenHook: instance that is hooked to WoW.exe's EndScene
-    /// - get the state by isHooked boolean
-    /// - Me: all character information
-    /// </summary>
     public class AmeisenObjectManager : IDisposable
     {
         private Thread objectUpdateThread;
         private System.Timers.Timer objectUpdateTimer;
+        private System.Timers.Timer nodeDBUpdateTimer;
         private DateTime timestampObjects;
         private AmeisenDataHolder AmeisenDataHolder { get; set; }
         private AmeisenDBManager AmeisenDBManager { get; set; }
@@ -110,6 +102,23 @@ namespace AmeisenBotManager
             objectUpdateTimer.Elapsed += ObjectUpdateTimer;
             objectUpdateThread = new Thread(new ThreadStart(StartTimer));
             objectUpdateThread.Start();
+
+            nodeDBUpdateTimer = new System.Timers.Timer(100);
+            nodeDBUpdateTimer.Elapsed += NodeDBUpdateTimer;
+            nodeDBUpdateTimer.Start();
+        }
+
+        private void NodeDBUpdateTimer(object sender, ElapsedEventArgs e)
+        {
+            if (Me != null)
+            {
+                // need lock for this
+                try
+                {
+                    UpdateNodeInDB(Me);
+                }
+                catch { }
+            }
         }
 
         /// <summary>
@@ -181,10 +190,6 @@ namespace AmeisenBotManager
 
             // Best place for this :^)
             AntiAFK();
-            if (Me != null)
-            {
-                new Thread(new ThreadStart(() => UpdateNodeInDB(Me))).Start();
-            }
         }
 
         /// <summary>
@@ -207,14 +212,22 @@ namespace AmeisenBotManager
 
         private void UpdateNodeInDB(Me me)
         {
-            Vector3 activeNode = new Vector3((int)me.pos.X, (int)me.pos.Y, (int)me.pos.Z);
-            //if (activeNode.X != lastNode.X && activeNode.Y != lastNode.Y && activeNode.Z != lastNode.Z)
-            //{
             int zoneID = AmeisenCore.GetZoneID();
             int mapID = AmeisenCore.GetMapID();
-            AmeisenDBManager.UpdateOrAddNode(new MapNode(activeNode, zoneID, mapID));
-            //}
-            //lastNode = activeNode;
+            // Me
+            AmeisenDBManager.UpdateOrAddNode(new MapNode(me.pos, zoneID, mapID));
+
+            List<ulong> copyOfPartymembers = me.PartymemberGuids;
+
+            // All partymembers
+            foreach (ulong guid in copyOfPartymembers)
+            {
+                Unit unit = (Unit)GetWoWObjectFromGUID(guid);
+                if (unit != null && Utils.GetDistance(me.pos, unit.pos) < 75)
+                {
+                    AmeisenDBManager.UpdateOrAddNode(new MapNode(unit.pos, zoneID, mapID));
+                }
+            }
         }
     }
 }

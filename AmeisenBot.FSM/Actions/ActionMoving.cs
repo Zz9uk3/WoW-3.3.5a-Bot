@@ -268,6 +268,7 @@ namespace AmeisenBotFSM.Actions
                                              new NodePosition((int)initialPosition.X + offsetX, (int)initialPosition.Y + offsetY, (int)initialPosition.Z),
                                              new NodePosition((int)targetPosition.X + offsetX, (int)targetPosition.Y + offsetY, (int)targetPosition.Z),
                                              true,
+                                             true,
                                              4);
 
             if (path == null)
