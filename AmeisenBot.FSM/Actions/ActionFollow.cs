@@ -83,10 +83,6 @@ namespace AmeisenBotFSM.Actions
                     WaypointQueue.Enqueue(posToMoveTo);
                 }
             }
-            else
-            {
-                PathCalculated = false;
-            }
 
             // Do the movement stuff
             base.DoThings();

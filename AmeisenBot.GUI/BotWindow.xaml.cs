@@ -87,9 +87,6 @@ namespace AmeisenBotGUI
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
-            BotManager.Settings.oldXindowPosX = Left;
-            BotManager.Settings.oldXindowPosY = Top;
-            BotManager.StopBot();
             Close();
         }
 
@@ -209,6 +206,9 @@ namespace AmeisenBotGUI
         private void Mainscreen_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             SaveViewSettings();
+            BotManager.Settings.oldXindowPosX = Left;
+            BotManager.Settings.oldXindowPosY = Top;
+            BotManager.StopBot();
         }
 
         private void Mainscreen_Loaded(object sender, RoutedEventArgs e)

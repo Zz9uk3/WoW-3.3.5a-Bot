@@ -103,7 +103,7 @@ namespace AmeisenBotManager
             objectUpdateThread = new Thread(new ThreadStart(StartTimer));
             objectUpdateThread.Start();
 
-            nodeDBUpdateTimer = new System.Timers.Timer(100);
+            nodeDBUpdateTimer = new System.Timers.Timer(AmeisenDataHolder.Settings.dataRefreshRate);
             nodeDBUpdateTimer.Elapsed += NodeDBUpdateTimer;
             nodeDBUpdateTimer.Start();
         }
@@ -113,11 +113,7 @@ namespace AmeisenBotManager
             if (Me != null)
             {
                 // need lock for this
-                try
-                {
-                    UpdateNodeInDB(Me);
-                }
-                catch { }
+                UpdateNodeInDB(Me);
             }
         }
 
@@ -219,15 +215,20 @@ namespace AmeisenBotManager
 
             List<ulong> copyOfPartymembers = me.PartymemberGuids;
 
-            // All partymembers
-            foreach (ulong guid in copyOfPartymembers)
+            // fix with a lock or something alike...
+            try
             {
-                Unit unit = (Unit)GetWoWObjectFromGUID(guid);
-                if (unit != null && Utils.GetDistance(me.pos, unit.pos) < 75)
+                // All partymembers
+                foreach (ulong guid in copyOfPartymembers)
                 {
-                    AmeisenDBManager.UpdateOrAddNode(new MapNode(unit.pos, zoneID, mapID));
+                    Unit unit = (Unit)GetWoWObjectFromGUID(guid);
+                    if (unit != null && Utils.GetDistance(me.pos, unit.pos) < 75)
+                    {
+                        AmeisenDBManager.UpdateOrAddNode(new MapNode(unit.pos, zoneID, mapID));
+                    }
                 }
             }
+            catch { }
         }
     }
 }
