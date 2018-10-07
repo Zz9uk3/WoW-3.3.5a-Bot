@@ -10,6 +10,24 @@ namespace AmeisenBotUtilities
 {
     public static class Utils
     {
+        public static string FloatToHex32(float input)
+        {
+            StringBuilder result = new StringBuilder();
+            byte[] bytes = BitConverter.GetBytes(input);
+
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(bytes);
+            }
+
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                result.Append(bytes[i].ToString("X2"));
+            }
+
+            return result.ToString();
+        }
+
         /// <summary>
         /// Decode base64 image to BitmapImage
         /// </summary>

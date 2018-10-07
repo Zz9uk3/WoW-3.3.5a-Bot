@@ -600,7 +600,22 @@ namespace AmeisenBotCore
         public static void TargetGUID(ulong guid)
         {
             AmeisenLogger.Instance.Log(LogLevel.DEBUG, $"TargetGUID: {guid}", "AmeisenCore");
-            BlackMagic.WriteUInt64(Offsets.localTargetGUID, guid);
+            //BlackMagic.WriteUInt64(Offsets.localTargetGUID, guid);
+
+            byte[] guidBytes = BitConverter.GetBytes(guid);
+            string[] asm = new string[]
+            {
+                $"PUSH {BitConverter.ToUInt32(guidBytes, 4)}",
+                $"PUSH {BitConverter.ToUInt32(guidBytes, 0)}",
+                $"CALL {Offsets.clientGameUITarget}",
+                "ADD ESP, 0x8",
+                "RETN"
+            };
+
+            HookJob hookJob = new HookJob(asm, false);
+            AmeisenHook.AddHookJob(ref hookJob);
+
+            while (!hookJob.IsFinished) { Thread.Sleep(1); }
         }
 
         /// <summary>
@@ -662,6 +677,11 @@ namespace AmeisenBotCore
             BlackMagic.WriteFloat(Offsets.ctmZ, (float)pos.Z);
             BlackMagic.WriteInt(Offsets.ctmAction, (int)action);
             BlackMagic.WriteFloat(Offsets.ctmDistance, distance);
+        }
+
+        public static bool IsSpellInRage(string name)
+        {
+            throw new NotImplementedException();
         }
     }
 }

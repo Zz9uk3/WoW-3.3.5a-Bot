@@ -31,7 +31,7 @@ namespace AmeisenBotFSM.Actions
         {
             AmeisenDataHolder = ameisenDataHolder;
 
-            // TODO: Add Clas/Spec recognition
+            // TODO: Add Class/Spec recognition
             if (combatClass == null)
             {
                 CombatClass = new CCAutoAttackOnly

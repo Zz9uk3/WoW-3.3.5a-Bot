@@ -8,9 +8,22 @@ namespace AmeisenBotCombat
 {
     public abstract class CombatUtils
     {
-        public static void CastSpellByName(string name, bool onMyself)
+        public static void CastSpellByName(Me me, Unit target, string name, bool onMyself)
         {
             SpellInfo spellInfo = GetSpellInfo(name, onMyself);
+
+            if(!onMyself && !AmeisenCore.IsSpellInRage(name))
+            {
+                MoveToPos(me, target);
+            }
+            else
+            {
+                AmeisenCore.InteractWithGUID(
+                       target.pos,
+                       target.Guid,
+                       InteractionType.STOP);
+            }
+            FaceTarget(me, target);
             AmeisenCore.CastSpellByName(name, onMyself);
             Thread.Sleep(spellInfo.castTime + 100);
         }
@@ -25,22 +38,18 @@ namespace AmeisenBotCombat
             return AmeisenCore.GetAuras(luaUnit).ToList();
         }
 
-        public static void FaceTarget(Unit target)
+        public static void FaceTarget(Me me, Unit target)
         {
             if (target != null)
             {
                 target.Update();
-                AmeisenCore.InteractWithGUID(
-                    target.pos,
-                    target.Guid,
-                    InteractionType.FACETARGET
-                    );
-                Thread.Sleep(200);
-                AmeisenCore.InteractWithGUID(
-                    target.pos,
-                    target.Guid,
-                    InteractionType.STOP
-                    );
+                if (!Utils.IsFacing(me.pos, me.Rotation, target.pos))
+                {
+                    AmeisenCore.InteractWithGUID(
+                        target.pos,
+                        target.Guid,
+                        InteractionType.FACETARGET);
+                }
             }
         }
 
@@ -57,11 +66,40 @@ namespace AmeisenBotCombat
             {
                 Unit u = units.OrderBy(o => o.HealthPercentage).ToList()[0];
                 u.Update();
-                AmeisenCore.TargetGUID(u.TargetGuid);
+
+                Unit targetToAttack = (Unit)GetWoWObjectFromGUID(u.TargetGuid, activeWowObjects);
+                targetToAttack.Update();
+                AmeisenCore.TargetGUID(targetToAttack.Guid);
                 me.Update();
-                return u;
+                return targetToAttack;
             }
             return null;
+        }
+
+        /// <summary>
+        /// Return a Player by the given GUID
+        /// </summary>
+        /// <param name="guid">guid of the player you want to get</param>
+        /// <param name="activeWoWObjects">all wowo objects to search in</param>
+        /// <returns>Player that you want to get</returns>
+        public static WowObject GetWoWObjectFromGUID(ulong guid, List<WowObject> activeWoWObjects)
+        {
+            foreach (WowObject p in activeWoWObjects)
+            {
+                if (p.Guid == guid)
+                {
+                    return p;
+                }
+            }
+            return null;
+        }
+
+        public static void MoveToPos(Me me, Unit unitToAttack, double distance = 2.0)
+        {
+            if (Utils.GetDistance(me.pos, unitToAttack.pos) >= distance)
+            {
+                AmeisenCore.MovePlayerToXYZ(unitToAttack.pos, InteractionType.MOVE);
+            }
         }
 
         public static Unit TargetTargetToHeal(Me me, List<WowObject> activeWowObjects)

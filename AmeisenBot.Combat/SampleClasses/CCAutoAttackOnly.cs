@@ -3,6 +3,7 @@ using AmeisenBotLogger;
 using AmeisenBotUtilities;
 using AmeisenCombatEngine.Interfaces;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace AmeisenBotCombat.SampleClasses
 {
@@ -53,13 +54,15 @@ namespace AmeisenBotCombat.SampleClasses
 
             if (unitToAttack != null)
             {
+                CombatUtils.FaceTarget(Me, unitToAttack);
+
                 // Start autoattack
                 if (!Me.InCombat)
                 {
-                    CombatUtils.FaceTarget(unitToAttack);
                     CombatUtils.AttackTarget();
                 }
 
+                // only autoattacks
                 DoAttackRoutine();
             }
         }
@@ -79,6 +82,7 @@ namespace AmeisenBotCombat.SampleClasses
 
         private void DoAttackRoutine()
         {
+            Thread.Sleep(1000);
         }
     }
 }

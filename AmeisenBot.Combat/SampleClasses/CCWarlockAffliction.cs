@@ -56,7 +56,7 @@ namespace AmeisenBotCombat.SampleClasses
                 // Start autoattack
                 if (!Me.InCombat)
                 {
-                    CombatUtils.FaceTarget(unitToAttack);
+                    CombatUtils.FaceTarget(Me, unitToAttack);
                     CombatUtils.AttackTarget();
                 }
 
@@ -70,11 +70,11 @@ namespace AmeisenBotCombat.SampleClasses
 
             if (!myAuras.Contains("demon armor"))
             {
-                CombatUtils.CastSpellByName("Demon Armor", true);
+                CombatUtils.CastSpellByName(Me,Target,"Demon Armor", true);
             }
             if (!myAuras.Contains("blood pact"))
             {
-                CombatUtils.CastSpellByName("Summon Imp", true);
+                CombatUtils.CastSpellByName(Me, Target, "Summon Imp", true);
             }
         }
 
@@ -94,37 +94,44 @@ namespace AmeisenBotCombat.SampleClasses
             // Restore Mana
             if (Me.EnergyPercentage < 30 && Me.HealthPercentage > 50)
             {
-                CombatUtils.CastSpellByName("Life Tap", true);
+                CombatUtils.CastSpellByName(Me, Target, "Life Tap", true);
+                return;
             }
 
             Target?.Update();
             // DoT's to apply
             if (!targetAuras.Contains("curse of agony"))
             {
-                CombatUtils.CastSpellByName("Curse of Agony", false);
+                CombatUtils.CastSpellByName(Me, Target, "Curse of Agony", false);
+                return;
             }
             if (!targetAuras.Contains("corruption"))
             {
-                CombatUtils.CastSpellByName("Corruption", false);
+                CombatUtils.CastSpellByName(Me, Target, "Corruption", false);
+                return;
             }
             if (!targetAuras.Contains("unstable affliction"))
             {
-                CombatUtils.CastSpellByName("Unstable Affliction", false);
+                CombatUtils.CastSpellByName(Me, Target, "Unstable Affliction", false);
+                return;
             }
             if (!targetAuras.Contains("haunt"))
             {
-                CombatUtils.CastSpellByName("Haunt", false);
+                CombatUtils.CastSpellByName(Me, Target, "Haunt", false);
+                return;
             }
 
             Target?.Update();
             // Active-Damage Spell
             if (Target?.HealthPercentage < 25)
             {
-                CombatUtils.CastSpellByName("Drain Soul", false);
+                CombatUtils.CastSpellByName(Me, Target, "Drain Soul", false);
+                return;
             }
             else
             {
-                CombatUtils.CastSpellByName("Shadow Bolt", false);
+                CombatUtils.CastSpellByName(Me, Target, "Shadow Bolt", false);
+                return;
             }
         }
     }
